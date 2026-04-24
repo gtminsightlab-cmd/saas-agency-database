@@ -1,116 +1,84 @@
+import { AppShell } from "@/components/app/shell";
 import { createClient } from "@/lib/supabase/server";
+import { ProgressStepper } from "@/components/build-list/progress-stepper";
+import { RecordsCounter } from "@/components/build-list/records-counter";
+import { BuildListForm, type FilterData } from "@/components/build-list/form";
 
 export const dynamic = "force-dynamic";
 
 export default async function BuildListPage() {
   const supabase = createClient();
 
-  const [statesRes, carriersRes, affiliationsRes, listsRes] = await Promise.all([
-    supabase
-      .from("top_agency_members")
-      .select("office_state")
-      .not("office_state", "is", null),
-    supabase.from("carriers").select("group_name").order("group_name"),
-    supabase
-      .from("affiliations")
-      .select("canonical_name, type")
-      .order("canonical_name"),
-    supabase.from("top_agency_lists").select("name, year").order("name")
+  const [
+    accountTypes,
+    locationTypes,
+    ams,
+    mgmt,
+    titles,
+    depts,
+    statesUS,
+    statesCA,
+    metros,
+    carriers,
+    affiliations,
+    sic,
+    accountsCount,
+    contactsCount,
+    contactsEmailCount
+  ] = await Promise.all([
+    supabase.from("account_types").select("id,code,label,sort_order").eq("active", true).order("sort_order"),
+    supabase.from("location_types").select("id,code,name,sort_order").order("sort_order"),
+    supabase.from("agency_management_systems").select("id,code,label,sort_order").eq("active", true).order("label"),
+    supabase.from("management_levels").select("id,name,sort_order").order("sort_order"),
+    supabase.from("contact_title_roles").select("id,name,sort_order").order("sort_order"),
+    supabase.from("departments").select("id,name,sort_order").order("sort_order"),
+    supabase.from("states").select("id,code,name,country").eq("country", "US").order("sort_order"),
+    supabase.from("states").select("id,code,name,country").eq("country", "CA").order("sort_order"),
+    supabase.from("metro_areas").select("id,code,name").order("name"),
+    supabase.from("carriers").select("id,name,group_name").eq("active", true).order("name"),
+    supabase.from("affiliations").select("id,canonical_name,type").eq("active", true).order("canonical_name"),
+    supabase.from("sic_codes").select("id,sic_code,description").order("sic_code").limit(1000),
+    supabase.from("agencies").select("id", { count: "exact", head: true }),
+    supabase.from("contacts").select("id", { count: "exact", head: true }),
+    supabase.from("contacts").select("id", { count: "exact", head: true }).not("email_primary", "is", null)
   ]);
 
-  // dedupe / count for each filter dimension so the page shows meaningful facets
-  const stateCounts = countBy(
-    (statesRes.data ?? []).map((r) => r.office_state as string)
-  );
-  const carrierGroups = Array.from(
-    new Set((carriersRes.data ?? []).map((r) => r.group_name as string))
-  );
-  const affiliations = affiliationsRes.data ?? [];
-  const lists = listsRes.data ?? [];
+  const data: FilterData = {
+    accountTypes: (accountTypes.data ?? []).map((x) => ({ value: x.id, label: x.label })),
+    locationTypes: (locationTypes.data ?? []).map((x) => ({ value: x.id, label: x.name })),
+    amsOptions: (ams.data ?? []).map((x) => ({ value: x.id, label: x.label })),
+    managementLevels: (mgmt.data ?? []).map((x) => ({ value: x.id, label: x.name })),
+    contactTitleRoles: (titles.data ?? []).map((x) => ({ value: x.id, label: x.name })),
+    departments: (depts.data ?? []).map((x) => ({ value: x.id, label: x.name })),
+    states: [
+      ...(statesUS.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: "US" })),
+      ...(statesCA.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: "CA" }))
+    ],
+    metroAreas: (metros.data ?? []).map((x) => ({ value: x.id, label: x.name })),
+    carriers: (carriers.data ?? []).map((x) => ({
+      value: x.id,
+      label: x.name,
+      sublabel: x.group_name ?? undefined
+    })),
+    affiliations: (affiliations.data ?? []).map((x) => ({
+      value: x.id,
+      label: x.canonical_name,
+      sublabel: x.type
+    })),
+    industries: (sic.data ?? []).map((x) => ({
+      value: x.id,
+      label: `${x.sic_code}${x.description ? " — " + x.description : ""}`
+    }))
+  };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Build a List</h1>
-      <p className="text-sm text-gray-600">
-        Pick filters, preview matches, and save the list. Interactive filter
-        engine is next up — this page currently shows the available filter
-        universe pulled live from Supabase.
-      </p>
+    <AppShell>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6">
+        <div className="mb-6">
+          <ProgressStepper current="build" />
+        </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <FacetCard title="Carrier groups" count={carrierGroups.length}>
-          <ul className="max-h-56 space-y-1 overflow-y-auto text-sm">
-            {carrierGroups.slice(0, 40).map((g) => (
-              <li key={g} className="text-gray-700">{g}</li>
-            ))}
-          </ul>
-        </FacetCard>
-
-        <FacetCard title="Affiliations" count={affiliations.length}>
-          <ul className="max-h-56 space-y-1 overflow-y-auto text-sm">
-            {affiliations.slice(0, 40).map((a) => (
-              <li key={a.canonical_name} className="text-gray-700">
-                {a.canonical_name}{" "}
-                <span className="text-xs text-gray-400">({a.type})</span>
-              </li>
-            ))}
-          </ul>
-        </FacetCard>
-
-        <FacetCard title="Top lists" count={lists.length}>
-          <ul className="space-y-1 text-sm">
-            {lists.map((l) => (
-              <li key={l.name} className="text-gray-700">
-                {l.name} {l.year && <span className="text-gray-400">({l.year})</span>}
-              </li>
-            ))}
-          </ul>
-        </FacetCard>
-
-        <FacetCard
-          title="States represented (from Top 100)"
-          count={Object.keys(stateCounts).length}
-        >
-          <ul className="max-h-56 space-y-1 overflow-y-auto text-sm">
-            {Object.entries(stateCounts)
-              .sort((a, b) => b[1] - a[1])
-              .slice(0, 30)
-              .map(([state, n]) => (
-                <li key={state} className="flex justify-between text-gray-700">
-                  <span>{state}</span>
-                  <span className="text-gray-400">{n}</span>
-                </li>
-              ))}
-          </ul>
-        </FacetCard>
-      </div>
-    </div>
-  );
-}
-
-function FacetCard({
-  title,
-  count,
-  children
-}: {
-  title: string;
-  count: number;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4">
-      <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="font-semibold text-gray-900">{title}</h2>
-        <span className="text-xs text-gray-500">{count} available</span>
-      </div>
-      {children}
-    </div>
-  );
-}
-
-function countBy<T extends string>(arr: T[]): Record<T, number> {
-  return arr.reduce((acc, v) => {
-    acc[v] = (acc[v] ?? 0) + 1;
-    return acc;
-  }, {} as Record<T, number>);
-}
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">Build a List</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Build your list by refining your search below. Real-ti

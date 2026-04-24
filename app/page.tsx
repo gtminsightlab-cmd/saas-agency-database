@@ -1,98 +1,73 @@
 import Link from "next/link";
+import { Check, Filter, Download, Search, Zap, Users } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { MarketingNav } from "@/components/marketing/nav";
 
 export const dynamic = "force-dynamic";
 
-export default async function HomePage() {
+export default async function MarketingHome() {
   const supabase = createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
 
-  // Quick health check: count rows in key lookup tables so we know the
-  // Supabase connection + RLS-anon-read paths are wired up on deploy.
-  const [carriers, affiliations, lists, members] = await Promise.all([
+  // Live row counts to use as social proof in the hero (pulled from Supabase)
+  const [carriers, affiliations, plans] = await Promise.all([
     supabase.from("carriers").select("id", { count: "exact", head: true }),
+    supabase.from("affiliations").select("id", { count: "exact", head: true }),
     supabase
-      .from("affiliations")
-      .select("id", { count: "exact", head: true })
-      .eq("type", "cluster"),
-    supabase.from("top_agency_lists").select("id", { count: "exact", head: true }),
-    supabase.from("top_agency_members").select("id", { count: "exact", head: true })
+      .from("billing_plans")
+      .select("code, name, tagline, price_cents, interval, download_quota, features, sort_order")
+      .eq("active", true)
+      .order("sort_order", { ascending: true })
   ]);
 
-  const cards = [
-    {
-      href: "/agency-directory",
-      label: "Agency Directory",
-      desc: "Browse agencies with filters for state, carriers, affiliations, and SIC codes."
-    },
-    {
-      href: "/build-list",
-      label: "Build a List",
-      desc: "Stack filters and save the matching agencies + contacts for export."
-    },
-    {
-      href: "/saved-lists",
-      label: "Saved Lists",
-      desc: "Review and re-run your previously saved list definitions."
-    },
-    {
-      href: "/downloads",
-      label: "Downloads",
-      desc: "Export contacts or full agency rosters as CSV."
-    },
-    {
-      href: "/quick-search",
-      label: "Quick Search",
-      desc: "Jump to a specific agency by name, DUNS, or address."
-    },
-    {
-      href: "/data-mapping",
-      label: "Data Mapping",
-      desc: "Review what field goes where, with row counts per table."
-    }
-  ];
+  const carrierCount = carriers.count ?? 0;
+  const affiliationCount = affiliations.count ?? 0;
 
   return (
-    <div className="space-y-8">
-      <section className="rounded-xl bg-brand-50 p-6">
-        <h1 className="text-2xl font-semibold text-brand-900">
-          Welcome to the Seven16 Agency Directory
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm text-gray-700">
-          A multi-tenant B2B commercial insurance agency directory. Use the
-          sections below to explore agencies, build targeted lists, and export
-          contact rosters. Your tenant is <b>Seven16 Group</b>.
-        </p>
-        <dl className="mt-4 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-          <Stat label="Carriers" value={carriers.count ?? "—"} />
-          <Stat label="Clusters" value={affiliations.count ?? "—"} />
-          <Stat label="Top Lists" value={lists.count ?? "—"} />
-          <Stat label="List members" value={members.count ?? "—"} />
-        </dl>
-      </section>
+    <div className="bg-white">
+      <MarketingNav isAuthed={!!user} />
 
-      <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {cards.map((c) => (
-          <Link
-            key={c.href}
-            href={c.href}
-            className="rounded-lg border border-gray-200 bg-white p-5 transition hover:border-brand-500 hover:shadow"
-          >
-            <div className="text-base font-semibold text-gray-900">
-              {c.label}
+      {/* Hero */}
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-white" aria-hidden />
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:py-28">
+          <div className="mx-auto max-w-3xl text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
+              <Zap className="h-3.5 w-3.5" />
+              Built for insurance carriers, MGAs, and wholesalers
             </div>
-            <p className="mt-1 text-sm text-gray-600">{c.desc}</p>
-          </Link>
-        ))}
-      </section>
-    </div>
-  );
-}
+            <h1 className="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+              Find the right commercial agency <span className="text-brand-600">in seconds</span>.
+            </h1>
+            <p className="mt-6 text-lg leading-8 text-gray-600">
+              Search {carrierCount.toLocaleString()}+ carriers and {affiliationCount}+ cluster
+              networks across tens of thousands of independent agencies. Filter by appointments,
+              geography, AMS, and agency size. Export contact rosters on demand.
+            </p>
+            <div className="mt-10 flex items-center justify-center gap-4">
+              <Link
+                href={user ? "/build-list" : "/sign-up"}
+                className="rounded-md bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+              >
+                {user ? "Go to your dashboard" : "Get started — free"}
+              </Link>
+              <a
+                href="#how-it-works"
+                className="text-sm font-semibold text-gray-900 hover:text-gray-700"
+              >
+                See how it works →
+              </a>
+            </div>
+            <p className="mt-4 text-xs text-gray-500">
+              No credit card required · Free forever plan
+            </p>
+          </div>
 
-function Stat({ label, value }: { label: string; value: number | string }) {
-  return (
-    <div className="rounded-lg bg-white p-3 shadow-sm">
-      <dt className="text-xs uppercase tracking-wide text-gray-500">{label}</dt>
-      <dd className="mt-1 text-xl font-semibold text-brand-600">{value}</dd>
-    </div>
-  );
-}
+          {/* Trust bar */}
+          <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-3xl mx-auto">
+            <Stat label="Carriers" value={carrierCount.toLocaleString()} />
+            <Stat label="Affiliations" value={affiliationCount.toString()} />
+            <Stat label="Agencies indexed" value="36,000+" />
+   
