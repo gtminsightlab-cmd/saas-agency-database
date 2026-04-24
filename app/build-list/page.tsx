@@ -10,21 +10,9 @@ export default async function BuildListPage() {
   const supabase = createClient();
 
   const [
-    accountTypes,
-    locationTypes,
-    ams,
-    mgmt,
-    titles,
-    depts,
-    statesUS,
-    statesCA,
-    metros,
-    carriers,
-    affiliations,
-    sic,
-    accountsCount,
-    contactsCount,
-    contactsEmailCount
+    accountTypes, locationTypes, ams, mgmt, titles, depts,
+    statesUS, statesCA, metros, carriers, affiliations, sic,
+    accountsCount, contactsCount, contactsEmailCount
   ] = await Promise.all([
     supabase.from("account_types").select("id,code,label,sort_order").eq("active", true).order("sort_order"),
     supabase.from("location_types").select("id,code,name,sort_order").order("sort_order"),
@@ -55,20 +43,9 @@ export default async function BuildListPage() {
       ...(statesCA.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: "CA" }))
     ],
     metroAreas: (metros.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    carriers: (carriers.data ?? []).map((x) => ({
-      value: x.id,
-      label: x.name,
-      sublabel: x.group_name ?? undefined
-    })),
-    affiliations: (affiliations.data ?? []).map((x) => ({
-      value: x.id,
-      label: x.canonical_name,
-      sublabel: x.type
-    })),
-    industries: (sic.data ?? []).map((x) => ({
-      value: x.id,
-      label: `${x.sic_code}${x.description ? " — " + x.description : ""}`
-    }))
+    carriers: (carriers.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: x.group_name ?? undefined })),
+    affiliations: (affiliations.data ?? []).map((x) => ({ value: x.id, label: x.canonical_name, sublabel: x.type })),
+    industries: (sic.data ?? []).map((x) => ({ value: x.id, label: `${x.sic_code}${x.description ? " — " + x.description : ""}` }))
   };
 
   return (
@@ -81,4 +58,20 @@ export default async function BuildListPage() {
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">Build a List</h1>
           <p className="mt-2 text-sm text-gray-600">
-            Build your list by refining your search below. Real-ti
+            Build your list by refining your search below. Real-time record counts will be displayed at the top as you search.
+          </p>
+        </div>
+
+        <div className="sticky top-0 z-10 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-2 bg-gray-50">
+          <RecordsCounter
+            accounts={accountsCount.count ?? 0}
+            contacts={contactsCount.count ?? 0}
+            contactsWithEmail={contactsEmailCount.count ?? 0}
+          />
+        </div>
+
+        <BuildListForm data={data} />
+      </div>
+    </AppShell>
+  );
+}
