@@ -4,7 +4,6 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Download, Pencil, Trash2 } from "lucide-react";
-import { createClient as createBrowserSupabase } from "@/lib/supabase/client";
 
 type Props = {
   id: string;
@@ -25,13 +24,26 @@ export default function SavedListRowActions({ id, name, filterQs }: Props) {
     if (!ok) return;
     setBusy(true);
     try {
-      const supabase = createBrowserSupabase();
-      const { error } = await supabase.from("saved_lists").delete().eq("id", id);
-      if (error) {
-        alert(`Could not delete: ${error.message}`);
+      const res = await fetch(`/api/saved-lists/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+        credentials: "same-origin",
+        headers: { Accept: "application/json" },
+      });
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        alert(`Could not delete: ${body?.message ?? res.statusText}`);
         setBusy(false);
         return;
       }
+
+      const body = await res.json();
+      if (!body?.deleted_count) {
+        alert("Delete returned 0 rows. Refresh the page and try again.");
+        setBusy(false);
+        return;
+      }
+
       startTransition(() => {
         router.refresh();
       });

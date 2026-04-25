@@ -55,6 +55,33 @@ export default async function ReviewPage({
   const countryRaw = (searchParams.c ?? 'US').toUpperCase();
   const country = countryRaw === 'US' ? 'USA' : countryRaw === 'CA' ? 'CAN' : countryRaw;
 
+  const tab = (searchParams.tab ?? "accounts") as "accounts" | "contacts" | "map";
+
+  // Tier-gating for email/mobile reveal: super_admin OR an active user_entitlements
+  // row unmasks contact PII. Otherwise we render an "Available — upgrade" pill
+  // for non-null fields, and "—" for fields with no data at all.
+  const { data: { user: authUser } } = await supabase.auth.getUser();
+  let canRevealContactPii = false;
+  if (authUser) {
+    const { data: appUser } = await supabase
+      .from("app_users")
+      .select("id,is_super_admin")
+      .eq("auth_user_id", authUser.id)
+      .maybeSingle();
+    if (appUser?.is_super_admin) {
+      canRevealContactPii = true;
+    } else if (appUser?.id) {
+      const { data: ent } = await supabase
+        .from("user_entitlements")
+        .select("id,status")
+        .eq("app_user_id", appUser.id)
+        .in("status", ["active", "trialing"])
+        .limit(1)
+        .maybeSingle();
+      if (ent) canRevealContactPii = true;
+    }
+  }
+
   // ---- Resolve state IDs -> codes, metro IDs -> names ------------------
   const [stRows, mtRows, atRows, crRows, afRows] = await Promise.all([
     stateIds.length
@@ -201,6 +228,53 @@ export default async function ReviewPage({
   }>;
 
   const qs = new URLSearchParams(searchParams as any).toString();
+  const tabHref = (next: "accounts" | "contacts" | "map") => {
+    const sp = new URLSearchParams(searchParams as any);
+    if (next === "accounts") sp.delete("tab");
+    else sp.set("tab", next);
+    const q = sp.toString();
+    return q ? `/build-list/review?${q}` : `/build-list/review`;
+  };
+
+  // Fetch contacts for the Contacts tab using the same agency_id filter set.
+  type ContactRow = {
+    id: string;
+    first_name: string | null;
+    last_name: string | null;
+    title: string | null;
+    email_primary: string | null;
+    mobile_phone: string | null;
+    city: string | null;
+    state: string | null;
+    address_1: string | null;
+    agency_id: string;
+    agencies: { id: string; name: string; account_type_id: string | null; account_types: { label: string } | { label: string }[] | null } | null;
+  };
+  let contactRows: ContactRow[] = [];
+  if (tab === "contacts") {
+    let agencyIdsForContacts: string[] | null = null;
+    if (allowedAgencyIds || accountTypeIds.length || locationTypeIds.length || amsIds.length ||
+        premiumMin != null || premiumMax != null || revenueMin != null || revenueMax != null ||
+        empMin != null || empMax != null || minority === "yes" || minority === "no" ||
+        stateCodes.length || accountName) {
+      const { data: agencyIdsRows } = await buildAgenciesQuery("id", false).limit(50000);
+      agencyIdsForContacts = (agencyIdsRows ?? []).map((r: any) => r.id);
+    }
+    let q = supabase
+      .from("contacts")
+      .select(
+        "id, first_name, last_name, title, email_primary, mobile_phone, city, state, address_1, agency_id, agencies!inner(id, name, account_type_id, account_types(label))"
+      )
+      .order("last_name", { ascending: true })
+      .limit(50);
+    if (agencyIdsForContacts) {
+      if (agencyIdsForContacts.length === 0) q = q.eq("agency_id", "00000000-0000-0000-0000-000000000000");
+      else q = q.in("agency_id", agencyIdsForContacts);
+    }
+    const { data: cRows } = await q;
+    contactRows = (cRows ?? []) as unknown as ContactRow[];
+  }
+
 
   return (
     <AppShell>
@@ -245,9 +319,9 @@ export default async function ReviewPage({
 
         <div className="mt-6 rounded-lg bg-brand-600 text-white px-5 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm">
-            <TabBadge label="Accounts" count={accountsCount} active />
-            <TabBadge label="Contacts" count={contactsCount} />
-            <TabBadge label="Map" count={null} />
+            <TabBadge label="Accounts" count={accountsCount} active={tab === "accounts"} href={tabHref("accounts")} />
+            <TabBadge label="Contacts" count={contactsCount} active={tab === "contacts"} href={tabHref("contacts")} />
+            <TabBadge label="Map" count={null} active={tab === "map"} href={tabHref("map")} />
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="text-white/80">Search Summary:</span>
@@ -263,6 +337,7 @@ export default async function ReviewPage({
           </div>
         </div>
 
+        {tab === "accounts" && (
         <div className="mt-0 overflow-x-auto rounded-b-lg border border-gray-200 border-t-0 bg-white">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
@@ -307,8 +382,86 @@ export default async function ReviewPage({
             </tbody>
           </table>
         </div>
+        )}
 
-        {previewRows.length > 0 && (
+        {tab === "contacts" && (
+          <div className="mt-0 overflow-x-auto rounded-b-lg border border-gray-200 border-t-0 bg-white">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
+                <tr>
+                  <th className="px-4 py-3">Contact</th>
+                  <th className="px-4 py-3">Email Address</th>
+                  <th className="px-4 py-3">Mobile Number</th>
+                  <th className="px-4 py-3">Account</th>
+                  <th className="px-4 py-3">Account Type</th>
+                  <th className="px-4 py-3">Site Location</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {contactRows.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500 text-sm">
+                      No contacts match these filters.
+                    </td>
+                  </tr>
+                )}
+                {contactRows.map((c) => {
+                  const agency = c.agencies;
+                  const at = agency?.account_types
+                    ? Array.isArray(agency.account_types) ? agency.account_types[0]?.label : agency.account_types.label
+                    : null;
+                  const fullName = [c.first_name, c.last_name].filter(Boolean).join(" ") || "—";
+                  return (
+                    <tr key={c.id}>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-brand-700">{fullName}</div>
+                        {c.title && <div className="text-xs text-gray-500">{c.title}</div>}
+                      </td>
+                      <td className="px-4 py-3">
+                        <ContactPiiCell value={c.email_primary} reveal={canRevealContactPii} kind="email" />
+                      </td>
+                      <td className="px-4 py-3">
+                        <ContactPiiCell value={c.mobile_phone} reveal={canRevealContactPii} kind="mobile" />
+                      </td>
+                      <td className="px-4 py-3 text-gray-700">{agency?.name ?? "—"}</td>
+                      <td className="px-4 py-3 text-gray-700">{at ?? "—"}</td>
+                      <td className="px-4 py-3 text-gray-700">
+                        {c.address_1 ? (
+                          <div>
+                            <div>{c.address_1}</div>
+                            <div className="text-xs text-gray-500">
+                              {[c.city, c.state].filter(Boolean).join(", ") || "—"}
+                            </div>
+                          </div>
+                        ) : (
+                          [c.city, c.state].filter(Boolean).join(", ") || "—"
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+            {!canRevealContactPii && (
+              <div className="border-t border-gray-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 flex items-center justify-between gap-4">
+                <span>
+                  Email and mobile data is loaded for these contacts but masked for your tier.
+                </span>
+                <Link href="/#pricing" className="font-semibold text-amber-900 underline hover:text-amber-700">
+                  Upgrade to reveal &rarr;
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === "map" && (
+          <div className="mt-0 rounded-b-lg border border-gray-200 border-t-0 bg-white px-6 py-12 text-center text-sm text-gray-500">
+            Map view coming soon — agency markers across {accountsCount.toLocaleString()} matching agencies.
+          </div>
+        )}
+
+        {previewRows.length > 0 && tab === "accounts" && (
           <p className="mt-3 text-xs text-gray-500">
             Showing {previewRows.length} of {accountsCount.toLocaleString()} matching agencies. Download to export the full list.
           </p>
@@ -328,14 +481,39 @@ export default async function ReviewPage({
   );
 }
 
-function TabBadge({ label, count, active }: { label: string; count: number | null; active?: boolean }) {
+function ContactPiiCell({ value, reveal, kind }: { value: string | null; reveal: boolean; kind: "email" | "mobile" }) {
+  if (!value || !value.trim()) return <span className="text-gray-400">—</span>;
+  if (reveal) {
+    if (kind === "email") {
+      return (
+        <a href={`mailto:${value}`} className="text-brand-700 hover:text-brand-800">
+          {value}
+        </a>
+      );
+    }
+    return (
+      <a href={`tel:${value}`} className="text-brand-700 hover:text-brand-800">
+        {value}
+      </a>
+    );
+  }
   return (
     <span
-      className={
-        "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm " +
-        (active ? "bg-white text-brand-700" : "bg-white/10 text-white hover:bg-white/20")
-      }
+      className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 text-xs font-medium"
+      title="Available — upgrade your plan to reveal"
     >
+      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+      Available — hidden
+    </span>
+  );
+}
+
+function TabBadge({ label, count, active, href }: { label: string; count: number | null; active?: boolean; href?: string }) {
+  const className =
+    "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm cursor-pointer " +
+    (active ? "bg-white text-brand-700" : "bg-white/10 text-white hover:bg-white/20");
+  const inner = (
+    <>
       <span className="font-semibold">{label}</span>
       {count != null && (
         <span
@@ -347,6 +525,8 @@ function TabBadge({ label, count, active }: { label: string; count: number | nul
           {count.toLocaleString()}
         </span>
       )}
-    </span>
+    </>
   );
+  if (href) return <Link href={href} className={className}>{inner}</Link>;
+  return <span className={className}>{inner}</span>;
 }
