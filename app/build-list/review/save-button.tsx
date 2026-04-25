@@ -34,13 +34,22 @@ export function SaveListButton({ filterQs }: { filterQs: string }) {
       setSaving(false);
       return;
     }
+    // Compute counts for the filter so they show up on /saved-lists.
+    // We re-run a thinner version of the same query review/page.tsx uses:
+    // intersect carrier/affiliation/SIC sets, then count agencies + contacts.
+    const counts = await computeCountsForFilter(supabase, filterQs);
+
     const { data, error: insertError } = await supabase
       .from("saved_lists")
       .insert({
         tenant_id: appUser.tenant_id,
         user_id: appUser.id,
         name,
-        filter_json: { querystring: filterQs }
+        filter_json: { querystring: filterQs },
+        accounts_count: counts.accounts,
+        contacts_count: counts.contacts,
+        contacts_with_email_count: counts.contactsWithEmail,
+        last_run_at: new Date().toISOString(),
       })
       .select("id")
       .maybeSingle();
@@ -119,4 +128,131 @@ function defaultName() {
   const ampm = h >= 12 ? "pm" : "am";
   h = h % 12 || 12;
   return `${mm}-${dd}-${yyyy} ${h}:${String(m).padStart(2, "0")}${ampm}`;
+}
+
+/* ---------------- count helper ---------------- */
+
+const COUNTRY_MAP: Record<string, string> = { US: "USA", CA: "CAN" };
+
+function csvIds(v: string | null): string[] {
+  return v ? v.split(",").filter(Boolean) : [];
+}
+function asNum(v: string | null): number | null {
+  if (!v) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+function intersect<T>(sets: Set<T>[]): Set<T> {
+  if (sets.length === 0) return new Set();
+  const [first, ...rest] = sets;
+  const out = new Set<T>(first);
+  for (const s of rest) for (const v of out) if (!s.has(v)) out.delete(v);
+  return out;
+}
+
+async function computeCountsForFilter(
+  supabase: ReturnType<typeof createClient>,
+  filterQs: string
+): Promise<{ accounts: number; contacts: number; contactsWithEmail: number }> {
+  try {
+    const qs = new URLSearchParams(filterQs);
+    const accountTypeIds = csvIds(qs.get("at"));
+    const locationTypeIds = csvIds(qs.get("lt"));
+    const amsIds = csvIds(qs.get("ams"));
+    const carrierIds = csvIds(qs.get("cr"));
+    const affiliationIds = csvIds(qs.get("af"));
+    const sicIds = csvIds(qs.get("in"));
+    const stateIds = csvIds(qs.get("st"));
+    const country = qs.get("c");
+    const accountName = qs.get("an") || qs.get("name");
+    const minority = qs.get("min");
+    const premiumMin = asNum(qs.get("pmin"));
+    const premiumMax = asNum(qs.get("pmax"));
+    const revenueMin = asNum(qs.get("rmin"));
+    const revenueMax = asNum(qs.get("rmax"));
+    const empMin = asNum(qs.get("emin"));
+    const empMax = asNum(qs.get("emax"));
+
+    // Resolve carrier/affiliation/SIC -> agency_id sets
+    const idSets: Set<string>[] = [];
+    if (carrierIds.length) {
+      const { data } = await supabase.from("agency_carriers").select("agency_id").in("carrier_id", carrierIds);
+      idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
+    }
+    if (affiliationIds.length) {
+      const { data } = await supabase.from("agency_affiliations").select("agency_id").in("affiliation_id", affiliationIds);
+      idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
+    }
+    if (sicIds.length) {
+      const { data } = await supabase.from("agency_sic_codes").select("agency_id").in("sic_code_id", sicIds);
+      idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
+    }
+    let stateCodes: string[] = [];
+    if (stateIds.length) {
+      const { data: states } = await supabase.from("states").select("code").in("id", stateIds);
+      stateCodes = (states ?? []).map((s: any) => s.code).filter(Boolean);
+    }
+    const allowedAgencyIds = idSets.length > 0 ? Array.from(intersect(idSets)) : null;
+
+    // Build the agencies count query
+    let agq = supabase.from("agencies").select("id", { count: "exact", head: true });
+    if (accountTypeIds.length) agq = agq.in("account_type_id", accountTypeIds);
+    if (locationTypeIds.length) agq = agq.in("location_type_id", locationTypeIds);
+    if (amsIds.length) agq = agq.in("agency_mgmt_system_id", amsIds);
+    if (country) agq = agq.eq("country", COUNTRY_MAP[country] ?? country);
+    if (stateCodes.length) agq = agq.in("state", stateCodes);
+    if (accountName) agq = agq.ilike("name", `%${accountName}%`);
+    if (minority === "yes") agq = agq.eq("minority_owned", true);
+    if (minority === "no") agq = agq.eq("minority_owned", false);
+    if (premiumMin != null) agq = agq.gte("premium_volume", premiumMin);
+    if (premiumMax != null) agq = agq.lte("premium_volume", premiumMax);
+    if (revenueMin != null) agq = agq.gte("revenue", revenueMin);
+    if (revenueMax != null) agq = agq.lte("revenue", revenueMax);
+    if (empMin != null) agq = agq.gte("employees", empMin);
+    if (empMax != null) agq = agq.lte("employees", empMax);
+    if (allowedAgencyIds) {
+      if (allowedAgencyIds.length === 0) {
+        return { accounts: 0, contacts: 0, contactsWithEmail: 0 };
+      }
+      agq = agq.in("id", allowedAgencyIds);
+    }
+    const { count: agenciesCount } = await agq;
+    const accounts = agenciesCount ?? 0;
+    if (accounts === 0) return { accounts: 0, contacts: 0, contactsWithEmail: 0 };
+
+    // Pull all matching agency IDs, then count contacts in that set
+    let idQuery = supabase.from("agencies").select("id").limit(50_000);
+    if (accountTypeIds.length) idQuery = idQuery.in("account_type_id", accountTypeIds);
+    if (locationTypeIds.length) idQuery = idQuery.in("location_type_id", locationTypeIds);
+    if (amsIds.length) idQuery = idQuery.in("agency_mgmt_system_id", amsIds);
+    if (country) idQuery = idQuery.eq("country", COUNTRY_MAP[country] ?? country);
+    if (stateCodes.length) idQuery = idQuery.in("state", stateCodes);
+    if (accountName) idQuery = idQuery.ilike("name", `%${accountName}%`);
+    if (minority === "yes") idQuery = idQuery.eq("minority_owned", true);
+    if (minority === "no") idQuery = idQuery.eq("minority_owned", false);
+    if (premiumMin != null) idQuery = idQuery.gte("premium_volume", premiumMin);
+    if (premiumMax != null) idQuery = idQuery.lte("premium_volume", premiumMax);
+    if (revenueMin != null) idQuery = idQuery.gte("revenue", revenueMin);
+    if (revenueMax != null) idQuery = idQuery.lte("revenue", revenueMax);
+    if (empMin != null) idQuery = idQuery.gte("employees", empMin);
+    if (empMax != null) idQuery = idQuery.lte("employees", empMax);
+    if (allowedAgencyIds) idQuery = idQuery.in("id", allowedAgencyIds);
+    const { data: idRows } = await idQuery;
+    const ids = (idRows ?? []).map((r: any) => r.id);
+    if (ids.length === 0) return { accounts, contacts: 0, contactsWithEmail: 0 };
+
+    const [{ count: contactsCount }, { count: contactsWithEmailCount }] = await Promise.all([
+      supabase.from("contacts").select("id", { count: "exact", head: true }).in("agency_id", ids),
+      supabase.from("contacts").select("id", { count: "exact", head: true })
+        .in("agency_id", ids).not("email_primary", "is", null).neq("email_primary", ""),
+    ]);
+
+    return {
+      accounts,
+      contacts: contactsCount ?? 0,
+      contactsWithEmail: contactsWithEmailCount ?? 0,
+    };
+  } catch {
+    return { accounts: 0, contacts: 0, contactsWithEmail: 0 };
+  }
 }
