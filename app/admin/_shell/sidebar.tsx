@@ -39,7 +39,7 @@ const NAV: NavItem[] = [
   { href: "/admin/usage",            label: "Usage & Limits",   Icon: Gauge,           status: "live" },
   { href: "/admin/verticals",        label: "Verticals",        Icon: Layers,          status: "live" },
   { href: "/admin/hygiene",          label: "Hygiene & Refresh",Icon: ShieldAlert,     status: "live" },
-  { href: "/admin/integrations",     label: "Integrations",     Icon: Plug,            status: "soon" },
+  { href: "/admin/integrations",     label: "Integrations",     Icon: Plug,            status: "live" },
   { href: "/admin/alerts",           label: "Alerts & Risk",    Icon: BellRing,        status: "soon" },
   { href: "/admin/system-health",    label: "System Health",    Icon: Activity,        status: "live" },
 ];
