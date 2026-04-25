@@ -1,6 +1,17 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createClient as createSupabase } from "@/lib/supabase/server";
 import { getStripe, APP_URL } from "@/lib/stripe/server";
+import { createServerClient } from "@supabase/ssr";
+
+// Service-role client for trusted server writes (bypasses RLS).
+// Used for stripe_customers since the user-auth client can't INSERT through RLS.
+function svcSupabase() {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { cookies: { get: () => undefined, set: () => {}, remove: () => {} } },
+  );
+}
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -46,7 +57,8 @@ export async function GET(request: NextRequest) {
   }
 
   // Reuse or create the Stripe customer for this app_user
-  const { data: existingCust } = await supabase
+  const svc = svcSupabase();
+  const { data: existingCust } = await svc
     .from("stripe_customers")
     .select("stripe_customer_id")
     .eq("app_user_id", appUser.id)
@@ -60,7 +72,7 @@ export async function GET(request: NextRequest) {
       metadata: { app_user_id: appUser.id, supabase_user_id: user.id },
     });
     customerId = customer.id;
-    await supabase.from("stripe_customers").upsert(
+    await svc.from("stripe_customers").upsert(
       { app_user_id: appUser.id, stripe_customer_id: customerId },
       { onConflict: "app_user_id" }
     );
