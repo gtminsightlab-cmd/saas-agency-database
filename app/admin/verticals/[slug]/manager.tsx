@@ -28,7 +28,7 @@ export function CarrierManager({
   const [searching, setSearching] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [toast, setToast] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ kind: "ok" | "err"; msg: string } | null>(null);
   const debounceRef = useRef<number | null>(null);
 
   const mappedIds = useMemo(() => new Set(mapped.map((m) => m.carrier_id)), [mapped]);
@@ -57,8 +57,8 @@ export function CarrierManager({
     };
   }, [search, mappedIds]);
 
-  function showToast(msg: string) {
-    setToast(msg);
+  function showToast(kind: "ok" | "err", msg: string) {
+    setToast({ kind, msg });
     window.setTimeout(() => setToast(null), 3000);
   }
 
@@ -70,15 +70,20 @@ export function CarrierManager({
       .insert({ vertical_id: verticalId, carrier_id: c.id, weight: 2, note: "Added via admin" });
     setBusyId(null);
     if (error) {
-      showToast(`Add failed: ${error.message}`);
+      showToast("err", `Add failed: ${error.message}`);
       return;
     }
     setMapped((m) => [
       ...m,
-      { carrier_id: c.id, note: "Added via admin", weight: 2, carriers: { id: c.id, name: c.name, group_name: c.group_name } },
+      {
+        carrier_id: c.id,
+        note: "Added via admin",
+        weight: 2,
+        carriers: { id: c.id, name: c.name, group_name: c.group_name },
+      },
     ]);
     setResults((r) => r.filter((x) => x.id !== c.id));
-    showToast(`Added ${c.name}`);
+    showToast("ok", `Added ${c.name}`);
   }
 
   async function removeCarrier(carrierId: string, carrierName: string) {
@@ -92,11 +97,11 @@ export function CarrierManager({
       .eq("carrier_id", carrierId);
     setBusyId(null);
     if (error) {
-      showToast(`Remove failed: ${error.message}`);
+      showToast("err", `Remove failed: ${error.message}`);
       return;
     }
     setMapped((m) => m.filter((x) => x.carrier_id !== carrierId));
-    showToast(`Removed ${carrierName}`);
+    showToast("ok", `Removed ${carrierName}`);
   }
 
   async function refreshSummary() {
@@ -104,61 +109,74 @@ export function CarrierManager({
     const supabase = createClient();
     const { error } = await supabase.rpc("refresh_vertical_summary");
     setRefreshing(false);
-    showToast(error ? `Refresh failed: ${error.message}` : "Vertical summary refreshed");
+    showToast(error ? "err" : "ok", error ? `Refresh failed: ${error.message}` : "Vertical summary refreshed");
   }
 
   return (
     <div className="space-y-6">
       {toast && (
-        <div className="fixed top-20 right-6 z-50 rounded-md bg-navy-800 px-4 py-2 text-sm font-medium text-white shadow-lg">
-          {toast}
+        <div
+          className={[
+            "fixed top-20 right-6 z-50 rounded-md px-4 py-2 text-sm font-medium shadow-lg",
+            toast.kind === "ok" ? "bg-admin-ok text-white" : "bg-admin-danger text-white",
+          ].join(" ")}
+        >
+          {toast.msg}
         </div>
       )}
 
       {/* Add new carrier */}
-      <section className="rounded-xl border border-gray-200 bg-white p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-base font-semibold text-navy-800">Add carrier</h2>
+      <section className="rounded-xl border border-admin-border-2 bg-admin-surface p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold text-admin-text">Add carrier</h2>
+            <p className="mt-0.5 text-xs text-admin-text-mute">
+              Type to search the carriers table. Click a result to add it to {verticalName}.
+            </p>
+          </div>
           <button
             onClick={refreshSummary}
             disabled={refreshing}
-            className="inline-flex items-center gap-1 rounded-md bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-200 disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-md border border-admin-border bg-admin-surface-2 px-3 py-1.5 text-xs font-semibold text-admin-text-mute hover:text-admin-text disabled:opacity-60"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} /> Refresh public stats
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
+            Refresh public stats
           </button>
         </div>
-        <p className="mt-1 text-xs text-gray-500">
-          Type to search the carriers table. Click a result to add it to {verticalName}.
-        </p>
+
         <div className="mt-3 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-admin-text-dim" />
           <input
             type="search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search carriers — name or group"
-            className="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-md border border-admin-border bg-admin-surface-2 pl-9 pr-3 py-2 text-sm text-admin-text placeholder-admin-text-dim outline-none focus:border-admin-accent"
           />
         </div>
 
         {search.length >= 2 && (
-          <div className="mt-3 max-h-64 overflow-auto rounded-md border border-gray-100">
+          <div className="mt-3 max-h-64 overflow-auto rounded-md border border-admin-border-2">
             {searching ? (
-              <div className="px-4 py-3 text-sm text-gray-500">Searching…</div>
+              <div className="px-4 py-3 text-sm text-admin-text-mute">Searching…</div>
             ) : results.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-gray-500">No matches (or all matches already mapped).</div>
+              <div className="px-4 py-3 text-sm text-admin-text-mute">
+                No matches (or all matches already mapped).
+              </div>
             ) : (
-              <ul className="divide-y divide-gray-100">
+              <ul className="divide-y divide-admin-border-2">
                 {results.map((c) => (
-                  <li key={c.id} className="flex items-center justify-between px-4 py-2.5 hover:bg-gray-50">
-                    <div>
-                      <div className="text-sm font-medium text-navy-800">{c.name}</div>
-                      {c.group_name && <div className="text-xs text-gray-500">{c.group_name}</div>}
+                  <li key={c.id} className="flex items-center justify-between px-4 py-2.5 hover:bg-admin-surface-2/60">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-admin-text truncate">{c.name}</div>
+                      {c.group_name && (
+                        <div className="text-xs text-admin-text-mute truncate">{c.group_name}</div>
+                      )}
                     </div>
                     <button
                       onClick={() => addCarrier(c)}
                       disabled={busyId === c.id}
-                      className="inline-flex items-center gap-1 rounded-md bg-brand-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
+                      className="inline-flex items-center gap-1 rounded-md bg-admin-accent px-2.5 py-1 text-xs font-semibold text-white hover:bg-admin-accent/90 disabled:opacity-60"
                     >
                       <Plus className="h-3.5 w-3.5" /> Add
                     </button>
@@ -171,22 +189,25 @@ export function CarrierManager({
       </section>
 
       {/* Mapped carriers list */}
-      <section className="rounded-xl border border-gray-200 bg-white p-5">
-        <h2 className="text-base font-semibold text-navy-800">
-          Mapped carriers <span className="text-xs font-normal text-gray-500">({mapped.length})</span>
+      <section className="rounded-xl border border-admin-border-2 bg-admin-surface p-5">
+        <h2 className="text-sm font-semibold text-admin-text">
+          Mapped carriers{" "}
+          <span className="ml-1 text-xs font-normal text-admin-text-mute">({mapped.length})</span>
         </h2>
         {mapped.length === 0 ? (
-          <p className="mt-3 text-sm text-gray-500">No carriers mapped to this vertical yet.</p>
+          <p className="mt-3 text-sm text-admin-text-mute">No carriers mapped to this vertical yet.</p>
         ) : (
-          <ul className="mt-4 divide-y divide-gray-100">
+          <ul className="mt-4 divide-y divide-admin-border-2">
             {mapped
               .slice()
               .sort((a, b) => (a.carriers?.name ?? "").localeCompare(b.carriers?.name ?? ""))
               .map((row) => (
                 <li key={row.carrier_id} className="flex items-center justify-between py-2.5">
                   <div className="min-w-0">
-                    <div className="text-sm font-medium text-navy-800">{row.carriers?.name ?? "—"}</div>
-                    <div className="text-xs text-gray-500 truncate">
+                    <div className="text-sm font-medium text-admin-text truncate">
+                      {row.carriers?.name ?? "—"}
+                    </div>
+                    <div className="text-xs text-admin-text-mute truncate">
                       {row.carriers?.group_name ? `${row.carriers.group_name} · ` : ""}
                       {row.note ?? ""}
                     </div>
@@ -194,7 +215,7 @@ export function CarrierManager({
                   <button
                     onClick={() => removeCarrier(row.carrier_id, row.carriers?.name ?? "this carrier")}
                     disabled={busyId === row.carrier_id}
-                    className="inline-flex items-center gap-1 rounded-md bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100 disabled:opacity-60"
+                    className="inline-flex items-center gap-1 rounded-md border border-admin-danger/30 px-2.5 py-1 text-xs font-semibold text-admin-danger hover:bg-admin-danger/10 disabled:opacity-60"
                   >
                     <Trash2 className="h-3.5 w-3.5" /> Remove
                   </button>
@@ -204,9 +225,10 @@ export function CarrierManager({
         )}
       </section>
 
-      <p className="text-xs text-gray-500">
-        After adding/removing carriers, click <strong>Refresh public stats</strong> above so the
-        marketing home and /verticals page reflect the new tier counts.
+      <p className="text-xs text-admin-text-mute">
+        After adding/removing carriers, click{" "}
+        <strong className="text-admin-text">Refresh public stats</strong> above so the marketing home
+        and /verticals page reflect the new tier counts.
       </p>
     </div>
   );
