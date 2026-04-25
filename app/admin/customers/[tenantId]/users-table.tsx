@@ -10,11 +10,9 @@ import {
   Loader2,
   Search,
   ExternalLink,
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { SortableThButton, type SortDir } from "@/components/sortable-th";
 
 export type UserRow = {
   id: string;
@@ -30,7 +28,6 @@ export type UserRow = {
 };
 
 type SortKey = "user" | "role" | "plan" | "credits" | "created" | "status";
-type SortDir = "asc" | "desc";
 
 const ROLE_ICON: Record<string, typeof User> = {
   super_admin: Crown,
@@ -164,12 +161,12 @@ export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
         <table className="w-full text-sm">
           <thead className="bg-admin-surface-2">
             <tr className="text-left text-[11px] uppercase tracking-wider text-admin-text-dim">
-              <SortableTh label="User"    sortKey="user"    sort={sort} dir={dir} onClick={clickHeader} />
-              <SortableTh label="Role"    sortKey="role"    sort={sort} dir={dir} onClick={clickHeader} />
-              <SortableTh label="Plan"    sortKey="plan"    sort={sort} dir={dir} onClick={clickHeader} />
-              <SortableTh label="Credits" sortKey="credits" sort={sort} dir={dir} onClick={clickHeader} />
-              <SortableTh label="Created" sortKey="created" sort={sort} dir={dir} onClick={clickHeader} />
-              <SortableTh label="Status"  sortKey="status"  sort={sort} dir={dir} onClick={clickHeader} />
+              <SortableThButton theme="admin" label="User"    sortKey="user"    activeSort={sort} dir={dir} onSort={clickHeader} />
+              <SortableThButton theme="admin" label="Role"    sortKey="role"    activeSort={sort} dir={dir} onSort={clickHeader} />
+              <SortableThButton theme="admin" label="Plan"    sortKey="plan"    activeSort={sort} dir={dir} onSort={clickHeader} />
+              <SortableThButton theme="admin" label="Credits" sortKey="credits" activeSort={sort} dir={dir} onSort={clickHeader} />
+              <SortableThButton theme="admin" label="Created" sortKey="created" activeSort={sort} dir={dir} onSort={clickHeader} />
+              <SortableThButton theme="admin" label="Status"  sortKey="status"  activeSort={sort} dir={dir} onSort={clickHeader} />
               <th className="px-4 py-2.5 font-medium text-right"></th>
             </tr>
           </thead>
@@ -304,34 +301,3 @@ export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
   );
 }
 
-function SortableTh({
-  label, sortKey, sort, dir, onClick,
-}: {
-  label: string;
-  sortKey: SortKey;
-  sort: SortKey;
-  dir: SortDir;
-  onClick: (key: SortKey) => void;
-}) {
-  const isActive = sort === sortKey;
-  return (
-    <th className="px-4 py-2.5 font-medium">
-      <button
-        type="button"
-        onClick={() => onClick(sortKey)}
-        className={
-          "inline-flex items-center gap-1 group " +
-          (isActive ? "text-admin-accent font-semibold" : "text-admin-text-dim hover:text-admin-text")
-        }
-        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
-      >
-        {label}
-        {isActive ? (
-          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-        ) : (
-          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
-        )}
-      </button>
-    </th>
-  );
-}

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Pencil, FileSpreadsheet, FileText, Printer, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import { Pencil, FileSpreadsheet, FileText, Printer } from "lucide-react";
+import { SortableThLink, type SortDir } from "@/components/sortable-th";
 import { AppShell } from "@/components/app/shell";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { createClient } from "@/lib/supabase/server";
@@ -21,7 +22,6 @@ function asNum(v: string | undefined) {
 // ---- Sort definitions -------------------------------------------------------
 type AccountSortKey = "name" | "account_type" | "location" | "location_type" | "revenue" | "employees";
 type ContactSortKey = "last_name" | "email" | "mobile" | "agency" | "account_type" | "location";
-type SortDir = "asc" | "desc";
 
 const VALID_ACCOUNT_SORTS = new Set<AccountSortKey>([
   "name", "account_type", "location", "location_type", "revenue", "employees",
@@ -425,12 +425,12 @@ export default async function ReviewPage({
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
               <tr>
-                <SortableTh label="Account"        sortKey="name"          activeSort={accountSort} dir={dir} hrefFor={sortHref} />
-                <SortableTh label="Account Type"   sortKey="account_type"  activeSort={accountSort} dir={dir} hrefFor={sortHref} />
-                <SortableTh label="Site Location"  sortKey="location"      activeSort={accountSort} dir={dir} hrefFor={sortHref} />
-                <SortableTh label="Location Type"  sortKey="location_type" activeSort={accountSort} dir={dir} hrefFor={sortHref} />
-                <SortableTh label="Revenue"        sortKey="revenue"       activeSort={accountSort} dir={dir} hrefFor={sortHref} align="right" />
-                <SortableTh label="Employees"      sortKey="employees"     activeSort={accountSort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableThLink label="Account"        sortKey="name"          activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="Account Type"   sortKey="account_type"  activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="Site Location"  sortKey="location"      activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="Location Type"  sortKey="location_type" activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="Revenue"        sortKey="revenue"       activeSort={accountSort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableThLink label="Employees"      sortKey="employees"     activeSort={accountSort} dir={dir} hrefFor={sortHref} align="right" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -480,12 +480,12 @@ export default async function ReviewPage({
             <table className="min-w-full divide-y divide-gray-200 text-sm">
               <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
                 <tr>
-                  <SortableTh label="Contact"        sortKey="last_name"   activeSort={contactSort} dir={dir} hrefFor={sortHref} />
-                  <SortableTh label="Email Address"  sortKey="email"       activeSort={contactSort} dir={dir} hrefFor={sortHref} />
-                  <SortableTh label="Mobile Number"  sortKey="mobile"      activeSort={contactSort} dir={dir} hrefFor={sortHref} />
-                  <SortableTh label="Account"        sortKey="agency"      activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableThLink label="Contact"        sortKey="last_name"   activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableThLink label="Email Address"  sortKey="email"       activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableThLink label="Mobile Number"  sortKey="mobile"      activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableThLink label="Account"        sortKey="agency"      activeSort={contactSort} dir={dir} hrefFor={sortHref} />
                   <th className="px-4 py-3">Account Type</th>
-                  <SortableTh label="Site Location"  sortKey="location"    activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableThLink label="Site Location"  sortKey="location"    activeSort={contactSort} dir={dir} hrefFor={sortHref} />
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -550,37 +550,6 @@ export default async function ReviewPage({
   );
 }
 
-function SortableTh({
-  label, sortKey, activeSort, dir, hrefFor, align,
-}: {
-  label: string;
-  sortKey: string;
-  activeSort: string;
-  dir: SortDir;
-  hrefFor: (key: string) => string;
-  align?: "right";
-}) {
-  const isActive = activeSort === sortKey;
-  return (
-    <th className={"px-4 py-3 " + (align === "right" ? "text-right" : "")}>
-      <Link
-        href={hrefFor(sortKey)}
-        className={
-          "inline-flex items-center gap-1 group " +
-          (isActive ? "text-brand-700 font-semibold" : "text-gray-600 hover:text-gray-900")
-        }
-        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
-      >
-        {label}
-        {isActive ? (
-          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-        ) : (
-          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
-        )}
-      </Link>
-    </th>
-  );
-}
 
 function TabBadge({
   label, count, active, href,

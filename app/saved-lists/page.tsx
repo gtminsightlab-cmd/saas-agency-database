@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Search, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
+import { Search } from "lucide-react";
+import { SortableThLink, type SortDir } from "@/components/sortable-th";
 import { AppShell } from "@/components/app/shell";
 import { createClient } from "@/lib/supabase/server";
 import SavedListRowActions from "./row-actions";
@@ -7,7 +8,6 @@ import SavedListRowActions from "./row-actions";
 export const dynamic = "force-dynamic";
 
 type SortKey = "name" | "created_at" | "accounts" | "contacts" | "emails" | "has_updates";
-type SortDir = "asc" | "desc";
 
 const VALID_SORTS = new Set<SortKey>([
   "name", "created_at", "accounts", "contacts", "emails", "has_updates",
@@ -119,12 +119,12 @@ export default async function SavedListsPage({
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
               <tr>
-                <SortableTh label="List Name"            sortKey="name"        activeSort={sort} dir={dir} hrefFor={sortHref} />
-                <SortableTh label="Created"              sortKey="created_at"  activeSort={sort} dir={dir} hrefFor={sortHref} />
-                <SortableTh label="Accounts"             sortKey="accounts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
-                <SortableTh label="Contacts"             sortKey="contacts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
-                <SortableTh label="Contacts with Emails" sortKey="emails"      activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
-                <SortableTh label="Updates?"             sortKey="has_updates" activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="List Name"            sortKey="name"        activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="Created"              sortKey="created_at"  activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableThLink label="Accounts"             sortKey="accounts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableThLink label="Contacts"             sortKey="contacts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableThLink label="Contacts with Emails" sortKey="emails"      activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableThLink label="Updates?"             sortKey="has_updates" activeSort={sort} dir={dir} hrefFor={sortHref} />
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -196,34 +196,3 @@ export default async function SavedListsPage({
   );
 }
 
-function SortableTh({
-  label, sortKey, activeSort, dir, hrefFor, align,
-}: {
-  label: string;
-  sortKey: SortKey;
-  activeSort: SortKey;
-  dir: SortDir;
-  hrefFor: (key: SortKey) => string;
-  align?: "right";
-}) {
-  const isActive = activeSort === sortKey;
-  return (
-    <th className={"px-4 py-3 " + (align === "right" ? "text-right" : "")}>
-      <Link
-        href={hrefFor(sortKey)}
-        className={
-          "inline-flex items-center gap-1 group " +
-          (isActive ? "text-brand-700 font-semibold" : "text-gray-600 hover:text-gray-900")
-        }
-        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
-      >
-        {label}
-        {isActive ? (
-          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-        ) : (
-          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
-        )}
-      </Link>
-    </th>
-  );
-}

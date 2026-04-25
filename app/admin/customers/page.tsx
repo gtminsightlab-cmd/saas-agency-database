@@ -2,15 +2,13 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
-  ArrowUp,
-  ArrowDown,
-  ArrowUpDown,
   Users,
   Building2,
   Crown,
   AlertTriangle,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { SortableThLink, type SortDir } from "@/components/sortable-th";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +30,6 @@ type AppUser = {
 };
 
 type SortKey = "name" | "slug" | "plan" | "users" | "active" | "admins" | "created";
-type SortDir = "asc" | "desc";
 
 const VALID_SORTS = new Set<SortKey>([
   "name", "slug", "plan", "users", "active", "admins", "created",
@@ -164,13 +161,13 @@ export default async function CustomersIndex({
         <table className="w-full text-sm">
           <thead className="bg-admin-surface-2">
             <tr className="text-left text-[11px] uppercase tracking-wider text-admin-text-dim">
-              <SortableTh label="Tenant"  sortKey="name"    activeSort={sort} dir={dir} hrefFor={sortHref} />
-              <SortableTh label="Slug"    sortKey="slug"    activeSort={sort} dir={dir} hrefFor={sortHref} />
-              <SortableTh label="Plan"    sortKey="plan"    activeSort={sort} dir={dir} hrefFor={sortHref} />
-              <SortableTh label="Users"   sortKey="users"   activeSort={sort} dir={dir} hrefFor={sortHref} />
-              <SortableTh label="Active"  sortKey="active"  activeSort={sort} dir={dir} hrefFor={sortHref} />
-              <SortableTh label="Admins"  sortKey="admins"  activeSort={sort} dir={dir} hrefFor={sortHref} />
-              <SortableTh label="Created" sortKey="created" activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Tenant"  sortKey="name"    activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Slug"    sortKey="slug"    activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Plan"    sortKey="plan"    activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Users"   sortKey="users"   activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Active"  sortKey="active"  activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Admins"  sortKey="admins"  activeSort={sort} dir={dir} hrefFor={sortHref} />
+              <SortableThLink theme="admin" label="Created" sortKey="created" activeSort={sort} dir={dir} hrefFor={sortHref} />
               <th className="px-5 py-2.5 font-medium text-right"></th>
             </tr>
           </thead>
@@ -220,36 +217,6 @@ export default async function CustomersIndex({
   );
 }
 
-function SortableTh({
-  label, sortKey, activeSort, dir, hrefFor,
-}: {
-  label: string;
-  sortKey: SortKey;
-  activeSort: SortKey;
-  dir: SortDir;
-  hrefFor: (key: SortKey) => string;
-}) {
-  const isActive = activeSort === sortKey;
-  return (
-    <th className="px-5 py-2.5 font-medium">
-      <Link
-        href={hrefFor(sortKey)}
-        className={
-          "inline-flex items-center gap-1 group " +
-          (isActive ? "text-admin-accent font-semibold" : "text-admin-text-dim hover:text-admin-text")
-        }
-        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
-      >
-        {label}
-        {isActive ? (
-          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
-        ) : (
-          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
-        )}
-      </Link>
-    </th>
-  );
-}
 
 function Kpi({
   label, value, Icon, tone, hint,
