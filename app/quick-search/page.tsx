@@ -7,22 +7,25 @@ export const dynamic = "force-dynamic";
 
 export default async function QuickSearchPage() {
   const supabase = createClient();
-  const [depts, titles, accountsCount, contactsCount, contactsEmailCount] = await Promise.all([
+  const [depts, titles, counts] = await Promise.all([
     supabase.from("departments").select("id,name").order("sort_order"),
     supabase.from("contact_title_roles").select("id,name").order("sort_order"),
-    supabase.from("agencies").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }).not("email_primary", "is", null)
+    supabase.rpc("get_dataset_counts").maybeSingle()
   ]);
+
+  const counts_data = (counts.data ?? null) as { agencies: number | string; contacts: number | string; contacts_with_email: number | string } | null;
+  const accountsCount = Number(counts_data?.agencies ?? 0);
+  const contactsCount = Number(counts_data?.contacts ?? 0);
+  const contactsEmailCount = Number(counts_data?.contacts_with_email ?? 0);
 
   return (
     <AppShell>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Quick Search</h1>
         <RecordsCounter
-          accounts={accountsCount.count ?? 0}
-          contacts={contactsCount.count ?? 0}
-          contactsWithEmail={contactsEmailCount.count ?? 0}
+          accounts={accountsCount}
+          contacts={contactsCount}
+          contactsWithEmail={contactsEmailCount}
         />
         <div className="mt-6 rounded-lg border border-gray-200 bg-white">
           <QuickSearchForm

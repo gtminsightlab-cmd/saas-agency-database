@@ -12,7 +12,7 @@ export default async function BuildListPage() {
   const [
     accountTypes, locationTypes, ams, mgmt, titles, depts,
     statesUS, statesCA, metros, carriers, affiliations, sic,
-    accountsCount, contactsCount, contactsEmailCount
+    counts
   ] = await Promise.all([
     supabase.from("account_types").select("id,code,label,sort_order").eq("active", true).order("sort_order"),
     supabase.from("location_types").select("id,code,name,sort_order").order("sort_order"),
@@ -26,10 +26,13 @@ export default async function BuildListPage() {
     supabase.from("carriers").select("id,name,group_name").eq("active", true).order("name"),
     supabase.from("affiliations").select("id,canonical_name,type").eq("active", true).order("canonical_name"),
     supabase.from("sic_codes").select("id,sic_code,description").order("sic_code").limit(1000),
-    supabase.from("agencies").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }).not("email_primary", "is", null)
+    supabase.rpc("get_dataset_counts").maybeSingle()
   ]);
+
+  const counts_data = (counts.data ?? null) as { agencies: number | string; contacts: number | string; contacts_with_email: number | string } | null;
+  const accountsCount = Number(counts_data?.agencies ?? 0);
+  const contactsCount = Number(counts_data?.contacts ?? 0);
+  const contactsEmailCount = Number(counts_data?.contacts_with_email ?? 0);
 
   const data: FilterData = {
     accountTypes: (accountTypes.data ?? []).map((x) => ({ value: x.id, label: x.label })),
@@ -64,9 +67,9 @@ export default async function BuildListPage() {
 
         <div className="sticky top-0 z-10 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-2 bg-gray-50">
           <RecordsCounter
-            accounts={accountsCount.count ?? 0}
-            contacts={contactsCount.count ?? 0}
-            contactsWithEmail={contactsEmailCount.count ?? 0}
+            accounts={accountsCount}
+            contacts={contactsCount}
+            contactsWithEmail={contactsEmailCount}
           />
         </div>
 

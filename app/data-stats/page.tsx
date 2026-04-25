@@ -5,9 +5,8 @@ export const dynamic = "force-dynamic";
 
 export default async function DataStatsPage() {
   const supabase = createClient();
-  const [agencies, contacts, carriers, affiliations, topLists, topMembers, states, metros, depts, titles] = await Promise.all([
-    supabase.from("agencies").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }),
+  const [datasetCounts, carriers, affiliations, topLists, topMembers, states, metros, depts, titles] = await Promise.all([
+    supabase.rpc("get_dataset_counts").maybeSingle(),
     supabase.from("carriers").select("id", { count: "exact", head: true }),
     supabase.from("affiliations").select("id", { count: "exact", head: true }),
     supabase.from("top_agency_lists").select("id", { count: "exact", head: true }),
@@ -18,9 +17,13 @@ export default async function DataStatsPage() {
     supabase.from("contact_title_roles").select("id", { count: "exact", head: true })
   ]);
 
+  const dc = (datasetCounts.data ?? null) as { agencies: number | string; contacts: number | string; contacts_with_email: number | string } | null;
+  const agenciesCount = Number(dc?.agencies ?? 0);
+  const contactsCount = Number(dc?.contacts ?? 0);
+
   const stats = [
-    { label: "Agencies", value: agencies.count ?? 0 },
-    { label: "Contacts", value: contacts.count ?? 0 },
+    { label: "Agencies", value: agenciesCount },
+    { label: "Contacts", value: contactsCount },
     { label: "Carriers", value: carriers.count ?? 0 },
     { label: "Affiliations", value: affiliations.count ?? 0 },
     { label: "Top Lists", value: topLists.count ?? 0 },
