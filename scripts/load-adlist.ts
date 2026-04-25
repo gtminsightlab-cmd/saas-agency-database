@@ -72,6 +72,106 @@ function norm(s: string | null | undefined): string {
   return (s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
+type CanaryRow = {
+  id: string;
+  source: string | null;
+  kind: string;
+  match_mode: string | null;
+  pattern: string;
+  active: boolean;
+};
+let canaries: CanaryRow[] = [];
+
+function digitsOnly(v: unknown): string {
+  if (v === null || v === undefined) return "";
+  return String(v).replace(/[^\d]/g, "");
+}
+
+function lc(v: unknown): string {
+  if (v === null || v === undefined) return "";
+  return String(v).toLowerCase();
+}
+
+/** Returns the matched canary if the row trips any active pattern, else null. */
+function scrubAgency(row: AgencyRow): CanaryRow | null {
+  const name = lc(row.name);
+  const email = lc(row.email);
+  const fax = digitsOnly(row.fax);
+  const phones = [
+    digitsOnly(row.main_phone),
+    digitsOnly(row.work_phone),
+    digitsOnly(row.toll_free),
+  ];
+  for (const c of canaries) {
+    if (!c.active) continue;
+    const pat = c.pattern.toLowerCase();
+    const mode = (c.match_mode ?? "exact").toLowerCase();
+    if (c.kind === "agency_name") {
+      if (mode === "contains" && name.includes(pat)) return c;
+      if (mode === "exact" && name === pat) return c;
+    } else if (c.kind === "email") {
+      if (mode === "exact" && email === pat) return c;
+      if (mode === "contains" && (email.includes(pat) || pat.includes(email) === false && pat.startsWith("%") && pat.endsWith("%") && email.includes(pat.slice(1, -1)))) return c;
+      if (mode === "contains" && email.includes(pat.replace(/%/g, ""))) return c;
+      if (mode === "domain" && email.endsWith("@" + pat)) return c;
+    } else if (c.kind === "phone") {
+      if (phones.includes(pat) || phones.includes(c.pattern)) return c;
+    } else if (c.kind === "fax") {
+      if (fax === pat || fax === c.pattern) return c;
+    }
+  }
+  return null;
+}
+
+function scrubContact(row: ContactRow): CanaryRow | null {
+  const first = lc((row as any).first_name);
+  const last = lc((row as any).last_name);
+  const full = (first + " " + last).trim();
+  const email1 = lc((row as any).email_primary);
+  const email2 = lc((row as any).email_secondary);
+  const fax = digitsOnly((row as any).fax);
+  const phones = [
+    digitsOnly((row as any).mobile_phone),
+    digitsOnly((row as any).work_phone),
+    digitsOnly((row as any).toll_free),
+  ];
+  for (const c of canaries) {
+    if (!c.active) continue;
+    const pat = c.pattern.toLowerCase();
+    const mode = (c.match_mode ?? "exact").toLowerCase();
+    if (c.kind === "email") {
+      if (mode === "exact" && (email1 === pat || email2 === pat)) return c;
+      if (mode === "contains") {
+        const sub = pat.replace(/%/g, "");
+        if (email1.includes(sub) || email2.includes(sub)) return c;
+      }
+      if (mode === "domain" && (email1.endsWith("@" + pat) || email2.endsWith("@" + pat))) return c;
+    } else if (c.kind === "phone") {
+      if (phones.includes(pat) || phones.includes(c.pattern)) return c;
+    } else if (c.kind === "fax") {
+      if (fax === pat || fax === c.pattern) return c;
+    } else if (c.kind === "contact_name_in_agency") {
+      // Pattern is stored as "rocky zito|abc insurance" — split on |.
+      const [namePart, agencyPart] = pat.split("|").map((x) => x.trim());
+      // Contact-side scrub matches on full name only (we don't have the agency here).
+      if (mode === "exact" && full === namePart) return c;
+      if (mode === "contains" && full.includes(namePart)) return c;
+      void agencyPart; // agency match happens on agency-side scrub
+    }
+  }
+  return null;
+}
+
+async function loadCanaries() {
+  const { data, error } = await supabase
+    .from("data_load_denylist")
+    .select("id, source, kind, match_mode, pattern, active")
+    .eq("active", true);
+  if (error) throw error;
+  canaries = (data ?? []) as CanaryRow[];
+  console.log(`[canaries] ${canaries.length} active patterns loaded`);
+}
+
 async function loadRefs() {
   const [ats, lts, amss, carriers, affs, sics] = await Promise.all([
     supabase.from("account_types").select("id,code,label").eq("active", true),
@@ -415,19 +515,55 @@ async function loadFile(filePath: string) {
     `[parse] agencies=${parsed.agencies.length} contacts=${parsed.contacts.length} carriers=${parsed.carriers.length} affiliations=${parsed.affiliations.length} sics=${parsed.sics.length}`
   );
 
-  const a = await upsertAgencies(parsed.agencies as AgencyRow[]);
+  // Canary scrub
+  const cleanAgencies: AgencyRow[] = [];
+  let scrubbedAgencies = 0;
+  const blockedAccountIds = new Set<string>();
+  for (const r of parsed.agencies as AgencyRow[]) {
+    const hit = scrubAgency(r);
+    if (hit) {
+      scrubbedAgencies++;
+      blockedAccountIds.add(r.account_id as string);
+      console.log(`  [scrub] agency BLOCKED: account_id=${r.account_id} name='${r.name}' canary='${hit.source}' pattern='${hit.pattern}'`);
+    } else {
+      cleanAgencies.push(r);
+    }
+  }
+  const cleanContacts: ContactRow[] = [];
+  let scrubbedContacts = 0;
+  for (const r of parsed.contacts as ContactRow[]) {
+    // Drop contacts whose agency was blocked (cascade) OR whose own fields trip a pattern.
+    if (blockedAccountIds.has((r as any)._account_id)) {
+      scrubbedContacts++;
+      continue;
+    }
+    const hit = scrubContact(r);
+    if (hit) {
+      scrubbedContacts++;
+      console.log(`  [scrub] contact BLOCKED: account_id=${(r as any)._account_id} name='${(r as any).first_name} ${(r as any).last_name}' canary='${hit.source}'`);
+    } else {
+      cleanContacts.push(r);
+    }
+  }
+  // Drop link rows whose agency was blocked
+  const cleanCarriers = parsed.carriers.filter((r) => !blockedAccountIds.has(r.account_id));
+  const cleanAffiliations = parsed.affiliations.filter((r) => !blockedAccountIds.has(r.account_id));
+  const cleanSics = parsed.sics.filter((r) => !blockedAccountIds.has(r.account_id));
+  console.log(`[scrub] blocked ${scrubbedAgencies} agencies + ${scrubbedContacts} contacts (cascading link rows)`);
+
+  const a = await upsertAgencies(cleanAgencies);
   console.log(`[agencies] inserted=${a.inserted} updated=${a.updated} total=${a.total}`);
 
-  const c = await upsertContacts(parsed.contacts as ContactRow[]);
+  const c = await upsertContacts(cleanContacts);
   console.log(`[contacts] inserted=${c.inserted} skipped_dup=${c.skipped} total=${c.total}`);
 
-  const cl = await upsertLinks("agency_carriers", "carrier_id", parsed.carriers);
+  const cl = await upsertLinks("agency_carriers", "carrier_id", cleanCarriers);
   console.log(`[carriers] linked=${cl.inserted} unmatched_ref=${cl.unmatchedRef} unmatched_agency=${cl.unmatchedAgency} total=${cl.total}`);
 
-  const al = await upsertLinks("agency_affiliations", "affiliation_id", parsed.affiliations);
+  const al = await upsertLinks("agency_affiliations", "affiliation_id", cleanAffiliations);
   console.log(`[affiliations] linked=${al.inserted} unmatched_ref=${al.unmatchedRef} unmatched_agency=${al.unmatchedAgency} total=${al.total}`);
 
-  const sl = await upsertLinks("agency_sic_codes", "sic_code_id", parsed.sics);
+  const sl = await upsertLinks("agency_sic_codes", "sic_code_id", cleanSics);
   console.log(`[sic_codes] linked=${sl.inserted} unmatched_ref=${sl.unmatchedRef} unmatched_agency=${sl.unmatchedAgency} total=${sl.total}`);
 
   console.log(`[done] ${path.basename(filePath)} in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
@@ -440,6 +576,7 @@ async function main() {
     process.exit(1);
   }
   await loadRefs();
+  await loadCanaries();
   for (const f of args) {
     if (!fs.existsSync(f)) {
       console.error(`File not found: ${f}`);
