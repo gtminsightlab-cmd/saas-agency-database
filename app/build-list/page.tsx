@@ -79,7 +79,7 @@ export default async function BuildListPage({
     supabase.from("states").select("id,code,name,country").eq("country", "US").order("sort_order"),
     supabase.from("states").select("id,code,name,country").eq("country", "CA").order("sort_order"),
     supabase.from("metro_areas").select("id,code,name").order("name"),
-    supabase.from("carriers").select("id,name,group_name").eq("active", true).order("name"),
+    supabase.rpc("list_carriers_with_appointments"),
     supabase.from("affiliations").select("id,canonical_name,type").eq("active", true).order("canonical_name"),
     supabase.from("sic_codes").select("id,sic_code,description").order("sic_code").limit(1000),
     supabase.from("agencies").select("id", { count: "exact", head: true }),
@@ -103,7 +103,7 @@ export default async function BuildListPage({
       ...(statesCA.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: "CA" }))
     ],
     metroAreas: (metros.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    carriers: (carriers.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: x.group_name ?? undefined })),
+    carriers: (carriers.data ?? []).map((x: { id: string; name: string; group_name: string | null }) => ({ value: x.id, label: x.name, sublabel: x.group_name ?? undefined })),
     affiliations: (affiliations.data ?? []).map((x) => ({ value: x.id, label: x.canonical_name, sublabel: x.type })),
     industries: (sic.data ?? []).map((x) => ({ value: x.id, label: `${x.sic_code}${x.description ? " — " + x.description : ""}` }))
   };
