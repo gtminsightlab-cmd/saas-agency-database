@@ -19,48 +19,28 @@ export type AdvisorLint = {
 };
 
 export const ADVISORS_SNAPSHOT = {
-  fetched_at: "2026-04-25T16:08:00Z",
-  source: "Supabase advisors via MCP at session 8",
+  fetched_at: "2026-04-25T16:35:00Z",
+  source: "Supabase advisors via MCP at session 8 (post-cleanup mig 0038)",
   security: [
     {
-      name: "security_definer_view",
-      title: "Security Definer View",
-      level: "ERROR",
-      category: "security",
-      detail: "View `public.v_dataset_counts` is defined with the SECURITY DEFINER property",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0010_security_definer_view",
-    },
-    {
-      name: "function_search_path_mutable",
-      title: "Function Search Path Mutable",
-      level: "WARN",
-      category: "security",
-      detail: "Function `public.fn_block_inactive_account_type` has a role mutable search_path",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0011_function_search_path_mutable",
-    },
-    {
       name: "materialized_view_in_api",
-      title: "Materialized View in API",
+      title: "Materialized View in API (intentional)",
       level: "WARN",
       category: "security",
-      detail: "Materialized view `public.mv_dataset_counts` is selectable by anon or authenticated roles",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0016_materialized_view_in_api",
-    },
-    {
-      name: "materialized_view_in_api",
-      title: "Materialized View in API",
-      level: "WARN",
-      category: "security",
-      detail: "Materialized view `public.mv_vertical_summary` is selectable by anon or authenticated roles",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0016_materialized_view_in_api",
+      detail:
+        "Materialized view `public.mv_vertical_summary` is selectable by anon or authenticated roles — INTENTIONAL. The public marketing site reads it for the verticals home cards. Data is non-sensitive aggregates.",
+      remediation:
+        "https://supabase.com/docs/guides/database/database-linter?lint=0016_materialized_view_in_api",
     },
     {
       name: "auth_leaked_password_protection",
       title: "Leaked Password Protection Disabled",
       level: "WARN",
       category: "security",
-      detail: "Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable this feature to enhance security.",
-      remediation: "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
+      detail:
+        "Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable in Auth > Settings to clear this WARN.",
+      remediation:
+        "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
     },
   ] as AdvisorLint[],
   performance: [
@@ -69,31 +49,28 @@ export const ADVISORS_SNAPSHOT = {
       title: "Unindexed foreign keys",
       level: "INFO",
       category: "performance",
-      detail: "5 tables have FK constraints without covering indexes (agencies.location_type_id, credit_ledger.saved_list_id, downloads_ledger.saved_list_id, saved_list_hygiene_flags.hygiene_event_id, user_entitlements.plan_id)",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys",
+      detail:
+        "5 tables have FK constraints without covering indexes (agencies.location_type_id, credit_ledger.saved_list_id, downloads_ledger.saved_list_id, saved_list_hygiene_flags.hygiene_event_id, user_entitlements.plan_id). Add indexes if these become hot paths.",
+      remediation:
+        "https://supabase.com/docs/guides/database/database-linter?lint=0001_unindexed_foreign_keys",
     },
     {
       name: "unused_index",
       title: "Unused indexes",
       level: "INFO",
       category: "performance",
-      detail: "20 indexes have never been used and are candidates for removal (top_agency_members_list_idx, app_users_tenant_idx, usage_logs_*, agencies_name_tsv_idx, contacts_name_tsv_idx, etc).",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index",
-    },
-    {
-      name: "multiple_permissive_policies",
-      title: "Multiple Permissive Policies",
-      level: "WARN",
-      category: "performance",
-      detail: "Tables `carrier_verticals` and `vertical_markets` each have multiple permissive SELECT policies for the authenticated role. Each policy runs on every query.",
-      remediation: "https://supabase.com/docs/guides/database/database-linter?lint=0006_multiple_permissive_policies",
+      detail:
+        "20 indexes have never been used since creation. Candidates for removal in a future cleanup migration once we observe a steady-state query mix.",
+      remediation:
+        "https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index",
     },
     {
       name: "auth_db_connections_absolute",
       title: "Auth DB Connections Absolute",
       level: "INFO",
       category: "performance",
-      detail: "Auth server is configured with at most 10 connections (absolute). Switching to percentage strategy lets it scale with instance size.",
+      detail:
+        "Auth server is configured with at most 10 connections (absolute). Switching to percentage strategy lets it scale with instance size — set in dashboard > Project Settings.",
       remediation: "https://supabase.com/docs/guides/deployment/going-into-prod",
     },
   ] as AdvisorLint[],
