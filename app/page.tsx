@@ -194,8 +194,8 @@ export default async function MarketingHome() {
                 interval={memberPlan.interval}
                 quota={memberPlan.download_quota}
                 features={(memberPlan.features as unknown as string[]) ?? []}
-                ctaHref={user ? "/build-list" : "/sign-up?plan=growth_member"}
-                ctaLabel={user ? "Upgrade to Growth" : "Start Growth Member"}
+                ctaHref={user ? "/api/stripe/checkout?plan=growth_member" : "/sign-up?plan=growth_member"}
+                ctaLabel={user ? "Upgrade — $99/mo" : "Start Growth Member"}
                 subhead="Never call a dead lead."
                 subbody="Distribution decays daily — agencies merge and agents move. Members receive free monthly Hygiene updates to all saved contacts so your CRM stays Precision-accurate."
               />
@@ -208,8 +208,8 @@ export default async function MarketingHome() {
                 interval={snapshotPlan.interval}
                 quota={snapshotPlan.download_quota}
                 features={(snapshotPlan.features as unknown as string[]) ?? []}
-                ctaHref={user ? "/build-list" : "/sign-up?plan=snapshot"}
-                ctaLabel={user ? "Buy a Snapshot" : "Buy a Snapshot"}
+                ctaHref={user ? "/api/stripe/checkout?plan=snapshot" : "/sign-up?plan=snapshot"}
+                ctaLabel={user ? "Buy Snapshot — $125" : "Buy a Snapshot"}
                 subhead="Perfect for individual sprints."
                 subbody="Need to fill a recruiting class or launch a one-off Distribution sprint? The Snapshot gives you 500 enriched contacts and a 90-day Precision window — no commitment required."
               />
