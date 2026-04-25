@@ -103,7 +103,7 @@ export default async function VerticalsPage() {
       "agencies_with_linkedin,agencies_with_web,agencies_with_email"
     )
     .order("sort_order");
-  const live = (data ?? []) as VerticalSummary[];
+  const live = (data ?? []) as unknown as VerticalSummary[];
   const verticals: VerticalSummary[] = live.length > 0 ? live : (VERTICAL_FALLBACK as VerticalSummary[]);
 
   return (
