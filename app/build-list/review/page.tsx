@@ -3,6 +3,7 @@ import { Pencil, FileSpreadsheet, FileText, Printer } from "lucide-react";
 import { AppShell } from "@/components/app/shell";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { createClient } from "@/lib/supabase/server";
+import { enforceUsageOrRedirect } from "@/lib/usage/enforce";
 import { SaveListButton } from "./save-button";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,14 @@ export default async function ReviewPage({
   searchParams: Record<string, string>;
 }) {
   const supabase = createClient();
+
+  // Cap enforcement: each /review render counts as one search. Hard cap → redirect to /limit-reached.
+  // Pass the search params hash as metadata so admin can audit which filter set hit the cap.
+  const usageResult = await enforceUsageOrRedirect("search", 1, {
+    route: "/build-list/review",
+    filter_keys: Object.keys(searchParams).sort(),
+  });
+  const softOver = usageResult?.status === "soft_over";
 
   // ---- parse filters ---------------------------------------------------
   const accountTypeIds = csv(searchParams.at);
@@ -199,6 +208,15 @@ export default async function ReviewPage({
         <div className="mb-6">
           <ProgressStepper current="review" />
         </div>
+
+        {softOver && usageResult?.effective_cap != null && (
+          <div className="mb-6 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+            <strong className="font-semibold">Heads up:</strong> you&rsquo;re past your soft monthly search limit
+            ({usageResult.current_usage} of {usageResult.effective_cap}). Searches still work — no hard block — but
+            an admin will see this on their alerts page.
+          </div>
+        )}
+
 
         <h1 className="text-3xl font-bold text-gray-900">Review</h1>
         <p className="mt-2 text-sm text-gray-600">
