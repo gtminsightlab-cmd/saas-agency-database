@@ -33,7 +33,7 @@ const NAV: NavItem[] = [
   { href: "/admin",                  label: "Overview",         Icon: LayoutDashboard, status: "live" },
   { href: "/admin/data-engine",      label: "Data Engine",      Icon: Database,        status: "partial" },
   { href: "/admin/catalog",          label: "Catalog",          Icon: BookOpen,        status: "live" },
-  { href: "/admin/search-analytics", label: "Search & Index",   Icon: Search,          status: "soon" },
+  { href: "/admin/search-analytics", label: "Search & Index",   Icon: Search,          status: "live" },
   { href: "/admin/customers",        label: "Customers",        Icon: Users,           status: "live" },
   { href: "/admin/billing",          label: "Billing",          Icon: CreditCard,      status: "live" },
   { href: "/admin/usage",            label: "Usage & Limits",   Icon: Gauge,           status: "live" },
