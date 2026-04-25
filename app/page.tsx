@@ -10,10 +10,10 @@ export const dynamic = "force-dynamic";
 // the mv_vertical_summary view. Values captured from MCP at migration time; they update
 // automatically once the cache refreshes and the live query starts returning rows.
 const VERTICAL_FALLBACK = [
-  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 41,  agencies_growing: 2, agencies_specialist: 0 },
-  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 16,  agencies_growing: 0, agencies_specialist: 0 },
-  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 38,  agencies_growing: 2, agencies_specialist: 0 },
-  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 169, agencies_growing: 1, agencies_specialist: 0 },
+  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 54,  agencies_growing: 3, agencies_specialist: 0 },
+  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 21,  agencies_growing: 0, agencies_specialist: 0 },
+  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 51,  agencies_growing: 2, agencies_specialist: 0 },
+  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 281, agencies_growing: 1, agencies_specialist: 0 },
 ];
 
 
@@ -101,8 +101,8 @@ export default async function MarketingHome() {
           <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-4xl mx-auto">
             <Stat label="Carriers" value={carrierCount.toLocaleString()} />
             <Stat label="Affiliations" value={affiliationCount.toString()} />
-            <Stat label="Agencies in Network" value="2,800+" />
-            <Stat label="Contacts" value="15,000+" />
+            <Stat label="Agencies in Network" value="8,000+" />
+            <Stat label="Contacts" value="31,000+" />
           </div>
         </div>
       </section>
