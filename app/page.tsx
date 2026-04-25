@@ -6,6 +6,18 @@ import { MarketingNav } from "@/components/marketing/nav";
 
 export const dynamic = "force-dynamic";
 
+// Snapshot fallback — used only while PostgREST hosted schema cache is still picking up
+// the mv_vertical_summary view. Values captured from MCP at migration time; they update
+// automatically once the cache refreshes and the live query starts returning rows.
+const VERTICAL_FALLBACK = [
+  { slug: "transportation", name: "Transportation",          description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                    icon_key: "Truck",          color_token: "brand",   sort_order: 1, mapped_carrier_count: 22, agencies_with_exposure: 190, agencies_growing: 17, agencies_specialist: 0 },
+  { slug: "healthcare",     name: "Healthcare",              description: "Agencies writing medical malpractice, physician groups, and healthcare facilities — identified by medical professional liability specialists.", icon_key: "Stethoscope",    color_token: "success", sort_order: 2, mapped_carrier_count: 7,  agencies_with_exposure: 3,   agencies_growing: 0,  agencies_specialist: 0 },
+  { slug: "construction",   name: "Construction",            description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",       icon_key: "HardHat",        color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 460, agencies_growing: 80, agencies_specialist: 0 },
+  { slug: "agriculture",    name: "Agriculture",             description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                icon_key: "Wheat",          color_token: "success", sort_order: 4, mapped_carrier_count: 19, agencies_with_exposure: 0,   agencies_growing: 0,  agencies_specialist: 0 },
+  { slug: "hhs",            name: "Health & Human Services", description: "Agencies writing nonprofits, social services, daycares, and group homes — identified by appointments with nonprofit-specialty carriers.",         icon_key: "HeartHandshake", color_token: "brand",   sort_order: 5, mapped_carrier_count: 10, agencies_with_exposure: 133, agencies_growing: 0,  agencies_specialist: 0 },
+];
+
+
 export default async function MarketingHome() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -19,7 +31,7 @@ export default async function MarketingHome() {
     supabase.from("plan_bulk_tiers")
       .select("plan_id,min_credits,max_credits,unit_cents,discount_pct,sort_order")
       .order("sort_order"),
-    supabase.rpc("get_vertical_summary")
+    supabase.from("mv_vertical_summary").select("slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist").order("sort_order")
   ]);
 
   const carrierCount = carriers.count ?? 0;
@@ -30,7 +42,8 @@ export default async function MarketingHome() {
   const snapshotPlan = planList.find((p) => p.code === "snapshot");
   const memberTiers = tierList.filter((t) => t.plan_id === memberPlan?.id);
   const snapshotTiers = tierList.filter((t) => t.plan_id === snapshotPlan?.id);
-  const verticals = (verticalsRes.data ?? []) as Array<{ slug: string; name: string; description: string; icon_key: string; color_token: string; agencies_with_exposure: number; agencies_growing: number; agencies_specialist: number; mapped_carrier_count: number }>;
+  const verticalsData = (verticalsRes.data ?? []) as Array<{ slug: string; name: string; description: string; icon_key: string; color_token: string; agencies_with_exposure: number; agencies_growing: number; agencies_specialist: number; mapped_carrier_count: number }>;
+  const verticals = verticalsData.length > 0 ? verticalsData : VERTICAL_FALLBACK;
 
   return (
     <div className="bg-white">
