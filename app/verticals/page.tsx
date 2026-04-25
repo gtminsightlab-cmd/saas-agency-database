@@ -124,15 +124,15 @@ export default async function VerticalsPage() {
             <p className="mt-4 text-sm text-gray-500">
               <strong className="text-navy-800">Specialization tiers:</strong>{" "}
               <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-200" /> Exposure (2+ specialty carriers)
+                <span className="inline-block h-2 w-2 rounded-full bg-brand-200" /> Exposure (2 specialty carriers)
               </span>
               {" · "}
               <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-500" /> Growing (4+)
+                <span className="inline-block h-2 w-2 rounded-full bg-brand-500" /> Growing (3+)
               </span>
               {" · "}
               <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-700" /> Specialist (7+)
+                <span className="inline-block h-2 w-2 rounded-full bg-brand-700" /> Specialist (5+)
               </span>
             </p>
           </div>
@@ -269,7 +269,7 @@ export default async function VerticalsPage() {
               num="04"
               icon={Banknote}
               title="Enterprise Intelligence at Agile Pricing"
-              subtitle="Automated multi-layer verification, not bespoke RFP work."
+              subtitle="Automated multi-layer verification, refreshed continuously."
               body="Our Dual-Agent Verification Pipeline maps parent-child relationships across 400+ writing companies, refreshed continuously against state filings and carrier roster changes. The kind of distribution intelligence that historically took a research team a year to assemble &mdash; now updated every month, delivered at a fraction of the industry standard cost."
             />
           </div>
@@ -338,8 +338,8 @@ export default async function VerticalsPage() {
             <p className="mt-3 text-sm leading-6 text-gray-600 max-w-3xl">
               Each vertical is mapped to a curated list of specialty carriers &mdash; the markets that only
               agencies with a genuine book of business in that niche would hold. We count matching
-              appointments per agency: 2+ signals <strong>Exposure</strong>, 4+ signals a{" "}
-              <strong>Growing</strong> practice, 7+ signals a true <strong>Specialist</strong>. Because
+              appointments per agency: 2+ signals <strong>Exposure</strong>, 3+ signals a{" "}
+              <strong>Growing</strong> practice, 5+ signals a true <strong>Specialist</strong>. Because
               we classify by appointments rather than self-reported tags, the signal is objective and
               updates automatically as carrier rosters change. No keyword matching, no industry codes
               that haven&rsquo;t been refreshed since 2018 &mdash; just verified writing-company paper.
@@ -411,7 +411,7 @@ export default async function VerticalsPage() {
             )}
           </div>
           <p className="mt-8 text-xs text-brand-200">
-            No long-term contract. Distribution intelligence priced for in-house growth teams &mdash; not bespoke RFPs.
+            No long-term contract. Built for in-house distribution and growth teams.
           </p>
         </div>
       </section>
