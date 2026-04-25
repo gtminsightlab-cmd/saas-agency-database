@@ -38,9 +38,9 @@ export function SaveListButton({ filterQs }: { filterQs: string }) {
       .from("saved_lists")
       .insert({
         tenant_id: appUser.tenant_id,
-        created_by: appUser.id,
+        user_id: appUser.id,
         name,
-        filters: { querystring: filterQs }
+        filter_json: { querystring: filterQs }
       })
       .select("id")
       .maybeSingle();
