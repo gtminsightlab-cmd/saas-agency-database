@@ -31,7 +31,7 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { href: "/admin",                  label: "Overview",         Icon: LayoutDashboard, status: "live" },
-  { href: "/admin/data-engine",      label: "Data Engine",      Icon: Database,        status: "soon" },
+  { href: "/admin/data-engine",      label: "Data Engine",      Icon: Database,        status: "partial" },
   { href: "/admin/catalog",          label: "Catalog",          Icon: BookOpen,        status: "live" },
   { href: "/admin/search-analytics", label: "Search & Index",   Icon: Search,          status: "soon" },
   { href: "/admin/customers",        label: "Customers",        Icon: Users,           status: "live" },
