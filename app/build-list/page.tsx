@@ -21,12 +21,12 @@ function parseInitialFromSearchParams(qs: Record<string, string | string[] | und
   if (get("lt"))    initial.locationType = csv(get("lt"));
   if (get("ams"))   initial.ams = csv(get("ams"));
   if (get("ams_m") === "exclude") initial.amsMode = "exclude";
-  if (get("pmin"))  initial.premiumMin = get("pmin");
-  if (get("pmax"))  initial.premiumMax = get("pmax");
-  if (get("rmin"))  initial.revenueMin = get("rmin");
-  if (get("rmax"))  initial.revenueMax = get("rmax");
-  if (get("emin"))  initial.empMin = get("emin");
-  if (get("emax"))  initial.empMax = get("emax");
+  { const v = get("pmin"); if (v && Number(v) > 0) initial.premiumMin = v; }
+  { const v = get("pmax"); if (v && Number(v) > 0) initial.premiumMax = v; }
+  { const v = get("rmin"); if (v && Number(v) > 0) initial.revenueMin = v; }
+  { const v = get("rmax"); if (v && Number(v) > 0) initial.revenueMax = v; }
+  { const v = get("emin"); if (v && Number(v) > 0) initial.empMin = v; }
+  { const v = get("emax"); if (v && Number(v) > 0) initial.empMax = v; }
   const minority = get("min");
   if (minority === "yes" || minority === "no") initial.minority = minority;
   // The form historically encodes account name as `an` + `an_m`, but earlier

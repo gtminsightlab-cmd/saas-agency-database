@@ -120,12 +120,12 @@ export function BuildListForm({ data, initial }: { data: FilterData; initial?: I
     if (accountType.length) params.set("at", csv(accountType));
     if (locationType.length) params.set("lt", csv(locationType));
     if (ams.length) { params.set("ams", csv(ams)); params.set("ams_m", amsMode); }
-    if (premiumMin) params.set("pmin", premiumMin);
-    if (premiumMax) params.set("pmax", premiumMax);
-    if (revenueMin) params.set("rmin", revenueMin);
-    if (revenueMax) params.set("rmax", revenueMax);
-    if (empMin) params.set("emin", empMin);
-    if (empMax) params.set("emax", empMax);
+    if (premiumMin && Number(premiumMin) > 0) params.set("pmin", premiumMin);
+    if (premiumMax && Number(premiumMax) > 0) params.set("pmax", premiumMax);
+    if (revenueMin && Number(revenueMin) > 0) params.set("rmin", revenueMin);
+    if (revenueMax && Number(revenueMax) > 0) params.set("rmax", revenueMax);
+    if (empMin && Number(empMin) > 0) params.set("emin", empMin);
+    if (empMax && Number(empMax) > 0) params.set("emax", empMax);
     if (minority !== "any") params.set("min", minority);
     if (accountName) { params.set("an", accountName); params.set("an_m", accountNameMode); }
     if (mgmtLevels.length) { params.set("mg", csv(mgmtLevels)); params.set("mg_m", mgmtMode); }
