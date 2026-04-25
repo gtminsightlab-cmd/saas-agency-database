@@ -325,4 +325,39 @@ function CompRow({
         {memberIcon ? (
           <div className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-brand-600" />{memberLabel ?? ""}</div>
         ) : member}
-      
+      </td>
+      <td className="px-4 py-3 text-gray-700">
+        {typeof guest === "string" ? guest : (<div className="inline-flex items-center gap-2">{guest}{guestLabel ?? ""}</div>)}
+      </td>
+    </tr>
+  );
+}
+
+function BulkTable({ title, tiers, note }: { title: string; tiers: any[]; note?: string }) {
+  return (
+    <div className="rounded-xl border border-gray-200 bg-white p-6">
+      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      {note && <p className="mt-1 text-xs text-gray-500">{note}</p>}
+      <table className="mt-4 w-full text-sm">
+        <thead>
+          <tr className="text-left text-xs uppercase tracking-wide text-gray-500">
+            <th className="py-2">Additional Credits</th>
+            <th className="py-2 text-right">Cost / Contact</th>
+            <th className="py-2 text-right">Discount</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-gray-100">
+          {tiers.map((t) => (
+            <tr key={`${t.min_credits}-${t.max_credits ?? 'max'}`}>
+              <td className="py-2 text-gray-700">
+                {t.min_credits.toLocaleString()} – {t.max_credits ? t.max_credits.toLocaleString() : "∞"}
+              </td>
+              <td className="py-2 text-right tabular-nums text-gray-900">${(t.unit_cents / 100).toFixed(2)}</td>
+              <td className="py-2 text-right text-gray-500">{t.discount_pct}% off</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
