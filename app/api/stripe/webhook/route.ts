@@ -22,6 +22,17 @@ function svcClient() {
   );
 }
 
+
+// Stripe API 2025-04-30 (Basil) and later moved subscription.current_period_end
+// into subscription.items.data[0].current_period_end. This helper reads from
+// whichever location is populated so we work across all webhook API versions.
+function periodEnd(sub: Stripe.Subscription): string | null {
+  const top = (sub as any).current_period_end as number | undefined;
+  const fromItem = sub.items?.data?.[0]?.current_period_end as number | undefined;
+  const v = top ?? fromItem;
+  return v ? new Date(v * 1000).toISOString() : null;
+}
+
 export async function POST(request: NextRequest) {
   const sig = request.headers.get("stripe-signature");
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -58,7 +69,7 @@ export async function POST(request: NextRequest) {
               app_user_id: appUserId,
               plan_id: planId,
               status: "active",
-              current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+              current_period_end: periodEnd(sub),
               downloads_remaining: 500,
               stripe_subscription_id: sub.id,
             },
@@ -93,7 +104,7 @@ export async function POST(request: NextRequest) {
           .from("user_entitlements")
           .update({
             status,
-            current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+            current_period_end: periodEnd(sub),
           })
           .eq("stripe_subscription_id", sub.id);
         break;
@@ -114,7 +125,7 @@ export async function POST(request: NextRequest) {
               .from("user_entitlements")
               .update({
                 status: "active",
-                current_period_end: new Date(sub.current_period_end * 1000).toISOString(),
+                current_period_end: periodEnd(sub),
                 downloads_remaining: 500,
               })
               .eq("stripe_subscription_id", sub.id);
