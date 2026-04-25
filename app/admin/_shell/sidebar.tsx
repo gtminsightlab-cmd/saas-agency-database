@@ -45,7 +45,7 @@ const NAV: NavItem[] = [
 ];
 
 const FOOTER_NAV: NavItem[] = [
-  { href: "/admin/settings",         label: "Admin Settings",   Icon: Settings,        status: "soon" },
+  { href: "/admin/settings",         label: "Admin Settings",   Icon: Settings,        status: "live" },
 ];
 
 function isActive(pathname: string, href: string) {
