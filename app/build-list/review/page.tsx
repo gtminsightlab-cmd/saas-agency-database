@@ -543,7 +543,7 @@ export default async function ReviewPage({
         )}
 
         <div className="mt-6 flex items-center justify-end gap-3">
-          <SaveListButton searchParams={searchParams} accountsCount={accountsCount} contactsCount={contactsCount} />
+          <SaveListButton filterQs={editFiltersQs} />
         </div>
       </div>
     </AppShell>
