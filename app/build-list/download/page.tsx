@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileSpreadsheet, FileText, Printer, Lock } from "lucide-react";
+import { FileSpreadsheet, FileText, Printer, Lock, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { AppShell } from "@/components/app/shell";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { createClient } from "@/lib/supabase/server";
@@ -25,14 +25,31 @@ function intersect<T>(sets: Array<Set<T>>): Set<T> {
   return out;
 }
 
+// ---- Sort definitions -------------------------------------------------------
+type SortKey = "name" | "account_type" | "location" | "location_type" | "revenue" | "employees";
+type SortDir = "asc" | "desc";
+
+const VALID_SORTS = new Set<SortKey>([
+  "name", "account_type", "location", "location_type", "revenue", "employees",
+]);
+
+function pickSort(v: string | undefined): SortKey {
+  return v && VALID_SORTS.has(v as SortKey) ? (v as SortKey) : "name";
+}
+function pickDir(v: string | undefined): SortDir {
+  return v === "desc" ? "desc" : "asc";
+}
+
 export default async function DownloadPage({
   searchParams,
 }: {
-  searchParams: { id?: string; name?: string };
+  searchParams: { id?: string; name?: string; sort?: string; dir?: string };
 }) {
   const supabase = createClient();
   const listId = searchParams.id ?? null;
   const listName = searchParams.name ?? "Untitled list";
+  const sort: SortKey = pickSort(searchParams.sort);
+  const dir: SortDir = pickDir(searchParams.dir);
 
   const { data: ent } = await supabase
     .from("v_my_entitlement")
@@ -44,7 +61,6 @@ export default async function DownloadPage({
     (ent?.downloads_remaining == null || ent.downloads_remaining > 0);
   const isFree = !ent || ent.plan_code === "free";
 
-  // Resolve filters from saved_lists.filter_json
   let qs = new URLSearchParams();
   let savedList: { id: string; name: string } | null = null;
   if (listId) {
@@ -60,7 +76,6 @@ export default async function DownloadPage({
     }
   }
 
-  // ---- Parse filters (same shape as /build-list/review) ------------------
   const accountTypeIds = csv(qs.get("at"));
   const locationTypeIds = csv(qs.get("lt"));
   const amsIds = csv(qs.get("ams"));
@@ -78,7 +93,6 @@ export default async function DownloadPage({
   const empMin = asNum(qs.get("emin"));
   const empMax = asNum(qs.get("emax"));
 
-  // ---- Resolve carrier/affiliation/SIC -> agency_id sets via join tables --
   const idSets: Array<Set<string>> = [];
   if (carrierIds.length) {
     const { data } = await supabase
@@ -102,7 +116,6 @@ export default async function DownloadPage({
     idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
   }
 
-  // Resolve state IDs to ISO codes
   let stateCodes: string[] = [];
   if (stateIds.length) {
     const { data: states } = await supabase
@@ -114,15 +127,38 @@ export default async function DownloadPage({
 
   const allowedAgencyIds = idSets.length > 0 ? Array.from(intersect(idSets)) : null;
 
-  // ---- Build agencies query (same column names review uses) ---------------
+  // ---- Build agencies query -----------------------------------------------
+  // location_types FK is selected so we can show + sort by Location Type.
   let q = supabase
     .from("agencies")
     .select(
-      "id, name, city, state, revenue, employees, account_type_id, account_types(label)",
+      "id, name, city, state, revenue, employees, account_type_id, account_types(label), location_type_id, location_types(name)",
       { count: "exact" }
     )
-    .order("name")
     .limit(25);
+
+  // Apply sort. For multi-column sort (location = state, city), chain orders.
+  const ascending = dir === "asc";
+  switch (sort) {
+    case "name":
+      q = q.order("name", { ascending });
+      break;
+    case "account_type":
+      q = q.order("label", { foreignTable: "account_types", ascending, nullsFirst: false }).order("name", { ascending: true });
+      break;
+    case "location":
+      q = q.order("state", { ascending, nullsFirst: false }).order("city", { ascending, nullsFirst: false }).order("name", { ascending: true });
+      break;
+    case "location_type":
+      q = q.order("name", { foreignTable: "location_types", ascending, nullsFirst: false }).order("name", { ascending: true });
+      break;
+    case "revenue":
+      q = q.order("revenue", { ascending, nullsFirst: false }).order("name", { ascending: true });
+      break;
+    case "employees":
+      q = q.order("employees", { ascending, nullsFirst: false }).order("name", { ascending: true });
+      break;
+  }
 
   if (accountTypeIds.length) q = q.in("account_type_id", accountTypeIds);
   if (locationTypeIds.length) q = q.in("location_type_id", locationTypeIds);
@@ -140,7 +176,7 @@ export default async function DownloadPage({
   if (empMax != null) q = q.lte("employees", empMax);
   if (allowedAgencyIds) {
     if (allowedAgencyIds.length === 0) {
-      q = q.eq("id", "00000000-0000-0000-0000-000000000000"); // no match shortcut
+      q = q.eq("id", "00000000-0000-0000-0000-000000000000");
     } else {
       q = q.in("id", allowedAgencyIds);
     }
@@ -148,10 +184,8 @@ export default async function DownloadPage({
 
   const { data: previewRows, count: accountsCount, error: previewErr } = await q;
 
-  // Contacts count limited to the filtered agency set
   let contactsCount = 0;
   if (accountsCount && accountsCount > 0) {
-    // Pull all matching agency IDs (full set, not just preview) for the contacts count
     let idQuery = supabase.from("agencies").select("id").limit(50_000);
     if (accountTypeIds.length) idQuery = idQuery.in("account_type_id", accountTypeIds);
     if (locationTypeIds.length) idQuery = idQuery.in("location_type_id", locationTypeIds);
@@ -180,6 +214,23 @@ export default async function DownloadPage({
   }
 
   const exportHref = listId ? `/api/export?list=${encodeURIComponent(listId)}` : null;
+
+  // Build a sortable-header href that preserves existing searchParams + toggles sort/dir.
+  function sortHref(key: SortKey): string {
+    const params = new URLSearchParams();
+    if (listId) params.set("id", listId);
+    if (searchParams.name) params.set("name", searchParams.name);
+    if (key === sort) {
+      // Same column — toggle direction
+      params.set("sort", key);
+      params.set("dir", dir === "asc" ? "desc" : "asc");
+    } else {
+      // New column — start ascending
+      params.set("sort", key);
+      params.set("dir", "asc");
+    }
+    return `/build-list/download?${params.toString()}`;
+  }
 
   return (
     <AppShell>
@@ -228,17 +279,18 @@ export default async function DownloadPage({
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
               <tr>
-                <th className="px-4 py-3">Account</th>
-                <th className="px-4 py-3">Account Type</th>
-                <th className="px-4 py-3">Site Location</th>
-                <th className="px-4 py-3 text-right">Revenue</th>
-                <th className="px-4 py-3">Employees</th>
+                <SortableTh label="Account"       sortKey="name"          activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Account Type"  sortKey="account_type"  activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Site Location" sortKey="location"      activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Location Type" sortKey="location_type" activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Revenue"       sortKey="revenue"       activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableTh label="Employees"     sortKey="employees"     activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {(previewRows ?? []).length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-500">
+                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-500">
                     No agencies match this list&rsquo;s filters.
                   </td>
                 </tr>
@@ -247,6 +299,9 @@ export default async function DownloadPage({
                   const at = Array.isArray(r.account_types)
                     ? r.account_types[0]?.label
                     : r.account_types?.label;
+                  const lt = Array.isArray(r.location_types)
+                    ? r.location_types[0]?.name
+                    : r.location_types?.name;
                   return (
                     <tr key={r.id}>
                       <td className="px-4 py-3 font-medium text-brand-700">{r.name}</td>
@@ -254,12 +309,13 @@ export default async function DownloadPage({
                       <td className="px-4 py-3 text-gray-700">
                         {r.city ? `${r.city}, ${r.state ?? ""}` : "—"}
                       </td>
+                      <td className="px-4 py-3 text-gray-700">{lt ?? "—"}</td>
                       <td className="px-4 py-3 text-right tabular-nums text-gray-700">
                         {r.revenue
                           ? "$" + (Number(r.revenue) / 1_000_000).toFixed(2) + "M"
                           : "—"}
                       </td>
-                      <td className="px-4 py-3 tabular-nums text-gray-700">
+                      <td className="px-4 py-3 text-right tabular-nums text-gray-700">
                         {r.employees ?? "—"}
                       </td>
                     </tr>
@@ -270,8 +326,15 @@ export default async function DownloadPage({
           </table>
         </div>
         <p className="mt-2 text-xs text-gray-500">
-          Showing {(previewRows ?? []).length} of {accountsCount ?? 0} matching agencies. Download
-          to export the full list.
+          Showing {(previewRows ?? []).length} of {accountsCount ?? 0} matching agencies
+          {(previewRows ?? []).length > 0 && (
+            <>
+              , sorted by <span className="font-semibold">{LABEL[sort]}</span>
+              {" "}
+              <span className="font-semibold">{dir === "asc" ? "↑" : "↓"}</span>
+            </>
+          )}
+          . Download to export the full list.
         </p>
 
         <div className="sticky bottom-0 mt-6 -mx-4 sm:-mx-6 lg:-mx-8 bg-white border-t border-gray-200 py-4 px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
@@ -316,6 +379,52 @@ export default async function DownloadPage({
         </div>
       </div>
     </AppShell>
+  );
+}
+
+const LABEL: Record<SortKey, string> = {
+  name: "Account",
+  account_type: "Account Type",
+  location: "Site Location",
+  location_type: "Location Type",
+  revenue: "Revenue",
+  employees: "Employees",
+};
+
+function SortableTh({
+  label,
+  sortKey,
+  activeSort,
+  dir,
+  hrefFor,
+  align,
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeSort: SortKey;
+  dir: SortDir;
+  hrefFor: (key: SortKey) => string;
+  align?: "right";
+}) {
+  const isActive = activeSort === sortKey;
+  return (
+    <th className={"px-4 py-3 " + (align === "right" ? "text-right" : "")}>
+      <Link
+        href={hrefFor(sortKey)}
+        className={
+          "inline-flex items-center gap-1 group " +
+          (isActive ? "text-brand-700 font-semibold" : "text-gray-600 hover:text-gray-900")
+        }
+        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
+      >
+        {label}
+        {isActive ? (
+          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+        ) : (
+          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
+        )}
+      </Link>
+    </th>
   );
 }
 
