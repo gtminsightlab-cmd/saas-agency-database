@@ -85,10 +85,10 @@ export function Sidebar({
                 active={isActive("/admin")}
               />
               <NavLinkItem
-                href="/account/users"
-                label="Users"
+                href="/admin/customers"
+                label="Users & tenants"
                 icon={Users}
-                active={isActive("/account/users")}
+                active={isActive("/admin/customers")}
               />
             </ul>
           </div>
