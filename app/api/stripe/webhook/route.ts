@@ -28,7 +28,7 @@ function svcClient() {
 // whichever location is populated so we work across all webhook API versions.
 function periodEnd(sub: Stripe.Subscription): string | null {
   const top = (sub as any).current_period_end as number | undefined;
-  const fromItem = sub.items?.data?.[0]?.current_period_end as number | undefined;
+  const fromItem = (sub.items?.data?.[0] as any)?.current_period_end as number | undefined;
   const v = top ?? fromItem;
   return v ? new Date(v * 1000).toISOString() : null;
 }
