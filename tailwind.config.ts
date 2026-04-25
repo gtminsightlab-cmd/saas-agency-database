@@ -61,6 +61,21 @@ const config: Config = {
           700: "#1B7C45",
           800: "#12552F",
           900: "#082E19"
+        },
+        // Admin "control room" palette — dark by default. Scoped to /admin routes.
+        admin: {
+          bg:          "#0F172A",
+          surface:     "#111827",
+          "surface-2": "#1F2937",
+          border:      "#334155",
+          "border-2":  "#1E293B",
+          accent:      "#00A896",
+          ok:          "#10B981",
+          warn:        "#F59E0B",
+          danger:      "#EF4444",
+          text:        "#F8FAFC",
+          "text-mute": "#94A3B8",
+          "text-dim":  "#64748B"
         }
         // Slate Grey #34495E is intentionally not redefined — Tailwind's default `slate-700`
         // (#334155) and `slate-600` (#475569) are within 3% of it; using the default scale
