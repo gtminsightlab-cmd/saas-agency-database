@@ -192,7 +192,7 @@ export default async function VerticalsPage() {
                 <div className="mt-5 flex items-center justify-end">
                   {hasActivePlan ? (
                     <Link
-                      href={`/build-list?vertical=${v.slug}`}
+                      href={`/verticals/${v.slug}/open`}
                       className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
                     >
                       Open targeted list <ArrowRight className="h-3 w-3" />
