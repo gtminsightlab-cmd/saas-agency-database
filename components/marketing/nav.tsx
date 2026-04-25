@@ -4,7 +4,7 @@ export function MarketingNav({ isAuthed }: { isAuthed: boolean }) {
   return (
     <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/80 backdrop-blur">
       <nav className="mx-auto max-w-7xl flex items-center justify-between px-4 py-3">
-        <Link href="/" className="text-lg font-bold tracking-tight text-gray-900">
+        <Link href="/" className="text-lg font-bold tracking-tight text-navy-800">
           Seven16 <span className="font-light text-gray-500">Agency Directory</span>
         </Link>
         <div className="flex items-center gap-2">

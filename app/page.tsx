@@ -51,8 +51,8 @@ export default async function MarketingHome() {
                 Data for MGU&rsquo;s, Wholesalers, Carriers, and Industry Partners.
               </p>
               <p className="mt-4 text-base leading-7 text-gray-500">
-                Enriched data decays by 3% every month. Membership keeps your pipeline alive with monthly
-                hygiene updates — so you never call a ghost agent again.
+                Distribution Intelligence decays by 3% every month. Membership keeps your pipeline alive with monthly
+                Hygiene updates — so you never call a ghost agent again.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-4">
                 <Link
@@ -87,7 +87,7 @@ export default async function MarketingHome() {
           <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-4xl mx-auto">
             <Stat label="Carriers" value={carrierCount.toLocaleString()} />
             <Stat label="Affiliations" value={affiliationCount.toString()} />
-            <Stat label="Agencies indexed" value="2,800+" />
+            <Stat label="Agencies in Network" value="2,800+" />
             <Stat label="Contacts" value="15,000+" />
           </div>
         </div>
@@ -96,15 +96,15 @@ export default async function MarketingHome() {
       <section id="how-it-works" className="py-20 bg-gray-50">
         <div className="mx-auto max-w-7xl px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Three clicks from a filter to a CSV.</h2>
+            <h2 className="text-3xl font-bold text-gray-900">From Intelligence to Distribution. Three clicks.</h2>
             <p className="mt-4 text-gray-600">
-              Stop paying for bloated lead platforms. Pay for what you download, when you download it.
+              Replace bloated lead platforms with Distribution Infrastructure built for Precision targeting. Pay for what you download, when you download it.
             </p>
           </div>
           <div className="mt-16 grid gap-6 md:grid-cols-3">
             <Step n={1} title="Build" desc="Stack filters — carriers, affiliations, state, AMS, revenue band, contact role. Record counts update live." icon={Filter} />
             <Step n={2} title="Review" desc="Preview matching accounts + contacts before committing. Edit filters until the list is exactly what you want." icon={Search} />
-            <Step n={3} title="Download" desc="Export to CSV or Excel. Subscribe for monthly credits + free hygiene updates, or buy a one-time snapshot." icon={Download} />
+            <Step n={3} title="Download" desc="Export to CSV or Excel. Subscribe for monthly credits + free Hygiene updates, or buy a one-time snapshot." icon={Download} />
           </div>
         </div>
       </section>
@@ -113,9 +113,9 @@ export default async function MarketingHome() {
       <section id="pricing" className="py-20">
         <div className="mx-auto max-w-7xl px-4">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Choose Your Data Strategy</h2>
+            <h2 className="text-3xl font-bold text-gray-900">Choose Your Distribution Strategy</h2>
             <p className="mt-4 text-gray-600">
-              Data decays at 3% per month. Keep your distribution pipeline alive with real-time intelligence.
+              Distribution Intelligence decays at 3% per month. Keep your pipeline alive with real-time Hygiene updates and Precision targeting.
             </p>
           </div>
 
@@ -133,7 +133,7 @@ export default async function MarketingHome() {
                 ctaHref={user ? "/build-list" : "/sign-up?plan=growth_member"}
                 ctaLabel={user ? "Upgrade to Growth" : "Start Growth Member"}
                 subhead="Never call a dead lead."
-                subbody="Agencies merge and agents move daily. Members receive free monthly updates to all saved contacts so your CRM is always accurate."
+                subbody="Distribution decays daily — agencies merge and agents move. Members receive free monthly Hygiene updates to all saved contacts so your CRM stays Precision-accurate."
               />
             )}
             {snapshotPlan && (
@@ -147,7 +147,7 @@ export default async function MarketingHome() {
                 ctaHref={user ? "/build-list" : "/sign-up?plan=snapshot"}
                 ctaLabel={user ? "Buy a Snapshot" : "Buy a Snapshot"}
                 subhead="Perfect for individual sprints."
-                subbody="Need to fill a specific recruiting class or launch a one-off marketing blast? The Snapshot gives you 500 enriched contacts and a 90-day window — no commitment required."
+                subbody="Need to fill a recruiting class or launch a one-off Distribution sprint? The Snapshot gives you 500 enriched contacts and a 90-day Precision window — no commitment required."
               />
             )}
           </div>
