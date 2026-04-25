@@ -20,6 +20,7 @@ import {
   ChevronsLeft,
   ChevronsRight,
   ShieldCheck,
+  Copy,
 } from "lucide-react";
 
 type NavItem = {
@@ -39,6 +40,7 @@ const NAV: NavItem[] = [
   { href: "/admin/usage",            label: "Usage & Limits",   Icon: Gauge,           status: "live" },
   { href: "/admin/verticals",        label: "Verticals",        Icon: Layers,          status: "live" },
   { href: "/admin/hygiene",          label: "Hygiene & Refresh",Icon: ShieldAlert,     status: "live" },
+  { href: "/admin/data-quality",     label: "Data Quality",     Icon: Copy,            status: "live" },
   { href: "/admin/integrations",     label: "Integrations",     Icon: Plug,            status: "live" },
   { href: "/admin/alerts",           label: "Alerts & Risk",    Icon: BellRing,        status: "live" },
   { href: "/admin/system-health",    label: "System Health",    Icon: Activity,        status: "live" },
