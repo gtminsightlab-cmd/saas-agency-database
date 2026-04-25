@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Check, Filter, Download, Search, Zap, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -9,9 +10,11 @@ export default async function MarketingHome() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [carriers, affiliations, plans, tiers] = await Promise.all([
+  const [carriers, affiliations, agenciesRes, contactsRes, plans, tiers] = await Promise.all([
     supabase.from("carriers").select("id", { count: "exact", head: true }),
     supabase.from("affiliations").select("id", { count: "exact", head: true }),
+    supabase.from("agencies").select("id", { count: "exact", head: true }),
+    supabase.from("contacts").select("id", { count: "exact", head: true }),
     supabase.from("billing_plans")
       .select("id,code,name,tagline,price_cents,interval,download_quota,features,sort_order")
       .eq("active", true).order("sort_order"),
@@ -22,6 +25,8 @@ export default async function MarketingHome() {
 
   const carrierCount = carriers.count ?? 0;
   const affiliationCount = affiliations.count ?? 0;
+  const agencyCount = agenciesRes.count ?? 0;
+  const contactCount = contactsRes.count ?? 0;
   const planList = plans.data ?? [];
   const tierList = tiers.data ?? [];
   const memberPlan = planList.find((p) => p.code === "growth_member");
@@ -35,38 +40,59 @@ export default async function MarketingHome() {
 
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-white" aria-hidden />
-        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:py-28">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
-              <Zap className="h-3.5 w-3.5" />
-              Built for MGUs, wholesalers, carriers, and recruiters
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:py-24">
+          <div className="grid items-center gap-12 lg:grid-cols-2">
+            {/* Left: copy */}
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
+                <Zap className="h-3.5 w-3.5" />
+                Built for MGUs, wholesalers, carriers, and industry partners
+              </div>
+              <h1 className="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+                Unlock Agency Connections. Drive Growth. <span className="text-brand-600">Target with Precision.</span>
+              </h1>
+              <p className="mt-6 text-lg font-normal leading-8 text-gray-600">
+                Data for MGU&rsquo;s, Wholesalers, Carriers, and Industry Partners.
+              </p>
+              <p className="mt-4 text-base leading-7 text-gray-500">
+                Enriched data decays by 3% every month. Membership keeps your pipeline alive with monthly
+                hygiene updates — so you never call a ghost agent again.
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-4">
+                <Link
+                  href={user ? "/build-list" : "/sign-up"}
+                  className="rounded-md bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700"
+                >
+                  {user ? "Go to your dashboard" : "Start with 0 credits, free"}
+                </Link>
+                <a href="#pricing" className="text-sm font-semibold text-gray-900 hover:text-gray-700">
+                  Compare plans →
+                </a>
+              </div>
+              <p className="mt-4 text-xs text-gray-500">Company-email sign-up required · No credit card to browse</p>
             </div>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-              Don&apos;t Just Buy a List. <span className="text-brand-600">Build a Distribution Engine.</span>
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Enriched data decays by 3% every month. Membership keeps your pipeline alive with monthly
-              hygiene updates — so you never call a ghost agent again.
-            </p>
-            <div className="mt-10 flex items-center justify-center gap-4">
-              <Link
-                href={user ? "/build-list" : "/sign-up"}
-                className="rounded-md bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-brand-700"
-              >
-                {user ? "Go to your dashboard" : "Start with 0 credits, free"}
-              </Link>
-              <a href="#pricing" className="text-sm font-semibold text-gray-900 hover:text-gray-700">
-                Compare plans →
-              </a>
+
+            {/* Right: hero visual */}
+            <div className="relative lg:order-last">
+              <div className="relative aspect-[16/12] w-full overflow-hidden rounded-2xl border border-brand-100 bg-white shadow-xl shadow-brand-900/5 ring-1 ring-black/5">
+                <Image
+                  src="/images/hero/hero.webp"
+                  alt="Insurance agency directory dashboard"
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
+              <div className="pointer-events-none absolute -inset-x-8 -inset-y-4 -z-10 rounded-3xl bg-gradient-to-tr from-brand-100/40 via-transparent to-transparent blur-2xl" aria-hidden />
             </div>
-            <p className="mt-4 text-xs text-gray-500">Company-email sign-up required · No credit card to browse</p>
           </div>
 
-          <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-3xl mx-auto">
+          <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-4xl mx-auto">
             <Stat label="Carriers" value={carrierCount.toLocaleString()} />
             <Stat label="Affiliations" value={affiliationCount.toString()} />
-            <Stat label="Agencies indexed" value="36,000+" />
-            <Stat label="Contacts" value="168,000+" />
+            <Stat label="Agencies indexed" value={agencyCount.toLocaleString()} />
+            <Stat label="Contacts" value={contactCount.toLocaleString()} />
           </div>
         </div>
       </section>
@@ -299,39 +325,4 @@ function CompRow({
         {memberIcon ? (
           <div className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-brand-600" />{memberLabel ?? ""}</div>
         ) : member}
-      </td>
-      <td className="px-4 py-3 text-gray-700">
-        {typeof guest === "string" ? guest : (<div className="inline-flex items-center gap-2">{guest}{guestLabel ?? ""}</div>)}
-      </td>
-    </tr>
-  );
-}
-
-function BulkTable({ title, tiers, note }: { title: string; tiers: any[]; note?: string }) {
-  return (
-    <div className="rounded-xl border border-gray-200 bg-white p-6">
-      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-      {note && <p className="mt-1 text-xs text-gray-500">{note}</p>}
-      <table className="mt-4 w-full text-sm">
-        <thead>
-          <tr className="text-left text-xs uppercase tracking-wide text-gray-500">
-            <th className="py-2">Additional Credits</th>
-            <th className="py-2 text-right">Cost / Contact</th>
-            <th className="py-2 text-right">Discount</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {tiers.map((t) => (
-            <tr key={`${t.min_credits}-${t.max_credits ?? 'max'}`}>
-              <td className="py-2 text-gray-700">
-                {t.min_credits.toLocaleString()} – {t.max_credits ? t.max_credits.toLocaleString() : "∞"}
-              </td>
-              <td className="py-2 text-right tabular-nums text-gray-900">${(t.unit_cents / 100).toFixed(2)}</td>
-              <td className="py-2 text-right text-gray-500">{t.discount_pct}% off</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+      
