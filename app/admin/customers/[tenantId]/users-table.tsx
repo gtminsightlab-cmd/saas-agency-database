@@ -10,6 +10,9 @@ import {
   Loader2,
   Search,
   ExternalLink,
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -26,15 +29,23 @@ export type UserRow = {
   credits: number | null;
 };
 
+type SortKey = "user" | "role" | "plan" | "credits" | "created" | "status";
+type SortDir = "asc" | "desc";
+
 const ROLE_ICON: Record<string, typeof User> = {
   super_admin: Crown,
   admin: Shield,
   user: User,
 };
 
+// Role rank for stable comparison (super_admin > admin > user > other)
+const ROLE_RANK: Record<string, number> = { super_admin: 3, admin: 2, user: 1 };
+
 export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
   const [rows, setRows] = useState<UserRow[]>(initialRows);
   const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState<SortKey>("user");
+  const [dir, setDir] = useState<SortDir>("asc");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ kind: "ok" | "err"; msg: string } | null>(null);
 
@@ -45,16 +56,56 @@ export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
     window.setTimeout(() => setToast(null), 3500);
   }
 
+  function clickHeader(key: SortKey) {
+    if (sort === key) {
+      setDir((d) => (d === "asc" ? "desc" : "asc"));
+    } else {
+      setSort(key);
+      // Numeric/date columns → desc; text columns → asc.
+      setDir(key === "credits" || key === "created" ? "desc" : "asc");
+    }
+  }
+
   const visible = useMemo(() => {
-    if (!filter.trim()) return rows;
-    const q = filter.trim().toLowerCase();
-    return rows.filter(
-      (r) =>
-        r.email.toLowerCase().includes(q) ||
-        (r.full_name ?? "").toLowerCase().includes(q) ||
-        r.role.toLowerCase().includes(q)
-    );
-  }, [rows, filter]);
+    let out = rows;
+    if (filter.trim()) {
+      const q = filter.trim().toLowerCase();
+      out = out.filter(
+        (r) =>
+          r.email.toLowerCase().includes(q) ||
+          (r.full_name ?? "").toLowerCase().includes(q) ||
+          r.role.toLowerCase().includes(q)
+      );
+    }
+    const sorted = [...out].sort((a, b) => {
+      let diff = 0;
+      switch (sort) {
+        case "user":
+          diff = (a.full_name ?? a.email).localeCompare(b.full_name ?? b.email);
+          break;
+        case "role":
+          diff = (ROLE_RANK[a.role] ?? 0) - (ROLE_RANK[b.role] ?? 0);
+          if (diff === 0) diff = a.role.localeCompare(b.role);
+          break;
+        case "plan":
+          diff = (a.plan_name ?? "").localeCompare(b.plan_name ?? "");
+          break;
+        case "credits":
+          diff = (a.credits ?? 0) - (b.credits ?? 0);
+          break;
+        case "created":
+          diff = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          break;
+        case "status":
+          // active=true beats false when desc
+          diff = (a.is_active === b.is_active) ? 0 : a.is_active ? 1 : -1;
+          break;
+      }
+      if (diff === 0) diff = a.email.localeCompare(b.email);
+      return dir === "asc" ? diff : -diff;
+    });
+    return sorted;
+  }, [rows, filter, sort, dir]);
 
   async function toggleActive(r: UserRow) {
     const next = !r.is_active;
@@ -93,7 +144,6 @@ export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
         </div>
       )}
 
-      {/* Toolbar */}
       <div className="flex flex-wrap items-center gap-3 rounded-lg border border-admin-border-2 bg-admin-surface p-3">
         <div className="relative flex-1 min-w-[220px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-admin-text-dim" />
@@ -110,17 +160,16 @@ export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
         </span>
       </div>
 
-      {/* Users table */}
       <div className="rounded-lg border border-admin-border-2 bg-admin-surface overflow-hidden">
         <table className="w-full text-sm">
           <thead className="bg-admin-surface-2">
             <tr className="text-left text-[11px] uppercase tracking-wider text-admin-text-dim">
-              <th className="px-4 py-2.5 font-medium">User</th>
-              <th className="px-4 py-2.5 font-medium">Role</th>
-              <th className="px-4 py-2.5 font-medium">Plan</th>
-              <th className="px-4 py-2.5 font-medium">Credits</th>
-              <th className="px-4 py-2.5 font-medium">Created</th>
-              <th className="px-4 py-2.5 font-medium">Status</th>
+              <SortableTh label="User"    sortKey="user"    sort={sort} dir={dir} onClick={clickHeader} />
+              <SortableTh label="Role"    sortKey="role"    sort={sort} dir={dir} onClick={clickHeader} />
+              <SortableTh label="Plan"    sortKey="plan"    sort={sort} dir={dir} onClick={clickHeader} />
+              <SortableTh label="Credits" sortKey="credits" sort={sort} dir={dir} onClick={clickHeader} />
+              <SortableTh label="Created" sortKey="created" sort={sort} dir={dir} onClick={clickHeader} />
+              <SortableTh label="Status"  sortKey="status"  sort={sort} dir={dir} onClick={clickHeader} />
               <th className="px-4 py-2.5 font-medium text-right"></th>
             </tr>
           </thead>
@@ -252,5 +301,37 @@ export function UsersTable({ initialRows }: { initialRows: UserRow[] }) {
         </table>
       </div>
     </div>
+  );
+}
+
+function SortableTh({
+  label, sortKey, sort, dir, onClick,
+}: {
+  label: string;
+  sortKey: SortKey;
+  sort: SortKey;
+  dir: SortDir;
+  onClick: (key: SortKey) => void;
+}) {
+  const isActive = sort === sortKey;
+  return (
+    <th className="px-4 py-2.5 font-medium">
+      <button
+        type="button"
+        onClick={() => onClick(sortKey)}
+        className={
+          "inline-flex items-center gap-1 group " +
+          (isActive ? "text-admin-accent font-semibold" : "text-admin-text-dim hover:text-admin-text")
+        }
+        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
+      >
+        {label}
+        {isActive ? (
+          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+        ) : (
+          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
+        )}
+      </button>
+    </th>
   );
 }
