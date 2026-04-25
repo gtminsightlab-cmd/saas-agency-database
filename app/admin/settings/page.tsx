@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { FlagsEditor, type FlagRow } from "./flags-editor";
+import { AuditLogPanel } from "./audit-log-panel";
 
 export const dynamic = "force-dynamic";
 
@@ -185,30 +186,8 @@ export default async function AdminSettingsPage() {
         </header>
       </section>
 
-      {/* Audit log placeholder */}
-      <section className="rounded-xl border border-dashed border-admin-border bg-admin-surface p-5">
-        <header className="flex items-start gap-3">
-          <span className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-admin-warn/15 text-admin-warn shrink-0">
-            <ScrollText className="h-4 w-4" />
-          </span>
-          <div className="min-w-0">
-            <h2 className="text-sm font-semibold text-admin-text">Audit log</h2>
-            <p className="mt-1 text-xs text-admin-text-mute max-w-2xl">
-              Required for SOC 2 Type II and most enterprise compliance reviews. Every super_admin
-              action — flag toggles, suspend/reactivate, catalog edits, denylist adds — needs to
-              write a row to <code className="text-admin-text">audit_log</code>. Defer until first
-              real customer asks for SOC 2 evidence; the wrapper can be retrofitted across the
-              admin actions in a single migration.
-            </p>
-            <ul className="mt-3 space-y-1 text-xs text-admin-text-mute">
-              <li>· Schema: (id, actor_user_id, action, resource_type, resource_id, before, after, ip, ua, created_at)</li>
-              <li>· Helper: log_admin_action(action, resource, before, after) called from each mutation</li>
-              <li>· Filter UI: by actor, action type, resource, date range</li>
-              <li>· Retention: 90d hot, archive to S3 after that</li>
-            </ul>
-          </div>
-        </header>
-      </section>
+      {/* Audit log */}
+      <AuditLogPanel />
 
       {/* Sidebar status footer */}
       <div className="rounded-lg border border-admin-ok/40 bg-admin-ok/5 px-5 py-4 text-xs text-admin-text-mute">
