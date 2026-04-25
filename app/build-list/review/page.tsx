@@ -42,7 +42,9 @@ export default async function ReviewPage({
   const minority = searchParams.min;
   const accountName = (searchParams.an ?? "").trim();
   const accountNameMode = searchParams.an_m ?? "contains";
-  const country = (searchParams.c ?? "US").toUpperCase();
+  // Form passes 2-letter ISO codes (US, CA), DB stores 3-letter (USA, CAN).
+  const countryRaw = (searchParams.c ?? 'US').toUpperCase();
+  const country = countryRaw === 'US' ? 'USA' : countryRaw === 'CA' ? 'CAN' : countryRaw;
 
   // ---- Resolve state IDs -> codes, metro IDs -> names ------------------
   const [stRows, mtRows, atRows, crRows, afRows] = await Promise.all([
