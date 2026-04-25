@@ -10,11 +10,9 @@ export default async function MarketingHome() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [carriers, affiliations, agenciesRes, contactsRes, plans, tiers] = await Promise.all([
+  const [carriers, affiliations, plans, tiers] = await Promise.all([
     supabase.from("carriers").select("id", { count: "exact", head: true }),
     supabase.from("affiliations").select("id", { count: "exact", head: true }),
-    supabase.from("agencies").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }),
     supabase.from("billing_plans")
       .select("id,code,name,tagline,price_cents,interval,download_quota,features,sort_order")
       .eq("active", true).order("sort_order"),
@@ -25,8 +23,6 @@ export default async function MarketingHome() {
 
   const carrierCount = carriers.count ?? 0;
   const affiliationCount = affiliations.count ?? 0;
-  const agencyCount = agenciesRes.count ?? 0;
-  const contactCount = contactsRes.count ?? 0;
   const planList = plans.data ?? [];
   const tierList = tiers.data ?? [];
   const memberPlan = planList.find((p) => p.code === "growth_member");
@@ -91,8 +87,8 @@ export default async function MarketingHome() {
           <div className="mt-16 grid grid-cols-2 gap-6 sm:grid-cols-4 max-w-4xl mx-auto">
             <Stat label="Carriers" value={carrierCount.toLocaleString()} />
             <Stat label="Affiliations" value={affiliationCount.toString()} />
-            <Stat label="Agencies indexed" value={agencyCount.toLocaleString()} />
-            <Stat label="Contacts" value={contactCount.toLocaleString()} />
+            <Stat label="Agencies indexed" value="2,800+" />
+            <Stat label="Contacts" value="15,000+" />
           </div>
         </div>
       </section>
