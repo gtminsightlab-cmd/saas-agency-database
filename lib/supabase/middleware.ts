@@ -43,7 +43,9 @@ export async function updateSession(request: NextRequest) {
     "/data-stats",
     "/data-mapping",
     "/ai-support",
-    "/account"
+    "/account",
+    "/admin",
+    "/integrations"
   ];
   const requiresAuth = protectedPrefixes.some((p) => pathname === p || pathname.startsWith(p + "/"));
 

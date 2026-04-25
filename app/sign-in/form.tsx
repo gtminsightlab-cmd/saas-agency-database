@@ -47,6 +47,7 @@ export function SignInForm({ nextPath }: { nextPath: string }) {
           <label htmlFor="password" className="block text-sm font-medium text-gray-700">
             Password
           </label>
+          <a href="/auth/forgot-password" className="text-xs font-semibold text-brand-600 hover:text-brand-700">Forgot password?</a>
         </div>
         <input
           id="password"
