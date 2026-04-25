@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Pencil, FileSpreadsheet, FileText, Printer } from "lucide-react";
+import { Pencil, FileSpreadsheet, FileText, Printer, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { AppShell } from "@/components/app/shell";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { createClient } from "@/lib/supabase/server";
@@ -18,6 +18,37 @@ function asNum(v: string | undefined) {
   return Number.isFinite(n) ? n : null;
 }
 
+// ---- Sort definitions -------------------------------------------------------
+type AccountSortKey = "name" | "account_type" | "location" | "location_type" | "revenue" | "employees";
+type ContactSortKey = "last_name" | "email" | "mobile" | "agency" | "account_type" | "location";
+type SortDir = "asc" | "desc";
+
+const VALID_ACCOUNT_SORTS = new Set<AccountSortKey>([
+  "name", "account_type", "location", "location_type", "revenue", "employees",
+]);
+const VALID_CONTACT_SORTS = new Set<ContactSortKey>([
+  "last_name", "email", "mobile", "agency", "account_type", "location",
+]);
+
+function pickAccountSort(v: string | undefined): AccountSortKey {
+  return v && VALID_ACCOUNT_SORTS.has(v as AccountSortKey) ? (v as AccountSortKey) : "name";
+}
+function pickContactSort(v: string | undefined): ContactSortKey {
+  return v && VALID_CONTACT_SORTS.has(v as ContactSortKey) ? (v as ContactSortKey) : "last_name";
+}
+function pickDir(v: string | undefined): SortDir {
+  return v === "desc" ? "desc" : "asc";
+}
+
+const ACCOUNT_LABEL: Record<AccountSortKey, string> = {
+  name: "Account",
+  account_type: "Account Type",
+  location: "Site Location",
+  location_type: "Location Type",
+  revenue: "Revenue",
+  employees: "Employees",
+};
+
 export default async function ReviewPage({
   searchParams
 }: {
@@ -25,11 +56,9 @@ export default async function ReviewPage({
 }) {
   const supabase = createClient();
 
-  // Cap enforcement: each /review render counts as one search. Hard cap → redirect to /limit-reached.
-  // Pass the search params hash as metadata so admin can audit which filter set hit the cap.
   const usageResult = await enforceUsageOrRedirect("search", 1, {
     route: "/build-list/review",
-    filter_keys: Object.keys(searchParams).sort(),
+    filter_keys: Object.keys(searchParams).filter((k) => k !== "sort" && k !== "dir" && k !== "tab").sort(),
   });
   const softOver = usageResult?.status === "soft_over";
 
@@ -51,15 +80,14 @@ export default async function ReviewPage({
   const minority = searchParams.min;
   const accountName = (searchParams.an ?? "").trim();
   const accountNameMode = searchParams.an_m ?? "contains";
-  // Form passes 2-letter ISO codes (US, CA), DB stores 3-letter (USA, CAN).
   const countryRaw = (searchParams.c ?? 'US').toUpperCase();
   const country = countryRaw === 'US' ? 'USA' : countryRaw === 'CA' ? 'CAN' : countryRaw;
 
   const tab = (searchParams.tab ?? "accounts") as "accounts" | "contacts" | "map";
+  const dir: SortDir = pickDir(searchParams.dir);
+  const accountSort: AccountSortKey = pickAccountSort(searchParams.sort);
+  const contactSort: ContactSortKey = pickContactSort(searchParams.sort);
 
-  // Tier-gating for email/mobile reveal: super_admin OR an active user_entitlements
-  // row unmasks contact PII. Otherwise we render an "Available — upgrade" pill
-  // for non-null fields, and "—" for fields with no data at all.
   const { data: { user: authUser } } = await supabase.auth.getUser();
   let canRevealContactPii = false;
   if (authUser) {
@@ -82,7 +110,7 @@ export default async function ReviewPage({
     }
   }
 
-  // ---- Resolve state IDs -> codes, metro IDs -> names ------------------
+  // ---- Resolve state IDs -> codes, etc. -----------------------------
   const [stRows, mtRows, atRows, crRows, afRows] = await Promise.all([
     stateIds.length
       ? supabase.from("states").select("id,code,name").in("id", stateIds)
@@ -104,8 +132,6 @@ export default async function ReviewPage({
   const stateCodes = (stRows.data ?? []).map((r) => r.code);
 
   // ---- Resolve carrier/affiliation/SIC IDs -> agency_id sets via join tables
-  // (PostgREST doesn't support cross-table EXISTS in a simple chain, so
-  // pre-resolve to a list of agency_id values, then .in() on agencies.)
   const subFilters: string[][] = [];
   if (carrierIds.length) {
     const { data } = await supabase
@@ -129,7 +155,6 @@ export default async function ReviewPage({
     subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
   }
 
-  // intersect all sub-filter agency-id arrays
   let allowedAgencyIds: string[] | null = null;
   if (subFilters.length) {
     allowedAgencyIds = subFilters.reduce<string[]>((acc, set, idx) => {
@@ -137,11 +162,9 @@ export default async function ReviewPage({
       const s = new Set(set);
       return acc.filter((id) => s.has(id));
     }, []);
-    // Empty intersection means no possible match — short-circuit.
     if (allowedAgencyIds.length === 0) allowedAgencyIds = ["00000000-0000-0000-0000-000000000000"];
   }
 
-  // ---- Build the agencies query ---------------------------------------
   const buildAgenciesQuery = (sel: string, withCount: boolean) => {
     let q = supabase.from("agencies").select(sel, withCount ? { count: "exact" } : {});
     if (accountTypeIds.length) q = q.in("account_type_id", accountTypeIds);
@@ -166,28 +189,49 @@ export default async function ReviewPage({
     return q;
   };
 
-  // count + preview rows
+  // count + preview rows. The preview SELECT includes location_types so we
+  // can render + sort by Location Type.
+  const ascending = dir === "asc";
+  const previewQueryBuilder = () => {
+    let q = buildAgenciesQuery(
+      "id, name, city, state, revenue, employees, account_type_id, account_types(label), location_type_id, location_types(name)",
+      false
+    );
+    switch (accountSort) {
+      case "name":
+        q = q.order("name", { ascending });
+        break;
+      case "account_type":
+        q = q.order("label", { foreignTable: "account_types", ascending, nullsFirst: false }).order("name", { ascending: true });
+        break;
+      case "location":
+        q = q.order("state", { ascending, nullsFirst: false }).order("city", { ascending, nullsFirst: false }).order("name", { ascending: true });
+        break;
+      case "location_type":
+        q = q.order("name", { foreignTable: "location_types", ascending, nullsFirst: false }).order("name", { ascending: true });
+        break;
+      case "revenue":
+        q = q.order("revenue", { ascending, nullsFirst: false }).order("name", { ascending: true });
+        break;
+      case "employees":
+        q = q.order("employees", { ascending, nullsFirst: false }).order("name", { ascending: true });
+        break;
+    }
+    return q.limit(25);
+  };
+
   const [countRes, previewRes] = await Promise.all([
     buildAgenciesQuery("id", true).limit(1) as any,
-    buildAgenciesQuery(
-      "id, name, city, state, revenue, employees, account_type_id, account_types(label)",
-      false
-    )
-      .order("name", { ascending: true })
-      .limit(25) as any
+    previewQueryBuilder() as any,
   ]);
 
   const accountsCount: number = countRes.count ?? 0;
 
-  // contacts count: limited to the same filtered agencies. If a huge result
-  // set, just count contacts whose agency_id is in the filter; for unlimited
-  // open queries, fall back to the global contacts total.
   let contactsCount = 0;
   if (allowedAgencyIds || accountTypeIds.length || locationTypeIds.length || amsIds.length ||
       premiumMin != null || premiumMax != null || revenueMin != null || revenueMax != null ||
       empMin != null || empMax != null || minority === "yes" || minority === "no" ||
       stateCodes.length || accountName) {
-    // get the filtered agency ids (cap at 50K for safety)
     const { data: agencyIdsRows } = await buildAgenciesQuery("id", false).limit(50000);
     const agencyIds = (agencyIdsRows ?? []).map((r: any) => r.id);
     if (agencyIds.length) {
@@ -204,7 +248,6 @@ export default async function ReviewPage({
     contactsCount = count ?? 0;
   }
 
-  // ---- chips for filters-applied row -----------------------------------
   const chips: { label: string; value: string }[] = [];
   if (stRows.data?.length) chips.push({ label: "States", value: stRows.data.map((r) => r.code).join(", ") });
   if (mtRows.data?.length) chips.push({ label: "Metros", value: mtRows.data.map((r) => r.name).slice(0, 3).join(", ") + (metroIds.length > 3 ? ` +${metroIds.length - 3}` : "") });
@@ -225,18 +268,39 @@ export default async function ReviewPage({
     revenue: number | null;
     employees: number | null;
     account_types: { label: string } | { label: string }[] | null;
+    location_types: { name: string } | { name: string }[] | null;
   }>;
 
-  const qs = new URLSearchParams(searchParams as any).toString();
+  // Edit Filters URL strips sort/dir/tab so reopening Build List doesn't carry table state.
+  const editFiltersQs = (() => {
+    const sp = new URLSearchParams(searchParams as any);
+    sp.delete("sort"); sp.delete("dir"); sp.delete("tab");
+    return sp.toString();
+  })();
+
+  // Tab href preserves filters but resets sort to default (each tab has its own sort namespace).
   const tabHref = (next: "accounts" | "contacts" | "map") => {
     const sp = new URLSearchParams(searchParams as any);
+    sp.delete("sort"); sp.delete("dir");
     if (next === "accounts") sp.delete("tab");
     else sp.set("tab", next);
     const q = sp.toString();
     return q ? `/build-list/review?${q}` : `/build-list/review`;
   };
 
-  // Fetch contacts for the Contacts tab using the same agency_id filter set.
+  // Sort header href — preserves everything (filters + tab), toggles sort+dir.
+  const sortHref = (key: string) => {
+    const sp = new URLSearchParams(searchParams as any);
+    if (sp.get("sort") === key) {
+      sp.set("sort", key);
+      sp.set("dir", dir === "asc" ? "desc" : "asc");
+    } else {
+      sp.set("sort", key);
+      sp.set("dir", "asc");
+    }
+    return `/build-list/review?${sp.toString()}`;
+  };
+
   type ContactRow = {
     id: string;
     first_name: string | null;
@@ -265,8 +329,29 @@ export default async function ReviewPage({
       .select(
         "id, first_name, last_name, title, email_primary, mobile_phone, city, state, address_1, agency_id, agencies!inner(id, name, account_type_id, account_types(label))"
       )
-      .order("last_name", { ascending: true })
       .limit(50);
+
+    switch (contactSort) {
+      case "last_name":
+        q = q.order("last_name", { ascending, nullsFirst: false }).order("first_name", { ascending: true });
+        break;
+      case "email":
+        q = q.order("email_primary", { ascending, nullsFirst: false }).order("last_name", { ascending: true });
+        break;
+      case "mobile":
+        q = q.order("mobile_phone", { ascending, nullsFirst: false }).order("last_name", { ascending: true });
+        break;
+      case "agency":
+        q = q.order("name", { foreignTable: "agencies", ascending, nullsFirst: false }).order("last_name", { ascending: true });
+        break;
+      case "account_type":
+        q = q.order("last_name", { ascending, nullsFirst: false }).order("first_name", { ascending: true });
+        break;
+      case "location":
+        q = q.order("state", { ascending, nullsFirst: false }).order("city", { ascending, nullsFirst: false });
+        break;
+    }
+
     if (agencyIdsForContacts) {
       if (agencyIdsForContacts.length === 0) q = q.eq("agency_id", "00000000-0000-0000-0000-000000000000");
       else q = q.in("agency_id", agencyIdsForContacts);
@@ -274,7 +359,6 @@ export default async function ReviewPage({
     const { data: cRows } = await q;
     contactRows = (cRows ?? []) as unknown as ContactRow[];
   }
-
 
   return (
     <AppShell>
@@ -290,7 +374,6 @@ export default async function ReviewPage({
             an admin will see this on their alerts page.
           </div>
         )}
-
 
         <h1 className="text-3xl font-bold text-gray-900">Review</h1>
         <p className="mt-2 text-sm text-gray-600">
@@ -311,7 +394,7 @@ export default async function ReviewPage({
                 <span className="text-gray-600">{c.value}</span>
               </span>
             ))}
-            <Link href={`/build-list?${qs}`} className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-semibold">
+            <Link href={`/build-list?${editFiltersQs}`} className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-semibold">
               <Pencil className="h-3.5 w-3.5" /> Edit Filters
             </Link>
           </div>
@@ -342,12 +425,12 @@ export default async function ReviewPage({
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
               <tr>
-                <th className="px-4 py-3">Account</th>
-                <th className="px-4 py-3">Account Type</th>
-                <th className="px-4 py-3">Site Location</th>
-                <th className="px-4 py-3 text-right">Revenue</th>
-                <th className="px-4 py-3 text-right">Employees</th>
-                <th className="px-4 py-3">Additional Details</th>
+                <SortableTh label="Account"        sortKey="name"          activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Account Type"   sortKey="account_type"  activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Site Location"  sortKey="location"      activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Location Type"  sortKey="location_type" activeSort={accountSort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Revenue"        sortKey="revenue"       activeSort={accountSort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableTh label="Employees"      sortKey="employees"     activeSort={accountSort} dir={dir} hrefFor={sortHref} align="right" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -360,6 +443,7 @@ export default async function ReviewPage({
               )}
               {previewRows.map((r) => {
                 const at = Array.isArray(r.account_types) ? r.account_types[0]?.label : r.account_types?.label;
+                const lt = Array.isArray(r.location_types) ? r.location_types[0]?.name : r.location_types?.name;
                 return (
                   <tr key={r.id}>
                     <td className="px-4 py-3">
@@ -369,18 +453,25 @@ export default async function ReviewPage({
                     <td className="px-4 py-3 text-gray-700">
                       {r.city ? `${r.city}${r.state ? ", " + r.state : ""}` : (r.state ?? "—")}
                     </td>
+                    <td className="px-4 py-3 text-gray-700">{lt ?? "—"}</td>
                     <td className="px-4 py-3 text-right tabular-nums text-gray-700">
                       {r.revenue ? "$" + (Number(r.revenue) / 1_000_000).toFixed(2) + "M" : "—"}
                     </td>
                     <td className="px-4 py-3 text-right tabular-nums text-gray-700">
                       {r.employees ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">—</td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          {previewRows.length > 0 && (
+            <p className="px-4 py-2 text-xs text-gray-500 border-t border-gray-100">
+              Showing {previewRows.length} of {accountsCount} matching agencies, sorted by{" "}
+              <span className="font-semibold">{ACCOUNT_LABEL[accountSort]}</span>{" "}
+              <span className="font-semibold">{dir === "asc" ? "↑" : "↓"}</span>.
+            </p>
+          )}
         </div>
         )}
 
@@ -389,12 +480,12 @@ export default async function ReviewPage({
             <table className="min-w-full divide-y divide-gray-200 text-sm">
               <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
                 <tr>
-                  <th className="px-4 py-3">Contact</th>
-                  <th className="px-4 py-3">Email Address</th>
-                  <th className="px-4 py-3">Mobile Number</th>
-                  <th className="px-4 py-3">Account</th>
+                  <SortableTh label="Contact"        sortKey="last_name"   activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableTh label="Email Address"  sortKey="email"       activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableTh label="Mobile Number"  sortKey="mobile"      activeSort={contactSort} dir={dir} hrefFor={sortHref} />
+                  <SortableTh label="Account"        sortKey="agency"      activeSort={contactSort} dir={dir} hrefFor={sortHref} />
                   <th className="px-4 py-3">Account Type</th>
-                  <th className="px-4 py-3">Site Location</th>
+                  <SortableTh label="Site Location"  sortKey="location"    activeSort={contactSort} dir={dir} hrefFor={sortHref} />
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -442,91 +533,89 @@ export default async function ReviewPage({
                 })}
               </tbody>
             </table>
-            {!canRevealContactPii && (
-              <div className="border-t border-gray-200 bg-amber-50 px-4 py-3 text-xs text-amber-900 flex items-center justify-between gap-4">
-                <span>
-                  Email and mobile data is loaded for these contacts but masked for your tier.
-                </span>
-                <Link href="/#pricing" className="font-semibold text-amber-900 underline hover:text-amber-700">
-                  Upgrade to reveal &rarr;
-                </Link>
-              </div>
-            )}
           </div>
         )}
 
         {tab === "map" && (
-          <div className="mt-0 rounded-b-lg border border-gray-200 border-t-0 bg-white px-6 py-12 text-center text-sm text-gray-500">
-            Map view coming soon — agency markers across {accountsCount.toLocaleString()} matching agencies.
+          <div className="mt-0 rounded-b-lg border border-gray-200 border-t-0 bg-white p-12 text-center text-sm text-gray-500">
+            Map view coming soon.
           </div>
         )}
 
-        {previewRows.length > 0 && tab === "accounts" && (
-          <p className="mt-3 text-xs text-gray-500">
-            Showing {previewRows.length} of {accountsCount.toLocaleString()} matching agencies. Download to export the full list.
-          </p>
-        )}
-
-        <div className="sticky bottom-0 mt-6 -mx-4 sm:-mx-6 lg:-mx-8 bg-white border-t border-gray-200 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-end gap-4">
-          <Link
-            href={`/build-list?${qs}`}
-            className="text-sm font-semibold text-gray-700 hover:text-gray-900 px-4 py-2"
-          >
-            Edit List
-          </Link>
-          <SaveListButton filterQs={qs} />
+        <div className="mt-6 flex items-center justify-end gap-3">
+          <SaveListButton searchParams={searchParams} accountsCount={accountsCount} contactsCount={contactsCount} />
         </div>
       </div>
     </AppShell>
   );
 }
 
-function ContactPiiCell({ value, reveal, kind }: { value: string | null; reveal: boolean; kind: "email" | "mobile" }) {
-  if (!value || !value.trim()) return <span className="text-gray-400">—</span>;
-  if (reveal) {
-    if (kind === "email") {
-      return (
-        <a href={`mailto:${value}`} className="text-brand-700 hover:text-brand-800">
-          {value}
-        </a>
-      );
-    }
-    return (
-      <a href={`tel:${value}`} className="text-brand-700 hover:text-brand-800">
-        {value}
-      </a>
-    );
-  }
+function SortableTh({
+  label, sortKey, activeSort, dir, hrefFor, align,
+}: {
+  label: string;
+  sortKey: string;
+  activeSort: string;
+  dir: SortDir;
+  hrefFor: (key: string) => string;
+  align?: "right";
+}) {
+  const isActive = activeSort === sortKey;
   return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 text-amber-900 px-2 py-0.5 text-xs font-medium"
-      title="Available — upgrade your plan to reveal"
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-      Available — hidden
-    </span>
+    <th className={"px-4 py-3 " + (align === "right" ? "text-right" : "")}>
+      <Link
+        href={hrefFor(sortKey)}
+        className={
+          "inline-flex items-center gap-1 group " +
+          (isActive ? "text-brand-700 font-semibold" : "text-gray-600 hover:text-gray-900")
+        }
+        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
+      >
+        {label}
+        {isActive ? (
+          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+        ) : (
+          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
+        )}
+      </Link>
+    </th>
   );
 }
 
-function TabBadge({ label, count, active, href }: { label: string; count: number | null; active?: boolean; href?: string }) {
-  const className =
-    "inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm cursor-pointer " +
-    (active ? "bg-white text-brand-700" : "bg-white/10 text-white hover:bg-white/20");
-  const inner = (
-    <>
+function TabBadge({
+  label, count, active, href,
+}: {
+  label: string;
+  count: number | null;
+  active?: boolean;
+  href: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className={"inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm transition-colors " + (active ? "bg-white text-brand-700" : "bg-white/10 text-white hover:bg-white/20")}
+    >
       <span className="font-semibold">{label}</span>
       {count != null && (
-        <span
-          className={
-            "inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs min-w-[2.5rem] " +
-            (active ? "bg-brand-600 text-white" : "bg-white/20 text-white")
-          }
-        >
+        <span className={"inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs min-w-[2.5rem] " + (active ? "bg-brand-600 text-white" : "bg-white/20 text-white")}>
           {count.toLocaleString()}
         </span>
       )}
-    </>
+    </Link>
   );
-  if (href) return <Link href={href} className={className}>{inner}</Link>;
-  return <span className={className}>{inner}</span>;
+}
+
+function ContactPiiCell({ value, reveal, kind }: { value: string | null; reveal: boolean; kind: "email" | "mobile" }) {
+  if (!value) return <span className="text-gray-400">—</span>;
+  if (reveal) {
+    if (kind === "email") {
+      return <a href={`mailto:${value}`} className="text-brand-700 hover:text-brand-800 underline-offset-2 hover:underline">{value}</a>;
+    }
+    return <a href={`tel:${value}`} className="text-brand-700 hover:text-brand-800 underline-offset-2 hover:underline">{value}</a>;
+  }
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 text-xs">
+      Available — hidden
+    </span>
+  );
 }
