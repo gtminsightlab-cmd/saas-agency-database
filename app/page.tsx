@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Filter, Download, Search, Zap, X } from "lucide-react";
+import { Check, Filter, Download, Search, Zap, X, Truck, Stethoscope, HardHat, Wheat, HeartHandshake } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MarketingNav } from "@/components/marketing/nav";
 
@@ -10,7 +10,7 @@ export default async function MarketingHome() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [carriers, affiliations, plans, tiers] = await Promise.all([
+  const [carriers, affiliations, plans, tiers, verticalsRes] = await Promise.all([
     supabase.from("carriers").select("id", { count: "exact", head: true }),
     supabase.from("affiliations").select("id", { count: "exact", head: true }),
     supabase.from("billing_plans")
@@ -18,7 +18,8 @@ export default async function MarketingHome() {
       .eq("active", true).order("sort_order"),
     supabase.from("plan_bulk_tiers")
       .select("plan_id,min_credits,max_credits,unit_cents,discount_pct,sort_order")
-      .order("sort_order")
+      .order("sort_order"),
+    supabase.rpc("get_vertical_summary")
   ]);
 
   const carrierCount = carriers.count ?? 0;
@@ -29,6 +30,7 @@ export default async function MarketingHome() {
   const snapshotPlan = planList.find((p) => p.code === "snapshot");
   const memberTiers = tierList.filter((t) => t.plan_id === memberPlan?.id);
   const snapshotTiers = tierList.filter((t) => t.plan_id === snapshotPlan?.id);
+  const verticals = (verticalsRes.data ?? []) as Array<{ slug: string; name: string; description: string; icon_key: string; color_token: string; agencies_with_exposure: number; agencies_growing: number; agencies_specialist: number; mapped_carrier_count: number }>;
 
   return (
     <div className="bg-white">
@@ -105,6 +107,56 @@ export default async function MarketingHome() {
             <Step n={1} title="Build" desc="Stack filters — carriers, affiliations, state, AMS, revenue band, contact role. Record counts update live." icon={Filter} />
             <Step n={2} title="Review" desc="Preview matching accounts + contacts before committing. Edit filters until the list is exactly what you want." icon={Search} />
             <Step n={3} title="Download" desc="Export to CSV or Excel. Subscribe for monthly credits + free Hygiene updates, or buy a one-time snapshot." icon={Download} />
+          </div>
+        </div>
+      </section>
+
+      {/* ======== VERTICAL SPECIALTIES ======== */}
+      <section id="verticals" className="py-20 bg-white">
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-navy-800">Find agencies by vertical practice.</h2>
+            <p className="mt-4 text-gray-600">
+              We infer specialization from carrier appointments. The more specialty carriers an agency
+              holds for a vertical, the higher the probability they have a real book of business in it.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-4 md:grid-cols-3 lg:grid-cols-5">
+            {verticals.map((v) => {
+              const Icon = (
+                { Truck, Stethoscope, HardHat, Wheat, HeartHandshake } as Record<string, typeof Truck>
+              )[v.icon_key] ?? HardHat;
+              const accent = ({
+                brand:   { bg: "bg-brand-50",   text: "text-brand-700",   border: "border-brand-100" },
+                success: { bg: "bg-success-50", text: "text-success-700", border: "border-success-100" },
+                gold:    { bg: "bg-gold-50",    text: "text-gold-800",    border: "border-gold-100" },
+                navy:    { bg: "bg-navy-50",    text: "text-navy-800",    border: "border-navy-100" },
+              } as Record<string, { bg: string; text: string; border: string }>)[v.color_token] ?? { bg: "bg-brand-50", text: "text-brand-700", border: "border-brand-100" };
+              const total = v.agencies_with_exposure + v.agencies_growing + v.agencies_specialist;
+              return (
+                <Link
+                  key={v.slug}
+                  href={`/verticals#${v.slug}`}
+                  className={`group rounded-xl border ${accent.border} bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-md`}
+                >
+                  <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${accent.bg}`}>
+                    <Icon className={`h-5 w-5 ${accent.text}`} />
+                  </div>
+                  <h3 className="mt-4 text-sm font-semibold text-navy-800">{v.name}</h3>
+                  <p className="mt-2 text-2xl font-bold tabular-nums text-navy-800">
+                    {total.toLocaleString()}
+                  </p>
+                  <p className="text-xs text-gray-500">agencies indexed</p>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link href="/verticals" className="inline-flex items-center gap-1 text-sm font-semibold text-brand-600 hover:text-brand-700">
+              See the full vertical breakdown →
+            </Link>
           </div>
         </div>
       </section>

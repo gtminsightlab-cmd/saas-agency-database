@@ -8,6 +8,9 @@ export function MarketingNav({ isAuthed }: { isAuthed: boolean }) {
           Seven16 <span className="font-light text-gray-500">Agency Directory</span>
         </Link>
         <div className="flex items-center gap-2">
+          <Link href="/verticals" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
+            Verticals
+          </Link>
           <a href="#pricing" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Pricing
           </a>
