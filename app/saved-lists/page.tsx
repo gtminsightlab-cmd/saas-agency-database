@@ -1,21 +1,89 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { Search, ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { AppShell } from "@/components/app/shell";
 import { createClient } from "@/lib/supabase/server";
 import SavedListRowActions from "./row-actions";
 
 export const dynamic = "force-dynamic";
 
-export default async function SavedListsPage() {
+type SortKey = "name" | "created_at" | "accounts" | "contacts" | "emails" | "has_updates";
+type SortDir = "asc" | "desc";
+
+const VALID_SORTS = new Set<SortKey>([
+  "name", "created_at", "accounts", "contacts", "emails", "has_updates",
+]);
+function pickSort(v: string | undefined): SortKey {
+  return v && VALID_SORTS.has(v as SortKey) ? (v as SortKey) : "created_at";
+}
+function pickDir(v: string | undefined): SortDir {
+  return v === "asc" ? "asc" : "desc";
+}
+
+const LABEL: Record<SortKey, string> = {
+  name: "List Name",
+  created_at: "Created",
+  accounts: "Accounts",
+  contacts: "Contacts",
+  emails: "Contacts with Emails",
+  has_updates: "Updates",
+};
+
+export default async function SavedListsPage({
+  searchParams,
+}: {
+  searchParams: { sort?: string; dir?: string };
+}) {
+  const sort: SortKey = pickSort(searchParams.sort);
+  const dir: SortDir = pickDir(searchParams.dir);
+  const ascending = dir === "asc";
+
   const supabase = createClient();
-  const { data: lists, count } = await supabase
+
+  let q = supabase
     .from("saved_lists")
     .select(
       "id,name,created_at,accounts_count,contacts_count,contacts_with_email_count,has_updates,filter_json",
       { count: "exact" }
     )
-    .order("created_at", { ascending: false })
     .limit(200);
+
+  // Apply primary sort + secondary by created_at desc to stabilize ties.
+  switch (sort) {
+    case "name":
+      q = q.order("name", { ascending, nullsFirst: false }).order("created_at", { ascending: false });
+      break;
+    case "created_at":
+      q = q.order("created_at", { ascending });
+      break;
+    case "accounts":
+      q = q.order("accounts_count", { ascending, nullsFirst: false }).order("created_at", { ascending: false });
+      break;
+    case "contacts":
+      q = q.order("contacts_count", { ascending, nullsFirst: false }).order("created_at", { ascending: false });
+      break;
+    case "emails":
+      q = q.order("contacts_with_email_count", { ascending, nullsFirst: false }).order("created_at", { ascending: false });
+      break;
+    case "has_updates":
+      // sort by boolean — true grouped first when desc
+      q = q.order("has_updates", { ascending }).order("created_at", { ascending: false });
+      break;
+  }
+
+  const { data: lists, count } = await q;
+
+  function sortHref(key: SortKey): string {
+    const params = new URLSearchParams();
+    if (key === sort) {
+      params.set("sort", key);
+      params.set("dir", dir === "asc" ? "desc" : "asc");
+    } else {
+      params.set("sort", key);
+      // Numeric/date columns default to descending (most useful first); name + has_updates default ascending.
+      params.set("dir", key === "name" || key === "has_updates" ? "asc" : "desc");
+    }
+    return `/saved-lists?${params.toString()}`;
+  }
 
   return (
     <AppShell>
@@ -37,20 +105,26 @@ export default async function SavedListsPage() {
           </div>
         </div>
 
-        <div className="mb-2 text-right text-sm text-gray-500">
-          Total Records: <span className="font-semibold text-gray-900">{count ?? 0}</span>
+        <div className="mb-2 flex items-center justify-between text-sm text-gray-500">
+          <div>
+            Sorted by <span className="font-semibold text-gray-700">{LABEL[sort]}</span>{" "}
+            <span className="font-semibold text-gray-700">{dir === "asc" ? "↑" : "↓"}</span>
+          </div>
+          <div>
+            Total Records: <span className="font-semibold text-gray-900">{count ?? 0}</span>
+          </div>
         </div>
 
         <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
               <tr>
-                <th className="px-4 py-3">List Name</th>
-                <th className="px-4 py-3">Created</th>
-                <th className="px-4 py-3 text-right">Accounts</th>
-                <th className="px-4 py-3 text-right">Contacts</th>
-                <th className="px-4 py-3 text-right">Contacts with Emails</th>
-                <th className="px-4 py-3">Updates?</th>
+                <SortableTh label="List Name"            sortKey="name"        activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Created"              sortKey="created_at"  activeSort={sort} dir={dir} hrefFor={sortHref} />
+                <SortableTh label="Accounts"             sortKey="accounts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableTh label="Contacts"             sortKey="contacts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableTh label="Contacts with Emails" sortKey="emails"      activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
+                <SortableTh label="Updates?"             sortKey="has_updates" activeSort={sort} dir={dir} hrefFor={sortHref} />
                 <th className="px-4 py-3">Actions</th>
               </tr>
             </thead>
@@ -119,5 +193,37 @@ export default async function SavedListsPage() {
         </div>
       </div>
     </AppShell>
+  );
+}
+
+function SortableTh({
+  label, sortKey, activeSort, dir, hrefFor, align,
+}: {
+  label: string;
+  sortKey: SortKey;
+  activeSort: SortKey;
+  dir: SortDir;
+  hrefFor: (key: SortKey) => string;
+  align?: "right";
+}) {
+  const isActive = activeSort === sortKey;
+  return (
+    <th className={"px-4 py-3 " + (align === "right" ? "text-right" : "")}>
+      <Link
+        href={hrefFor(sortKey)}
+        className={
+          "inline-flex items-center gap-1 group " +
+          (isActive ? "text-brand-700 font-semibold" : "text-gray-600 hover:text-gray-900")
+        }
+        title={isActive ? `Sort ${dir === "asc" ? "descending" : "ascending"}` : `Sort by ${label}`}
+      >
+        {label}
+        {isActive ? (
+          dir === "asc" ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />
+        ) : (
+          <ArrowUpDown className="h-3 w-3 opacity-30 group-hover:opacity-60" />
+        )}
+      </Link>
+    </th>
   );
 }
