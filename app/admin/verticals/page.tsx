@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Layers } from "lucide-react";
+import { ArrowLeft, ArrowRight, Layers, Mail, Smartphone, Linkedin, Globe } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -9,7 +9,11 @@ export default async function AdminVerticalsPage() {
   const { data: verticals } = await supabase
     .from("mv_vertical_summary")
     .select(
-      "slug,name,description,icon_key,color_token,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist"
+      "slug,name,description,icon_key,color_token,mapped_carrier_count," +
+      "agencies_with_exposure,agencies_growing,agencies_specialist," +
+      "agency_count,location_count,contact_count," +
+      "contacts_with_email,contacts_with_mobile," +
+      "agencies_with_linkedin,agencies_with_web,agencies_with_email"
     )
     .order("sort_order");
 
@@ -45,6 +49,8 @@ export default async function AdminVerticalsPage() {
             </div>
             <h3 className="mt-3 text-base font-semibold text-admin-text">{v.name}</h3>
             <p className="mt-1 text-xs text-admin-text-mute line-clamp-2">{v.description}</p>
+
+            {/* Top-line counts */}
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs">
               <span className="text-admin-text-mute">
                 <span className="text-admin-text font-semibold tabular-nums">{v.mapped_carrier_count}</span>{" "}
@@ -57,12 +63,41 @@ export default async function AdminVerticalsPage() {
                 agencies w/ exposure
               </span>
             </div>
+
+            {/* Premium detail strip — what paying customers actually buy */}
+            <div className="mt-4 grid grid-cols-4 gap-2 border-t border-admin-border-2 pt-3">
+              <PremiumStat Icon={Mail}      label="Emails"   value={v.contacts_with_email ?? 0} />
+              <PremiumStat Icon={Smartphone}label="Mobiles"  value={v.contacts_with_mobile ?? 0} />
+              <PremiumStat Icon={Linkedin}  label="LinkedIn" value={v.agencies_with_linkedin ?? 0} />
+              <PremiumStat Icon={Globe}     label="Websites" value={v.agencies_with_web ?? 0} />
+            </div>
+
             <div className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-admin-accent">
               Manage carriers
               <ArrowRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
             </div>
           </Link>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function PremiumStat({
+  Icon, label, value,
+}: {
+  Icon: typeof Mail;
+  label: string;
+  value: number;
+}) {
+  return (
+    <div>
+      <div className="inline-flex items-center gap-1 text-[10px] uppercase tracking-wider text-admin-text-dim font-medium">
+        <Icon className="h-3 w-3" />
+        {label}
+      </div>
+      <div className="mt-0.5 text-sm font-semibold text-admin-text tabular-nums">
+        {value.toLocaleString()}
       </div>
     </div>
   );

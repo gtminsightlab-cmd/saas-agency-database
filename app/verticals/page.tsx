@@ -6,7 +6,11 @@ import {
   Wheat,
   HeartHandshake,
   TrendingUp,
-  Users,
+  Mail,
+  Smartphone,
+  Linkedin,
+  Globe,
+  Lock,
   type LucideIcon,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -14,21 +18,22 @@ import { MarketingNav } from "@/components/marketing/nav";
 
 export const dynamic = "force-dynamic";
 
-// Snapshot fallback — used only while PostgREST hosted schema cache is still picking up
-// the mv_vertical_summary view. Values captured from MCP at migration time; they update
-// automatically once the cache refreshes and the live query starts returning rows.
 const VERTICAL_FALLBACK = [
-  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 78,  agencies_growing: 6, agencies_specialist: 0, agency_count: 361,   location_count: 521,   contact_count: 4011  },
-  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 31,  agencies_growing: 0, agencies_specialist: 0, agency_count: 263,   location_count: 312,   contact_count: 2236  },
-  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 83,  agencies_growing: 2, agencies_specialist: 0, agency_count: 679,   location_count: 968,   contact_count: 6633  },
-  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 603, agencies_growing: 1, agencies_specialist: 0, agency_count: 5189,  location_count: 7023,  contact_count: 34606 },
+  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 78,  agencies_growing: 6, agencies_specialist: 0, agency_count: 358,   location_count: 518,   contact_count: 4002,  contacts_with_email: 3710,  contacts_with_mobile: 1232, agencies_with_linkedin: 361,  agencies_with_web: 510,   agencies_with_email: 436  },
+  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 31,  agencies_growing: 0, agencies_specialist: 0, agency_count: 263,   location_count: 311,   contact_count: 2231,  contacts_with_email: 2056,  contacts_with_mobile: 736,  agencies_with_linkedin: 203,  agencies_with_web: 308,   agencies_with_email: 262  },
+  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 83,  agencies_growing: 2, agencies_specialist: 0, agency_count: 678,   location_count: 967,   contact_count: 6630,  contacts_with_email: 6054,  contacts_with_mobile: 1735, agencies_with_linkedin: 593,  agencies_with_web: 946,   agencies_with_email: 835  },
+  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 603, agencies_growing: 1, agencies_specialist: 0, agency_count: 5182,  location_count: 7013,  contact_count: 34588, contacts_with_email: 31399, contacts_with_mobile: 9314, agencies_with_linkedin: 3886, agencies_with_web: 6833,  agencies_with_email: 6100 },
 ];
-
 
 type VerticalSummary = {
   agency_count: number;
   location_count: number;
   contact_count: number;
+  contacts_with_email: number;
+  contacts_with_mobile: number;
+  agencies_with_linkedin: number;
+  agencies_with_web: number;
+  agencies_with_email: number;
   slug: string;
   name: string;
   description: string;
@@ -41,7 +46,6 @@ type VerticalSummary = {
   agencies_specialist: number;
 };
 
-// Map icon_key strings from the DB to lucide components (avoids dynamic require, keeps tree-shaking)
 const ICONS: Record<string, LucideIcon> = {
   Truck,
   Stethoscope,
@@ -50,8 +54,6 @@ const ICONS: Record<string, LucideIcon> = {
   HeartHandshake,
 };
 
-// Map color_token strings to Tailwind classes for the card accent.
-// Keeping this as a plain lookup lets Tailwind's JIT pick up the classes.
 const COLOR_CLASSES: Record<string, { ring: string; bg: string; text: string; border: string; dot: string }> = {
   brand:   { ring: "ring-brand-200",   bg: "bg-brand-50",   text: "text-brand-700",   border: "border-brand-100",   dot: "bg-brand-500" },
   success: { ring: "ring-success-200", bg: "bg-success-50", text: "text-success-700", border: "border-success-100", dot: "bg-success-500" },
@@ -65,9 +67,25 @@ export default async function VerticalsPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // For tier-aware CTA: pull entitlement
+  let hasActivePlan = false;
+  if (user) {
+    const { data: ent } = await supabase
+      .from("v_my_entitlement")
+      .select("plan_code,status")
+      .maybeSingle();
+    hasActivePlan = !!ent && ent.status === "active";
+  }
+
   const { data } = await supabase
     .from("mv_vertical_summary")
-    .select("slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist,agency_count,location_count,contact_count")
+    .select(
+      "slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count," +
+      "agencies_with_exposure,agencies_growing,agencies_specialist," +
+      "agency_count,location_count,contact_count," +
+      "contacts_with_email,contacts_with_mobile," +
+      "agencies_with_linkedin,agencies_with_web,agencies_with_email"
+    )
     .order("sort_order");
   const live = (data ?? []) as VerticalSummary[];
   const verticals: VerticalSummary[] = live.length > 0 ? live : (VERTICAL_FALLBACK as VerticalSummary[]);
@@ -89,9 +107,9 @@ export default async function VerticalsPage() {
               <span className="text-brand-600">specialty practice</span>.
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              We infer vertical specialization from carrier appointments. The more specialty
-              carriers an agency holds for a given vertical, the higher the probability they
-              have a genuine book of business in that niche — not just a one-off account.
+              We infer vertical specialization from carrier appointments. Each card below shows a
+              pre-filtered, ready-to-export targeted list — emails, mobiles, LinkedIn URLs, and
+              all the rich detail you&rsquo;d expect from a $25K data buy.
             </p>
             <p className="mt-4 text-sm text-gray-500">
               <strong className="text-navy-800">Tiers:</strong>{" "}
@@ -112,7 +130,7 @@ export default async function VerticalsPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
           {verticals.map((v) => {
             const Icon = ICONS[v.icon_key] ?? TrendingUp;
             const colors = COLOR_CLASSES[v.color_token] ?? COLOR_CLASSES.brand;
@@ -134,23 +152,49 @@ export default async function VerticalsPage() {
                 <p className="mt-2 text-sm leading-6 text-gray-600">{v.description}</p>
 
                 <div className="mt-6 grid grid-cols-3 gap-3 border-t border-gray-100 pt-4">
-                  <TierStat label="Exposure" count={v.agencies_with_exposure} dot="bg-brand-200" />
-                  <TierStat label="Growing"  count={v.agencies_growing}        dot="bg-brand-500" />
-                  <TierStat label="Specialist" count={v.agencies_specialist}   dot="bg-brand-700" />
+                  <TierStat label="Exposure"   count={v.agencies_with_exposure}  dot="bg-brand-200" />
+                  <TierStat label="Growing"    count={v.agencies_growing}        dot="bg-brand-500" />
+                  <TierStat label="Specialist" count={v.agencies_specialist}     dot="bg-brand-700" />
                 </div>
 
                 <div className="mt-5 grid grid-cols-3 gap-2 border-t border-gray-100 pt-4 text-xs">
-                  <div><div className="text-gray-500">Agencies</div><div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">{(v.agency_count ?? 0).toLocaleString()}</div></div>
-                  <div><div className="text-gray-500">Locations</div><div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">{(v.location_count ?? 0).toLocaleString()}</div></div>
-                  <div><div className="text-gray-500">Contacts</div><div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">{(v.contact_count ?? 0).toLocaleString()}</div></div>
+                  <CountStat label="Agencies"   value={v.agency_count} />
+                  <CountStat label="Locations"  value={v.location_count} />
+                  <CountStat label="Contacts"   value={v.contact_count} />
                 </div>
-                <div className="mt-4 flex items-center justify-end">
-                  <Link
-                    href={user ? `/build-list?vertical=${v.slug}` : `/sign-up?vertical=${v.slug}`}
-                    className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
-                  >
-                    {user ? "Build a list" : "Get access"} →
-                  </Link>
+
+                {/* Premium detail strip */}
+                <div className="mt-4 grid grid-cols-4 gap-2 rounded-lg border border-gray-100 bg-gray-50/50 px-3 py-2.5">
+                  <PremiumStat Icon={Mail}       label="Emails"   value={v.contacts_with_email} colors={colors} />
+                  <PremiumStat Icon={Smartphone} label="Mobiles"  value={v.contacts_with_mobile} colors={colors} />
+                  <PremiumStat Icon={Linkedin}   label="LinkedIn" value={v.agencies_with_linkedin} colors={colors} />
+                  <PremiumStat Icon={Globe}      label="Websites" value={v.agencies_with_web} colors={colors} />
+                </div>
+
+                <div className="mt-5 flex items-center justify-end">
+                  {hasActivePlan ? (
+                    <Link
+                      href={`/build-list?vertical=${v.slug}`}
+                      className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
+                    >
+                      Open targeted list →
+                    </Link>
+                  ) : user ? (
+                    <Link
+                      href={`/#pricing`}
+                      className="inline-flex items-center gap-1 rounded-md bg-navy-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-900"
+                    >
+                      <Lock className="h-3 w-3" />
+                      Unlock targeted list
+                    </Link>
+                  ) : (
+                    <Link
+                      href={`/sign-up?vertical=${v.slug}`}
+                      className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
+                    >
+                      Get access →
+                    </Link>
+                  )}
                 </div>
               </article>
             );
@@ -182,6 +226,38 @@ function TierStat({ label, count, dot }: { label: string; count: number; dot: st
       </div>
       <div className="mt-1 text-lg font-semibold tabular-nums text-navy-800">
         {count.toLocaleString()}
+      </div>
+    </div>
+  );
+}
+
+function CountStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <div className="text-gray-500">{label}</div>
+      <div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">
+        {value.toLocaleString()}
+      </div>
+    </div>
+  );
+}
+
+function PremiumStat({
+  Icon, label, value, colors,
+}: {
+  Icon: LucideIcon;
+  label: string;
+  value: number;
+  colors: { text: string };
+}) {
+  return (
+    <div className="text-center">
+      <Icon className={`h-3.5 w-3.5 mx-auto ${colors.text}`} />
+      <div className="mt-1 text-[10px] uppercase tracking-wider text-gray-500 font-semibold">
+        {label}
+      </div>
+      <div className="mt-0.5 text-sm font-semibold text-navy-800 tabular-nums">
+        {value.toLocaleString()}
       </div>
     </div>
   );
