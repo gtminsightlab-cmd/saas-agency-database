@@ -12,6 +12,14 @@ import {
   Globe,
   Lock,
   type LucideIcon,
+  Landmark,
+  Building2,
+  UtensilsCrossed,
+  Factory,
+  Cpu,
+  Zap,
+  ShoppingBag,
+  Briefcase,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MarketingNav } from "@/components/marketing/nav";
@@ -52,6 +60,14 @@ const ICONS: Record<string, LucideIcon> = {
   HardHat,
   Wheat,
   HeartHandshake,
+  Landmark,
+  Building2,
+  UtensilsCrossed,
+  Factory,
+  Cpu,
+  Zap,
+  ShoppingBag,
+  Briefcase,
 };
 
 const COLOR_CLASSES: Record<string, { ring: string; bg: string; text: string; border: string; dot: string }> = {
