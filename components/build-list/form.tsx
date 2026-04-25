@@ -27,55 +27,74 @@ export type FilterData = {
 type IncEx = "include" | "exclude";
 type AndOr = "and" | "or";
 
-export function BuildListForm({ data }: { data: FilterData }) {
+export type InitialFilters = Partial<{
+  accountType: string[]; accountTypeMode: "contains" | "exact" | "starts_with";
+  locationType: string[];
+  ams: string[]; amsMode: IncEx;
+  premiumMin: string; premiumMax: string;
+  revenueMin: string; revenueMax: string;
+  empMin: string; empMax: string;
+  sizeCombo: AndOr;
+  minority: "any" | "yes" | "no";
+  accountName: string; accountNameMode: "begins" | "contains";
+  mgmtLevels: string[]; mgmtMode: IncEx;
+  contactTitles: string[]; contactTitleMode: IncEx;
+  departments: string[]; departmentsMode: IncEx;
+  country: "US" | "CA";
+  states: string[]; statesMode: IncEx;
+  metros: string[]; metrosMode: IncEx;
+  carriers: string[]; carriersMode: IncEx; carriersCombo: AndOr;
+  affiliations: string[]; affiliationsMode: IncEx;
+  industries: string[]; industriesMode: IncEx;
+}>;
+
+export function BuildListForm({ data, initial }: { data: FilterData; initial?: InitialFilters }) {
   const router = useRouter();
 
   // ---- Account ----
-  const [accountType, setAccountType] = useState<string[]>([]);
-  const [accountTypeMode, setAccountTypeMode] = useState<"contains" | "exact" | "starts_with">(
-    "exact"
-  );
-  const [locationType, setLocationType] = useState<string[]>([]);
-  const [ams, setAms] = useState<string[]>([]);
-  const [amsMode, setAmsMode] = useState<IncEx>("include");
-  const [premiumMin, setPremiumMin] = useState("");
-  const [premiumMax, setPremiumMax] = useState("");
-  const [revenueMin, setRevenueMin] = useState("");
-  const [revenueMax, setRevenueMax] = useState("");
-  const [empMin, setEmpMin] = useState("");
-  const [empMax, setEmpMax] = useState("");
-  const [sizeCombo, setSizeCombo] = useState<AndOr>("or");
-  const [minority, setMinority] = useState<"any" | "yes" | "no">("any");
-  const [accountName, setAccountName] = useState("");
-  const [accountNameMode, setAccountNameMode] = useState<"begins" | "contains">("begins");
+  const [accountType, setAccountType] = useState<string[]>(initial?.accountType ?? []);
+  const [accountTypeMode, setAccountTypeMode] = useState<"contains" | "exact" | "starts_with">(initial?.accountTypeMode ?? "exact");
+  const [locationType, setLocationType] = useState<string[]>(initial?.locationType ?? []);
+  const [ams, setAms] = useState<string[]>(initial?.ams ?? []);
+  const [amsMode, setAmsMode] = useState<IncEx>(initial?.amsMode ?? "include");
+  const [premiumMin, setPremiumMin] = useState(initial?.premiumMin ?? "");
+  const [premiumMax, setPremiumMax] = useState(initial?.premiumMax ?? "");
+  const [revenueMin, setRevenueMin] = useState(initial?.revenueMin ?? "");
+  const [revenueMax, setRevenueMax] = useState(initial?.revenueMax ?? "");
+  const [empMin, setEmpMin] = useState(initial?.empMin ?? "");
+  const [empMax, setEmpMax] = useState(initial?.empMax ?? "");
+  const [sizeCombo, setSizeCombo] = useState<AndOr>(initial?.sizeCombo ?? "or");
+  const [minority, setMinority] = useState<"any" | "yes" | "no">(initial?.minority ?? "any");
+  const [accountName, setAccountName] = useState(initial?.accountName ?? "");
+  const [accountNameMode, setAccountNameMode] = useState<"begins" | "contains">(initial?.accountNameMode ?? "begins");
 
   // ---- Contact Details ----
-  const [mgmtLevels, setMgmtLevels] = useState<string[]>([]);
-  const [mgmtMode, setMgmtMode] = useState<IncEx>("include");
-  const [contactTitles, setContactTitles] = useState<string[]>([]);
-  const [contactTitleMode, setContactTitleMode] = useState<IncEx>("include");
-  const [departments, setDepartments] = useState<string[]>([]);
-  const [departmentsMode, setDepartmentsMode] = useState<IncEx>("include");
+  const [mgmtLevels, setMgmtLevels] = useState<string[]>(initial?.mgmtLevels ?? []);
+  const [mgmtMode, setMgmtMode] = useState<IncEx>(initial?.mgmtMode ?? "include");
+  const [contactTitles, setContactTitles] = useState<string[]>(initial?.contactTitles ?? []);
+  const [contactTitleMode, setContactTitleMode] = useState<IncEx>(initial?.contactTitleMode ?? "include");
+  const [departments, setDepartments] = useState<string[]>(initial?.departments ?? []);
+  const [departmentsMode, setDepartmentsMode] = useState<IncEx>(initial?.departmentsMode ?? "include");
 
   // ---- Geographic ----
-  const [country, setCountry] = useState<"US" | "CA">("US");
-  const [states, setStates] = useState<string[]>([]);
-  const [statesMode, setStatesMode] = useState<IncEx>("include");
-  const [metros, setMetros] = useState<string[]>([]);
-  const [metrosMode, setMetrosMode] = useState<IncEx>("include");
+  const [country, setCountry] = useState<"US" | "CA">(initial?.country ?? "US");
+  const [states, setStates] = useState<string[]>(initial?.states ?? []);
+  const [statesMode, setStatesMode] = useState<IncEx>(initial?.statesMode ?? "include");
+  const [metros, setMetros] = useState<string[]>(initial?.metros ?? []);
+  const [metrosMode, setMetrosMode] = useState<IncEx>(initial?.metrosMode ?? "include");
 
   // ---- Carriers ----
-  const [carriers, setCarriers] = useState<string[]>([]);
-  const [carriersMode, setCarriersMode] = useState<IncEx>("include");
-  const [carriersCombo, setCarriersCombo] = useState<AndOr>("or");
+  const [carriers, setCarriers] = useState<string[]>(initial?.carriers ?? []);
+  const [carriersMode, setCarriersMode] = useState<IncEx>(initial?.carriersMode ?? "include");
+  const [carriersCombo, setCarriersCombo] = useState<AndOr>(initial?.carriersCombo ?? "or");
 
   // ---- Affiliates ----
-  const [affiliations, setAffiliations] = useState<string[]>([]);
-  const [affiliationsMode, setAffiliationsMode] = useState<IncEx>("include");
+  const [affiliations, setAffiliations] = useState<string[]>(initial?.affiliations ?? []);
+  const [affiliationsMode, setAffiliationsMode] = useState<IncEx>(initial?.affiliationsMode ?? "include");
 
   // ---- Industry ----
-  const [industries, setIndustries] = useState<string[]>([]);
-  const [industriesMode, setIndustriesMode] = useState<IncEx>("include");
+  const [industries, setIndustries] = useState<string[]>(initial?.industries ?? []);
+  const [industriesMode, setIndustriesMode] = useState<IncEx>(initial?.industriesMode ?? "include");
 
   const statesForCountry = useMemo(() => {
     return data.states.filter((s) => s.sublabel === country);
