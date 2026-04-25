@@ -11,6 +11,12 @@ function csv(v: string | undefined) {
   return v ? v.split(",").filter(Boolean) : [];
 }
 
+function asNum(v: string | undefined) {
+  if (!v) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 export default async function ReviewPage({
   searchParams
 }: {
@@ -18,47 +24,170 @@ export default async function ReviewPage({
 }) {
   const supabase = createClient();
 
+  // ---- parse filters ---------------------------------------------------
   const accountTypeIds = csv(searchParams.at);
+  const locationTypeIds = csv(searchParams.lt);
+  const amsIds = csv(searchParams.ams);
   const carrierIds = csv(searchParams.cr);
   const affiliationIds = csv(searchParams.af);
+  const sicIds = csv(searchParams.in);
   const stateIds = csv(searchParams.st);
+  const metroIds = csv(searchParams.mt);
+  const premiumMin = asNum(searchParams.pmin);
+  const premiumMax = asNum(searchParams.pmax);
+  const revenueMin = asNum(searchParams.rmin);
+  const revenueMax = asNum(searchParams.rmax);
+  const empMin = asNum(searchParams.emin);
+  const empMax = asNum(searchParams.emax);
+  const minority = searchParams.min;
+  const accountName = (searchParams.an ?? "").trim();
+  const accountNameMode = searchParams.an_m ?? "contains";
+  const country = (searchParams.c ?? "US").toUpperCase();
 
-  // Resolve selected IDs into human labels for the filter chips
-  const [atRows, crRows, afRows, stRows] = await Promise.all([
-    accountTypeIds.length
-      ? supabase.from("account_types").select("id,label").in("id", accountTypeIds)
-      : Promise.resolve({ data: [] }),
-    carrierIds.length
-      ? supabase.from("carriers").select("id,name").in("id", carrierIds).limit(10)
-      : Promise.resolve({ data: [] }),
-    affiliationIds.length
-      ? supabase.from("affiliations").select("id,canonical_name").in("id", affiliationIds).limit(10)
-      : Promise.resolve({ data: [] }),
+  // ---- Resolve state IDs -> codes, metro IDs -> names ------------------
+  const [stRows, mtRows, atRows, crRows, afRows] = await Promise.all([
     stateIds.length
       ? supabase.from("states").select("id,code,name").in("id", stateIds)
-      : Promise.resolve({ data: [] })
+      : Promise.resolve({ data: [] as { id: string; code: string; name: string }[] }),
+    metroIds.length
+      ? supabase.from("metro_areas").select("id,code,name").in("id", metroIds)
+      : Promise.resolve({ data: [] as { id: string; code: string; name: string }[] }),
+    accountTypeIds.length
+      ? supabase.from("account_types").select("id,label").in("id", accountTypeIds)
+      : Promise.resolve({ data: [] as { id: string; label: string }[] }),
+    carrierIds.length
+      ? supabase.from("carriers").select("id,name").in("id", carrierIds).limit(50)
+      : Promise.resolve({ data: [] as { id: string; name: string }[] }),
+    affiliationIds.length
+      ? supabase.from("affiliations").select("id,canonical_name").in("id", affiliationIds).limit(50)
+      : Promise.resolve({ data: [] as { id: string; canonical_name: string }[] })
   ]);
 
+  const stateCodes = (stRows.data ?? []).map((r) => r.code);
+
+  // ---- Resolve carrier/affiliation/SIC IDs -> agency_id sets via join tables
+  // (PostgREST doesn't support cross-table EXISTS in a simple chain, so
+  // pre-resolve to a list of agency_id values, then .in() on agencies.)
+  const subFilters: string[][] = [];
+  if (carrierIds.length) {
+    const { data } = await supabase
+      .from("agency_carriers")
+      .select("agency_id")
+      .in("carrier_id", carrierIds);
+    subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
+  }
+  if (affiliationIds.length) {
+    const { data } = await supabase
+      .from("agency_affiliations")
+      .select("agency_id")
+      .in("affiliation_id", affiliationIds);
+    subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
+  }
+  if (sicIds.length) {
+    const { data } = await supabase
+      .from("agency_sic_codes")
+      .select("agency_id")
+      .in("sic_code_id", sicIds);
+    subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
+  }
+
+  // intersect all sub-filter agency-id arrays
+  let allowedAgencyIds: string[] | null = null;
+  if (subFilters.length) {
+    allowedAgencyIds = subFilters.reduce<string[]>((acc, set, idx) => {
+      if (idx === 0) return set;
+      const s = new Set(set);
+      return acc.filter((id) => s.has(id));
+    }, []);
+    // Empty intersection means no possible match — short-circuit.
+    if (allowedAgencyIds.length === 0) allowedAgencyIds = ["00000000-0000-0000-0000-000000000000"];
+  }
+
+  // ---- Build the agencies query ---------------------------------------
+  const buildAgenciesQuery = (sel: string, withCount: boolean) => {
+    let q = supabase.from("agencies").select(sel, withCount ? { count: "exact" } : {});
+    if (accountTypeIds.length) q = q.in("account_type_id", accountTypeIds);
+    if (locationTypeIds.length) q = q.in("location_type_id", locationTypeIds);
+    if (amsIds.length) q = q.in("agency_mgmt_system_id", amsIds);
+    if (premiumMin != null) q = q.gte("premium_volume", premiumMin);
+    if (premiumMax != null) q = q.lte("premium_volume", premiumMax);
+    if (revenueMin != null) q = q.gte("revenue", revenueMin);
+    if (revenueMax != null) q = q.lte("revenue", revenueMax);
+    if (empMin != null) q = q.gte("employees", empMin);
+    if (empMax != null) q = q.lte("employees", empMax);
+    if (minority === "yes") q = q.eq("minority_owned", true);
+    if (minority === "no") q = q.eq("minority_owned", false);
+    if (country) q = q.eq("country", country);
+    if (stateCodes.length) q = q.in("state", stateCodes);
+    if (accountName) {
+      if (accountNameMode === "exact") q = q.eq("name", accountName);
+      else if (accountNameMode === "starts_with") q = q.ilike("name", `${accountName}%`);
+      else q = q.ilike("name", `%${accountName}%`);
+    }
+    if (allowedAgencyIds) q = q.in("id", allowedAgencyIds);
+    return q;
+  };
+
+  // count + preview rows
+  const [countRes, previewRes] = await Promise.all([
+    buildAgenciesQuery("id", true).limit(1) as any,
+    buildAgenciesQuery(
+      "id, name, city, state, revenue, employees, account_type_id, account_types(label)",
+      false
+    )
+      .order("name", { ascending: true })
+      .limit(25) as any
+  ]);
+
+  const accountsCount: number = countRes.count ?? 0;
+
+  // contacts count: limited to the same filtered agencies. If a huge result
+  // set, just count contacts whose agency_id is in the filter; for unlimited
+  // open queries, fall back to the global contacts total.
+  let contactsCount = 0;
+  if (allowedAgencyIds || accountTypeIds.length || locationTypeIds.length || amsIds.length ||
+      premiumMin != null || premiumMax != null || revenueMin != null || revenueMax != null ||
+      empMin != null || empMax != null || minority === "yes" || minority === "no" ||
+      stateCodes.length || accountName) {
+    // get the filtered agency ids (cap at 50K for safety)
+    const { data: agencyIdsRows } = await buildAgenciesQuery("id", false).limit(50000);
+    const agencyIds = (agencyIdsRows ?? []).map((r: any) => r.id);
+    if (agencyIds.length) {
+      const { count } = await supabase
+        .from("contacts")
+        .select("id", { count: "exact", head: true })
+        .in("agency_id", agencyIds);
+      contactsCount = count ?? 0;
+    }
+  } else {
+    const { count } = await supabase
+      .from("contacts")
+      .select("id", { count: "exact", head: true });
+    contactsCount = count ?? 0;
+  }
+
+  // ---- chips for filters-applied row -----------------------------------
   const chips: { label: string; value: string }[] = [];
-  if (stRows.data?.length) chips.push({ label: "States", value: stRows.data.map((r: any) => r.code).join(", ") });
-  if (atRows.data?.length) chips.push({ label: "Agency Type", value: atRows.data.map((r: any) => r.label).join(", ") });
-  if (crRows.data?.length) chips.push({ label: "Carriers", value: crRows.data.map((r: any) => r.name).slice(0, 3).join(", ") + (carrierIds.length > 3 ? ` +${carrierIds.length - 3}` : "") });
-  if (afRows.data?.length) chips.push({ label: "Affiliations", value: afRows.data.map((r: any) => r.canonical_name).slice(0, 3).join(", ") + (affiliationIds.length > 3 ? ` +${affiliationIds.length - 3}` : "") });
-  if (searchParams.an) chips.push({ label: "Account Name", value: searchParams.an });
-  if (searchParams.min && searchParams.min !== "any") chips.push({ label: "Minority Owned", value: searchParams.min === "yes" ? "Yes" : "No" });
+  if (stRows.data?.length) chips.push({ label: "States", value: stRows.data.map((r) => r.code).join(", ") });
+  if (mtRows.data?.length) chips.push({ label: "Metros", value: mtRows.data.map((r) => r.name).slice(0, 3).join(", ") + (metroIds.length > 3 ? ` +${metroIds.length - 3}` : "") });
+  if (atRows.data?.length) chips.push({ label: "Account Type", value: atRows.data.map((r) => r.label).join(", ") });
+  if (crRows.data?.length) chips.push({ label: "Carriers", value: crRows.data.map((r) => r.name).slice(0, 3).join(", ") + (carrierIds.length > 3 ? ` +${carrierIds.length - 3}` : "") });
+  if (afRows.data?.length) chips.push({ label: "Affiliations", value: afRows.data.map((r) => r.canonical_name).slice(0, 3).join(", ") + (affiliationIds.length > 3 ? ` +${affiliationIds.length - 3}` : "") });
+  if (premiumMin != null || premiumMax != null) chips.push({ label: "Premium", value: `${premiumMin ?? 0}–${premiumMax ?? "∞"}` });
+  if (revenueMin != null || revenueMax != null) chips.push({ label: "Revenue", value: `${revenueMin ?? 0}–${revenueMax ?? "∞"}` });
+  if (empMin != null || empMax != null) chips.push({ label: "Employees", value: `${empMin ?? 0}–${empMax ?? "∞"}` });
+  if (accountName) chips.push({ label: "Account Name", value: accountName });
+  if (minority === "yes" || minority === "no") chips.push({ label: "Minority Owned", value: minority === "yes" ? "Yes" : "No" });
 
-  // For now, the preview table comes from top_agency_members since actual
-  // agencies data is not loaded yet. This gives the user something to review.
-  const { data: previewRows, count: accountsCount } = await supabase
-    .from("top_agency_members")
-    .select("agency_name, office_city, office_state, pc_revenue, other_revenue, rank", { count: "exact" })
-    .not("rank", "is", null)
-    .order("rank", { ascending: true })
-    .limit(25);
-
-  const { count: contactsCount } = await supabase
-    .from("contacts")
-    .select("id", { count: "exact", head: true });
+  const previewRows = (previewRes.data ?? []) as Array<{
+    id: string;
+    name: string;
+    city: string | null;
+    state: string | null;
+    revenue: number | null;
+    employees: number | null;
+    account_types: { label: string } | { label: string }[] | null;
+  }>;
 
   const qs = new URLSearchParams(searchParams as any).toString();
 
@@ -94,11 +223,10 @@ export default async function ReviewPage({
           </div>
         )}
 
-        {/* Accounts / Contacts / Map tabs + counter */}
         <div className="mt-6 rounded-lg bg-brand-600 text-white px-5 py-4 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-sm">
-            <TabBadge label="Accounts" count={accountsCount ?? 0} active />
-            <TabBadge label="Contacts" count={contactsCount ?? 0} />
+            <TabBadge label="Accounts" count={accountsCount} active />
+            <TabBadge label="Contacts" count={contactsCount} />
             <TabBadge label="Map" count={null} />
           </div>
           <div className="flex items-center gap-3 text-sm">
@@ -115,7 +243,6 @@ export default async function ReviewPage({
           </div>
         </div>
 
-        {/* Results table */}
         <div className="mt-0 overflow-x-auto rounded-b-lg border border-gray-200 border-t-0 bg-white">
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
@@ -129,31 +256,44 @@ export default async function ReviewPage({
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {(previewRows ?? []).map((r: any, i: number) => (
-                <tr key={i}>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-brand-700">{r.agency_name}</div>
-                  </td>
-                  <td className="px-4 py-3 text-gray-700">—</td>
-                  <td className="px-4 py-3 text-gray-700">—</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-gray-700">
-                    {r.pc_revenue ? "$" + (Number(r.pc_revenue) / 1_000_000).toFixed(2) + "M" : "—"}
-                  </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-gray-700">—</td>
-                  <td className="px-4 py-3 text-gray-600">
-                    {r.office_city ? `${r.office_city}, ${r.office_state ?? ""}` : "—"}
+              {previewRows.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-4 py-8 text-center text-gray-500 text-sm">
+                    No agencies match these filters. Try widening your criteria.
                   </td>
                 </tr>
-              ))}
+              )}
+              {previewRows.map((r) => {
+                const at = Array.isArray(r.account_types) ? r.account_types[0]?.label : r.account_types?.label;
+                return (
+                  <tr key={r.id}>
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-brand-700">{r.name}</div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-700">{at ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-700">
+                      {r.city ? `${r.city}${r.state ? ", " + r.state : ""}` : (r.state ?? "—")}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums text-gray-700">
+                      {r.revenue ? "$" + (Number(r.revenue) / 1_000_000).toFixed(2) + "M" : "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums text-gray-700">
+                      {r.employees ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">—</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
 
-        <p className="mt-3 text-xs text-gray-500">
-          Preview rows come from the Top 100 list until the full agencies dataset is loaded. Accounts & contacts counts will reflect real filter matches once agency records are imported.
-        </p>
+        {previewRows.length > 0 && (
+          <p className="mt-3 text-xs text-gray-500">
+            Showing {previewRows.length} of {accountsCount.toLocaleString()} matching agencies. Download to export the full list.
+          </p>
+        )}
 
-        {/* Bottom action bar */}
         <div className="sticky bottom-0 mt-6 -mx-4 sm:-mx-6 lg:-mx-8 bg-white border-t border-gray-200 py-4 px-4 sm:px-6 lg:px-8 flex items-center justify-end gap-4">
           <Link
             href={`/build-list?${qs}`}
