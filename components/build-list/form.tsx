@@ -189,22 +189,7 @@ export function BuildListForm({ data }: { data: FilterData }) {
             </div>
           </FilterRow>
 
-          <FilterRow label="Minority Owned">
-            <div className="flex items-center gap-6 text-sm">
-              {(["any", "yes", "no"] as const).map((v) => (
-                <label key={v} className="inline-flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="min"
-                    className="h-4 w-4 text-brand-600 border-gray-300 focus:ring-brand-500"
-                    checked={minority === v}
-                    onChange={() => setMinority(v)}
-                  />
-                  {v === "any" ? "Any" : v === "yes" ? "Yes" : "No"}
-                </label>
-              ))}
-            </div>
-          </FilterRow>
+          {/* Minority Owned filter hidden per product decision (signal not actionable enough today) */}
 
           <FilterRow label="Search by Account Name">
             <div className="flex items-center gap-3">
@@ -327,21 +312,7 @@ export function BuildListForm({ data }: { data: FilterData }) {
           </FilterRow>
         </FilterSection>
 
-        {/* ======= INDUSTRY ======= */}
-        <FilterSection title="Industry" hasValue={industries.length > 0}>
-          <FilterRow label="SIC Codes" description="Industry verticals the agency writes. Populates once SIC data is loaded.">
-            <div className="space-y-3">
-              <IncludeExcludeToggle name="in_m" value={industriesMode} onChange={setIndustriesMode} />
-              {data.industries.length === 0 ? (
-                <div className="rounded-md border border-dashed border-gray-300 p-4 text-sm text-gray-500">
-                  SIC code catalog is empty. Load your SIC reference list to enable this filter.
-                </div>
-              ) : (
-                <MultiSelect options={data.industries} selected={industries} onChange={setIndustries} columns={1} maxVisible={400} />
-              )}
-            </div>
-          </FilterRow>
-        </FilterSection>
+        {/* ======= INDUSTRY (hidden — replaced by /verticals page for vertical-practice signal) ======= */}
       </div>
 
       {/* Sticky action bar */}

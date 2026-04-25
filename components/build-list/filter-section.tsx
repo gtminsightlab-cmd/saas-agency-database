@@ -16,7 +16,7 @@ export function FilterSection({
 }) {
   return (
     <details
-      className="group rounded-lg border border-gray-200 bg-white overflow-hidden"
+      className="group rounded-lg border border-gray-200 bg-white"
       open={defaultOpen}
     >
       <summary className="list-none cursor-pointer select-none flex items-center gap-3 px-5 py-4 hover:bg-gray-50">
