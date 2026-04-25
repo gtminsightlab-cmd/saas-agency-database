@@ -38,10 +38,10 @@ const NAV: NavItem[] = [
   { href: "/admin/billing",          label: "Billing",          Icon: CreditCard,      status: "soon" },
   { href: "/admin/usage",            label: "Usage & Limits",   Icon: Gauge,           status: "soon" },
   { href: "/admin/verticals",        label: "Verticals",        Icon: Layers,          status: "partial" },
-  { href: "/admin/hygiene",          label: "Hygiene & Refresh",Icon: ShieldAlert,     status: "soon" },
+  { href: "/admin/hygiene",          label: "Hygiene & Refresh",Icon: ShieldAlert,     status: "live" },
   { href: "/admin/integrations",     label: "Integrations",     Icon: Plug,            status: "soon" },
   { href: "/admin/alerts",           label: "Alerts & Risk",    Icon: BellRing,        status: "soon" },
-  { href: "/admin/system-health",    label: "System Health",    Icon: Activity,        status: "soon" },
+  { href: "/admin/system-health",    label: "System Health",    Icon: Activity,        status: "live" },
 ];
 
 const FOOTER_NAV: NavItem[] = [
