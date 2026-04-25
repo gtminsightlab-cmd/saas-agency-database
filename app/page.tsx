@@ -10,10 +10,10 @@ export const dynamic = "force-dynamic";
 // the mv_vertical_summary view. Values captured from MCP at migration time; they update
 // automatically once the cache refreshes and the live query starts returning rows.
 const VERTICAL_FALLBACK = [
-  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 54,  agencies_growing: 3, agencies_specialist: 0 },
-  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 21,  agencies_growing: 0, agencies_specialist: 0 },
-  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 51,  agencies_growing: 2, agencies_specialist: 0 },
-  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 281, agencies_growing: 1, agencies_specialist: 0 },
+  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 54,  agencies_growing: 3, agencies_specialist: 0, agency_count: 204,   location_count: 294,   contact_count: 2148  },
+  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 21,  agencies_growing: 0, agencies_specialist: 0, agency_count: 158,   location_count: 181,   contact_count: 1466  },
+  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 51,  agencies_growing: 2, agencies_specialist: 0, agency_count: 318,   location_count: 471,   contact_count: 3890  },
+  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 281, agencies_growing: 1, agencies_specialist: 0, agency_count: 1777,  location_count: 2600,  contact_count: 15724 },
 ];
 
 
@@ -30,7 +30,7 @@ export default async function MarketingHome() {
     supabase.from("plan_bulk_tiers")
       .select("plan_id,min_credits,max_credits,unit_cents,discount_pct,sort_order")
       .order("sort_order"),
-    supabase.from("mv_vertical_summary").select("slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist").order("sort_order")
+    supabase.from("mv_vertical_summary").select("slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist,agency_count,location_count,contact_count").order("sort_order")
   ]);
 
   const carrierCount = carriers.count ?? 0;
@@ -41,7 +41,7 @@ export default async function MarketingHome() {
   const snapshotPlan = planList.find((p) => p.code === "snapshot");
   const memberTiers = tierList.filter((t) => t.plan_id === memberPlan?.id);
   const snapshotTiers = tierList.filter((t) => t.plan_id === snapshotPlan?.id);
-  const verticalsData = (verticalsRes.data ?? []) as Array<{ slug: string; name: string; description: string; icon_key: string; color_token: string; agencies_with_exposure: number; agencies_growing: number; agencies_specialist: number; mapped_carrier_count: number }>;
+  const verticalsData = (verticalsRes.data ?? []) as Array<{ slug: string; name: string; description: string; icon_key: string; color_token: string; agencies_with_exposure: number; agencies_growing: number; agencies_specialist: number; mapped_carrier_count: number; agency_count: number; location_count: number; contact_count: number }>;
   const verticals = verticalsData.length > 0 ? verticalsData : VERTICAL_FALLBACK;
 
   return (
@@ -145,7 +145,6 @@ export default async function MarketingHome() {
                 gold:    { bg: "bg-gold-50",    text: "text-gold-800",    border: "border-gold-100" },
                 navy:    { bg: "bg-navy-50",    text: "text-navy-800",    border: "border-navy-100" },
               } as Record<string, { bg: string; text: string; border: string }>)[v.color_token] ?? { bg: "bg-brand-50", text: "text-brand-700", border: "border-brand-100" };
-              const total = v.agencies_with_exposure + v.agencies_growing + v.agencies_specialist;
               return (
                 <Link
                   key={v.slug}
@@ -156,10 +155,11 @@ export default async function MarketingHome() {
                     <Icon className={`h-5 w-5 ${accent.text}`} />
                   </div>
                   <h3 className="mt-4 text-sm font-semibold text-navy-800">{v.name}</h3>
-                  <p className="mt-2 text-2xl font-bold tabular-nums text-navy-800">
-                    {total.toLocaleString()}
-                  </p>
-                  <p className="text-xs text-gray-500">agencies indexed</p>
+                  <dl className="mt-3 space-y-1.5 text-xs">
+                    <div className="flex items-baseline justify-between"><dt className="text-gray-500">Agencies</dt><dd className="font-semibold tabular-nums text-navy-800">{(v.agency_count ?? 0).toLocaleString()}</dd></div>
+                    <div className="flex items-baseline justify-between"><dt className="text-gray-500">Locations</dt><dd className="font-semibold tabular-nums text-navy-800">{(v.location_count ?? 0).toLocaleString()}</dd></div>
+                    <div className="flex items-baseline justify-between"><dt className="text-gray-500">Contacts</dt><dd className="font-semibold tabular-nums text-navy-800">{(v.contact_count ?? 0).toLocaleString()}</dd></div>
+                  </dl>
                 </Link>
               );
             })}

@@ -18,14 +18,17 @@ export const dynamic = "force-dynamic";
 // the mv_vertical_summary view. Values captured from MCP at migration time; they update
 // automatically once the cache refreshes and the live query starts returning rows.
 const VERTICAL_FALLBACK = [
-  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 54,  agencies_growing: 3, agencies_specialist: 0 },
-  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 21,  agencies_growing: 0, agencies_specialist: 0 },
-  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 51,  agencies_growing: 2, agencies_specialist: 0 },
-  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 281, agencies_growing: 1, agencies_specialist: 0 },
+  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 54,  agencies_growing: 3, agencies_specialist: 0, agency_count: 204,   location_count: 294,   contact_count: 2148  },
+  { slug: "healthcare-human-services", name: "Healthcare & Human Services",  description: "Agencies writing medical professional liability, allied health, aging services, and nonprofit/social-services risk — identified by appointments with the specialty carriers that dominate each segment.",                                    icon_key: "Stethoscope", color_token: "success", sort_order: 2, mapped_carrier_count: 21, agencies_with_exposure: 21,  agencies_growing: 0, agencies_specialist: 0, agency_count: 158,   location_count: 181,   contact_count: 1466  },
+  { slug: "construction",              name: "Construction",                 description: "Agencies writing contractors, builders risk, and surety — identified by deep appointments with construction-focused commercial carriers.",                                                                                                     icon_key: "HardHat",     color_token: "gold",    sort_order: 3, mapped_carrier_count: 20, agencies_with_exposure: 51,  agencies_growing: 2, agencies_specialist: 0, agency_count: 318,   location_count: 471,   contact_count: 3890  },
+  { slug: "agriculture",               name: "Agriculture",                  description: "Agencies writing farms, ranches, agribusiness, and crop — identified by appointments with agricultural and farm mutual carriers.",                                                                                                             icon_key: "Wheat",       color_token: "success", sort_order: 4, mapped_carrier_count: 18, agencies_with_exposure: 281, agencies_growing: 1, agencies_specialist: 0, agency_count: 1777,  location_count: 2600,  contact_count: 15724 },
 ];
 
 
 type VerticalSummary = {
+  agency_count: number;
+  location_count: number;
+  contact_count: number;
   slug: string;
   name: string;
   description: string;
@@ -64,7 +67,7 @@ export default async function VerticalsPage() {
 
   const { data } = await supabase
     .from("mv_vertical_summary")
-    .select("slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist")
+    .select("slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count,agencies_with_exposure,agencies_growing,agencies_specialist,agency_count,location_count,contact_count")
     .order("sort_order");
   const live = (data ?? []) as VerticalSummary[];
   const verticals: VerticalSummary[] = live.length > 0 ? live : (VERTICAL_FALLBACK as VerticalSummary[]);
@@ -136,11 +139,12 @@ export default async function VerticalsPage() {
                   <TierStat label="Specialist" count={v.agencies_specialist}   dot="bg-brand-700" />
                 </div>
 
-                <div className="mt-6 flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                    <Users className="h-3.5 w-3.5" />
-                    {(v.agencies_with_exposure + v.agencies_growing + v.agencies_specialist).toLocaleString()} agencies indexed
-                  </div>
+                <div className="mt-5 grid grid-cols-3 gap-2 border-t border-gray-100 pt-4 text-xs">
+                  <div><div className="text-gray-500">Agencies</div><div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">{(v.agency_count ?? 0).toLocaleString()}</div></div>
+                  <div><div className="text-gray-500">Locations</div><div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">{(v.location_count ?? 0).toLocaleString()}</div></div>
+                  <div><div className="text-gray-500">Contacts</div><div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">{(v.contact_count ?? 0).toLocaleString()}</div></div>
+                </div>
+                <div className="mt-4 flex items-center justify-end">
                   <Link
                     href={user ? `/build-list?vertical=${v.slug}` : `/sign-up?vertical=${v.slug}`}
                     className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
