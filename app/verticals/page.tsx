@@ -268,9 +268,9 @@ export default async function VerticalsPage() {
             <Pillar
               num="04"
               icon={Banknote}
-              title="Enterprise Intelligence at Agile Pricing"
+              title="Enterprise Intelligence, Continuous Verification"
               subtitle="Automated multi-layer verification, refreshed continuously."
-              body="Our Dual-Agent Verification Pipeline maps parent-child relationships across 400+ writing companies, refreshed continuously against state filings and carrier roster changes. The kind of distribution intelligence that historically took a research team a year to assemble &mdash; now updated every month, delivered at a fraction of the industry standard cost."
+              body="Our Dual-Agent Verification Pipeline maps parent-child relationships across 400+ writing companies, refreshed continuously against state filings and carrier roster changes. The kind of distribution intelligence that historically took a research team a year to assemble &mdash; now updated every month,."
             />
           </div>
 
