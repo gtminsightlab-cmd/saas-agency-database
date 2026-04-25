@@ -40,7 +40,7 @@ const NAV: NavItem[] = [
   { href: "/admin/verticals",        label: "Verticals",        Icon: Layers,          status: "live" },
   { href: "/admin/hygiene",          label: "Hygiene & Refresh",Icon: ShieldAlert,     status: "live" },
   { href: "/admin/integrations",     label: "Integrations",     Icon: Plug,            status: "live" },
-  { href: "/admin/alerts",           label: "Alerts & Risk",    Icon: BellRing,        status: "soon" },
+  { href: "/admin/alerts",           label: "Alerts & Risk",    Icon: BellRing,        status: "live" },
   { href: "/admin/system-health",    label: "System Health",    Icon: Activity,        status: "live" },
 ];
 
