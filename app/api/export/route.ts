@@ -93,9 +93,9 @@ const CSV_COLUMNS = [
   "main_phone",
   "fax",
   "primary_url",
-  "premium_pc",
-  "revenue_total",
-  "employees_total",
+  "premium_volume",
+  "revenue",
+  "employees",
   "minority_owned",
 ] as const;
 
@@ -129,7 +129,7 @@ async function runAgencyQuery(
   let q = supabase
     .from("agencies")
     .select(
-      "id,name,address_line1,city,state,zip,country,main_phone,fax,primary_url,premium_pc,revenue_total,employees_total,minority_owned,account_type_id,location_type_id,agency_mgmt_system_id"
+      "id,name,address_line1,city,state,zip,country,main_phone,fax,primary_url,premium_volume,revenue,employees,minority_owned,account_type_id,location_type_id,agency_mgmt_system_id"
     )
     .order("name")
     .limit(50000);
@@ -141,12 +141,12 @@ async function runAgencyQuery(
   if (accountName) q = q.ilike("name", `%${accountName}%`);
   if (minority === "yes") q = q.eq("minority_owned", true);
   if (minority === "no") q = q.eq("minority_owned", false);
-  if (premiumMin != null) q = q.gte("premium_pc", premiumMin);
-  if (premiumMax != null) q = q.lte("premium_pc", premiumMax);
-  if (revenueMin != null) q = q.gte("revenue_total", revenueMin);
-  if (revenueMax != null) q = q.lte("revenue_total", revenueMax);
-  if (empMin != null) q = q.gte("employees_total", empMin);
-  if (empMax != null) q = q.lte("employees_total", empMax);
+  if (premiumMin != null) q = q.gte("premium_volume", premiumMin);
+  if (premiumMax != null) q = q.lte("premium_volume", premiumMax);
+  if (revenueMin != null) q = q.gte("revenue", revenueMin);
+  if (revenueMax != null) q = q.lte("revenue", revenueMax);
+  if (empMin != null) q = q.gte("employees", empMin);
+  if (empMax != null) q = q.lte("employees", empMax);
 
   // State filter via state_id lookup
   if (stateIds.length) {
@@ -177,9 +177,9 @@ async function runAgencyQuery(
         r.main_phone,
         r.fax,
         r.primary_url,
-        r.premium_pc,
-        r.revenue_total,
-        r.employees_total,
+        r.premium_volume,
+        r.revenue,
+        r.employees,
         r.minority_owned === true ? "yes" : r.minority_owned === false ? "no" : "",
       ]
         .map(csvEscape)
