@@ -10,7 +10,8 @@ import {
   Search,
   BarChart3,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -72,7 +73,17 @@ export function Sidebar({
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6 thin-scrollbar">
         {isSuperAdmin && (
           <div>
+            <div className="px-2 mb-1.5 text-sm font-semibold text-brand-600 inline-flex items-center gap-1.5">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              Admin
+            </div>
             <ul className="space-y-0.5">
+              <NavLinkItem
+                href="/admin"
+                label="Control Room"
+                icon={ShieldCheck}
+                active={isActive("/admin")}
+              />
               <NavLinkItem
                 href="/account/users"
                 label="Users"
