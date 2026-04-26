@@ -435,6 +435,15 @@ export default async function VerticalsPage() {
                 No black box. No proprietary score we won&rsquo;t explain. The IP is the assembly of
                 the data, not a secret algorithm.
               </p>
+              <p className="pt-2">
+                <Link
+                  href="/methodology"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
+                >
+                  Read the full methodology
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </p>
             </div>
           </div>
         </div>

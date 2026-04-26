@@ -11,7 +11,9 @@ import {
   BarChart3,
   Sparkles,
   ShieldCheck,
-  Layers
+  Layers,
+  BookOpen,
+  Compass
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -128,6 +130,26 @@ export function Sidebar({
               label="AI Support"
               icon={Sparkles}
               active={isActive("/ai-support")}
+            />
+          </ul>
+        </div>
+
+        <div>
+          <div className="px-2 mb-1.5 text-sm font-semibold text-brand-600">
+            Insights
+          </div>
+          <ul className="space-y-0.5">
+            <NavLinkItem
+              href="/methodology"
+              label="Methodology"
+              icon={Compass}
+              active={isActive("/methodology")}
+            />
+            <NavLinkItem
+              href="/resources"
+              label="Resources"
+              icon={BookOpen}
+              active={isActive("/resources")}
             />
           </ul>
         </div>

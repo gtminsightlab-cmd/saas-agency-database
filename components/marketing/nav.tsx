@@ -11,11 +11,14 @@ export function MarketingNav({ isAuthed }: { isAuthed: boolean }) {
           <Link href="/verticals" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Verticals
           </Link>
+          <Link href="/methodology" className="hidden md:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
+            Methodology
+          </Link>
+          <Link href="/resources" className="hidden lg:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
+            Resources
+          </Link>
           <a href="#pricing" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Pricing
-          </a>
-          <a href="#how-it-works" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
-            How it works
           </a>
           {isAuthed ? (
             <Link

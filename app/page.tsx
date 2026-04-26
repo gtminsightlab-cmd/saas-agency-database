@@ -162,6 +162,34 @@ export default async function MarketingHome() {
               body="Every record cross-checked against state DOI public filings. Two independent agents review every change before it goes live. Every row in our UI carries the verified-as-of date."
             />
           </div>
+
+          {/* Methodology callout */}
+          <div className="mt-14 max-w-3xl mx-auto">
+            <div className="rounded-2xl border border-brand-100 bg-brand-50/40 p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center gap-5">
+              <div className="flex-1">
+                <div className="text-[11px] font-semibold uppercase tracking-wider text-brand-700">
+                  Methodology
+                </div>
+                <h3 className="mt-1 text-lg font-semibold text-navy-800">
+                  Three signals turn 36,000 agencies into your real recruit list.
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-gray-600">
+                  Volume tells you whether they exist. Specialization Tier tells you what they
+                  write. Carrier Diversity tells you whether they&rsquo;re free to write yours. The
+                  full framework, plus five named recruit plays, is published.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <a
+                  href="/methodology"
+                  className="inline-flex items-center gap-2 rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
+                >
+                  Read the methodology
+                  <ArrowRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
