@@ -10,7 +10,6 @@ import {
   Search,
   BarChart3,
   Sparkles,
-  ChevronDown,
   ShieldCheck,
   Layers
 } from "lucide-react";
@@ -52,23 +51,26 @@ export function Sidebar({
         </Link>
       </div>
 
-      {/* User chip */}
-      <div className="px-4 py-4 border-b border-gray-100">
-        <button
-          type="button"
-          className="flex w-full items-center gap-2 rounded-md px-2 py-2 hover:bg-gray-50"
-          aria-label="User menu"
-        >
-          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-gray-700 text-sm font-medium">
-            {(fullName || email).charAt(0).toUpperCase()}
+      {/* User chip with inline sign-out (sign-out lives at the top so it's never buried) */}
+      <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-200 text-gray-700 text-sm font-medium">
+          {(fullName || email).charAt(0).toUpperCase()}
+        </span>
+        <span className="flex-1 text-left min-w-0">
+          <span className="block text-sm font-medium text-gray-900 truncate">
+            Hi, {(fullName || email.split("@")[0]).split(" ")[0]}!
           </span>
-          <span className="flex-1 text-left truncate">
-            <span className="block text-sm font-medium text-gray-900">
-              Hi, {(fullName || email.split("@")[0]).split(" ")[0]}!
-            </span>
-          </span>
-          <ChevronDown className="h-4 w-4 text-gray-400" />
-        </button>
+          <span className="block text-[11px] text-gray-500 truncate">{email}</span>
+        </span>
+        <form action="/auth/sign-out" method="post">
+          <button
+            type="submit"
+            className="rounded-md border border-gray-200 px-2 py-1 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 hover:border-gray-300 whitespace-nowrap"
+            aria-label="Sign out"
+          >
+            Sign out
+          </button>
+        </form>
       </div>
 
       {/* Nav */}
@@ -131,14 +133,6 @@ export function Sidebar({
         </div>
       </nav>
 
-      <form action="/auth/sign-out" method="post" className="p-3 border-t border-gray-100">
-        <button
-          type="submit"
-          className="w-full rounded-md border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50"
-        >
-          Sign out
-        </button>
-      </form>
     </aside>
   );
 }
