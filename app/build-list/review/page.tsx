@@ -131,122 +131,49 @@ export default async function ReviewPage({
 
   const stateCodes = (stRows.data ?? []).map((r) => r.code);
 
-  // ---- Resolve carrier/affiliation/SIC IDs -> agency_id sets via join tables
-  const subFilters: string[][] = [];
-  if (carrierIds.length) {
-    const { data } = await supabase
-      .from("agency_carriers")
-      .select("agency_id")
-      .in("carrier_id", carrierIds);
-    subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
-  }
-  if (affiliationIds.length) {
-    const { data } = await supabase
-      .from("agency_affiliations")
-      .select("agency_id")
-      .in("affiliation_id", affiliationIds);
-    subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
-  }
-  if (sicIds.length) {
-    const { data } = await supabase
-      .from("agency_sic_codes")
-      .select("agency_id")
-      .in("sic_code_id", sicIds);
-    subFilters.push(Array.from(new Set((data ?? []).map((r: any) => r.agency_id))));
-  }
-
-  let allowedAgencyIds: string[] | null = null;
-  if (subFilters.length) {
-    allowedAgencyIds = subFilters.reduce<string[]>((acc, set, idx) => {
-      if (idx === 0) return set;
-      const s = new Set(set);
-      return acc.filter((id) => s.has(id));
-    }, []);
-    if (allowedAgencyIds.length === 0) allowedAgencyIds = ["00000000-0000-0000-0000-000000000000"];
-  }
-
-  const buildAgenciesQuery = (sel: string, withCount: boolean) => {
-    let q = supabase.from("agencies").select(sel, withCount ? { count: "exact" } : {});
-    if (accountTypeIds.length) q = q.in("account_type_id", accountTypeIds);
-    if (locationTypeIds.length) q = q.in("location_type_id", locationTypeIds);
-    if (amsIds.length) q = q.in("agency_mgmt_system_id", amsIds);
-    if (premiumMin != null) q = q.gte("premium_volume", premiumMin);
-    if (premiumMax != null) q = q.lte("premium_volume", premiumMax);
-    if (revenueMin != null) q = q.gte("revenue", revenueMin);
-    if (revenueMax != null) q = q.lte("revenue", revenueMax);
-    if (empMin != null) q = q.gte("employees", empMin);
-    if (empMax != null) q = q.lte("employees", empMax);
-    if (minority === "yes") q = q.eq("minority_owned", true);
-    if (minority === "no") q = q.eq("minority_owned", false);
-    if (country) q = q.eq("country", country);
-    if (stateCodes.length) q = q.in("state", stateCodes);
-    if (accountName) {
-      if (accountNameMode === "exact") q = q.eq("name", accountName);
-      else if (accountNameMode === "starts_with") q = q.ilike("name", `${accountName}%`);
-      else q = q.ilike("name", `%${accountName}%`);
-    }
-    if (allowedAgencyIds) q = q.in("id", allowedAgencyIds);
-    return q;
-  };
-
-  // count + preview rows. The preview SELECT includes location_types so we
-  // can render + sort by Location Type.
+  // ---- All filters resolved server-side via RPC. The previous JS pattern
+  // (materialize agency_ids then .in("id", ids)) blew up the URL when a
+  // carrier had >~200 appointments (PostgREST 414/400). search_agencies_for_filters
+  // and count_contacts_for_filters do the joins inside Postgres so we only
+  // ever return row data, not big UUID arrays.
   const ascending = dir === "asc";
-  const previewQueryBuilder = () => {
-    let q = buildAgenciesQuery(
-      "id, name, city, state, revenue, employees, account_type_id, account_types(label), location_type_id, location_types(name)",
-      false
-    );
-    switch (accountSort) {
-      case "name":
-        q = q.order("name", { ascending });
-        break;
-      case "account_type":
-        q = q.order("label", { foreignTable: "account_types", ascending, nullsFirst: false }).order("name", { ascending: true });
-        break;
-      case "location":
-        q = q.order("state", { ascending, nullsFirst: false }).order("city", { ascending, nullsFirst: false }).order("name", { ascending: true });
-        break;
-      case "location_type":
-        q = q.order("name", { foreignTable: "location_types", ascending, nullsFirst: false }).order("name", { ascending: true });
-        break;
-      case "revenue":
-        q = q.order("revenue", { ascending, nullsFirst: false }).order("name", { ascending: true });
-        break;
-      case "employees":
-        q = q.order("employees", { ascending, nullsFirst: false }).order("name", { ascending: true });
-        break;
-    }
-    return q.limit(25);
+  const rpcFilters = {
+    p_carrier_ids:        carrierIds.length        ? carrierIds        : null,
+    p_affiliation_ids:    affiliationIds.length    ? affiliationIds    : null,
+    p_sic_ids:            sicIds.length            ? sicIds            : null,
+    p_account_type_ids:   accountTypeIds.length    ? accountTypeIds    : null,
+    p_location_type_ids:  locationTypeIds.length   ? locationTypeIds   : null,
+    p_ams_ids:            amsIds.length            ? amsIds            : null,
+    p_state_codes:        stateCodes.length        ? stateCodes        : null,
+    p_country:            country || null,
+    p_premium_min:        premiumMin,
+    p_premium_max:        premiumMax,
+    p_revenue_min:        revenueMin,
+    p_revenue_max:        revenueMax,
+    p_emp_min:            empMin,
+    p_emp_max:            empMax,
+    p_minority:           minority === "yes" ? true : minority === "no" ? false : null,
+    p_account_name:       accountName || null,
+    p_account_name_mode:  accountNameMode,
   };
 
-  const [countRes, previewRes] = await Promise.all([
-    buildAgenciesQuery("id", true).limit(1) as any,
-    previewQueryBuilder() as any,
+  const [previewRes, contactsCountRes] = await Promise.all([
+    supabase.rpc("search_agencies_for_filters", {
+      ...rpcFilters,
+      p_sort:   accountSort,
+      p_dir:    ascending ? "asc" : "desc",
+      p_offset: 0,
+      p_limit:  25,
+    }),
+    supabase.rpc("count_contacts_for_filters", rpcFilters),
   ]);
 
-  const accountsCount: number = countRes.count ?? 0;
-
-  let contactsCount = 0;
-  if (allowedAgencyIds || accountTypeIds.length || locationTypeIds.length || amsIds.length ||
-      premiumMin != null || premiumMax != null || revenueMin != null || revenueMax != null ||
-      empMin != null || empMax != null || minority === "yes" || minority === "no" ||
-      stateCodes.length || accountName) {
-    const { data: agencyIdsRows } = await buildAgenciesQuery("id", false).limit(50000);
-    const agencyIds = (agencyIdsRows ?? []).map((r: any) => r.id);
-    if (agencyIds.length) {
-      const { count } = await supabase
-        .from("contacts")
-        .select("id", { count: "exact", head: true })
-        .in("agency_id", agencyIds);
-      contactsCount = count ?? 0;
-    }
-  } else {
-    const { count } = await supabase
-      .from("contacts")
-      .select("id", { count: "exact", head: true });
-    contactsCount = count ?? 0;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const previewRpcRows = (previewRes.data ?? []) as any[];
+  const accountsCount: number = previewRpcRows.length > 0
+    ? Number(previewRpcRows[0].total_count ?? 0)
+    : 0;
+  const contactsCount: number = Number(contactsCountRes.data ?? 0);
 
   const chips: { label: string; value: string }[] = [];
   if (stRows.data?.length) chips.push({ label: "States", value: stRows.data.map((r) => r.code).join(", ") });
@@ -260,7 +187,20 @@ export default async function ReviewPage({
   if (accountName) chips.push({ label: "Account Name", value: accountName });
   if (minority === "yes" || minority === "no") chips.push({ label: "Minority Owned", value: minority === "yes" ? "Yes" : "No" });
 
-  const previewRows = (previewRes.data ?? []) as Array<{
+  // Map RPC flat columns -> the nested {account_types, location_types} shape
+  // the JSX downstream already knows how to render. Lets us avoid touching
+  // the rendering code.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const previewRows = previewRpcRows.map((r: any) => ({
+    id:        r.id,
+    name:      r.name,
+    city:      r.city,
+    state:     r.state,
+    revenue:   r.revenue,
+    employees: r.employees,
+    account_types: r.account_type_label ? { label: r.account_type_label } : null,
+    location_types: r.location_type_name ? { name: r.location_type_name } : null,
+  })) as Array<{
     id: string;
     name: string;
     city: string | null;
@@ -316,48 +256,35 @@ export default async function ReviewPage({
   };
   let contactRows: ContactRow[] = [];
   if (tab === "contacts") {
-    let agencyIdsForContacts: string[] | null = null;
-    if (allowedAgencyIds || accountTypeIds.length || locationTypeIds.length || amsIds.length ||
-        premiumMin != null || premiumMax != null || revenueMin != null || revenueMax != null ||
-        empMin != null || empMax != null || minority === "yes" || minority === "no" ||
-        stateCodes.length || accountName) {
-      const { data: agencyIdsRows } = await buildAgenciesQuery("id", false).limit(50000);
-      agencyIdsForContacts = (agencyIdsRows ?? []).map((r: any) => r.id);
-    }
-    let q = supabase
-      .from("contacts")
-      .select(
-        "id, first_name, last_name, title, email_primary, mobile_phone, city, state, address_1, agency_id, agencies!inner(id, name, account_type_id, account_types(label))"
-      )
-      .limit(50);
-
-    switch (contactSort) {
-      case "last_name":
-        q = q.order("last_name", { ascending, nullsFirst: false }).order("first_name", { ascending: true });
-        break;
-      case "email":
-        q = q.order("email_primary", { ascending, nullsFirst: false }).order("last_name", { ascending: true });
-        break;
-      case "mobile":
-        q = q.order("mobile_phone", { ascending, nullsFirst: false }).order("last_name", { ascending: true });
-        break;
-      case "agency":
-        q = q.order("name", { foreignTable: "agencies", ascending, nullsFirst: false }).order("last_name", { ascending: true });
-        break;
-      case "account_type":
-        q = q.order("last_name", { ascending, nullsFirst: false }).order("first_name", { ascending: true });
-        break;
-      case "location":
-        q = q.order("state", { ascending, nullsFirst: false }).order("city", { ascending, nullsFirst: false });
-        break;
-    }
-
-    if (agencyIdsForContacts) {
-      if (agencyIdsForContacts.length === 0) q = q.eq("agency_id", "00000000-0000-0000-0000-000000000000");
-      else q = q.in("agency_id", agencyIdsForContacts);
-    }
-    const { data: cRows } = await q;
-    contactRows = (cRows ?? []) as unknown as ContactRow[];
+    const { data: cRpcRows } = await supabase.rpc("search_contacts_for_filters", {
+      ...rpcFilters,
+      p_sort:   contactSort,
+      p_dir:    ascending ? "asc" : "desc",
+      p_offset: 0,
+      p_limit:  50,
+    });
+    // Reshape RPC output into the existing ContactRow shape used by the JSX.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    contactRows = ((cRpcRows ?? []) as any[]).map((r) => ({
+      id:            r.id,
+      first_name:    r.first_name,
+      last_name:     r.last_name,
+      title:         r.title,
+      email_primary: r.email_primary,
+      mobile_phone:  r.mobile_phone,
+      city:          r.city,
+      state:         r.state,
+      address_1:     r.address_1,
+      agency_id:     r.agency_id,
+      agencies: r.agency_id
+        ? {
+            id: r.agency_id,
+            name: r.agency_name,
+            account_type_id: r.account_type_id,
+            account_types: r.account_type_label ? { label: r.account_type_label } : null,
+          }
+        : null,
+    })) as ContactRow[];
   }
 
   return (
