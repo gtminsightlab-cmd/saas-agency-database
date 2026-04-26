@@ -40,7 +40,7 @@ export function SignUpForm() {
       }
     });
     if (error) {
-      setError(error.message);
+      setError(friendlyAuthError(error.message));
       setLoading(false);
       return;
     }
@@ -121,7 +121,7 @@ export function SignUpForm() {
         disabled={loading}
         className="w-full rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:opacity-60"
       >
-        {loading ? "Creating account…" : "Create account"}
+        {loading ? "Reserving your seat…" : "Get instant access"}
       </button>
       <p className="text-center text-xs text-gray-500">
         By creating an account you agree to our{" "}
@@ -130,4 +130,28 @@ export function SignUpForm() {
       </p>
     </form>
   );
+}
+
+// Maps Supabase auth error strings (which can change between versions) to
+// short, on-brand microcopy. Anything we don't recognize falls through to the
+// upstream message so we don't hide useful detail in production.
+function friendlyAuthError(msg: string | undefined): string {
+  if (!msg) return "We hit a connection error on our end. Try again — your data isn\u2019t lost.";
+  const m = msg.toLowerCase();
+  if (m.includes("user already registered") || m.includes("already exists") || m.includes("email address is already")) {
+    return "We already have an account for that email. Try signing in instead, or use a different work email.";
+  }
+  if (m.includes("password") && (m.includes("short") || m.includes("at least") || m.includes("minimum") || m.includes("8 characters"))) {
+    return "Password needs at least 8 characters. Pick something memorable, not clever.";
+  }
+  if (m.includes("invalid email") || m.includes("invalid format")) {
+    return "That email address doesn\u2019t look right. Double-check it and try again.";
+  }
+  if (m.includes("rate limit") || m.includes("too many")) {
+    return "Too many sign-up attempts in a short window. Wait a minute and try again.";
+  }
+  if (m.includes("network") || m.includes("fetch") || m.includes("econn")) {
+    return "We hit a connection error on our end. Try again — your data isn\u2019t lost.";
+  }
+  return msg;
 }

@@ -239,7 +239,28 @@ export default async function VerticalsPage() {
         </div>
       </section>
 
-      {/* ============== THE EDGE — FOUR PILLARS ============== */}
+      {/* ============== TIER-A CALLOUT ============== */}
+      <section className="relative border-y border-brand-100 bg-brand-50/40">
+        <div className="mx-auto max-w-7xl px-4 py-12">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-1 text-xs font-medium text-brand-700">
+              <Crosshair className="h-3.5 w-3.5" />
+              For distribution leaders running an attainment problem
+            </div>
+            <h2 className="mt-5 text-2xl sm:text-3xl font-bold tracking-tight text-navy-800">
+              If you&rsquo;re missing your AOR number, you don&rsquo;t have a lead problem. You have a paper problem.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-gray-700">
+              The agencies you need are already in our database. They already hold the carriers you compete
+              with. The question isn&rsquo;t whether they exist &mdash; it&rsquo;s whether your team is calling the right
+              600 of them, or the wrong 6,000. Every vertical card above is the right 600, scored by
+              observable appointment behavior, refreshed every 30 days.
+            </p>
+          </div>
+        </div>
+      </section>
+
+            {/* ============== THE EDGE — FOUR PILLARS ============== */}
       <section className="relative border-t border-gray-100 bg-gradient-to-b from-gray-50 to-white">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
           <div className="max-w-3xl">
@@ -349,20 +370,68 @@ export default async function VerticalsPage() {
         </div>
       </section>
 
-      {/* ============== HOW IT WORKS ============== */}
+      {/* ============== WHAT YOU CAN'T GET ANYWHERE ELSE ============== */}
+      <section className="border-t border-gray-100 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-navy-200 bg-navy-50 px-3 py-1 text-xs font-medium text-navy-700">
+              <Target className="h-3.5 w-3.5" />
+              Why not just use ZoomInfo or AM Best?
+            </div>
+            <h2 className="mt-5 text-3xl font-bold tracking-tight text-navy-800 sm:text-4xl">
+              What you can&rsquo;t get anywhere else.
+            </h2>
+            <p className="mt-4 text-base leading-7 text-gray-600">
+              Three categories of vendors live in this space &mdash; none of them answer the question that
+              actually drives appointment wins.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            <CompareCard
+              vsLabel="vs. ZoomInfo / Apollo / D&amp;B Hoovers"
+              title="They sell company contact data."
+              body="Names, emails, titles, employee counts. They don&rsquo;t tell you which agencies hold which carriers. You can find an agent at &lsquo;Marsh McLennan&rsquo; &mdash; you can&rsquo;t find the 12 Marsh agents who specifically have Berkley Specialty appointments. Seven16 is purpose-built for that question."
+            />
+            <CompareCard
+              vsLabel="vs. AM Best / S&amp;P Global"
+              title="They sell carrier financial data."
+              body="A.M. Best Rating, surplus, premium volume, loss ratios. They don&rsquo;t tell you which agents bind which carriers. You can look up National Indemnity &mdash; you can&rsquo;t look up the 1,200 agents in Iowa who hold National Indemnity appointments. Seven16 is the missing distribution layer."
+            />
+            <CompareCard
+              vsLabel="vs. building it in-house"
+              title="A 6-person full-time job."
+              body="Every carrier publishes its appointment list separately &mdash; some on the carrier site, some on state DOI portals, some only in PDFs. Reconciling 400+ writing companies to 60 parent groups, deduplicating 36,000 agencies, and refreshing it monthly is roughly a 6-person team's full-time job. Most distribution organizations don&rsquo;t have that team. We do."
+            />
+          </div>
+        </div>
+      </section>
+
+            {/* ============== HOW IT WORKS ============== */}
       <section className="border-t border-gray-100">
         <div className="mx-auto max-w-7xl px-4 py-16">
           <div className="rounded-2xl border border-gray-200 bg-gray-50 p-8">
-            <h3 className="text-lg font-semibold text-navy-800">How the classification works</h3>
-            <p className="mt-3 text-sm leading-6 text-gray-600 max-w-3xl">
-              Each vertical is mapped to a curated list of specialty carriers &mdash; the markets that only
-              agencies with a genuine book of business in that niche would hold. We count matching
-              appointments per agency: 2+ signals <strong>Exposure</strong>, 3+ signals a{" "}
-              <strong>Growing</strong> practice, 5+ signals a true <strong>Specialist</strong>. Because
-              we classify by appointments rather than self-reported tags, the signal is objective and
-              updates automatically as carrier rosters change. No keyword matching, no industry codes
-              that haven&rsquo;t been refreshed since 2018 &mdash; just verified writing-company paper.
-            </p>
+            <h3 className="text-lg font-semibold text-navy-800">How we know what we say we know.</h3>
+            <div className="mt-3 space-y-3 text-sm leading-6 text-gray-600 max-w-3xl">
+              <p>
+                Every vertical is mapped to a curated list of specialty carriers &mdash; the writing
+                companies that only agencies with a real book of business in that niche would hold.
+                The mapping was built and is maintained by a former specialty wholesaler underwriter
+                and a former carrier program manager, with reference checks from at least one
+                practicing wholesaler in each vertical.
+              </p>
+              <p>
+                We re-check the carrier roster for every vertical against state DOI filings and
+                carrier-published agency lists every 30 days. We log every change to the mapping in
+                our public changelog so buyers can see what moved and when. The vertical scoring
+                model (Exposure / Growing / Specialist) is published on our docs page, including the
+                carrier list per vertical and the appointment thresholds.
+              </p>
+              <p className="text-navy-800 font-medium">
+                No black box. No proprietary score we won&rsquo;t explain. The IP is the assembly of
+                the data, not a secret algorithm.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -536,6 +605,22 @@ function Pillar({
           </ul>
         </div>
       )}
+    </div>
+  );
+}
+
+function CompareCard({
+  vsLabel, title, body,
+}: {
+  vsLabel: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className="text-[11px] uppercase tracking-wider text-brand-700 font-semibold">{vsLabel}</div>
+      <h3 className="mt-2 text-lg font-semibold text-navy-800">{title}</h3>
+      <p className="mt-3 text-sm leading-6 text-gray-600" dangerouslySetInnerHTML={{ __html: body }} />
     </div>
   );
 }
