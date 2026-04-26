@@ -13,7 +13,8 @@ import {
   ShieldCheck,
   Layers,
   BookOpen,
-  Compass
+  Compass,
+  PieChart
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -118,7 +119,16 @@ export function Sidebar({
         </div>
 
         <div>
+          <div className="px-2 mb-1.5 text-sm font-semibold text-brand-600">
+            Analytics
+          </div>
           <ul className="space-y-0.5">
+            <NavLinkItem
+              href="/analytics/carriers"
+              label="Carriers"
+              icon={PieChart}
+              active={isActive("/analytics/carriers")}
+            />
             <NavLinkItem
               href="/data-stats"
               label="Data and Stats"
