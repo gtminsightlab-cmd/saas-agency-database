@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MarketingNav } from "@/components/marketing/nav";
+import { Sidebar } from "@/components/app/sidebar";
 
 export const dynamic = "force-dynamic";
 
@@ -98,9 +99,27 @@ export default async function VerticalsPage() {
   const live = (data ?? []) as unknown as VerticalSummary[];
   const verticals: VerticalSummary[] = live.length > 0 ? live : (VERTICAL_FALLBACK as VerticalSummary[]);
 
-  return (
+  // Authenticated users see this page inside the app shell (sidebar nav);
+  // anonymous visitors see it with the marketing nav.
+  let sidebarProps:
+    | { email: string; fullName: string | null; isSuperAdmin: boolean }
+    | null = null;
+  if (user) {
+    const { data: appUser } = await supabase
+      .from("app_users")
+      .select("email, full_name, role")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    sidebarProps = {
+      email: appUser?.email ?? user.email ?? "",
+      fullName: appUser?.full_name ?? null,
+      isSuperAdmin: appUser?.role === "super_admin",
+    };
+  }
+
+  const body = (
     <div className="bg-white">
-      <MarketingNav isAuthed={!!user} />
+      {!user && <MarketingNav isAuthed={false} />}
 
       {/* ============== HERO ============== */}
       <section className="relative overflow-hidden border-b border-gray-100">
@@ -417,6 +436,17 @@ export default async function VerticalsPage() {
       </section>
     </div>
   );
+
+  if (sidebarProps) {
+    return (
+      <div className="flex min-h-screen bg-gray-50">
+        <Sidebar {...sidebarProps} />
+        <div className="flex-1 min-w-0 overflow-x-hidden">{body}</div>
+      </div>
+    );
+  }
+
+  return body;
 }
 
 // ============================================================================

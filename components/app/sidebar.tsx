@@ -11,13 +11,15 @@ import {
   BarChart3,
   Sparkles,
   ChevronDown,
-  ShieldCheck
+  ShieldCheck,
+  Layers
 } from "lucide-react";
 import clsx from "clsx";
 
 type NavItem = { href: string; label: string; icon: React.ComponentType<{ className?: string }> };
 
 const agencyDirectoryLinks: NavItem[] = [
+  { href: "/verticals", label: "Industry Verticals", icon: Layers },
   { href: "/build-list", label: "Build a List", icon: LayoutList },
   { href: "/saved-lists", label: "Saved Lists", icon: BookmarkCheck },
   { href: "/downloads", label: "Downloads", icon: Download },
