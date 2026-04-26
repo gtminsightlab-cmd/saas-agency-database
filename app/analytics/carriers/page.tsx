@@ -2,6 +2,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
+  Lock,
   Search,
   TrendingUp,
 } from "lucide-react";
@@ -46,7 +47,7 @@ export default async function AnalyticsCarriersPage() {
     hasActivePlan = !!ent && ent.status === "active";
   }
 
-  // Top 50 + KPIs both come from RPC (fast, server-side aggregation)
+  // Top 50 + KPIs both come from RPC (SECURITY DEFINER, aggregate-only)
   const [topRes, kpiRes] = await Promise.all([
     supabase.rpc("get_top_carriers_by_agency_count", { p_limit: 50 }),
     supabase.rpc("get_carrier_analytics_kpis"),
@@ -81,6 +82,10 @@ export default async function AnalyticsCarriersPage() {
   }
 
   const maxCount = topCarriers[0]?.agency_count ?? 1;
+  const isAnon = !user;
+
+  // For anonymous visitors, only render the top 10 with blurred metrics.
+  const visibleCarriers = isAnon ? topCarriers.slice(0, 10) : topCarriers;
 
   // CTA href per tile depends on auth state
   const tileHref = (carrierId: string) => {
@@ -115,6 +120,11 @@ export default async function AnalyticsCarriersPage() {
               Counts refresh every 30 days. The full carrier list ({kpis.active_carriers.toLocaleString()})
               is searchable in the build-list filter.
             </p>
+            {isAnon && (
+              <p className="mt-3 text-sm text-brand-700 font-medium">
+                Sign in to see all 50 ranked carriers and click through to the directory.
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -139,7 +149,9 @@ export default async function AnalyticsCarriersPage() {
               Top 50 by appointed agencies
             </h2>
             <p className="mt-1 text-sm text-gray-600">
-              Click a tile &rarr; directory pre-filtered to that carrier&rsquo;s agencies.
+              {isAnon
+                ? "Preview of the ranked carriers — sign in for the full list and clickable filters."
+                : <>Click a tile &rarr; directory pre-filtered to that carrier&rsquo;s agencies.</>}
             </p>
           </div>
           <div className="text-xs text-gray-500 inline-flex items-center gap-1.5">
@@ -151,6 +163,54 @@ export default async function AnalyticsCarriersPage() {
         {topCarriers.length === 0 ? (
           <div className="rounded-md border border-gray-200 bg-gray-50 p-8 text-center text-sm text-gray-600">
             Loading carrier appointment data&hellip;
+          </div>
+        ) : isAnon ? (
+          <div className="relative">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+              {visibleCarriers.map((c, i) => (
+                <CarrierTilePreview
+                  key={c.id}
+                  rank={i + 1}
+                  carrier={c}
+                  maxCount={maxCount}
+                />
+              ))}
+            </div>
+            {/* Fade-out gradient over the lower portion */}
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-b from-transparent via-white/85 to-white"
+            />
+            {/* Centered sign-up CTA card overlaid on the locked grid */}
+            <div className="absolute inset-x-0 top-1/2 flex justify-center -translate-y-1/2 px-4">
+              <div className="max-w-md w-full rounded-2xl border border-brand-200 bg-white shadow-md p-6 text-center">
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-50 text-brand-700">
+                  <Lock className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-navy-800">
+                  Sign in to see all 50 carriers
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-gray-600">
+                  The full Top 50 ranking, the long-tail of {kpis.active_carriers.toLocaleString()} carriers,
+                  and one-click deep links to filtered agency lists are inside the app.
+                </p>
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                  <Link
+                    href="/sign-up"
+                    className="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 inline-flex items-center gap-2"
+                  >
+                    Get instant access
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                  <Link
+                    href="/sign-in"
+                    className="rounded-md border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                  >
+                    Sign in
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
@@ -168,37 +228,41 @@ export default async function AnalyticsCarriersPage() {
           </div>
         )}
 
-        <div className="mt-8 rounded-md border border-gray-200 bg-white p-5 sm:p-6">
-          <div className="flex items-start gap-3">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-brand-50 text-brand-700">
-              <Search className="h-4 w-4" />
-            </span>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-navy-800">
-                Looking for a carrier outside the Top 50?
-              </p>
-              <p className="mt-1 text-xs leading-5 text-gray-600">
-                The full directory has {kpis.active_carriers.toLocaleString()} active carriers.
-                Open the build-list filter and search by carrier name &mdash; Berkley sub-brands,
-                regional mutuals, MGAs, and the long tail are all there.
-              </p>
-              <Link
-                href={hasActivePlan ? "/build-list" : (user ? "/#pricing" : "/sign-up")}
-                className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 hover:text-brand-800"
-              >
-                {hasActivePlan ? "Open Build a List" : (user ? "See pricing" : "Get instant access")}
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+        {!isAnon && (
+          <div className="mt-8 rounded-md border border-gray-200 bg-white p-5 sm:p-6">
+            <div className="flex items-start gap-3">
+              <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-brand-50 text-brand-700">
+                <Search className="h-4 w-4" />
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-navy-800">
+                  Looking for a carrier outside the Top 50?
+                </p>
+                <p className="mt-1 text-xs leading-5 text-gray-600">
+                  The full directory has {kpis.active_carriers.toLocaleString()} active carriers.
+                  Open the build-list filter and search by carrier name &mdash; Berkley sub-brands,
+                  regional mutuals, MGAs, and the long tail are all there.
+                </p>
+                <Link
+                  href={hasActivePlan ? "/build-list" : "/#pricing"}
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-brand-700 hover:text-brand-800"
+                >
+                  {hasActivePlan ? "Open Build a List" : "See pricing"}
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* CTA */}
       <section className="relative overflow-hidden bg-gradient-to-br from-navy-800 via-navy-700 to-brand-700">
         <div className="relative mx-auto max-w-5xl px-4 py-14 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
-            Stop guessing which carriers your prospects hold.
+            {isAnon
+              ? "Stop guessing which carriers your prospects hold."
+              : "Stop guessing which carriers your prospects hold."}
           </h2>
           <p className="mt-3 text-base text-brand-100 max-w-2xl mx-auto">
             Every appointment is verified against state DOI filings and refreshed every 30 days.
@@ -309,5 +373,52 @@ function CarrierTile({
         <span className="text-[10px] text-gray-500">agencies</span>
       </div>
     </Link>
+  );
+}
+
+// Read-only preview tile shown to anonymous visitors. Names visible (drives
+// brand recognition + SEO), agency counts blurred so the data itself is gated.
+function CarrierTilePreview({
+  rank,
+  carrier,
+  maxCount,
+}: {
+  rank: number;
+  carrier: CarrierRow;
+  maxCount: number;
+}) {
+  const pct = Math.max(1, Math.round((carrier.agency_count / maxCount) * 100));
+  const showGroup =
+    carrier.group_name && carrier.group_name !== carrier.name
+      ? carrier.group_name
+      : null;
+  return (
+    <div className="flex h-full flex-col rounded-md border border-gray-200 bg-white p-3">
+      <div className="text-[10px] text-gray-500 font-mono tabular-nums">
+        {String(rank).padStart(2, "0")}
+      </div>
+      <p className="mt-1 line-clamp-2 min-h-[2.4rem] text-sm font-medium leading-tight text-navy-800">
+        {carrier.name}
+      </p>
+      {showGroup && (
+        <p className="mt-0.5 line-clamp-1 text-[10px] text-gray-500">{showGroup}</p>
+      )}
+      <div className="mt-2 h-[3px] overflow-hidden rounded-sm bg-gray-100">
+        <div
+          className="h-full bg-brand-500"
+          style={{ width: `${pct}%`, filter: "blur(2px)" }}
+        />
+      </div>
+      <div className="mt-1.5 flex items-baseline justify-between">
+        <span
+          className="text-base font-semibold tabular-nums text-navy-800"
+          style={{ filter: "blur(4px)", userSelect: "none" }}
+          aria-hidden
+        >
+          {carrier.agency_count.toLocaleString()}
+        </span>
+        <span className="text-[10px] text-gray-500">agencies</span>
+      </div>
+    </div>
   );
 }
