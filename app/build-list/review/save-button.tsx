@@ -36,7 +36,7 @@ export function SaveListButton({ filterQs }: { filterQs: string }) {
     }
     // Compute counts for the filter so they show up on /saved-lists.
     // We re-run a thinner version of the same query review/page.tsx uses:
-    // intersect carrier/affiliation/SIC sets, then count agencies + contacts.
+    // Single RPC handles all filter joins server-side and returns the 3 counts.
     const counts = await computeCountsForFilter(supabase, filterQs);
 
     const { data, error: insertError } = await supabase
@@ -142,13 +142,6 @@ function asNum(v: string | null): number | null {
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
-function intersect<T>(sets: Set<T>[]): Set<T> {
-  if (sets.length === 0) return new Set();
-  const [first, ...rest] = sets;
-  const out = new Set<T>(first);
-  for (const s of rest) for (const v of out) if (!s.has(v)) out.delete(v);
-  return out;
-}
 
 async function computeCountsForFilter(
   supabase: ReturnType<typeof createClient>,
@@ -173,84 +166,39 @@ async function computeCountsForFilter(
     const empMin = asNum(qs.get("emin"));
     const empMax = asNum(qs.get("emax"));
 
-    // Resolve carrier/affiliation/SIC -> agency_id sets
-    const idSets: Set<string>[] = [];
-    if (carrierIds.length) {
-      const { data } = await supabase.from("agency_carriers").select("agency_id").in("carrier_id", carrierIds);
-      idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
-    }
-    if (affiliationIds.length) {
-      const { data } = await supabase.from("agency_affiliations").select("agency_id").in("affiliation_id", affiliationIds);
-      idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
-    }
-    if (sicIds.length) {
-      const { data } = await supabase.from("agency_sic_codes").select("agency_id").in("sic_code_id", sicIds);
-      idSets.push(new Set((data ?? []).map((r: any) => r.agency_id)));
-    }
     let stateCodes: string[] = [];
     if (stateIds.length) {
       const { data: states } = await supabase.from("states").select("code").in("id", stateIds);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       stateCodes = (states ?? []).map((s: any) => s.code).filter(Boolean);
     }
-    const allowedAgencyIds = idSets.length > 0 ? Array.from(intersect(idSets)) : null;
 
-    // Build the agencies count query
-    let agq = supabase.from("agencies").select("id", { count: "exact", head: true });
-    if (accountTypeIds.length) agq = agq.in("account_type_id", accountTypeIds);
-    if (locationTypeIds.length) agq = agq.in("location_type_id", locationTypeIds);
-    if (amsIds.length) agq = agq.in("agency_mgmt_system_id", amsIds);
-    if (country) agq = agq.eq("country", COUNTRY_MAP[country] ?? country);
-    if (stateCodes.length) agq = agq.in("state", stateCodes);
-    if (accountName) agq = agq.ilike("name", `%${accountName}%`);
-    if (minority === "yes") agq = agq.eq("minority_owned", true);
-    if (minority === "no") agq = agq.eq("minority_owned", false);
-    if (premiumMin != null) agq = agq.gte("premium_volume", premiumMin);
-    if (premiumMax != null) agq = agq.lte("premium_volume", premiumMax);
-    if (revenueMin != null) agq = agq.gte("revenue", revenueMin);
-    if (revenueMax != null) agq = agq.lte("revenue", revenueMax);
-    if (empMin != null) agq = agq.gte("employees", empMin);
-    if (empMax != null) agq = agq.lte("employees", empMax);
-    if (allowedAgencyIds) {
-      if (allowedAgencyIds.length === 0) {
-        return { accounts: 0, contacts: 0, contactsWithEmail: 0 };
-      }
-      agq = agq.in("id", allowedAgencyIds);
-    }
-    const { count: agenciesCount } = await agq;
-    const accounts = agenciesCount ?? 0;
-    if (accounts === 0) return { accounts: 0, contacts: 0, contactsWithEmail: 0 };
-
-    // Pull all matching agency IDs, then count contacts in that set
-    let idQuery = supabase.from("agencies").select("id").limit(50_000);
-    if (accountTypeIds.length) idQuery = idQuery.in("account_type_id", accountTypeIds);
-    if (locationTypeIds.length) idQuery = idQuery.in("location_type_id", locationTypeIds);
-    if (amsIds.length) idQuery = idQuery.in("agency_mgmt_system_id", amsIds);
-    if (country) idQuery = idQuery.eq("country", COUNTRY_MAP[country] ?? country);
-    if (stateCodes.length) idQuery = idQuery.in("state", stateCodes);
-    if (accountName) idQuery = idQuery.ilike("name", `%${accountName}%`);
-    if (minority === "yes") idQuery = idQuery.eq("minority_owned", true);
-    if (minority === "no") idQuery = idQuery.eq("minority_owned", false);
-    if (premiumMin != null) idQuery = idQuery.gte("premium_volume", premiumMin);
-    if (premiumMax != null) idQuery = idQuery.lte("premium_volume", premiumMax);
-    if (revenueMin != null) idQuery = idQuery.gte("revenue", revenueMin);
-    if (revenueMax != null) idQuery = idQuery.lte("revenue", revenueMax);
-    if (empMin != null) idQuery = idQuery.gte("employees", empMin);
-    if (empMax != null) idQuery = idQuery.lte("employees", empMax);
-    if (allowedAgencyIds) idQuery = idQuery.in("id", allowedAgencyIds);
-    const { data: idRows } = await idQuery;
-    const ids = (idRows ?? []).map((r: any) => r.id);
-    if (ids.length === 0) return { accounts, contacts: 0, contactsWithEmail: 0 };
-
-    const [{ count: contactsCount }, { count: contactsWithEmailCount }] = await Promise.all([
-      supabase.from("contacts").select("id", { count: "exact", head: true }).in("agency_id", ids),
-      supabase.from("contacts").select("id", { count: "exact", head: true })
-        .in("agency_id", ids).not("email_primary", "is", null).neq("email_primary", ""),
-    ]);
-
+    // Single server-side RPC replaces the broken JS materialization that blew
+    // up the URL with .in("id", agencyIds) for high-count carriers.
+    const { data } = await supabase.rpc("get_save_summary_counts", {
+      p_carrier_ids:        carrierIds.length     ? carrierIds     : null,
+      p_affiliation_ids:    affiliationIds.length ? affiliationIds : null,
+      p_sic_ids:            sicIds.length         ? sicIds         : null,
+      p_account_type_ids:   accountTypeIds.length ? accountTypeIds : null,
+      p_location_type_ids:  locationTypeIds.length? locationTypeIds: null,
+      p_ams_ids:            amsIds.length         ? amsIds         : null,
+      p_state_codes:        stateCodes.length     ? stateCodes     : null,
+      p_country:            country ? (COUNTRY_MAP[country] ?? country) : null,
+      p_premium_min:        premiumMin,
+      p_premium_max:        premiumMax,
+      p_revenue_min:        revenueMin,
+      p_revenue_max:        revenueMax,
+      p_emp_min:            empMin,
+      p_emp_max:            empMax,
+      p_minority:           minority === "yes" ? true : minority === "no" ? false : null,
+      p_account_name:       accountName || null,
+      p_account_name_mode:  "contains",
+    });
+    const row = Array.isArray(data) ? data[0] : null;
     return {
-      accounts,
-      contacts: contactsCount ?? 0,
-      contactsWithEmail: contactsWithEmailCount ?? 0,
+      accounts:          Number(row?.accounts ?? 0),
+      contacts:          Number(row?.contacts ?? 0),
+      contactsWithEmail: Number(row?.contacts_with_email ?? 0),
     };
   } catch {
     return { accounts: 0, contacts: 0, contactsWithEmail: 0 };
