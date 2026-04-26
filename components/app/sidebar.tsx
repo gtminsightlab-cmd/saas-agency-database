@@ -131,6 +131,20 @@ export function Sidebar({
             />
           </ul>
         </div>
+
+        <div>
+          <div className="px-2 mb-1.5 text-sm font-semibold text-brand-600">
+            Account
+          </div>
+          <ul className="space-y-0.5">
+            <NavLinkItem
+              href="/team"
+              label="Team"
+              icon={Users}
+              active={isActive("/team")}
+            />
+          </ul>
+        </div>
       </nav>
 
     </aside>
