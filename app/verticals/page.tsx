@@ -6,10 +6,6 @@ import {
   Wheat,
   HeartHandshake,
   TrendingUp,
-  Mail,
-  Smartphone,
-  Linkedin,
-  Globe,
   Lock,
   Landmark,
   Building2,
@@ -175,63 +171,71 @@ export default async function VerticalsPage() {
             return (
               <article
                 key={v.slug}
-                className={`group relative rounded-2xl border ${colors.border} bg-white p-6 shadow-sm ring-1 ${colors.ring} transition hover:-translate-y-0.5 hover:shadow-md`}
+                className={`group flex h-full flex-col rounded-lg border ${colors.border} bg-white transition hover:border-brand-300 hover:shadow-sm`}
               >
-                <div className="flex items-start justify-between">
-                  <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${colors.bg}`}>
-                    <Icon className={`h-6 w-6 ${colors.text}`} />
+                {/* Header */}
+                <header className="flex items-center gap-3 border-b border-gray-100 px-5 py-4">
+                  <div className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md ${colors.bg}`}>
+                    <Icon className={`h-5 w-5 ${colors.text}`} />
                   </div>
-                  <span className="rounded-full bg-gray-50 px-2.5 py-1 text-xs font-medium text-gray-600">
-                    {v.mapped_carrier_count} specialty carriers
-                  </span>
-                </div>
+                  <div className="min-w-0 flex-1">
+                    <h2 className="truncate text-base font-semibold leading-tight text-navy-800">{v.name}</h2>
+                    <div className="mt-0.5 text-[11px] text-gray-500">
+                      {v.mapped_carrier_count} specialty carriers mapped
+                    </div>
+                  </div>
+                </header>
 
-                <h2 className="mt-4 text-xl font-semibold text-navy-800">{v.name}</h2>
-                <p className="mt-2 text-sm leading-6 text-gray-600">{v.description}</p>
+                {/* Body */}
+                <div className="flex flex-1 flex-col px-5 py-4">
+                  <p className="line-clamp-2 min-h-[2.6rem] text-sm leading-snug text-gray-600">
+                    {v.description}
+                  </p>
 
-                <div className="mt-6 grid grid-cols-3 gap-3 border-t border-gray-100 pt-4">
-                  <TierStat label="Exposure"   count={v.agencies_with_exposure}  dot="bg-brand-200" />
-                  <TierStat label="Growing"    count={v.agencies_growing}        dot="bg-brand-500" />
-                  <TierStat label="Specialist" count={v.agencies_specialist}     dot="bg-brand-700" />
-                </div>
+                  {/* Tier row — 3 evenly-spaced columns sharing a single bordered box */}
+                  <div className="mt-4 grid grid-cols-3 divide-x divide-gray-100 overflow-hidden rounded-md border border-gray-100">
+                    <TierBox label="Exposure"   count={v.agencies_with_exposure}  dot="bg-brand-200" />
+                    <TierBox label="Growing"    count={v.agencies_growing}        dot="bg-brand-500" />
+                    <TierBox label="Specialist" count={v.agencies_specialist}     dot="bg-brand-700" />
+                  </div>
 
-                <div className="mt-5 grid grid-cols-3 gap-2 border-t border-gray-100 pt-4 text-xs">
-                  <CountStat label="Agencies"  value={v.agency_count} />
-                  <CountStat label="Locations" value={v.location_count} />
-                  <CountStat label="Contacts"  value={v.contact_count} />
-                </div>
+                  {/* 3x2 unified stats grid — gap-px + bg-gray-200 yields crisp 1px cell lines */}
+                  <div className="mt-3 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-gray-200 bg-gray-200">
+                    <DataCell label="Agencies"  value={v.agency_count} />
+                    <DataCell label="Locations" value={v.location_count} />
+                    <DataCell label="Contacts"  value={v.contact_count} />
+                    <DataCell label="Emails"    value={v.contacts_with_email} />
+                    <DataCell label="LinkedIn"  value={v.agencies_with_linkedin} />
+                    <DataCell label="Mobiles"   value={v.contacts_with_mobile} />
+                  </div>
 
-                <div className="mt-4 grid grid-cols-4 gap-2 rounded-lg border border-gray-100 bg-gray-50/50 px-3 py-2.5">
-                  <PremiumStat Icon={Mail}       label="Emails"   value={v.contacts_with_email}    colors={colors} />
-                  <PremiumStat Icon={Smartphone} label="Mobiles"  value={v.contacts_with_mobile}   colors={colors} />
-                  <PremiumStat Icon={Linkedin}   label="LinkedIn" value={v.agencies_with_linkedin} colors={colors} />
-                  <PremiumStat Icon={Globe}      label="Websites" value={v.agencies_with_web}      colors={colors} />
-                </div>
-
-                <div className="mt-5 flex items-center justify-end">
-                  {hasActivePlan ? (
-                    <Link
-                      href={`/verticals/${v.slug}/open`}
-                      className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
-                    >
-                      Open targeted list <ArrowRight className="h-3 w-3" />
-                    </Link>
-                  ) : user ? (
-                    <Link
-                      href={`/#pricing`}
-                      className="inline-flex items-center gap-1 rounded-md bg-navy-800 px-3 py-1.5 text-xs font-semibold text-white hover:bg-navy-900"
-                    >
-                      <Lock className="h-3 w-3" />
-                      Unlock targeted list
-                    </Link>
-                  ) : (
-                    <Link
-                      href={`/sign-up?vertical=${v.slug}`}
-                      className={`inline-flex items-center gap-1 rounded-md ${colors.bg} px-3 py-1.5 text-xs font-semibold ${colors.text} hover:opacity-90`}
-                    >
-                      Get access <ArrowRight className="h-3 w-3" />
-                    </Link>
-                  )}
+                  {/* CTA pinned to card bottom */}
+                  <div className="mt-auto pt-4">
+                    {hasActivePlan ? (
+                      <Link
+                        href={`/verticals/${v.slug}/open`}
+                        className="block w-full rounded-md bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-700"
+                      >
+                        Open targeted list
+                      </Link>
+                    ) : user ? (
+                      <Link
+                        href={`/#pricing`}
+                        className="inline-flex w-full items-center justify-center gap-1 rounded-md bg-navy-800 px-3 py-2 text-sm font-semibold text-white hover:bg-navy-900"
+                      >
+                        <Lock className="h-3.5 w-3.5" />
+                        Unlock targeted list
+                      </Link>
+                    ) : (
+                      <Link
+                        href={`/sign-up?vertical=${v.slug}`}
+                        className="inline-flex w-full items-center justify-center gap-1 rounded-md bg-brand-600 px-3 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+                      >
+                        Get access
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </article>
             );
@@ -522,46 +526,30 @@ export default async function VerticalsPage() {
 // Card components
 // ============================================================================
 
-function TierStat({ label, count, dot }: { label: string; count: number; dot: string }) {
+function TierBox({ label, count, dot }: { label: string; count: number; dot: string }) {
   return (
-    <div>
-      <div className="flex items-center gap-1.5 text-xs text-gray-500">
-        <span className={`inline-block h-2 w-2 rounded-full ${dot}`} />
+    <div className="px-2 py-2 text-center">
+      <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-wider text-gray-500 font-medium">
+        <span className={`inline-block h-1.5 w-1.5 rounded-full ${dot}`} />
         {label}
       </div>
-      <div className="mt-1 text-lg font-semibold tabular-nums text-navy-800">
+      <div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">
         {count.toLocaleString()}
       </div>
     </div>
   );
 }
 
-function CountStat({ label, value }: { label: string; value: number }) {
+// New unified data cell used in the 3x2 stats grid. Each cell sits on a
+// gray-200 background that bleeds through 1px gaps, producing crisp Excel-
+// style cell borders without per-cell border math.
+function DataCell({ label, value }: { label: string; value: number }) {
   return (
-    <div>
-      <div className="text-gray-500">{label}</div>
-      <div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">
-        {value.toLocaleString()}
-      </div>
-    </div>
-  );
-}
-
-function PremiumStat({
-  Icon, label, value, colors,
-}: {
-  Icon: LucideIcon;
-  label: string;
-  value: number;
-  colors: { text: string };
-}) {
-  return (
-    <div className="text-center">
-      <Icon className={`h-3.5 w-3.5 mx-auto ${colors.text}`} />
-      <div className="mt-1 text-[10px] uppercase tracking-wider text-gray-500 font-semibold">
+    <div className="bg-white px-3 py-2.5">
+      <div className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">
         {label}
       </div>
-      <div className="mt-0.5 text-sm font-semibold text-navy-800 tabular-nums">
+      <div className="mt-0.5 text-sm font-semibold tabular-nums text-navy-800">
         {value.toLocaleString()}
       </div>
     </div>
