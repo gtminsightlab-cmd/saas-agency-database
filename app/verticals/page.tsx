@@ -235,6 +235,12 @@ export default async function VerticalsPage() {
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                     )}
+                    <Link
+                      href={`/verticals/${v.slug}`}
+                      className="mt-2 block w-full text-center text-xs font-medium text-brand-700 hover:text-brand-800"
+                    >
+                      View carriers &amp; segments &rarr;
+                    </Link>
                   </div>
                 </div>
               </article>
