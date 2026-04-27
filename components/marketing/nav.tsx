@@ -20,7 +20,7 @@ export function MarketingNav({ isAuthed }: { isAuthed: boolean }) {
           <Link href="/resources" className="hidden lg:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Resources
           </Link>
-          <a href="#pricing" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
+          <a href="/#pricing" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Pricing
           </a>
           {isAuthed ? (
