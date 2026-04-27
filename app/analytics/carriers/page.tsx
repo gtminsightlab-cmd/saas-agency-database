@@ -48,10 +48,10 @@ export default async function AnalyticsCarriersPage() {
     hasActivePlan = !!ent && ent.status === "active";
   }
 
+  // Fetch ALL active carriers (1,363) so the search input can find anything;
+  // the default grid view filters down to >= MIN_AGENCY_THRESHOLD client-side.
   const [topRes, kpiRes] = await Promise.all([
-    supabase.rpc("get_carriers_by_min_agency_count", {
-      p_min_agency_count: MIN_AGENCY_THRESHOLD,
-    }),
+    supabase.rpc("get_all_active_carriers_with_counts"),
     supabase.rpc("get_carrier_analytics_kpis"),
   ]);
 
@@ -111,8 +111,7 @@ export default async function AnalyticsCarriersPage() {
             </h1>
             <p className="mt-4 text-base leading-7 text-gray-600">
               Click one or more carriers to build a list of agencies appointed with them.
-              {totalCarriers.toLocaleString()} carriers shown &mdash; every carrier with at least{" "}
-              {MIN_AGENCY_THRESHOLD} appointed agencies. The full directory has{" "}
+              Default view: every carrier with at least {MIN_AGENCY_THRESHOLD} appointed agencies (212). Search to find any of the {kpis.active_carriers.toLocaleString()} active carriers. The full directory has{" "}
               {kpis.active_carriers.toLocaleString()} active carriers; the long tail is searchable
               in the build-list filter.
             </p>

@@ -35,21 +35,24 @@ export function CarriersGrid({
   // Search input
   const [query, setQuery] = useState("");
 
-  // Filter list when there's a search query
+  // When search is empty -> default grid filtered to >= minThreshold (212).
+  // When search is active -> match across ALL carriers, including the long tail
+  // like Canal Insurance (108 agencies) that are below the default threshold.
   const filtered = useMemo(() => {
-    if (!query.trim()) return carriers;
+    if (!query.trim()) {
+      return carriers.filter((c) => c.agency_count >= minThreshold);
+    }
     const q = query.trim().toLowerCase();
     return carriers.filter(
       (c) =>
         c.name.toLowerCase().includes(q) ||
         (c.group_name ?? "").toLowerCase().includes(q)
     );
-  }, [carriers, query]);
+  }, [carriers, query, minThreshold]);
 
   const visible = filtered.slice(0, visibleCount);
   const maxCount = carriers[0]?.agency_count ?? 1;
   const canLoadMore = filtered.length > visible.length;
-  const totalCarriers = carriers.length;
   const filteredCount = filtered.length;
 
   function toggle(id: string) {
@@ -85,17 +88,23 @@ export function CarriersGrid({
       <div className="mb-6 flex flex-wrap items-baseline justify-between gap-3">
         <div className="flex-1 min-w-[260px]">
           <h2 className="text-xl font-semibold text-navy-800">
-            Carriers with {minThreshold}+ appointed agencies
+            {query.trim()
+              ? `Search results for "${query.trim()}"`
+              : `Carriers with ${minThreshold}+ appointed agencies`}
           </h2>
           <p className="mt-1 text-sm text-gray-600">
             {isAnon
               ? "Preview only — sign in to multi-select and build lists."
-              : "Click tiles to multi-select. Build a list of agencies across all selected carriers."}
+              : query.trim()
+                ? `Searching all ${carriers.length.toLocaleString()} active carriers. Click tiles to multi-select.`
+                : "Click tiles to multi-select. Build a list of agencies across all selected carriers."}
           </p>
         </div>
         <div className="text-xs text-gray-500 inline-flex items-center gap-1.5">
           <TrendingUp className="h-3 w-3" />
-          {totalCarriers.toLocaleString()} carriers ranked
+          {query.trim()
+            ? `${filteredCount.toLocaleString()} of ${carriers.length.toLocaleString()}`
+            : `${filteredCount.toLocaleString()} above threshold`}
         </div>
       </div>
 
@@ -158,11 +167,12 @@ export function CarriersGrid({
                   <Lock className="h-5 w-5" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-navy-800">
-                  Sign in to see all {totalCarriers.toLocaleString()} carriers
+                  Sign in to search {carriers.length.toLocaleString()} carriers
                 </h3>
                 <p className="mt-2 text-sm leading-6 text-gray-600">
                   Multi-select carriers, build agency lists across them in one click,
-                  and search the long tail of {minThreshold}+ named brands.
+                  and find any of the {carriers.length.toLocaleString()} active carriers (default
+                  view shows the {minThreshold}+ tier).
                 </p>
                 <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
                   <Link
