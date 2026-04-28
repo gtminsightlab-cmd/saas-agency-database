@@ -29,7 +29,10 @@ export default async function DataMappingPage() {
         {Object.keys(grouped).sort().map((tbl) => (
           <details key={tbl} className="rounded-lg border border-gray-200 bg-white open:shadow-sm">
             <summary className="cursor-pointer px-4 py-3 font-semibold text-gray-900">
-              {tbl} <span className="text-xs font-normal text-gray-500">({grouped[tbl].length} columns)</span>
+              {tbl}{" "}
+              <span className="text-xs font-normal text-gray-500">
+                ({grouped[tbl].length} columns)
+              </span>
             </summary>
             <div className="overflow-x-auto border-t border-gray-100">
               <table className="min-w-full divide-y divide-gray-100 text-sm">

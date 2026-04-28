@@ -7,7 +7,11 @@ export const metadata: Metadata = {
     "B2B commercial insurance agency directory. Build lists of agencies and contacts by carrier, affiliation, geography, and role. Export CSVs or search free."
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">{children}</body>
