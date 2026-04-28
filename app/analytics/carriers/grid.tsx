@@ -122,7 +122,7 @@ export function CarriersGrid({
           </div>
           {query && (
             <span className="text-xs text-gray-500">
-              {filteredCount} of {totalCarriers.toLocaleString()}
+              {filteredCount} of {carriers.length.toLocaleString()}
             </span>
           )}
         </div>
