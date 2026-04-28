@@ -212,3 +212,80 @@ _dryrun_chunk_{0,1,2}.sql       — comma-joined SQL chunks for batch comparison
 ```
 
 — end of session 12 —
+
+---
+
+## 10. Mid-session epilogue — broken-prod fix + GitHub push
+
+**Discovered 2026-04-27 23:45 UTC during session-12 wrap-up:** Production had been failing for ~6 hours. Three Vercel deployments from earlier-today commits (8039ebe, 578eaa1, 12c6f72) all errored with:
+
+```
+./app/analytics/carriers/grid.tsx:125:35
+Type error: Cannot find name 'totalCarriers'.
+```
+
+`totalCarriers` was defined in `app/analytics/carriers/page.tsx:93` but never passed as a prop to the grid client component, so the JSX reference inside `grid.tsx`'s search-active count badge couldn't resolve. Same value is available in scope as `carriers.length` (already used correctly on line 106 of the same file).
+
+**Fix:** one-character semantic edit in `grid.tsx:125`:
+```tsx
+- {filteredCount} of {totalCarriers.toLocaleString()}
++ {filteredCount} of {carriers.length.toLocaleString()}
+```
+
+**Pushed via fresh `/tmp` clone + temporary fine-grained PAT** (Master O's GitHub PAT scoped to this one repo, read+write contents only, custom expiration set to next-day, revoked immediately after by Master O). PAT path used because the OneDrive working-copy `.git` is permanently broken (see `reference_git_repo_state.md`).
+
+**Three commits landed (8039ebe..8829d38):**
+- `1bb4f3b` — docs(handoffs): add session 11 + 12 handoffs and hero image
+- `a69f359` — chore(format): apply linter formatting to UI files (4 files)
+- `8829d38` — fix(analytics): replace undefined totalCarriers with carriers.length
+
+Vercel auto-deployed after the fix push. Build state went **READY** at 2026-04-28 00:26 UTC. Production back online.
+
+**Lesson #8 added retroactively:** Always check Vercel deployment state post-push — auto-deploy can mask earlier-broken-main scenarios. After pushing, confirm `READY` (not `ERROR`) before declaring done.
+
+**PAT lifecycle:** Master O created at https://github.com/settings/personal-access-tokens, used once for this push, scheduled for revocation immediately after build went green. Future sessions should request a NEW PAT each time per `feedback_sandbox_no_github_creds.md`.
+
+---
+
+## 11. Operating context for the NEXT session (must be inherited verbatim into every future handoff)
+
+**Plugins available — try these BEFORE asking Master O for anything:**
+- **Supabase MCP** — full DB access (execute_sql, apply_migration, get_advisors, list_tables, deploy_edge_function). Project ID `sdlsdovuljuymgymarou`.
+- **Vercel MCP** — deploy_to_vercel, list_deployments, get_deployment_build_logs, get_runtime_logs, list_projects, web_fetch_vercel_url, search_vercel_documentation. Team ID `team_RCXpUhGENcLjR2loNIRyEmT3`. Project ID `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV`.
+- **Stripe MCP** — full Stripe API (create_customer, create_payment_link, list_subscriptions, list_invoices, retrieve_balance, search_stripe_documentation, etc.).
+- **Cloudflare** — DNS / cache / pages docs via WebSearch + WebFetch (no dedicated MCP).
+- **GitHub** — NO dedicated MCP. Push needs a one-time PAT from Master O each session (sandbox doesn't retain creds). For read-only repo browsing, WebFetch on `raw.githubusercontent.com` works.
+- **Bash sandbox** — Python + pandas + openpyxl preinstalled. Read/Write/Edit on the OneDrive workspace folder. Network access (pip / curl / git clone). Note: sandbox can fail to boot on cold start — ask Master O to reboot his computer if it does (this brought it back today).
+- **GDrive, Gmail, GCal MCPs** — present, rarely needed for this project.
+
+**Escalation rule:**
+1. **First:** Can I do this myself with bash + the MCPs above? If yes, do it. Don't narrate the attempt unless it fails.
+2. **Second:** Can I work around a missing plugin (e.g., WebFetch instead of GitHub MCP)? If yes, do that.
+3. **Last resort:** Ask Master O. He is the final fallback — never the first move. DO ask for: GitHub PATs, secret keys, scope decisions, approval before destructive operations, key rotations.
+
+**Communication style — when Master O does have to act:**
+- Explain like he's 5. He's a non-developer founder; he wants click-by-click, exact-text-to-paste, no jargon.
+- Number every step. Put paste-ready commands in code blocks. Specify which window / which app.
+- Predict the next prompt: "after you hit Enter you'll see X — paste it back to me."
+- Never assume technical fluency. Walk through install screens, link settings URLs directly, etc.
+
+**Working clone reality:**
+- The OneDrive folder `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Saas Agency Database\` IS the only working copy. Its `.git` is permanently broken (OneDrive sync vs git internals — not fixable without moving the repo out of OneDrive). DO NOT chase an alternate clone path.
+- For pushes: clone fresh into `/tmp` from origin via PAT, sync OneDrive working files in, commit, push. Sandbox clone is throwaway.
+- Long-term fix Master O should consider: clone outside OneDrive (e.g., `C:\Users\GTMin\Projects\saas-agency-database\`) and `gh auth login` once.
+
+---
+
+## 12. Opening move for session 13 (revised)
+
+1. **Confirm bash sandbox is healthy:** `which python3; python3 -c "import pandas, openpyxl; print('ok')"`. If not — STOP and ask Master O to reboot his computer.
+2. **Verify origin/main is at `8829d38` or later.** Run: `git ls-remote https://github.com/gtminsightlab-cmd/saas-agency-database.git refs/heads/main` (no auth needed for public repo read).
+3. **Verify Vercel production is READY.** Use `mcp__da129817-b0da-40ff-af93-9c5eb6e8b376__list_deployments` and check the top one has `state: READY`. If it's ERROR, fetch build logs and fix before doing anything else.
+4. **Snapshot DB counts** (should match this handoff's §4):
+   - 20,739 agencies
+   - 191,201 agency_carriers
+5. **Apply the operating-context section above** before any work.
+6. **Ask Master O what's next.** Likely candidates: contacts load for the 8 session-12 files, account_type_id backfill for 634 new agencies, MiEdge fuzzy matcher (carry from session 10), service-role key rotation if Master O hasn't done it yet.
+7. **Remind Master O if not yet done:** rotate the `sb_secret_[REDACTED — leaked in session-12 chat, must rotate]` service role key (leaked in chat session 12).
+
+— end of session 12 (with epilogue + operating context) —
