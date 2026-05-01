@@ -1,9 +1,35 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-01 (session 14, Sprint 0 close)
+**Last updated:** 2026-05-01 (session 14, Sprint 1B close)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
-> Snapshot of where each product stands **right now**. Two halves: Agency Signal (live, mid-build) and DOT Intel (rebuild greenlit, pre-kickoff). Read the relevant half before starting work on a product.
+> Snapshot of where each product stands **right now**. Three layers now: `seven16-platform` (NEW — auth/tenants/entitlements/control center), Agency Signal (live, mid-build), DOT Intel (rebuild greenlit, pre-kickoff). Read the relevant section before starting work.
+
+---
+
+## Part 0 — seven16-platform (NEW, D-008 control plane)
+
+> **Sprint 1B closed 2026-05-01 (session 14).** Project created and base schema applied. 7 tables (tenants, profiles, tenant_memberships, products, plans, entitlements, audit_log) + RLS day-one + 9 plans seeded with locked pricing. All security advisors clean. All performance WARN-level advisors clean (only INFO `unused_index` warnings remain — expected on empty tables).
+
+| Check | Value | Status |
+|---|---|---|
+| Project ID | `soqqmkfasufusoxxoqzx` | ✅ ACTIVE_HEALTHY |
+| Project name | `seven16-platform` | — |
+| Region | `us-east-1` | — |
+| Postgres version | 17.6.1.111 | — |
+| Organization | `ommujdigmtnmqkxahfgc` (Pro plan; cost +$10/mo) | — |
+| DB host | `db.soqqmkfasufusoxxoqzx.supabase.co` | — |
+| Migrations applied | `0001_platform_schema`, `0002_platform_rls`, `0003_platform_seed`, `0004_platform_advisor_fixes`, `0005_platform_perf_fixes` | ✅ Repo + DB in sync |
+| Security advisors | 0 warnings | ✅ Clean |
+| Performance advisors | 0 WARN; 17 INFO `unused_index` (expected on empty tables) + 1 INFO auth-conn (defer until scale) | ✅ Clean |
+
+**Schema (public):** tenants(id,name,slug,…) · profiles(user_id→auth.users,…) · tenant_memberships(tenant_id,user_id,role:owner/admin/member,…) · products(id,name,domain) · plans(id,product_id,monthly_price_cents,stripe_price_id,…) · entitlements(tenant_id,product_id,plan_id,status,stripe_*) · audit_log(actor_*,action,subject_*).
+**Schema (private):** helper functions for RLS — `current_user_tenant_ids()`, `current_user_is_tenant_admin()`, `current_user_is_tenant_owner()`. Hidden from PostgREST RPC surface; SECURITY DEFINER, set search_path.
+**Seeded plans:** Agency Signal Free/Producer($19)/Growth($99)/Enterprise + DOT Intel Free/Pro($29)/Business($149)/Enterprise + Seven16 Intelligence Bundle ($179, available_from 2027-01-01).
+
+**Next sprints:**
+- Sprint 1C: shared JWT secret across `seven16-platform` ↔ `sdlsdovuljuymgymarou`; Doppler + Sentry rollout. NEEDS Vercel API token + Master O time on Doppler signup.
+- Sprint 1D (planned window): migrate `auth.users` from Agency Signal → platform; rewire app reads via shared JWT.
 
 ---
 
@@ -18,10 +44,10 @@
 | Check | Value | Status |
 |---|---|---|
 | Live URL | https://directory.seven16group.com | ✅ HTTP 200 |
-| `origin/main` HEAD | `c75c96b` (chore: add CLAUDE.md) | — |
+| `origin/main` HEAD | `c75c96b` (chore: add CLAUDE.md) — to be bumped after Sprint 1B push | — |
 | Canonical working clone | `C:\Users\GTMin\Projects\saas-agency-database\` | ✅ Native git, GCM auth |
 | OneDrive copy | `C:\Users\GTMin\OneDrive\...\Saas Agency Database\` | 🟡 Deprecated for code; vendor data/ archive only |
-| Supabase project | `sdlsdovuljuymgymarou` (seven16group, us-east-1, pg 17.6.1) | ✅ Healthy |
+| Supabase project | `sdlsdovuljuymgymarou` (seven16group, us-east-1, pg 17.6.1) | ✅ Healthy — unchanged in Sprint 1B |
 
 ### 1.2 Database counts (tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`)
 
