@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-01 (end of session 13)
+**Last updated:** 2026-05-01 (session 14, Sprint 0 close)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Two halves: Agency Signal (live, mid-build) and DOT Intel (rebuild greenlit, pre-kickoff). Read the relevant half before starting work on a product.
@@ -9,16 +9,18 @@
 
 ## Part 1 — Agency Signal (live)
 
-> **Tier 0 closed 2026-05-01 (session 13).** All 7 Tier 0 tasks complete: service-role key rotated, migration drift fixed (0057–0083 in repo), D-008 added, 4 context docs in repo, Vercel env vars verified, prod healthy. Tier 1 (foundation for D-008 three-project topology) starts next session.
+> **Tier 0 closed 2026-05-01 (session 13).** All 7 Tier 0 tasks complete: service-role key rotated, migration drift fixed (0057–0083 in repo), D-008 added, 4 context docs in repo, Vercel env vars verified, prod healthy.
+>
+> **Sprint 0 closed 2026-05-01 (session 14, Claude Code migration).** Working clone moved outside OneDrive to `C:\Users\GTMin\Projects\saas-agency-database\`. Native git, Git Credential Manager-cached creds (no more per-session PAT). `CLAUDE.md` added at repo root for future Claude Code sessions. OneDrive folder deprecated for code edits — kept only for vendor `data/` archive. Production verified READY post-push (commit `c75c96b`).
 
-### 1.1 Production health (verified 2026-05-01)
+### 1.1 Production health (verified 2026-05-01, session 14)
 
 | Check | Value | Status |
 |---|---|---|
-| Live URL | https://directory.seven16group.com | ✅ Reachable |
-| Latest Vercel deployment | `dpl_CKFr4pK3SamZ9dSB88AZWd8A5VTH` (commit `02e78bc`) | ✅ READY |
-| `origin/main` HEAD | `02e78bc86c0cb59b2eeb5408ecf3eac9bab01246` | — |
-| Bash sandbox | python3 + pandas + openpyxl | ✅ ok |
+| Live URL | https://directory.seven16group.com | ✅ HTTP 200 |
+| `origin/main` HEAD | `c75c96b` (chore: add CLAUDE.md) | — |
+| Canonical working clone | `C:\Users\GTMin\Projects\saas-agency-database\` | ✅ Native git, GCM auth |
+| OneDrive copy | `C:\Users\GTMin\OneDrive\...\Saas Agency Database\` | 🟡 Deprecated for code; vendor data/ archive only |
 | Supabase project | `sdlsdovuljuymgymarou` (seven16group, us-east-1, pg 17.6.1) | ✅ Healthy |
 
 ### 1.2 Database counts (tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`)
