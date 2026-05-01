@@ -1,0 +1,2 @@
+INSERT INTO public.agencies (tenant_id, name, city, state, country, account_type_id)
+VALUES ('ce52fe1e-aac7-4eee-8712-77e71e2837ce'::uuid, 'TEST_DELETE_ME_4', 'Charlotte', 'NC', 'USA', '8571b887-3dee-46af-a91b-ee568f48c8e7'::uuid);
