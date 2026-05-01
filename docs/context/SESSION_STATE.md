@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-01 (start of session 13)
+**Last updated:** 2026-05-01 (end of session 13)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Two halves: Agency Signal (live, mid-build) and DOT Intel (rebuild greenlit, pre-kickoff). Read the relevant half before starting work on a product.
@@ -9,13 +9,15 @@
 
 ## Part 1 — Agency Signal (live)
 
+> **Tier 0 closed 2026-05-01 (session 13).** All 7 Tier 0 tasks complete: service-role key rotated, migration drift fixed (0057–0083 in repo), D-008 added, 4 context docs in repo, Vercel env vars verified, prod healthy. Tier 1 (foundation for D-008 three-project topology) starts next session.
+
 ### 1.1 Production health (verified 2026-05-01)
 
 | Check | Value | Status |
 |---|---|---|
 | Live URL | https://directory.seven16group.com | ✅ Reachable |
-| Latest Vercel deployment | `dpl_3P43zUn4cmwzXHuHACR3k7yLTMT2` (commit `2ee77ff`) | ✅ READY |
-| `origin/main` HEAD | `2ee77ff7a4eee305a6fb769f34209997091657ba` | — |
+| Latest Vercel deployment | `dpl_CKFr4pK3SamZ9dSB88AZWd8A5VTH` (commit `02e78bc`) | ✅ READY |
+| `origin/main` HEAD | `02e78bc86c0cb59b2eeb5408ecf3eac9bab01246` | — |
 | Bash sandbox | python3 + pandas + openpyxl | ✅ ok |
 | Supabase project | `sdlsdovuljuymgymarou` (seven16group, us-east-1, pg 17.6.1) | ✅ Healthy |
 
@@ -33,7 +35,7 @@ Carrier coverage from session 12 multi-file load:
 - Berkley National Insurance Company: 1,470 (+ 13 wholesalers from migration 0082)
 - Utica National Insurance Group: 599
 
-### 1.3 ⚠️ Known drift: live DB ahead of repo
+### 1.3 ✅ RESOLVED — migration drift fixed 2026-05-01
 
 The live Supabase has migrations through **0083**. The repo's `supabase/migrations/` folder only has migrations through **0055**.
 
@@ -64,6 +66,7 @@ Migrations **0057–0083** were applied via Supabase MCP during sessions 10–12
 | 10 | 2026-04-26 | /analytics/carriers + 5 MiEdge carriers + V5 grain finding | `0484afd` (in repo); local later went to that + uncommitted | 0057–0069 |
 | 11 | 2026-04-27 | Berkley operating-units mapping (migration 0082), 13 wholesalers wired, ISC fix | `0484afd` (no app commits — Supabase-only) | 0070–0082 |
 | 12 | 2026-04-27 | 8-file vendor xlsx load: 634 new agencies + 3,819 carrier appointments + multi-carrier patch + broken-prod fix | `8829d38` then `2ee77ff` (epilogue + opening prompt) | 0083 |
+| 13 | 2026-05-01 | **Tier 0 cleanup:** rotated leaked service-role key (legacy JWT revoked, new `sb_secret_`), synced 27 migrations from live DB to repo, added D-008, saved 4 context docs to repo, env vars verified | `02e78bc` | (none — DML/sync only) |
 
 **Most-recent state of detail** is in `docs/handoffs/SESSION_12_HANDOFF.md` (293 lines, exhaustive). Earlier sessions in `SESSION_9/10/11_HANDOFF.md`. Session 4-8 handoffs live as memory files only (`project_saas_agency_db_handoff_session4..8.md`).
 
@@ -90,7 +93,8 @@ From session 12 §5 + standing backlog:
 
 ### 1.6 Security / hygiene reminders (do these soon)
 
-- 🔴 **Rotate `sb_secret_` service role key.** Master O pasted it in chat during session 12 (PowerShell debug). Should be rotated. Walk-through: Supabase dashboard → Project Settings → API → "Generate new secret key" → update `SUPABASE_SERVICE_ROLE_KEY` env var on Vercel + any local `.env.local`.
+- ✅ **Service-role key rotated 2026-05-01 (session 13 Tier 0a).** Old leaked JWT permanently revoked. New `sb_secret_vercel_prod_2026_05_01` live in Vercel env vars. Production verified READY post-rotation. Two unused secret keys (`default`, `seven16group`) remain in Supabase dashboard — minor cleanup, low priority.
+- 🟡 **JWT signing secret rotation pending.** A JWT signing-secret value was pasted in chat during session 13 — needs separate rotation in a planned low-traffic window (disruptive — invalidates all live sessions). Done on the **JWT Keys** panel, not API Keys.
 - 🟡 Pre-existing advisor warns (84 SECURITY DEFINER, extension-in-public) — backlog cleanup.
 
 ### 1.7 Stripe state (sandbox)
@@ -98,7 +102,7 @@ From session 12 §5 + standing backlog:
 - Account: `acct_1TLUF6HmqSDkUoqw` ("DOT Intel sandbox")
 - Products / prices live: Growth Member `price_1TPxtFHmqSDkUoqwRvnHOqhx` ($99/mo) + One-Time Snapshot `price_1TPxtHHmqSDkUoqwXa3zfPOV` ($125 one-time).
 - Routes shipped: `/api/stripe/checkout` (GET), `/api/stripe/webhook` (POST, signature-verified).
-- **Vercel env vars Master O still has to set** (Project Settings → Environment Variables): `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SUPABASE_SERVICE_ROLE_KEY` (after rotation), `NEXT_PUBLIC_APP_URL=https://directory.seven16group.com`.
+- **Vercel env vars verified set + functional 2026-05-01 (session 13 Tier 0e)** via prod endpoint tests: `STRIPE_SECRET_KEY` ✓, `STRIPE_WEBHOOK_SECRET` ✓, `SUPABASE_SERVICE_ROLE_KEY` ✓ (rotated to `sb_secret_vercel_prod_2026_05_01`), `NEXT_PUBLIC_APP_URL` ✓. Vercel "Sensitive" type prevents API value retrieval — confirmed via `/api/stripe/webhook` and `/api/stripe/checkout` returning proper 400 errors (not 500).
 - Webhook endpoint to register in Stripe dashboard: `https://directory.seven16group.com/api/stripe/webhook` for events `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`.
 
 ### 1.8 Admin control center (13 modules)
