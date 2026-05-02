@@ -189,6 +189,36 @@ All standing rules from MASTER_CONTEXT.md remain in effect. Tactical additions f
 
 ---
 
+## ⚠️ Known issue at end of session — Light Mode broken on marketing pages
+
+Master O verified Light Mode visually after the session was wrapped. Result:
+
+- **Dashboard / authenticated pages:** untested but expected to work (built with semantic tokens only)
+- **Marketing pages (e.g., `/platform`):** broken in light mode. Title and body text render as low-contrast gray-on-gray. Cause: marketing-page components (Hero, FAQ, SectionIntro, etc.) likely have hardcoded color values that don't flip with the `.light` class swap. The body background flipped to light but section-level backgrounds stayed dark, leaving text invisible.
+
+**Risk while parked:** very low. Demo audience flow is login → dashboard, never visits marketing pages while authenticated. Risk = a curious user toggles light mode on a marketing page before mid-May.
+
+**Fix plan for session 16 (scoped retreat):**
+1. Remove `ThemeToggle` from `components/marketing/header.tsx`
+2. Add `ThemeToggle` to the dashboard header in `components/dashboard/dashboard-content.tsx` (next to Sign Out button)
+3. Add `ThemeToggle` to the three module layouts: `carrier-intelligence/layout.tsx`, `distribution-intelligence/layout.tsx`, `competitive-benchmarking/layout.tsx` (next to user email)
+4. Hard-clamp marketing pages to dark always — add CSS at bottom of `globals.css`:
+   ```css
+   /* Marketing pages stay dark in both modes — cinematic Gotham aesthetic */
+   body:has(> header.fixed) :where([data-marketing-section]) { color-scheme: dark; }
+   ```
+   (or simpler: add a `data-marketing` attribute to marketing layouts and scope the `.light` overrides to `:not([data-marketing])`)
+5. Push + verify dashboard light mode actually works visually
+6. Estimated time: 10-15 minutes
+
+**Files touched today that need attention:**
+- `app/globals.css` — `.light` class block at the bottom may need scoping
+- `components/marketing/header.tsx` — pull `ThemeToggle` out
+- `components/dashboard/dashboard-content.tsx` — add `ThemeToggle`
+- `app/dashboard/{carrier-intelligence,distribution-intelligence,competitive-benchmarking}/layout.tsx` — add `ThemeToggle`
+
+---
+
 ## Opening prompt for session 16
 
 ```
@@ -199,7 +229,7 @@ Read silently before anything else:
 2. docs/context/MASTER_CONTEXT.md
 3. docs/context/DECISION_LOG.md (D-001 through D-011)
 4. docs/context/SESSION_STATE.md (Part 0 platform, Part 0.5 Threshold IQ, Part 1 Agency Signal)
-5. docs/handoffs/SESSION_15_HANDOFF.md  ← this doc
+5. docs/handoffs/SESSION_15_HANDOFF.md  ← this doc (note the Known issue section)
 6. docs/playbooks/dotintel_demo_walkthrough.md
 7. docs/playbooks/dotintel_d2_prework.md
 
@@ -208,11 +238,15 @@ Working clones (NOT in OneDrive):
 - C:\Users\GTMin\Projects\dotintel2\
 - C:\Users\GTMin\Projects\dotintel-intelligence\  (parked)
 
-Likely first asks:
-- "Did you visually verify light mode? Anything broken?"
-- (If broken) Fix the contrast / alpha issues
-- (If clean) Decide on Sprint 1C of family work (JWT secret sharing across
-  Supabase projects + Doppler + Sentry rollout) OR more DOT Intel polish
+FIRST TASK (10-15 min): Light Mode scoped retreat.
+- Marketing pages broke in light mode (hardcoded colors)
+- Pull ThemeToggle out of marketing/header.tsx
+- Mount ThemeToggle on dashboard header + 3 module layouts only
+- Hard-clamp marketing pages to dark always
+- Verify dashboard light mode works visually with Master O before declaring done
+
+After that's clean, decide on next: Sprint 1C of family work (JWT secret
+sharing + Doppler + Sentry) OR more DOT Intel demo polish.
 
 Standing rules in effect:
 - Secrets never in chat (clipboard → dashboard only)
