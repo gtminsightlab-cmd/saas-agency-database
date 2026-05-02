@@ -13,32 +13,55 @@
 
 **Brand architecture = Option C:** separate brands for the market, shared infrastructure for the business, single login for the customer.
 
-**Two products live under Seven16 today:**
+**Three platform products live under Seven16 today**, each gets its own Supabase satellite per D-008:
 
 | Product | Domain | State | One-liner |
 |---|---|---|---|
+| **Agency Signal** | agencysignal.co (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: 20,739 agencies, 191,201 carrier appointments, 400+ writing companies. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". |
 | **DOT Intel** | dotintel.io | **Greenfield rebuild on Seven16 stack.** Old project = reference only. | Trucking / commercial-insurance intelligence platform, FMCSA-data-backed. |
-| **Agency Signal** | agencysignal.co (alias of `directory.seven16group.com` until cutover) | **Live in production.** Build is good — keeps shipping. | Multi-tenant retail-agent directory: 20,739 agencies, 191,201 carrier appointments, 400+ writing companies, 60 parent groups. Was previously named "SaaS Agency Database" / "Agency Data Seven16" — older docs may use those names. |
+| **Threshold IQ** | thresholdiq.io (Cloudflare zone secured 2026-05-02) | **Build in progress** in a separate Claude Code session at `CRM for MGU and Recruiting/seven16-distribution/` (working name `seven16-distribution`). | Multi-tenant operating CRM for emerging MGUs, wholesalers, and program administrators. Producer lifecycle, contracting, licensing, E&O tracking, appointments, exception-based compliance. Tenant zero = Seven16 Group (internal dogfood). Brand framing: "doorway / underwriting threshold / growth threshold" — see D-009 brand brief. Pricing locked in the build session, family integration pending. |
 
-**Adjacent pieces (parked or stealth):**
-- **Seven16Recruit** — AI agent recruitment. Stealth, gated on attorney review of W-2 employment agreement.
-- **Growtheon** — $97/mo flat white-label CRM (GHL competitor). Internal use first.
+**Standalone-capable add-ons** — sold with no other Seven16 product OR attached to any platform tenant per D-010. Two delivery models:
+
+| Product | Delivery model | State | One-liner |
+|---|---|---|---|
+| **Growtheon** | **Third-party SaaS reseller** — Seven16 resells a GHL-like platform under the Growtheon brand. No Seven16-owned Supabase satellite; underlying CRM runs on the upstream vendor's infrastructure. Tracked in `seven16-platform.entitlements` for billing + control center visibility. | Internal use first; external launch Q3-Q4 2026. Reseller margin model is open question #2. | $97/mo flat white-label CRM. |
+| **Seven16Recruit** | **Seven16-built** — own Supabase satellite per D-008. Two delivery surfaces: standalone (own UI for non-customers) and plug-in (API/integration into Threshold IQ or external customer CRM). | **Stealth**; attorney-gated; not yet developed. | AI-driven recruitment + lead-gen. Two use cases: (a) agency recruiting workflow, (b) DOT driver insurance-policy lead generation. |
+
+**Future platforms (parked, scope TBD):**
+- **Trucking directory — retail** — for retail agents focused on transportation/trucking 1-25 power units.
+- **Trucking directory — DOT** — for power-unit DOT business owners.
+
+**Services:**
 - **Coaching layer** — $47 PDF / $97 course / $199/mo cohort.
-- **BindLab** + **Agency Vantage** — retired now, will reprise later (BindLab = sales dev + coaching brand). Don't reference in current build.
+
+**Retired now / will reprise later** — don't reference in current build:
+- **BindLab** — reprises as sales-development + coaching brand.
+- **Agency Vantage** — reprises later, scope TBD.
 
 ---
 
-## 2. Pricing — locked
+## 2. Pricing — partially locked
 
-Strategy: little-guy first, every consumer tier under the $500 P-card threshold so a producer can expense it without manager sign-off.
+Strategy: **emerging / startup small firms first** (D-011). Every consumer tier under the $500 P-card threshold so a producer can expense it without manager sign-off. The product family deliberately fills the gap where competitors are too robust/expensive — our stack and capabilities aren't as deep as some competitors, but smaller firms benefit from an affordable option.
+
+**Locked tiers:**
 
 | Product | Free | Mission tier | Mid | Enterprise |
 |---|---|---|---|---|
-| **DOT Intel** | Free | $29 Pro | $149 Business | $499+ Enterprise |
 | **Agency Signal** | Free | **$19 Producer** *(THE mission tier)* | $99 Growth | $399+ Enterprise |
+| **DOT Intel** | Free | $29 Pro | $149 Business | $499+ Enterprise |
 | **2027 Bundle** | — | — | $179/mo Seven16 Intelligence (DOT Intel Business + Agency Signal Growth) | — |
 
-The Agency Signal $19 Producer tier is the lead-with-the-little-guy bet. Every other pricing decision follows from it.
+The Agency Signal $19 Producer tier is the lead-with-the-little-guy bet. Every other locked tier follows from it.
+
+**Pricing pending integration with family strategy:**
+
+| Product | Status |
+|---|---|
+| **Threshold IQ** | Pricing model is set in the seven16-distribution build session, but not yet integrated with the family pricing strategy. Reformulate collaboratively in a future session before locking in `seven16-platform.plans`. |
+| **Growtheon** | Working price: $97/mo flat. Margin model (reseller vs. white-label control) is open question #2 in §7. Lock when building Growtheon offer pages. |
+| **Seven16Recruit** | Pricing TBD pending attorney W-2 review, scope finalization, and stealth → public transition (open question #3 in §7). |
 
 ---
 

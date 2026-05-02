@@ -1,15 +1,17 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-01 (session 14, Sprint 1B close)
+**Last updated:** 2026-05-02 (session 14 cont., family taxonomy expansion)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
-> Snapshot of where each product stands **right now**. Three layers now: `seven16-platform` (NEW — auth/tenants/entitlements/control center), Agency Signal (live, mid-build), DOT Intel (rebuild greenlit, pre-kickoff). Read the relevant section before starting work.
+> Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (rebuild), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
 
 ---
 
-## Part 0 — seven16-platform (NEW, D-008 control plane)
+## Part 0 — seven16-platform (D-008 control plane)
 
 > **Sprint 1B closed 2026-05-01 (session 14).** Project created and base schema applied. 7 tables (tenants, profiles, tenant_memberships, products, plans, entitlements, audit_log) + RLS day-one + 9 plans seeded with locked pricing. All security advisors clean. All performance WARN-level advisors clean (only INFO `unused_index` warnings remain — expected on empty tables).
+>
+> **2026-05-02 update:** Family taxonomy expanded — three new products seeded into `public.products` (Threshold IQ, Growtheon, Seven16Recruit). Decisions D-009, D-010, D-011 added to Decision Log. Growtheon clarified as third-party SaaS reseller (NOT a Seven16 Supabase satellite).
 
 | Check | Value | Status |
 |---|---|---|
@@ -19,17 +21,52 @@
 | Postgres version | 17.6.1.111 | — |
 | Organization | `ommujdigmtnmqkxahfgc` (Pro plan; cost +$10/mo) | — |
 | DB host | `db.soqqmkfasufusoxxoqzx.supabase.co` | — |
-| Migrations applied | `0001_platform_schema`, `0002_platform_rls`, `0003_platform_seed`, `0004_platform_advisor_fixes`, `0005_platform_perf_fixes` | ✅ Repo + DB in sync |
+| Migrations applied | `0001_platform_schema`, `0002_platform_rls`, `0003_platform_seed`, `0004_platform_advisor_fixes`, `0005_platform_perf_fixes`, `0006_platform_seed_more_products` | ✅ Repo + DB in sync |
 | Security advisors | 0 warnings | ✅ Clean |
 | Performance advisors | 0 WARN; 17 INFO `unused_index` (expected on empty tables) + 1 INFO auth-conn (defer until scale) | ✅ Clean |
 
 **Schema (public):** tenants(id,name,slug,…) · profiles(user_id→auth.users,…) · tenant_memberships(tenant_id,user_id,role:owner/admin/member,…) · products(id,name,domain) · plans(id,product_id,monthly_price_cents,stripe_price_id,…) · entitlements(tenant_id,product_id,plan_id,status,stripe_*) · audit_log(actor_*,action,subject_*).
 **Schema (private):** helper functions for RLS — `current_user_tenant_ids()`, `current_user_is_tenant_admin()`, `current_user_is_tenant_owner()`. Hidden from PostgREST RPC surface; SECURITY DEFINER, set search_path.
-**Seeded plans:** Agency Signal Free/Producer($19)/Growth($99)/Enterprise + DOT Intel Free/Pro($29)/Business($149)/Enterprise + Seven16 Intelligence Bundle ($179, available_from 2027-01-01).
+
+**Seeded products (5 total):**
+- `agency_signal` — Agency Signal — agencysignal.co — active
+- `dot_intel` — DOT Intel — dotintel.io — active
+- `threshold_iq` — Threshold IQ — thresholdiq.io — active (build elsewhere)
+- `growtheon` — Growtheon — no domain (reseller white-label) — active
+- `seven16recruit` — Seven16Recruit — no domain (stealth) — **inactive** until attorney W-2 review
+
+**Seeded plans (9 total — locked pricing only):** Agency Signal Free/Producer($19)/Growth($99)/Enterprise + DOT Intel Free/Pro($29)/Business($149)/Enterprise + Seven16 Intelligence Bundle ($179, available_from 2027-01-01). **Pending:** Threshold IQ, Growtheon, Seven16Recruit pricing — collaborative session needed before seeding.
+
+**Future Supabase satellites per D-008** (not yet created):
+- `seven16-agency-signal` — repurpose existing `sdlsdovuljuymgymarou` (currently Agency Signal's prod DB)
+- `seven16-dot-intel` — when DOT Intel rebuild kicks off (Phase 2, May–July)
+- `seven16-threshold-iq` — when Threshold IQ build moves from local-only to deploy
+- `seven16-recruit` — when Seven16Recruit moves from stealth to dev
+- (Growtheon does NOT get a satellite — runs on third-party reseller infra per D-010)
 
 **Next sprints:**
 - Sprint 1C: shared JWT secret across `seven16-platform` ↔ `sdlsdovuljuymgymarou`; Doppler + Sentry rollout. NEEDS Vercel API token + Master O time on Doppler signup.
 - Sprint 1D (planned window): migrate `auth.users` from Agency Signal → platform; rewire app reads via shared JWT.
+
+---
+
+## Part 0.5 — Threshold IQ (in progress, separate Claude Code session)
+
+> Build name `seven16-distribution`. Market name **Threshold IQ** locked 2026-05-02 (D-009). Domain `thresholdiq.io` secured on Cloudflare 2026-05-02.
+
+| What | Where |
+|---|---|
+| Working clone (current) | `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\CRM for MGU and Recruiting\seven16-distribution\` (still inside OneDrive — see playbook below) |
+| Recommended canonical clone | `C:\Users\GTMin\Projects\seven16-distribution\` (not yet migrated) |
+| Stack | Next 16.2.4 + React 19 + shadcn/ui + Supabase SSR (newer stack than Agency Signal's Next 14) |
+| GitHub | Not yet created — needs `gtminsightlab-cmd/seven16-distribution` private repo |
+| Vercel | Not yet deployed |
+| Supabase | Has 12+ migrations locally; not yet pushed to Seven16 org |
+| Pricing | Set in build session; family-strategy collaboration deferred |
+
+**Migration playbook for the other session:** [docs/playbooks/seven16_distribution_clone_migration.md](../playbooks/seven16_distribution_clone_migration.md). Paste it into the other Claude Code session when ready.
+
+**Family integration owed:** When Threshold IQ moves toward deploy, register tenants/auth via `seven16-platform` with shared JWT pattern. Add it to `seven16-agency-signal` JWT-secret rotation runbook.
 
 ---
 
