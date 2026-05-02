@@ -189,6 +189,42 @@ All standing rules from MASTER_CONTEXT.md remain in effect. Tactical additions f
 
 ---
 
+## Memory files captured today (auto-loaded next session)
+
+Two reference memories saved to `C:\Users\GTMin\.claude\projects\C--Users-GTMin-OneDrive-Documents-Claude-Projects-Saas-Agency-Database\memory\` and indexed in `MEMORY.md`:
+
+- **`reference_seven16recruit_mgaproducer_lineage.md`** — Seven16Recruit's design is based on **MGAProducer.com**. Reference when scoping the product. Open question logged: exact relationship (competitor / inspiration / licensed / partnered) — confirm with Master O before assuming.
+- **`reference_vertibrands_competitive_landscape.md`** — **Vertibrands.com** is a partial competitor; more importantly, **Seven16 Group's long-term operating model** resembles Vertibrands' multi-brand operator shape (with Master O's industry-specific perspective). Directional only — does NOT supersede D-003 yet (Seven16 = trust layer for now). Likely to inform a future decision when the operating model question becomes concrete.
+
+Plus: **DotAnalysis.com** is referenced as a DOT Intel direct competitor in the demo cheat sheet — captured there, not in memory.
+
+---
+
+## Infrastructure changes during session 15
+
+### `vbhlacdrcqdqnvftqtin` (DOT Intel Supabase) — 2 migrations applied
+
+| Name | Effect |
+|---|---|
+| `20260502_carrier_intelligence_rpcs` | Adds `get_carrier_market_overview()`, `search_carriers()`, `get_carrier_profile()`, `list_insurer_parents_with_counts()`. All STABLE + SECURITY INVOKER + explicit search_path. EXECUTE granted to anon + authenticated. RLS already allowed public read on the underlying tables. |
+| `20260502_carrier_overview_v2` | Replaced misleading `authorized_for_hire` (always 100%) with `avg_fleet_size` + `expiring_soon` in the market overview output. |
+
+Migration files committed to `dotintel2/supabase/migrations/`.
+
+### `seven16-platform` Supabase project (`soqqmkfasufusoxxoqzx`) — UNCHANGED
+
+The platform Supabase project we created in session 14 (Sprint 1B) was not touched today. State preserved: 7 tables (tenants, profiles, tenant_memberships, products, plans, entitlements, audit_log) + RLS day-one + 5 product seed rows + 9 plan seed rows. Sprint 1C (shared JWT + Doppler + Sentry) is still queued — not blocked by today's work.
+
+### Stripe MCP — DISCONNECTED
+
+The Stripe MCP server disconnected mid-session (system reminder noted ~partway through DOT Intel work). Not blocking any session-15 work. **Next session needs to reconnect Stripe MCP before any billing-related work** (e.g., wiring entitlement → Stripe sub mapping, lookup_orders, etc.). Reconnect via the same MCP install path used originally. Other MCPs (Supabase, Vercel) remained connected.
+
+### Vercel + GitHub — UNCHANGED (no infra changes)
+
+All repo pushes used GCM cached creds; no per-session PATs needed. Working clones outside OneDrive are stable.
+
+---
+
 ## ⚠️ Known issue at end of session — Light Mode broken on marketing pages
 
 Master O verified Light Mode visually after the session was wrapped. Result:
@@ -219,40 +255,104 @@ Master O verified Light Mode visually after the session was wrapped. Result:
 
 ---
 
-## Opening prompt for session 16
+## Session 16 — paste-ready opening prompt
+
+When you start the new chat, paste this whole block as your first message. It tells Claude exactly what to read (and in what order) and what to do first.
 
 ```
-Session 16: continuing DOT Intel mid-May demo prep + family-level work.
+Session 16 of the Seven16 family build. Continuing DOT Intel mid-May
+demo prep. Working clones live OUTSIDE OneDrive at:
 
-Read silently before anything else:
-1. CLAUDE.md (auto-loaded by Claude Code)
-2. docs/context/MASTER_CONTEXT.md
-3. docs/context/DECISION_LOG.md (D-001 through D-011)
-4. docs/context/SESSION_STATE.md (Part 0 platform, Part 0.5 Threshold IQ, Part 1 Agency Signal)
-5. docs/handoffs/SESSION_15_HANDOFF.md  ← this doc (note the Known issue section)
-6. docs/playbooks/dotintel_demo_walkthrough.md
-7. docs/playbooks/dotintel_d2_prework.md
+  C:\Users\GTMin\Projects\saas-agency-database\
+  C:\Users\GTMin\Projects\dotintel2\
+  C:\Users\GTMin\Projects\dotintel-intelligence\   (parked, do not touch)
 
-Working clones (NOT in OneDrive):
-- C:\Users\GTMin\Projects\saas-agency-database\
-- C:\Users\GTMin\Projects\dotintel2\
-- C:\Users\GTMin\Projects\dotintel-intelligence\  (parked)
+Open Claude Code in saas-agency-database (the family hub) unless
+working purely on DOT Intel app code, in which case dotintel2 is fine
+— both repos have a CLAUDE.md pointing at the family master plan.
 
-FIRST TASK (10-15 min): Light Mode scoped retreat.
-- Marketing pages broke in light mode (hardcoded colors)
-- Pull ThemeToggle out of marketing/header.tsx
-- Mount ThemeToggle on dashboard header + 3 module layouts only
-- Hard-clamp marketing pages to dark always
-- Verify dashboard light mode works visually with Master O before declaring done
+READ IN THIS ORDER BEFORE TOUCHING ANYTHING:
 
-After that's clean, decide on next: Sprint 1C of family work (JWT secret
-sharing + Doppler + Sentry) OR more DOT Intel demo polish.
+1. CLAUDE.md (auto-loaded — confirms the read path)
+2. saas-agency-database/docs/context/MASTER_CONTEXT.md   (family hub)
+3. saas-agency-database/docs/context/DECISION_LOG.md     (D-001 → D-011)
+4. saas-agency-database/docs/context/SESSION_STATE.md    (current state — note Parts 0, 0.5, 1, 2)
+5. saas-agency-database/docs/handoffs/SESSION_15_HANDOFF.md   ← this doc, note "Known issue" + memory files
+6. saas-agency-database/docs/playbooks/dotintel_demo_walkthrough.md
+7. saas-agency-database/docs/playbooks/dotintel_d2_prework.md
+8. ~/.claude/projects/C--Users-GTMin-OneDrive-Documents-Claude-Projects-Saas-Agency-Database/memory/MEMORY.md
+   (auto-loaded; references for MGAProducer + Vertibrands)
 
-Standing rules in effect:
-- Secrets never in chat (clipboard → dashboard only)
-- Native git from canonical clones — no /tmp clone needed (GCM cached creds)
-- Plugins-first, escalate to Master O last
-- Explain like 5 for any clicks/typing
+THEN do this in order:
+
+(a) FIRST TASK — Light Mode scoped retreat (10-15 min, no Master O input
+    needed except a final visual confirm):
+    - Pull ThemeToggle out of dotintel2/components/marketing/header.tsx
+    - Mount ThemeToggle on the dashboard header in
+      components/dashboard/dashboard-content.tsx (next to Sign Out)
+    - Mount ThemeToggle on the three module layouts:
+      app/dashboard/{carrier,distribution,competitive}-intelligence/layout.tsx
+      (next to user email)
+    - Hard-clamp marketing pages to dark always — simplest approach: in
+      the marketing root layout (app/layout.tsx), wrap children in a
+      <div className="dark-only"> and add a CSS rule that resets the
+      light-mode tokens back to dark values when inside .dark-only.
+      OR scope the .light overrides in globals.css to :not(.dark-only).
+    - Push, wait for Vercel READY, ask Master O to spot-check the
+      dashboard in light mode + confirm marketing pages look fine again.
+
+(b) SECOND CHOICE — once Light Mode is sorted, decide between:
+    - More DOT Intel demo polish (small fixes Master O surfaces from
+      walking the flow), OR
+    - Sprint 1C of family infra work (JWT secret sharing across Supabase
+      projects + Doppler + Sentry rollout — pre-requisites for Threshold
+      IQ integration with seven16-platform), OR
+    - Something else Master O surfaces
+
+(c) MCP RECONNECT (when needed):
+    - Stripe MCP disconnected mid-session 15. Reconnect before any
+      billing work. Supabase + Vercel MCPs are fine.
+
+STANDING RULES IN EFFECT:
+- Secrets never in chat. Clipboard → dashboard only.
+- Native git from canonical clones outside OneDrive. GCM caches creds —
+  no per-session PAT dance needed.
+- Plugins-first, escalate to Master O last.
+- Explain like 5 for any clicks/typing — Master O is a non-developer
+  founder. Numbered steps + exact button names + paste-ready commands.
+- When Master O says "Treat me like a 5 year old," he means it. Do as
+  much as possible without asking; surface the moments you genuinely
+  need his eyes/fingers as discrete asks.
+- Don't write to OneDrive folders for code. Vendor data archives in
+  OneDrive are read-only references.
+
+OPEN QUESTIONS PARKED (raise contextually, not all at once):
+1. Directory domain strategy (subdomains vs new TLDs) — surfaces Phase 3
+2. Growtheon margin model — surfaces when building offer pages
+3. Seven16Recruit attorney engagement status — surfaces before any
+   public-facing Recruit work
+4. BDM pre-call brief in DOT Intel feature spec — surfaces when DOT
+   Intel rebuild scoping resumes
+5. MGAProducer relationship (competitor / inspiration / licensed /
+   partnered) — surfaces when Seven16Recruit scoping resumes
+
+Confirm you've read everything by giving me a 5-bullet status summary
+of where the Seven16 family stands as of end of session 15. Then we
+proceed.
 ```
+
+---
+
+## End-of-session 15 verification checklist (Master O — already done)
+
+- [x] All session-15 commits pushed to both `dotintel2` and `saas-agency-database`
+- [x] Vercel deploy of last `dotintel2` commit verified READY (HTTP 200)
+- [x] Memory files seeded in `~/.claude/projects/.../memory/`
+- [x] Demo cheat sheet committed
+- [x] D2 prework planning doc committed
+- [x] Light Mode known-issue documented with fix plan
+- [x] Stripe MCP disconnect noted
+- [x] CLAUDE.md exists in both `saas-agency-database` and `dotintel2` working clones
+- [x] SESSION_STATE.md Part 2 (DOT Intel) rewritten to reflect today's reality (was stale "pre-kickoff" framing)
 
 — end SESSION_15_HANDOFF —

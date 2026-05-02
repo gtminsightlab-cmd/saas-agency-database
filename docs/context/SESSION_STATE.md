@@ -1,9 +1,24 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-02 (session 14 cont., family taxonomy expansion)
+**Last updated:** 2026-05-02 (session 15 close — DOT Intel demo prep)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
-> Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (rebuild), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
+> Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
+
+### Quick-ref: where each repo lives + latest commit (end of session 15)
+
+| Repo | Canonical clone | Latest `origin/main` commit |
+|---|---|---|
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `94625f8` — light-mode known-issue logged |
+| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `c597de7` — light mode toggle (partial) |
+| `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
+
+### Memory files seeded today
+
+Auto-loaded by Claude Code via `MEMORY.md` at `C:\Users\GTMin\.claude\projects\...\memory\`:
+
+- `reference_seven16recruit_mgaproducer_lineage.md` — Seven16Recruit's design is based on **MGAProducer.com**. Reference when scoping the product. Open question: exact relationship (competitor / inspiration / licensed / partnered) — confirm with Master O before assuming.
+- `reference_vertibrands_competitive_landscape.md` — **Vertibrands.com** is a partial competitor; more importantly, Seven16 Group's long-term operating model resembles Vertibrands' multi-brand operator shape (with Master O's industry-specific perspective). Directional only — does NOT supersede D-003 (Seven16 = trust layer for now).
 
 ---
 
@@ -185,53 +200,100 @@ Fully spec'd in memory `project_admin_control_center_spec.md`. All 13 modules ha
 
 ---
 
-## Part 2 — DOT Intel (rebuild)
+## Part 2 — DOT Intel (live demo build)
 
-### 2.1 Status: greenlit, pre-kickoff
+### 2.1 Status: demo build live, mid-May 2026 working group review imminent
 
-D-007 (2026-04-30) locked the rebuild on the Seven16 stack. Same URL (`dotintel.io`), new bones. **No code is being migrated** from the old project — old DB stays running for reference, gets shut down once rebuild is shippable.
+> **Updated 2026-05-02 (session 15).** The "old DOT Intel project" framing is no longer accurate — the existing Next.js app at [dotintel.io](https://www.dotintel.io) (repo `dotintel2`) was built on the Seven16-aligned stack and is actively the **demo target** for a mid-May working group of agents and underwriters. Sprint D0/D1/A/Light Mode shipped today. **D-007's "full rebuild" is still the longer-term Phase 2 direction**, but for the mid-May demo we are polishing the existing Next.js app, not rebuilding from scratch.
 
-### 2.2 Old project state (reference only)
+| Check | Value | Status |
+|---|---|---|
+| Live URL | https://www.dotintel.io | ✅ HTTP 200 |
+| Demo dashboard | /dashboard (auth-gated) | ✅ Working with persona quick-fill |
+| Vercel project | `dotintel` (`prj_4tnPATJjP4Bahg2RFw4DwlTuNa8S`) | ✅ Auto-deploys on push |
+| Repo (canonical) | `gtminsightlab-cmd/dotintel2` at `C:\Users\GTMin\Projects\dotintel2\` | ✅ Native git, GCM auth |
+| Stack | Next 16.2.3 + React 19.2.4 + Tailwind v4 + Supabase SSR | — |
+| Supabase project | `vbhlacdrcqdqnvftqtin` (us-east-2) | ✅ ACTIVE_HEALTHY |
+| Last deploy commit | `c597de7` — light mode toggle (partial) | ✅ READY |
 
-| What | Where |
-|---|---|
-| Old Supabase project | `vbhlacdrcqdqnvftqtin` (name: `dotintel`, region: us-east-2) |
-| Old Vercel projects on the team | `dotintel-intelligence`, `dotintel-preview`, `dotintel` |
-| Old project skill | `supabase-steward` skill in the skills index — DO NOT use against the new build. The four-zone raw/staging/master/activation pattern + Neilson exclusion + RLS-mandatory rules carry over informally; the project-specific UUIDs do not. |
+### 2.2 Working data corpus on `vbhlacdrcqdqnvftqtin`
 
-**What's worth borrowing as learnings (not code):**
+| Table | Rows | Notes |
+|---|---|---|
+| `carriers` | 50,298 | FMCSA carriers, sampled at ~1,000 per state |
+| `carrier_insurance_current` | 19,767 | 39% insurance penetration in the corpus |
+| `inshist_raw` | 7,471,443 | Insurance filing history; powerful but query-heavy |
+| `insurer_parents` | 32 | Top-level insurer companies |
+| `insurer_children` | 54 | Subsidiary brands with NAIC codes + fleet-size hints |
+| `insurer_name_aliases` | 37 | Name-normalization for matching |
+
+Top 10 insurer parents by carrier count (snapshot): Progressive 3,279 · Great West 2,964 · OOIDA 215 · Berkshire Hathaway 137 · "Other" 136 · Lancer 132 · Hartford 95 · Chubb 91 · Liberty Mutual 74 · Travelers 58.
+
+### 2.3 What shipped today (session 15 — DOT Intel demo prep)
+
+**Sprint D0 — Color match.** Tailwind v4 `@theme inline` block in `dotintel2/app/globals.css` aligned to Agency Signal anchors (brand-600 teal, gold-500, navy-900). Existing semantic class names preserved. Commit `91bf52b`.
+
+**Sprint D1 — Carrier Intelligence module.** Full interactive module at `/dashboard/carrier-intelligence`:
+- Migration `20260502_carrier_intelligence_rpcs` adds 4 RPCs: `get_carrier_market_overview()`, `search_carriers()`, `get_carrier_profile()`, `list_insurer_parents_with_counts()`.
+- Server-rendered Market Overview (KPI strip, fleet-size mix bars, top-10 states clickable, top insurer parents).
+- Browse table with URL-driven filters (state, PU band, insurance status, insurer parent, free-text search) and pagination.
+- Carrier Profile drill-in at `/dashboard/carrier-intelligence/[dot]` — Operations, Fleet, Address, Authority & Safety, Current Insurance with parent rollup + "expiring soon" badge, Data freshness.
+- Dashboard module card now a real Link. Footer stat changed from misleading "1.2M+ DOT carriers monitored" to "50K+ DOT carriers loaded". Commit `3d25c5e`.
+
+**Sprint A — Demo coherence pass.**
+- Migration `20260502_carrier_overview_v2` replaced misleading `authorized_for_hire` KPI (always 100%) with `avg_fleet_size` + `expiring_soon` (real prospecting signals).
+- Gold disclaimer banner on Carrier Intelligence: "Demo dataset — 50,298 carriers sampled at ~1,000/state. Production launch will include the full FMCSA universe (~2M+ carriers)."
+- Two new preview modules at `/dashboard/distribution-intelligence` and `/dashboard/competitive-benchmarking` — show real corpus data + "What ships Q3 2026" sections.
+- Module status evolved from 2-state to 3-state (`active | preview | coming_soon`). Commit `5672c25`.
+
+**Light Mode** — toggle shipped, **but broken on marketing pages**. See §2.5 known-issue.
+
+### 2.4 Demo accounts (seeded in `vbhlacdrcqdqnvftqtin` auth.users)
+
+| Persona | Email | Quick-fill button on /login |
+|---|---|---|
+| Agent | demo-agent@dotintel.io | "Agent" |
+| Underwriter | demo-uw@dotintel.io | "Underwriter" |
+| Risk Mgr | demo-risk@dotintel.io | "Risk Mgr" |
+| Analyst | demo-analyst@dotintel.io | "Analyst" |
+
+Mid-May audience = Agent + Underwriter only. Risk Mgr and Analyst flows are NOT polished for this demo.
+
+### 2.5 ⚠️ Light Mode known issue (top priority for next session)
+
+Master O verified Light Mode visually after session 15 wrapped. Result: dashboard untested but expected OK; **marketing pages broken** — title/body text on `/platform`, FAQ section, etc. render low-contrast (gray on dark) because marketing components have hardcoded color values that don't flip with the `.light` class swap.
+
+**Fix plan (10-15 min, queued for session 16 first task):**
+1. Remove `ThemeToggle` from `components/marketing/header.tsx`
+2. Mount `ThemeToggle` on the dashboard header in `components/dashboard/dashboard-content.tsx` + the three module layouts (`carrier-intelligence`, `distribution-intelligence`, `competitive-benchmarking`)
+3. Hard-clamp marketing pages to dark always (CSS rule)
+4. Verify dashboard light mode actually works visually
+
+### 2.6 What's deferred until after the working group demo
+
+Per [`docs/playbooks/dotintel_d2_prework.md`](../playbooks/dotintel_d2_prework.md):
+
+- **Full D2** — making Distribution Intelligence + Competitive Benchmarking fully interactive (filters + drill-ins matching D1 quality). Cost: 8-12 hours. Reason for deferral: feedback could rescope what these modules actually do (e.g., "we don't care about territory builder, we care about agency-carrier crosswalk" would change 60% of the build).
+- **Working group → 10 specific signal points** to capture (listed in the prework doc). That signal drives the real D2 spec.
+- D-007 full rebuild scope — broader Phase 2 work — informed by what we learn from the demo.
+
+### 2.7 Sister DOT-Intel repos (do NOT confuse)
+
+| Repo | Vercel project | Status | Use for |
+|---|---|---|---|
+| `dotintel2` | `dotintel` → www.dotintel.io | ✅ ACTIVE — demo target | All demo work, all Sprint D0+ commits |
+| `dotintel-intelligence` | `dotintel-intelligence` → intelligence.dotintel.io | 🟡 PARKED | Reference only. Different stack (Next 14, agency-intel positioning, empty data). NOT in demo. Decision later if to delete. |
+| `dotintel-preview` | `dotintel-preview` | unknown | Not investigated; presumed legacy |
+| (old Vite app `dotintel-app/`) | n/a | RETIRED | OneDrive folder — pre-rebuild artifact |
+
+### 2.8 What's worth borrowing from old project work (learnings, not code)
+
 - Four-zone data architecture (raw → staging → master → activation).
 - Neilson exclusion canary list pattern.
 - 51+ credential gate.
 - Power-unit bands for trucking (already absorbed into Agency Signal Berkley mapping — see migration 0082 + the Berkley reference memory).
-- Parent–child insurer modeling.
+- Parent–child insurer modeling (already implemented in current `vbhlacdrcqdqnvftqtin`).
 - WR Berkley operating-unit attribution logic.
-
-### 2.3 Bootstrap doc
-
-374 lines, 12 sections covering scope, architecture inheritance, schema starter, pricing, data sources, operating doctrine, day-1/week-1/month-1 checklists, opening prompt for session 1, open questions.
-
-**Location:** `docs/spinoffs/dot-carrier-intel/BOOTSTRAP.md` in the Agency Signal repo, until DOT Intel gets its own repo.
-
-When DOT Intel rebuild kicks off, copy or migrate this doc into its new home.
-
-### 2.4 Day-1 decisions still owed
-
-Per BOOTSTRAP.md §1.5 + open question #1 in [Decision Log](DECISION_LOG.md) §9:
-
-1. **New repo + new Supabase project, or new product surface inside the existing dotintel platform?** Recommendation = new repo + new Supabase, but pull FMCSA SAFER via shared ingestion if old project already has it loaded.
-2. **Three-ICP scope confirmation:** insurance pros ($30-99/mo) / DOT carriers self-service ($10-20/mo) / lead-gen for small trucking ($TBD). Pricing locked in [Decision Log](DECISION_LOG.md) §2 — confirm scope hasn't drifted before kickoff.
-3. **BDM pre-call brief feature scope** — must ship in September launch per Prompt 6 Objection #5. (Open question #4.)
-
-### 2.5 What NOT to repeat from Agency Signal
-
-The hard-earned lessons that cost real time on Agency Signal — bake into DOT Intel from minute zero:
-
-- **Working clone OUTSIDE OneDrive.** Use `C:\Users\GTMin\Projects\dot-intel\`. Run `gh auth login` once. Don't put the canonical git tree under OneDrive sync.
-- **For OneDrive doc workflows specifically:** use the `/tmp` heredoc + `cp` atomic-write pattern. Sandbox-write directly into OneDrive truncates files >5KB.
-- **GitHub PAT:** sandbox doesn't retain creds between sessions — assume each session needs a fresh PAT until `gh auth login` is set up locally.
-- **When loading vendor files:** canary filter + within-file dedupe + cross-file dedupe **before** insert. Dry-run + report stats. Ask Master O for canary patterns when the vendor isn't familiar.
-- **When pricing copy depends on data scale:** it's placeholder until inventory catches up. Don't push numeric claims that exceed what's actually loaded.
 
 ---
 
