@@ -15,8 +15,9 @@ Before the audience joins:
 2. Visit https://www.dotintel.io/login — confirm the login form has 4 persona quick-fill buttons (Agent, Underwriter, Risk Mgr, Analyst).
 3. Click **Agent** → email + password auto-fill → click **Sign In** → confirm you land on `/dashboard`.
 4. Click the **Carrier Intelligence** card (top-left) → confirm Market Overview loads with KPIs (50,298 carriers / 19,767 with insurance / etc.).
-5. Sign out, repeat with **Underwriter** persona.
-6. Have the Carrier Intelligence URL ready: https://www.dotintel.io/dashboard/carrier-intelligence
+5. **Scroll to Browse Carriers — confirm the table is populated** (25 rows, "Showing 1-25 of 50,298"). If empty with "No carriers match your filters" and no filters set, the bare-URL caching regression is back — page needs `export const dynamic = 'force-dynamic'` (session 18 fix).
+6. Sign out, repeat with **Underwriter** persona.
+7. Have the Carrier Intelligence URL ready: https://www.dotintel.io/dashboard/carrier-intelligence
 
 If anything fails, ping back to the build session — there's still pre-demo polish budget.
 
@@ -39,7 +40,7 @@ If anything fails, ping back to the build session — there's still pre-demo pol
 6. **Click a top state (e.g., TX or CA).** Notice URL filter changes; Browse table now shows only that state.
 7. **Add a fleet-size filter** (e.g., 4-9 PU). The browse list narrows.
 8. **Add an insurance status filter — "No insurance on file"**. The browse table narrows to the addressable prospect pool.
-9. **Click any carrier row.** Carrier Profile drills in. Walk:
+9. **Click any carrier row.** Carrier Profile drills in. (Canonical safe-bet row to land on: **California Delivery Service Inc, DOT 1073091** — Fontana CA, 11 PU / 11 drivers, Lancer Insurance active filing, real contact email + phone. Use this if any other row looks thin.) Walk:
    - Operations + Fleet (the basics)
    - Address & Contact (cold call data)
    - Authority & Safety (qualification)
@@ -57,10 +58,11 @@ If anything fails, ping back to the build session — there's still pre-demo pol
 
 1. Sign out as Agent, sign in as **Underwriter** persona.
 2. **Carrier Intelligence — same Market Overview.** Different framing: "Underwriting needs depth, not breadth. Here's the depth."
-3. **Use the search box.** Type a carrier legal name OR DOT number directly.
+3. **Use the search box.** Type **`1073091`** (the canonical demo carrier — California Delivery Service Inc, Fontana CA) OR type a carrier legal name. Press Enter. Result narrows to one row.
 4. **Click into the carrier profile.** Walk:
-   - Authority + Safety section (rating, granted date, current safety status)
-   - Current insurance with **coverage limits** ($1M / $2M etc.) and **effective date** of the most recent filing
+   - Operations + contact (phone, email — cold-call data right on the profile)
+   - Authority + Safety section (granted date, current safety status, authorized-for-hire flag)
+   - Current insurance: **named insurer parent (Lancer)** + **child entity** + **filing form code (BIPD / 91X)** + **effective date** of the most recent filing
    - Insurer parent/child rollup — shows you exactly which arm of which group is on the policy
 5. **Demo the "No insurance on file" filter.** Filter Browse by **No insurance on file** → click any row → walk the profile of an addressable prospect from the underwriter angle (no current coverage = a clean-slate submission).
 6. **Click Competitive Benchmarking (Preview).** Shows:
@@ -81,7 +83,8 @@ Don't let the audience find these — flag them yourself first. Builds credibili
 |---|---|
 | Top 10 states all show ~1,000 | "Demo dataset is sampled at ~1,000 per state. Production launch loads the full FMCSA universe." |
 | Some carriers show "Unmapped" insurer parent | "Real-world data: insurer name strings don't always match our parent-child rollup. Production-grade name normalization is a Phase 2 build." |
-| "Authorized for hire" reads near-100% | (No longer shown in KPI strip — replaced with "Avg fleet size" and "Expiring within 60d" which are real signals.) |
+| "Authorized for hire" reads near-100% | (No longer shown in KPI strip — replaced with "Avg fleet size" and "No insurance on file" which are real signals.) |
+| Insurance section shows insurer + form code + effective date but no $1M/$2M coverage limit | "Coverage amounts are in the FMCSA filing JSONB but aren't surfaced in the current view yet — Phase 2 ETL pulls them through." |
 | Coming Soon tiles | Three modules — Premium Estimator, Underwriter Intelligence, Appetite Monitoring — are pre-build. Honest about the roadmap. |
 | Distribution Intelligence + Competitive Benchmarking are "Preview" | "These show real data on what we have today. The full filter / drill flow ships in Q3." |
 
