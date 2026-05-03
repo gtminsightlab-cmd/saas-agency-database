@@ -1,16 +1,17 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-02 (session 15 close — DOT Intel demo prep)
+**Last updated:** 2026-05-02 (session 16 — Threshold IQ family-ledger sync + DOT Intel light-mode fix)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
 
-### Quick-ref: where each repo lives + latest commit (end of session 15)
+### Quick-ref: where each repo lives + latest commit (end of session 15 → updated session 16)
 
 | Repo | Canonical clone | Latest `origin/main` commit |
 |---|---|---|
-| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `94625f8` — light-mode known-issue logged |
-| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `c597de7` — light mode toggle (partial) |
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `94625f8` — light-mode known-issue logged (will bump after this session's family-ledger refresh push) |
+| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `c597de7` — light mode toggle (partial) — will bump after session 16 light-mode scoped retreat |
+| `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | `fe2381d` — Threshold IQ session 2026-05-02 handoff committed |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
 
 ### Memory files seeded today
@@ -60,28 +61,77 @@ Auto-loaded by Claude Code via `MEMORY.md` at `C:\Users\GTMin\.claude\projects\.
 - (Growtheon does NOT get a satellite — runs on third-party reseller infra per D-010)
 
 **Next sprints:**
-- Sprint 1C: shared JWT secret across `seven16-platform` ↔ `sdlsdovuljuymgymarou`; Doppler + Sentry rollout. NEEDS Vercel API token + Master O time on Doppler signup.
-- Sprint 1D (planned window): migrate `auth.users` from Agency Signal → platform; rewire app reads via shared JWT.
+- Sprint 1C: shared JWT secret across `seven16-platform` ↔ `sdlsdovuljuymgymarou` (Agency Signal) + `yyuchyzmzzwbfoovsskz` (Threshold IQ — joined client list 2026-05-02 when staging went live); Doppler + Sentry rollout. NEEDS Vercel API token + Master O time on Doppler signup.
+- Sprint 1D (planned window): migrate `auth.users` from Agency Signal → platform; rewire app reads via shared JWT. Threshold IQ folds in same sprint (or follows immediately).
 
 ---
 
-## Part 0.5 — Threshold IQ (in progress, separate Claude Code session)
+## Part 0.5 — Threshold IQ (live staging, separate Claude Code session)
 
-> Build name `seven16-distribution`. Market name **Threshold IQ** locked 2026-05-02 (D-009). Domain `thresholdiq.io` secured on Cloudflare 2026-05-02.
+> Build name `seven16-distribution`. Market name **Threshold IQ** locked 2026-05-02 (D-009). Domain `thresholdiq.io` secured on Cloudflare 2026-05-02. **Staging went live 2026-05-02** — Phase A foundation + Phase B item 2 (AI extraction primitive) shipped end-to-end in a single session.
+>
+> **Inside-view state doc:** [`seven16-distribution/docs/STATE.md`](../../../seven16-distribution/docs/STATE.md) (commit `c5f2bb5`) — written by the Threshold IQ session itself; mirrors this Part 0.5 from the inside.
+> **Most recent handoff:** [`seven16-distribution/docs/handoffs/2026-05-02_THRESHOLD_IQ_HANDOFF.md`](../../../seven16-distribution/docs/handoffs/2026-05-02_THRESHOLD_IQ_HANDOFF.md) (commit `fe2381d`) — chronological log + identifiers + gotchas.
 
 | What | Where |
 |---|---|
-| Working clone (current) | `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\CRM for MGU and Recruiting\seven16-distribution\` (still inside OneDrive — see playbook below) |
-| Recommended canonical clone | `C:\Users\GTMin\Projects\seven16-distribution\` (not yet migrated) |
-| Stack | Next 16.2.4 + React 19 + shadcn/ui + Supabase SSR (newer stack than Agency Signal's Next 14) |
-| GitHub | Not yet created — needs `gtminsightlab-cmd/seven16-distribution` private repo |
-| Vercel | Not yet deployed |
-| Supabase | Has 12+ migrations locally; not yet pushed to Seven16 org |
-| Pricing | Set in build session; family-strategy collaboration deferred |
+| Live staging URL | `https://staging.thresholdiq.io` ✅ HTTP 200, magic-link auth verified end-to-end |
+| Vercel project | `prj_c6kzFEhpw6Uwb12TECUidKlBxOwr` on team `team_RCXpUhGENcLjR2loNIRyEmT3` (project name `seven16-distribution`) |
+| Custom domain | `staging.thresholdiq.io` A → `76.76.21.21` (Cloudflare DNS-only / gray cloud, Vercel handles SSL) |
+| GitHub repo | `gtminsightlab-cmd/seven16-distribution` (private), default branch `main` (renamed from `master` during migration) |
+| Canonical working clone | `C:\Users\GTMin\Projects\seven16-distribution\` (native git, GCM auth, outside OneDrive) |
+| OneDrive copy | `C:\Users\GTMin\OneDrive\...\CRM for MGU and Recruiting\seven16-distribution\` — **legacy, not source of truth.** Pending deletion when user confirms confidence in new tree. |
+| Stack | Next 16.2.4 + React 19 + shadcn/ui + Supabase SSR + Tailwind |
+| Supabase satellite | `yyuchyzmzzwbfoovsskz` (us-east-1, pg 17.6.1) — Threshold IQ satellite per D-008. **Not yet integrated with `seven16-platform`** — that's the family-integration debt for first real customer. 12 migrations applied (0001–0012); repo and DB in sync (no drift). |
 
-**Migration playbook for the other session:** [docs/playbooks/seven16_distribution_clone_migration.md](../playbooks/seven16_distribution_clone_migration.md). Paste it into the other Claude Code session when ready.
+### 0.5.1 Phase A status (foundation hardening)
 
-**Family integration owed:** When Threshold IQ moves toward deploy, register tenants/auth via `seven16-platform` with shared JWT pattern. Add it to `seven16-agency-signal` JWT-secret rotation runbook.
+| Item | Status |
+|---|---|
+| **A1** Repo migration out of OneDrive → private GitHub remote | ✅ Done |
+| **A2** CI pipeline (`tsc --noEmit`, `next lint`, `next build`) on push + PR to main | ✅ Green at `9c48c70` |
+| **A3** RLS test harness | ⏸️ Pending — deferred until before first outside customer |
+| **A4** Vercel staging deploy with auto-deploy + magic-link auth verified end-to-end | ✅ Done |
+| **A4-bonus** Custom domain `staging.thresholdiq.io` (Cloudflare + Vercel SSL + Supabase Auth allowlist) | ✅ Done |
+
+### 0.5.2 Phase B status (submissions domain)
+
+| Item | Status |
+|---|---|
+| **B1** Agent portal shell + PDF upload UI | ⏸️ Pending — recommended next work |
+| **B2** AI extraction primitive (`POST /api/ai/extract`, Claude Sonnet 4.6 with Zod-validated 13-field output, token bookkeeping in `ai_token_usage`) | ✅ Shipped + verified — `b02a8e3` |
+| **B3** Carrier clearance UI | ⏸️ Pending — needs B1 to have data |
+| **B-opt** `pdf-parse` pre-extraction (drops AI cost ~70%) | ⏸️ Pending — best done as part of B1 |
+
+### 0.5.3 Known issues / family-level flags from Threshold IQ session
+
+| Item | Severity | Notes |
+|---|---|---|
+| **Anthropic key briefly visible in chat** (truncated 60 chars: `sk-ant-api03-c0_JclGl0n3MBAEedi9tBA2YwD_phjoon6VdXMzEIsFaJ4Q...`) | 🟡 Medium | Recommended action when staging stabilizes: rotate the key + set $10/mo cap on the new one in Anthropic console. **Cross-product hygiene reminder — surfaced from Part 0.5 to ensure family ledger tracks it.** |
+| Vercel preview-branch env scope missing for `NEXT_PUBLIC_*` + `ANTHROPIC_API_KEY` | 🟡 Low | Vercel CLI quirk: preview-branch add returns `git_branch_required` even with `--yes`. Not blocking main. Address when first significant PR opens. |
+| OneDrive legacy copy of seven16-distribution still on disk | 🟡 Low | Stale `.env.local` with old Anthropic key line — remove when copy is deleted. |
+| Magic-link PKCE cross-browser fragility | 🟢 By design | Verifier stored per-browser; if request and click happen in different browsers, fails. Document for users; long-term consider OTP. |
+| DOT Intel cross-product integration | 🟢 Future | `INTEGRATION_DOTINTEL.md` is target spec, not hard contract yet. Wire against `dotintel2`'s real API surface when first trucking customer onboards. |
+
+### 0.5.4 Pricing review queue
+
+Threshold IQ's draft tiers ($99 / $199 / $299 per seat, "1M tokens/mo" Starter quota) are **mathematically undersized** vs. real Sonnet 4.6 PDF extraction cost (~$215/mo at 500 submissions). User-preferred resolution paths (locked, do not relitigate):
+1. **Caps + overage.** Starter includes N submissions/mo bundled, $X per extra. Standard SaaS metered billing.
+2. **BYOK.** Customer provides Anthropic key, Threshold IQ charges flat per-seat platform fee.
+
+**Rejected (do not re-propose):** tier-by-AI-quality (Haiku-only Starter, Sonnet on Growth+). User reason: bad customer narrative.
+
+Cost math + citations live in memory `project_pricing_ai_extraction_economics.md` in the Threshold IQ session's memory dir. **Surface in next family pricing collaborative session** alongside the deferred Threshold IQ + Growtheon + Seven16Recruit pricing items.
+
+### 0.5.5 Cross-session pattern: `STATE.md` per repo
+
+Threshold IQ session established the pattern: each product repo has a `docs/STATE.md` written from inside (by the session that owns that product) that mirrors this family-ledger Part N. Both should agree; the inside `STATE.md` updates as that session ships changes, so it's always current. Other sessions read it via cross-repo file access.
+
+**Adopted.** Companion `STATE.md` files for the other repos:
+- `dotintel2/docs/STATE.md` — DOT Intel inside view (queued for session 16 alongside light-mode fix)
+- `saas-agency-database/docs/STATE.md` — Agency Signal inside view (queued; lower priority since family ledger lives in this same repo)
+
+**Family integration owed:** When first real Threshold IQ customer onboards, register tenants/auth via `seven16-platform` with shared JWT pattern. Folds into Sprint 1C runbook (see Part 0).
 
 ---
 
