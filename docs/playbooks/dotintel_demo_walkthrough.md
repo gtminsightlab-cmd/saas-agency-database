@@ -33,12 +33,12 @@ If anything fails, ping back to the build session — there's still pre-demo pol
 5. **Walk the Market Overview.** Talking points:
    - 50K+ carriers loaded (demo dataset, full FMCSA universe at production launch — disclaimer banner says so explicitly)
    - 39% have current insurance on file → **61% are addressable prospects** (huge agent opportunity)
-   - 1,500+ are expiring within 60 days → **active prospects right now**
+   - The **"No insurance on file"** KPI cell makes that visual: **30,531 carriers** sitting on the dashboard ready to be worked
    - Small fleets (1-25 PU) are 95.5% of the corpus — that's the agent sweet spot
    - Top insurer parents: Progressive, Great West, OOIDA dominate. Hartford, Chubb, Liberty, Travelers are smaller.
 6. **Click a top state (e.g., TX or CA).** Notice URL filter changes; Browse table now shows only that state.
 7. **Add a fleet-size filter** (e.g., 4-9 PU). The browse list narrows.
-8. **Add an insurance status filter — "No insurance on file"** or **"Expiring within 60 days"**. Show the prospecting use case.
+8. **Add an insurance status filter — "No insurance on file"**. The browse table narrows to the addressable prospect pool.
 9. **Click any carrier row.** Carrier Profile drills in. Walk:
    - Operations + Fleet (the basics)
    - Address & Contact (cold call data)
@@ -60,9 +60,9 @@ If anything fails, ping back to the build session — there's still pre-demo pol
 3. **Use the search box.** Type a carrier legal name OR DOT number directly.
 4. **Click into the carrier profile.** Walk:
    - Authority + Safety section (rating, granted date, current safety status)
-   - Current insurance with **coverage limits** ($1M / $2M etc.) and **policy expiration** (the "expiring soon" badge if applicable)
+   - Current insurance with **coverage limits** ($1M / $2M etc.) and **effective date** of the most recent filing
    - Insurer parent/child rollup — shows you exactly which arm of which group is on the policy
-5. **Demo the "Expiring soon" badge.** Filter Browse by **Expiring within 60 days** → click any row → notice the gold "Expiring soon" badge on the policy expiration field.
+5. **Demo the "No insurance on file" filter.** Filter Browse by **No insurance on file** → click any row → walk the profile of an addressable prospect from the underwriter angle (no current coverage = a clean-slate submission).
 6. **Click Competitive Benchmarking (Preview).** Shows:
    - Top insurer #1 (Progressive)
    - Their share of the insured corpus
