@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-02 (session 16 — Threshold IQ family-ledger sync + DOT Intel light-mode fix)
+**Last updated:** 2026-05-03 (session 18 — DOT Intel demo-blockers (a)/(b)/(c) closed: force-dynamic, canonical demo carrier, /contact RLS fix)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
@@ -9,8 +9,8 @@
 
 | Repo | Canonical clone | Latest `origin/main` commit |
 |---|---|---|
-| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `94625f8` — light-mode known-issue logged (will bump after this session's family-ledger refresh push) |
-| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `4fe51fd` — session 16 chain: light-mode scoped retreat (`8da1a2e`) → STATE.md adoption (`af67e96`) → toggle visibility revert (`3c3dd2d`) → marketing-chrome split (`f36ea5c`) → drop `@theme inline` so vars actually flip (`4fe51fd`) |
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `efd830f` — `docs(playbooks): lock canonical demo carrier (DOT 1073091) + soften coverage line` (will bump after session 18 handoff push) |
+| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `b7e088a` — session 18 chain: `ab7904f` force-dynamic on Carrier Intelligence (demo blocker (a)) → `88285ec` /contact RLS fix (demo blocker (c)) → `b7e088a` STATE.md bump |
 | `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | `fe2381d` — Threshold IQ session 2026-05-02 handoff committed |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
 
@@ -264,7 +264,7 @@ Fully spec'd in memory `project_admin_control_center_spec.md`. All 13 modules ha
 | Repo (canonical) | `gtminsightlab-cmd/dotintel2` at `C:\Users\GTMin\Projects\dotintel2\` | ✅ Native git, GCM auth |
 | Stack | Next 16.2.3 + React 19.2.4 + Tailwind v4 + Supabase SSR | — |
 | Supabase project | `vbhlacdrcqdqnvftqtin` (us-east-2) | ✅ ACTIVE_HEALTHY |
-| Last deploy commit | `c597de7` — light mode toggle (partial) | ✅ READY |
+| Last deploy commit | `ab7904f` — fix(carrier-intel): force dynamic render (demo blocker (a)). Deploy `dpl_5rergT8wbbRtKQ6TTZkABiHrQ3TQ`. | ✅ READY |
 
 ### 2.2 Working data corpus on `vbhlacdrcqdqnvftqtin`
 
@@ -296,7 +296,18 @@ Top 10 insurer parents by carrier count (snapshot): Progressive 3,279 · Great W
 - Two new preview modules at `/dashboard/distribution-intelligence` and `/dashboard/competitive-benchmarking` — show real corpus data + "What ships Q3 2026" sections.
 - Module status evolved from 2-state to 3-state (`active | preview | coming_soon`). Commit `5672c25`.
 
-**Light Mode** — toggle shipped, **but broken on marketing pages**. See §2.5 known-issue.
+**Light Mode** — toggle shipped, **but broken on marketing pages** at session 15 close. Resolved sessions 16+, see §2.3a.
+
+### 2.3a Sessions 16-18 summary
+
+**Session 16 (2026-05-02) — Light Mode resolution + family-ledger sync.** Light-mode chain landed: scoped retreat to `[data-theme-zone="light-capable"]` subtrees (`8da1a2e`), inside-view `STATE.md` adoption (`af67e96`), toggle visibility revert (`3c3dd2d`), marketing-chrome split via `components/marketing/chrome.tsx` (`f36ea5c`), and the critical `@theme inline` drop so CSS variable overrides actually flow through utility classes (`4fe51fd`). Marketing pages stay dark in both modes (intentional cinematic Gotham); dashboard subtrees flip cleanly. Threshold IQ family ledger synced: D-009 (Threshold IQ name lock) + D-010 (standalone-capable add-ons) + D-011 (emerging-firm target market) added to Decision Log.
+
+**Session 17 (2026-05-03) — Demo polish (option a).** Three landed changes: A1 reframe of the broken "Expiring within 60d" KPI to "No insurance on file" (30,531 / 61% addressable, zero DB backfill — uses already-computed data) via migration `20260503_market_overview_no_insurance_kpi` (`9c4d810`); UX commit for visible scrollbar + sticky section nav on Carrier Intelligence (`1fb93cc`); Option Z marketing reconciliation aligning /Solutions, /platform, and dashboard into one coherent narrative — 3 working modules featured at /Solutions, capabilities listed as verbs at /platform, three coming-soon items dated Q3/Q4 2026 (`634db5e`). Plus full Agent + Underwriter persona walks end-to-end against live site, /contact form schema verified via SQL roundtrip (verification incomplete — see session 18), light-mode visual sweep clean across all three module pages, pre-launch security gate established as memory rule, Supabase advisor baseline captured (14 findings, all post-demo).
+
+**Session 18 (2026-05-03 evening) — All three demo blockers closed.**
+- **(a) Browse Carriers default-render fix** — `export const dynamic = "force-dynamic"` added to `app/dashboard/carrier-intelligence/page.tsx` (`ab7904f`). Verified live by user via Agent persona — bare URL renders populated table ("Showing 1-25 of 50,298"), filter pills functional. The directive is now load-bearing for this route — DO NOT remove without an alternative caching strategy.
+- **(b) Canonical demo carrier locked** — DOT 1073091 California Delivery Service Inc (Fontana CA, 11 PU / 11 drivers, Lancer Insurance active filing, real contact email `TABATHA@CDSTRUCKS.COM` + phone `(909) 355-7991` + address). Threaded into walkthrough as Underwriter step 3 search target + Agent step 9 drill-in fallback (`efd830f`). Backup: DOT 1082246 METTLER FARMS INC.
+- **(c) /contact form end-to-end verified** — surfaced and fixed an RLS regression. Session 17's "Schema verified via SQL roundtrip" ran as `service_role` (which bypasses RLS) so it never exercised the actual auth/anon path. When the user submitted the form while still signed in as a demo persona, Postgres rejected with "new row violates row-level security policy for table leads" — `anon_insert_leads` was scoped to `{anon}` only. Fix: migration `20260503_leads_insert_policy_anon_and_authenticated` replaces it with `public_insert_leads` for `{anon, authenticated}` (`88285ec`). User retest: green success state fired, real row landed in `leads`. **Two new post-demo carry-forwards surfaced:** no mailbox at `info@dotintel.io` + no email notification on form submit; coverage amounts ETL gap (data in `inshist_raw.raw_row` JSONB but 0/19,767 populated in `carrier_insurance_current`).
 
 ### 2.4 Demo accounts (seeded in `vbhlacdrcqdqnvftqtin` auth.users)
 
@@ -309,15 +320,9 @@ Top 10 insurer parents by carrier count (snapshot): Progressive 3,279 · Great W
 
 Mid-May audience = Agent + Underwriter only. Risk Mgr and Analyst flows are NOT polished for this demo.
 
-### 2.5 ⚠️ Light Mode known issue (top priority for next session)
+### 2.5 ✅ Light Mode known issue — RESOLVED in session 16
 
-Master O verified Light Mode visually after session 15 wrapped. Result: dashboard untested but expected OK; **marketing pages broken** — title/body text on `/platform`, FAQ section, etc. render low-contrast (gray on dark) because marketing components have hardcoded color values that don't flip with the `.light` class swap.
-
-**Fix plan (10-15 min, queued for session 16 first task):**
-1. Remove `ThemeToggle` from `components/marketing/header.tsx`
-2. Mount `ThemeToggle` on the dashboard header in `components/dashboard/dashboard-content.tsx` + the three module layouts (`carrier-intelligence`, `distribution-intelligence`, `competitive-benchmarking`)
-3. Hard-clamp marketing pages to dark always (CSS rule)
-4. Verify dashboard light mode actually works visually
+The session-15 break (marketing pages rendered low-contrast under `.light`) was resolved across session 16's chain. Marketing pages are now hard-clamped to dark always (intentional cinematic Gotham aesthetic); dashboard subtrees scope-flip via `data-theme-zone="light-capable"`. The critical Tailwind v4 detail: `globals.css` uses `@theme {}` not `@theme inline {}` — the `inline` modifier bakes literal hex values into utility classes and breaks variable overrides. **Do not re-add `inline`** without a full rethink of the theming approach.
 
 ### 2.6 What's deferred until after the working group demo
 
