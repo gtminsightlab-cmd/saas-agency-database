@@ -10,7 +10,7 @@
 | Repo | Canonical clone | Latest `origin/main` commit |
 |---|---|---|
 | `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `94625f8` — light-mode known-issue logged (will bump after this session's family-ledger refresh push) |
-| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `c597de7` — light mode toggle (partial) — will bump after session 16 light-mode scoped retreat |
+| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `4fe51fd` — session 16 chain: light-mode scoped retreat (`8da1a2e`) → STATE.md adoption (`af67e96`) → toggle visibility revert (`3c3dd2d`) → marketing-chrome split (`f36ea5c`) → drop `@theme inline` so vars actually flip (`4fe51fd`) |
 | `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | `fe2381d` — Threshold IQ session 2026-05-02 handoff committed |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
 
