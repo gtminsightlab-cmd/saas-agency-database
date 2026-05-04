@@ -154,6 +154,28 @@ Both logged as post-demo items. For working group day, leads silently land in th
 
 Commit `b7e088a`.
 
+### 10. Scrapers fragment-bug investigation + patch
+
+User flagged from another session: "Spotting a parser bug in the agencies feed — entries like 'Agency LLC', 'Group LLC' with no state/ZIP showing up cross-source. That's parse_berkley_pastes.py capturing trailing fragments. Filing that as a separate task." Then in this session: "before we end we need to fix the data base."
+
+Investigation outcomes:
+
+**Both production databases are clean.** Aggressive scans for fragment-name rows ('Agency LLC', 'Group LLC', 'LLC', 'Inc', 'Insurance LLC', 'Services LLC', 'Holdings LLC', etc., plus very-short names):
+- Agency Signal `sdlsdovuljuymgymarou` `agencies` (20,739 rows): **0** fragments.
+- DOT Intel `vbhlacdrcqdqnvftqtin` `agencies` (53 rows): **0** fragments.
+
+The loader at `scrapers/seven16-scraper/seven16-scraper/scripts/load_to_supabase.py:200` has `if not (state and zip_code): continue` which kept all fragment rows out of production. **No DB cleanup was needed.**
+
+**The diagnosis was misdirected.** `parse_berkley_pastes.py` already has a `if not (name and state and zip5): continue` guard at line 92 — Berkley pastes are clean. The actual culprit is the **TrustedChoice spider** at `scripts/run_trustedchoice.py:106`. Its `harvest_state()` function uses a regex with a lazy quantifier `{2,80}?` that captures standalone footer-link / category text as agency names. Cross-source scan of today's JSONLs found **151 fragment rows in `agent_directories_trustedchoice_20260503T222226Z.jsonl` alone** (42 'Agency LLC', 41 'Services LLC', 35 'Group LLC', 22 'Associates LLC', 9 'Insurance LLC', 2 'Enterprises LLC' across two trustedchoice files).
+
+**Misdirected patch + revert.** I initially patched `spiders/agent_directories.py` thinking it was the trustedchoice path. After inspecting the JSONL row schema (`{agency_name, phone, walk_state}` only — no `address_raw`) it became clear the trustedchoice walks use a different codepath entirely. Reverted that patch — file is back to original.
+
+**Actual patch applied** to `scripts/run_trustedchoice.py:106-130`. Added a `SUFFIX_ONLY` set and post-filter that rejects any captured name whose firm-name portion is itself a generic suffix word (`{insurance, agency, agencies, group, brokers, brokerage, associates, partners, services, holdings, enterprises, company, companies, llc, inc, inc., corp, co, co.}`). Synthetic worst-case validation: 5 fragment patterns ('Agency LLC', 'Group LLC', 'Services LLC', 'Holdings LLC', 'Insurance LLC') all correctly filtered; 4 real-shaped names ('Smith Insurance', 'Acme Insurance', 'Brokers and Brown Smith Associates', 'BellaHaven Insurance') preserved. `ast.parse` passes.
+
+**The cities walker** (`scripts/run_trustedchoice_cities.py`) already handles fragments correctly via DOM-anchored card-title parsing + a `if not phone and not addr_parts["zip"]: continue` gate at line 167. No changes needed there.
+
+**Patch is disk-only.** `scrapers/seven16-scraper/` is NOT a git repo (`git rev-parse --show-toplevel` → `fatal: not a git repository`). The patched file lives only on disk in OneDrive. Next run of `python scripts/run_trustedchoice.py` will pick it up. Carry-forward: clone the scrapers project out of OneDrive and `git init` (same fix that was applied to `dotintel2` and `saas-agency-database`).
+
 ---
 
 ## Commits this session
@@ -261,6 +283,8 @@ DB: one DDL migration (RLS policy swap on `leads`) + one DML cleanup (delete of 
 |---|---|
 | **No mailbox at `info@dotintel.io` + no email notification on /contact** | 🟡 Post-demo carry-forward (new this session) |
 | **Coverage amounts populated 0/19,767 in `carrier_insurance_current` (data exists in inshist_raw JSONB)** | 🟡 Post-demo (new this session) |
+| **`scrapers/seven16-scraper/` is not a git repo** — TrustedChoice fragment-bug fix applied disk-only this session, no version control | 🟡 Post-demo (new this session — same OneDrive `.git` corruption risk applies; clone outside OneDrive + `git init` like dotintel2/saas-agency-database) |
+| **`run_trustedchoice.py` v1 phone↔name index-zip is acknowledged "imperfect" in the docstring** — name regex is over-permissive even with the fragment fix; v2 should mirror the cities walker's DOM-anchored card-title approach | 🟡 Post-demo (new this session) |
 | Disclaimer banner "50,298" hardcoded | 🟡 Post-demo (carried) |
 | Marketing copy "Surface fleets with expiring coverage" still references expiring framing | 🟡 Post-demo (carried — option (d) from session 17 paste-prompt, deferred) |
 | Marketing testimonials likely illustrative without "Illustrative" label | 🟡 Post-demo |
@@ -284,6 +308,10 @@ DB: one DDL migration (RLS policy swap on `leads`) + one DML cleanup (delete of 
 2. **Form-error visibility pattern** — `components/marketing/contact-form.tsx` swallows `error` in `catch {}` so users see "Something went wrong" with no detail. Family standard for marketing forms should at minimum log the error to console, ideally surface a hashed correlation id so support can trace what happened. Post-demo improvement candidate.
 
 3. **Cleanup-verification habit** — session 17's roundtrip-test row stuck despite the log saying "row was still cleaned up". Family-wide rule of thumb when a handoff claims a cleanup completed: verify with a SELECT before trusting it.
+
+4. **Loader gates as the last line of defense** — the scrapers fragment bug never polluted production because `load_to_supabase.py` requires `state AND zip_code` before INSERT. Family standard for any future ingestion pipeline: treat the loader's required-field gate as a non-negotiable safety net. Upstream parsers WILL emit garbage; the loader is the final filter.
+
+5. **Diagnosis-vs-actual file** — user's other-session note pointed at `parse_berkley_pastes.py` but the actual culprit was `run_trustedchoice.py`. Investigation took ~5 queries to disambiguate. Lesson: when a handoff names a specific file as buggy, verify the file actually produces the reported symptom before patching it.
 
 ---
 
@@ -416,6 +444,8 @@ the webhook can wait until post-demo. (d) is purely cosmetic.
 
 ## End-of-session 18 verification checklist
 
+- [x] Both Supabase projects scanned for the user-flagged "Agency LLC / Group LLC fragment" bug — both clean, no DB cleanup needed
+- [x] TrustedChoice spider patched on disk (`scrapers/seven16-scraper/seven16-scraper/scripts/run_trustedchoice.py`); not committed because that project is not git-tracked
 - [x] All session-18 commits pushed to both `dotintel2` (3 commits) and `saas-agency-database` (1 commit + this handoff + SESSION_STATE bump)
 - [x] Migration `leads_insert_policy_anon_and_authenticated` applied to `vbhlacdrcqdqnvftqtin` and verified (`pg_policies` shows `public_insert_leads` for `{anon,authenticated}`)
 - [x] Migration file synced into `dotintel2/supabase/migrations/`
