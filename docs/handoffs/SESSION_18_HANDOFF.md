@@ -176,17 +176,28 @@ The loader at `scrapers/seven16-scraper/seven16-scraper/scripts/load_to_supabase
 
 **Patch is disk-only.** `scrapers/seven16-scraper/` is NOT a git repo (`git rev-parse --show-toplevel` → `fatal: not a git repository`). The patched file lives only on disk in OneDrive. Next run of `python scripts/run_trustedchoice.py` will pick it up. Carry-forward: clone the scrapers project out of OneDrive and `git init` (same fix that was applied to `dotintel2` and `saas-agency-database`).
 
+### 11. Persona quick-fill gated off public login (2026-05-04)
+
+User asked to remove the four persona quick-fill buttons (Agent / Underwriter / Risk Mgr / Analyst) from the public DOT Intel login page so demo credentials aren't visible to outsiders pre-demo. Brief disambiguation up front: user phrased the ask as "the agency single website" but the persona buttons live on `dotintel.io/login` (file: `components/marketing/login-form.tsx`), not Agency Signal — confirmed by grep across both repos.
+
+Approach: gated the demo block behind a top-of-file constant `SHOW_DEMO_QUICK_FILL` defaulting to `false`. Wrapped the existing JSX block in a conditional. The four `auth.users` accounts in `vbhlacdrcqdqnvftqtin` are unchanged and continue to work via manual email/password entry. To re-enable for the mid-May working group demo (the walkthrough leans on quick-fill at step 2-3), flip the constant to `true` and push — ~60s redeploy.
+
+Commit `2946e3f`. Auto-deploy from push.
+
+**Hygiene flag surfaced this session:** the four demo passwords are committed in plaintext at the top of `login-form.tsx` (`DemoAgent2025!`, `DemoUW2025!`, `DemoRisk2025!`, `DemoAnalyst2025!`). The `dotintel2` repo is private, so the blast radius is limited, but the credentials should be rotated post-demo and the plaintext array should move to a server-only config (or be deleted entirely once the buttons are no longer needed for the working group). Logged as a known issue.
+
 ---
 
 ## Commits this session
 
-### `gtminsightlab-cmd/dotintel2` (3 commits)
+### `gtminsightlab-cmd/dotintel2` (4 commits)
 
 | Commit | Theme |
 |---|---|
 | `ab7904f` | fix(carrier-intel): force dynamic render to fix empty browse on bare URL |
 | `88285ec` | fix(rls): broaden /contact insert policy to cover authenticated role |
 | `b7e088a` | docs(state): bump to session 18 — demo-blockers closed (a/b/c) |
+| `2946e3f` | fix(login): gate persona quick-fill block behind SHOW_DEMO_QUICK_FILL flag |
 
 ### `gtminsightlab-cmd/saas-agency-database` (1 commit + this handoff + SESSION_STATE bump)
 
@@ -285,6 +296,7 @@ DB: one DDL migration (RLS policy swap on `leads`) + one DML cleanup (delete of 
 | **Coverage amounts populated 0/19,767 in `carrier_insurance_current` (data exists in inshist_raw JSONB)** | 🟡 Post-demo (new this session) |
 | **`scrapers/seven16-scraper/` is not a git repo** — TrustedChoice fragment-bug fix applied disk-only this session, no version control | 🟡 Post-demo (new this session — same OneDrive `.git` corruption risk applies; clone outside OneDrive + `git init` like dotintel2/saas-agency-database) |
 | **`run_trustedchoice.py` v1 phone↔name index-zip is acknowledged "imperfect" in the docstring** — name regex is over-permissive even with the fragment fix; v2 should mirror the cities walker's DOM-anchored card-title approach | 🟡 Post-demo (new this session) |
+| **DOT Intel demo passwords are committed in plaintext** in `dotintel2/components/marketing/login-form.tsx` (DemoAgent2025! / DemoUW2025! / DemoRisk2025! / DemoAnalyst2025!). Repo is private so blast radius is limited, but credentials sit in git history. Quick-fill buttons are gated off public view as of `2946e3f`, so this is now a hygiene issue rather than an active leak vector. | 🟠 **Post-demo MUST-DO** (new this session) — rotate all four demo passwords in `vbhlacdrcqdqnvftqtin` `auth.users` after the working group demo, then either (a) move the array to a server-only config + provide a server endpoint that pre-fills via cookie, or (b) delete the array entirely if quick-fill is no longer needed |
 | Disclaimer banner "50,298" hardcoded | 🟡 Post-demo (carried) |
 | Marketing copy "Surface fleets with expiring coverage" still references expiring framing | 🟡 Post-demo (carried — option (d) from session 17 paste-prompt, deferred) |
 | Marketing testimonials likely illustrative without "Illustrative" label | 🟡 Post-demo |
@@ -312,6 +324,8 @@ DB: one DDL migration (RLS policy swap on `leads`) + one DML cleanup (delete of 
 4. **Loader gates as the last line of defense** — the scrapers fragment bug never polluted production because `load_to_supabase.py` requires `state AND zip_code` before INSERT. Family standard for any future ingestion pipeline: treat the loader's required-field gate as a non-negotiable safety net. Upstream parsers WILL emit garbage; the loader is the final filter.
 
 5. **Diagnosis-vs-actual file** — user's other-session note pointed at `parse_berkley_pastes.py` but the actual culprit was `run_trustedchoice.py`. Investigation took ~5 queries to disambiguate. Lesson: when a handoff names a specific file as buggy, verify the file actually produces the reported symptom before patching it.
+
+6. **No demo passwords in source code, family-wide.** This session ships with `DemoAgent2025!` / `DemoUW2025!` / `DemoRisk2025!` / `DemoAnalyst2025!` in `dotintel2/components/marketing/login-form.tsx`. Repo is private but the literal passwords sit in git history forever. Family-wide rule going forward: never commit demo credentials in plaintext. If quick-fill UX is needed, render the buttons but post the email/password from a server-only endpoint (set HTTP-only cookie, then auth client picks it up). Apply when wiring Threshold IQ + Seven16Recruit demo accounts.
 
 ---
 
