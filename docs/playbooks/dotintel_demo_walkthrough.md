@@ -97,7 +97,7 @@ Don't let the audience find these — flag them yourself first. Builds credibili
 | Top 10 states all show ~1,000 | "Demo dataset is sampled at ~1,000 per state. Production launch loads the full FMCSA universe." |
 | Some carriers show "Unmapped" insurer parent | "Real-world data: insurer name strings don't always match our parent-child rollup. Production-grade name normalization is a Phase 2 build." |
 | "Authorized for hire" reads near-100% | (No longer shown in KPI strip — replaced with "Avg fleet size" and "No insurance on file" which are real signals.) |
-| Insurance section shows insurer + form code + effective date but no $1M/$2M coverage limit | "Coverage amounts are in the FMCSA filing JSONB but aren't surfaced in the current view yet — Phase 2 ETL pulls them through." |
+| Insurance section shows coverage amounts | Coverage limits now populated — $750k/$750k for the canonical demo carrier (DOT 1073091). Average across the corpus is ~$914k. |
 | Coming Soon tiles | Three modules — Premium Estimator, Underwriter Intelligence, Appetite Monitoring — are pre-build. Honest about the roadmap. |
 | Distribution Intelligence + Competitive Benchmarking are "Preview" | "These show real data on what we have today. The full filter / drill flow ships in Q3." |
 
