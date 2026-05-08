@@ -9,10 +9,23 @@
 
 ## Pre-demo checklist
 
+**Before you run this checklist — flip the quick-fill flag on:**
+
+The four persona quick-fill buttons (Agent / Underwriter / Risk Mgr / Analyst) are hidden from the public website. They must be re-enabled before the demo. One edit + push, takes ~60 seconds:
+
+1. Open `dotintel2/components/marketing/login-form.tsx` in the canonical clone (`C:\Users\GTMin\Projects\dotintel2\`).
+2. Line 1 (top of file): change `const SHOW_DEMO_QUICK_FILL = false` → `const SHOW_DEMO_QUICK_FILL = true`.
+3. Save, commit, push. Vercel auto-deploys in ~35s.
+4. Verify the buttons appear on https://www.dotintel.io/login before proceeding.
+
+**After the demo — flip it back off** (same edit, `true` → `false`, push).
+
+---
+
 Before the audience joins:
 
 1. Visit https://www.dotintel.io in a fresh browser tab — confirm the marketing homepage loads.
-2. Visit https://www.dotintel.io/login — confirm the login form has 4 persona quick-fill buttons (Agent, Underwriter, Risk Mgr, Analyst).
+2. Visit https://www.dotintel.io/login — confirm the 4 persona quick-fill buttons are visible (Agent, Underwriter, Risk Mgr, Analyst). If they're missing, the `SHOW_DEMO_QUICK_FILL` flag above wasn't flipped.
 3. Click **Agent** → email + password auto-fill → click **Sign In** → confirm you land on `/dashboard`.
 4. Click the **Carrier Intelligence** card (top-left) → confirm Market Overview loads with KPIs (50,298 carriers / 19,767 with insurance / etc.).
 5. **Scroll to Browse Carriers — confirm the table is populated** (25 rows, "Showing 1-25 of 50,298"). If empty with "No carriers match your filters" and no filters set, the bare-URL caching regression is back — page needs `export const dynamic = 'force-dynamic'` (session 18 fix).
@@ -92,7 +105,7 @@ Don't let the audience find these — flag them yourself first. Builds credibili
 
 ## Known limitations (for your awareness, don't volunteer)
 
-- **No `/contact` form yet.** "Request access" link from login goes to `/contact` but the form may not be wired. If audience asks "how do I get access?", say "Email us, sales follow-up." Don't click the contact form unless you've tested it.
+- **`/contact` form is live but email notification is not wired.** The form accepts submissions and writes to the `leads` table. There is no mailbox at `info@dotintel.io` yet and no email notification fires — leads land silently in the DB. Post-demo setup: Cloudflare Email Routing + Supabase webhook → Resend. If audience asks "how do I get access?", say "Email us, sales follow-up" — or let them submit the form, which you can check later.
 - **No password reset flow.** Demo accounts are static. If a persona's password gets changed accidentally, ping the build session and we'll reset.
 - **Search is title-only and DOT#-only.** No fuzzy matching for similar carrier names (Phase 2).
 - **No CSV export from the Browse table.** Phase 2 build. If audience asks, "Yes, export is on the roadmap — Q3."
@@ -102,7 +115,7 @@ Don't let the audience find these — flag them yourself first. Builds credibili
 
 ## Demo accounts
 
-All four exist in the auth system. Quick-fill buttons on the login page handle the credentials — never paste them in chat or share visually with the audience.
+All four exist in the auth system. Quick-fill buttons handle the credentials once the `SHOW_DEMO_QUICK_FILL` flag is on (see pre-demo checklist above). Never paste demo passwords in chat or share visually with the audience — the buttons are the only sanctioned delivery mechanism.
 
 | Persona | Email | Quick-fill button |
 |---|---|---|
