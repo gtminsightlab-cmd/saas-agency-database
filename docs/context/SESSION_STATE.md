@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-07 (session 18 wrap pass — handoff + memory consolidation; demo blockers closed earlier in the week, demo ~7-8 days out)
+**Last updated:** 2026-05-07 (session 19 — walkthrough patched, e1 email routing live, f coverage amounts ETL complete)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
@@ -9,8 +9,8 @@
 
 | Repo | Canonical clone | Latest `origin/main` commit |
 |---|---|---|
-| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `efd830f` — `docs(playbooks): lock canonical demo carrier (DOT 1073091) + soften coverage line` (will bump after session 18 handoff push) |
-| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `b7e088a` — session 18 chain: `ab7904f` force-dynamic on Carrier Intelligence (demo blocker (a)) → `88285ec` /contact RLS fix (demo blocker (c)) → `b7e088a` STATE.md bump |
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `194493a` — session 19: walkthrough quick-fill instructions + coverage line updated |
+| `dotintel2` (DOT Intel marketing + demo dashboard) | `C:\Users\GTMin\Projects\dotintel2\` | `a713077` — session 19: coverage amounts ETL backfill (18,090 rows) |
 | `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | `fe2381d` — Threshold IQ session 2026-05-02 handoff committed |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
 
@@ -271,7 +271,7 @@ Fully spec'd in memory `project_admin_control_center_spec.md`. All 13 modules ha
 | Table | Rows | Notes |
 |---|---|---|
 | `carriers` | 50,298 | FMCSA carriers, sampled at ~1,000 per state |
-| `carrier_insurance_current` | 19,767 | 39% insurance penetration in the corpus |
+| `carrier_insurance_current` | 19,767 | 39% insurance penetration. **18,090 rows now have min/max_cov_amount populated** (session 19 ETL). Avg $914k. |
 | `inshist_raw` | 7,471,443 | Insurance filing history; powerful but query-heavy |
 | `insurer_parents` | 32 | Top-level insurer companies |
 | `insurer_children` | 54 | Subsidiary brands with NAIC codes + fleet-size hints |
