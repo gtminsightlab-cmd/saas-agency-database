@@ -371,9 +371,12 @@ READ IN THIS ORDER BEFORE TOUCHING ANYTHING:
 9. ~/.claude/projects/.../memory/MEMORY.md                   (auto-loaded —
    includes the "Pre-launch security gate" feedback rule)
 
-THEN pick ONE direction. The mid-May demo is in ~8-9 days.
-Demo blockers (a/b/c) are CLOSED. Anything below is enhancement
-or post-demo prep.
+THEN pick ONE direction. **Today is 2026-05-07; the mid-May working
+group demo is ~7-8 days out.** Demo blockers (a/b/c) are CLOSED.
+Anything below is enhancement or post-demo prep — pick by ROI / time
+budget. The 🟠 password rotation in (rotate) is the only item that
+absolutely cannot ship before the demo (would invalidate the demo
+quick-fill flow); everything else can ship pre- or post-demo.
 
 (d) **MARKETING COPY ALIGNMENT** (carried from session 17 paste-prompt).
     `app/page.tsx` line 35 ("Surface fleets with expiring coverage") and
@@ -418,6 +421,17 @@ or post-demo prep.
 (h) **PRICING COLLABORATIVE SESSION** (carry-forward from session 16).
     Threshold IQ + Growtheon + Seven16Recruit tier sizing in one go.
     Needs Master O actively at keyboard. Not demo-blocking.
+
+(rotate) **POST-DEMO MUST-DO — rotate plaintext demo passwords.** The
+    four DOT Intel demo passwords are committed in plaintext at the
+    top of `dotintel2/components/marketing/login-form.tsx`
+    (`DemoAgent2025!` / `DemoUW2025!` / `DemoRisk2025!` /
+    `DemoAnalyst2025!`). Quick-fill block is gated off public view as
+    of `2946e3f`, but plaintext-in-git is a hygiene smell.
+    Post-demo: rotate all four in `vbhlacdrcqdqnvftqtin` `auth.users`,
+    then either move the array to a server-only config (server pre-fills
+    via cookie) or delete entirely if quick-fill is no longer needed.
+    DO NOT rotate before demo day — would break the gated demo flow.
 
 PARKED / LOWER PRIORITY:
 - Anthropic key rotation (Threshold IQ session item)

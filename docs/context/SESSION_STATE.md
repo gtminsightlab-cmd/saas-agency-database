@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-03 (session 18 — DOT Intel demo-blockers (a)/(b)/(c) closed: force-dynamic, canonical demo carrier, /contact RLS fix)
+**Last updated:** 2026-05-07 (session 18 wrap pass — handoff + memory consolidation; demo blockers closed earlier in the week, demo ~7-8 days out)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
