@@ -267,7 +267,9 @@ Post-load `data_load_denylist` scan: **all 16 patterns return 0 live hits**. Eve
 
 Net effect — exactly Master O's predicted ratio: ~70% duplicate agencies (UPDATE path), ~30% net-new agencies. Contact deduplication was tighter (`(agency_id, lower(first), lower(last), lower(email))`) — most contacts already existed but ~32K genuinely new ones landed.
 
-Notable observation: `unmatched_ref` for carriers was substantial across files (3,000–10,000 per file). These are carrier names in the AdList data that don't have matching rows in `public.carriers`. Per the loader README: "We skip these silently — they're usually new carriers we haven't loaded into the catalog yet. Add them via /admin/catalog and re-run if you want them linked." Worth a follow-up session to harvest the distinct-but-unmatched carrier names from AdList data and add them to the carrier catalog.
+Notable observation: `unmatched_ref` for carriers was substantial across files (3,000–10,000 per file). These are carrier names in the AdList data that don't have matching rows in `public.carriers`. Per the loader README: "We skip these silently — they're usually new carriers we haven't loaded into the catalog yet. Add them via /admin/catalog and re-run if you want them linked."
+
+✅ **HARVESTED 2026-05-09 same session.** New `scripts/harvest-unmatched-carriers.ts` walks all 17 AdList xlsx files, normalizes CompanyLine values, cross-checks against `public.carriers`, writes `data/_unmatched_carriers.tsv` (161 distinct unmatched names). **Top finding: most aren't novel carriers, they're aliases.** Top 10 represent ~15,000 unmatched link rows and all map to existing catalog rows under slightly different `canonical_name` (e.g., "Liberty Mutual Insurance" → existing "Liberty Mutual", "Cincinnati Insurance" → "Cincinnati Insurance Company"). Suggested next step: apply `_strip_filler`-style normalization in `load-adlist.ts` (same pattern as sync_to_agency_signal.py) before reaching catalog match, then re-run loader to back-fill the ~15K newly-resolvable links. The genuine novel-carrier tail (~150 rows, mostly small regional mutuals) gets added via /admin/catalog one-by-one afterward.
 
 ---
 
