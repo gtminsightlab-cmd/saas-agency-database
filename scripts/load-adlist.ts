@@ -72,6 +72,24 @@ function norm(s: string | null | undefined): string {
   return (s ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
+// Carrier-name normalization. Strips common insurance-domain suffix tokens
+// before comparing, so "Liberty Mutual Insurance" → "Liberty Mutual" → same key.
+// Mirrors the _strip_filler approach in scrapers' sync_to_agency_signal.py
+// (used there for agency-name dedup). Catalog-side and AdList-side both call
+// this so lookup succeeds whether xlsx says "Cincinnati Insurance" or the
+// catalog row is "Cincinnati Insurance Company".
+const CARRIER_FILLER = new Set([
+  "insurance", "ins", "company", "companies", "co", "corp", "corporation",
+  "corporations", "group", "groups", "holdings", "ltd", "limited",
+  "the", "of", "and", "north", "america",
+]);
+function normCarrier(s: string | null | undefined): string {
+  if (!s) return "";
+  const tokens = String(s).toLowerCase().split(/[^a-z0-9]+/);
+  const distinctive = tokens.filter((t) => t && !CARRIER_FILLER.has(t));
+  return distinctive.join("");
+}
+
 type CanaryRow = {
   id: string;
   source: string | null;
@@ -192,7 +210,10 @@ async function loadRefs() {
     refs.ams.set(r.code.toLowerCase(), r.id);
     if (r.code === "OTHER" || r.label.toLowerCase() === "other") refs.amsOtherId = r.id;
   }
-  for (const r of (carriers.data ?? []) as any[]) refs.carrierByNorm.set(norm(r.name), r.id);
+  for (const r of (carriers.data ?? []) as any[]) {
+    const k = normCarrier(r.name);
+    if (k && !refs.carrierByNorm.has(k)) refs.carrierByNorm.set(k, r.id);
+  }
   for (const r of (affs.data ?? []) as any[]) refs.affiliationByNorm.set(norm(r.canonical_name), r.id);
   for (const r of (sics.data ?? []) as any[]) refs.sicByCode.set(String(r.sic_code), r.id);
 
@@ -332,7 +353,7 @@ function parseWorkbook(filePath: string) {
 
   const carriers: LinkRow[] = carrierSheet
     .filter((r) => s(r["AccountId"]) && s(r["CompanyLine"]))
-    .map((r) => ({ account_id: s(r["AccountId"])!, key: norm(s(r["CompanyLine"])!) }));
+    .map((r) => ({ account_id: s(r["AccountId"])!, key: normCarrier(s(r["CompanyLine"])!) }));
 
   const affiliations: LinkRow[] = affiliationSheet
     .filter((r) => s(r["AccountId"]) && s(r["SpecialAffiliation"]))

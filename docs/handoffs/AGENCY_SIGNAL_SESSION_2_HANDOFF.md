@@ -269,7 +269,21 @@ Net effect — exactly Master O's predicted ratio: ~70% duplicate agencies (UPDA
 
 Notable observation: `unmatched_ref` for carriers was substantial across files (3,000–10,000 per file). These are carrier names in the AdList data that don't have matching rows in `public.carriers`. Per the loader README: "We skip these silently — they're usually new carriers we haven't loaded into the catalog yet. Add them via /admin/catalog and re-run if you want them linked."
 
-✅ **HARVESTED 2026-05-09 same session.** New `scripts/harvest-unmatched-carriers.ts` walks all 17 AdList xlsx files, normalizes CompanyLine values, cross-checks against `public.carriers`, writes `data/_unmatched_carriers.tsv` (161 distinct unmatched names). **Top finding: most aren't novel carriers, they're aliases.** Top 10 represent ~15,000 unmatched link rows and all map to existing catalog rows under slightly different `canonical_name` (e.g., "Liberty Mutual Insurance" → existing "Liberty Mutual", "Cincinnati Insurance" → "Cincinnati Insurance Company"). Suggested next step: apply `_strip_filler`-style normalization in `load-adlist.ts` (same pattern as sync_to_agency_signal.py) before reaching catalog match, then re-run loader to back-fill the ~15K newly-resolvable links. The genuine novel-carrier tail (~150 rows, mostly small regional mutuals) gets added via /admin/catalog one-by-one afterward.
+✅ **HARVESTED 2026-05-09 same session.** New `scripts/harvest-unmatched-carriers.ts` walks all 17 AdList xlsx files, normalizes CompanyLine values, cross-checks against `public.carriers`, writes `data/_unmatched_carriers.tsv` (161 distinct unmatched names). **Top finding: most aren't novel carriers, they're aliases.** Top 10 represent ~15,000 unmatched link rows and all map to existing catalog rows under slightly different `canonical_name` (e.g., "Liberty Mutual Insurance" → existing "Liberty Mutual", "Cincinnati Insurance" → "Cincinnati Insurance Company").
+
+✅ **FIXED 2026-05-09 same session.** Added `normCarrier()` filler-stripping to `load-adlist.ts` (mirrors `_strip_filler` from sync_to_agency_signal.py). Filler set: insurance, ins, company, companies, co, corp, corporation, group, groups, holdings, ltd, limited, the, of, and, north, america. Conservative — kept "mutual", "national", "american" out of filler to avoid over-collapse (e.g., "American Modern" + "Modern" colliding). Both catalog-side (refs.carrierByNorm) and AdList-side (carriers parse) call normCarrier so lookup succeeds whether xlsx says "Cincinnati Insurance" or catalog has "Cincinnati Insurance Company".
+
+Re-ran loader on all 17 files. Net effect:
+- agency_carriers: 212,378 → **263,657** (**+51,279 newly-resolvable links recovered**)
+- agencies: 41,705 (unchanged — UPDATE-only, idempotent)
+- contacts: 119,180 → 135,453 (+16,273 — unexpected; suggests a NULL-handling edge in the contact dedup keyOf() that lets some duplicates through on re-run; flagged for follow-up, not blocking)
+
+Top carrier link counts post-recovery:
+- Liberty Mutual: 8,500 · Chubb: 4,316 · Nationwide: 4,273 · Zurich: 3,919 · Selective: 2,935 · Cincinnati: 2,572 · Accident Fund: 2,131
+
+The genuine novel-carrier tail (~150 small regional mutuals like Norfolk & Dedham, Wayne Cooperative, Pilgrim, Interboro) still won't match — those need /admin/catalog rows added one-by-one. `data/_unmatched_carriers.tsv` is the master review list.
+
+**Side observation:** the catalog itself has duplicate carrier rows (4× Cincinnati variants, 3× Selective, 3× Nationwide, etc. all collapse to the same normCarrier key). First-match-wins via `Map.set` is deterministic but suggests a future `public.carriers` dedupe slice mirroring migration 0090 for affiliations.
 
 ---
 
