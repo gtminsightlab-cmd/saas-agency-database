@@ -271,6 +271,30 @@ Notable observation: `unmatched_ref` for carriers was substantial across files (
 
 ---
 
+## 7c. Trusted Choice cluster tagging — Load 3
+
+Closed the §9 carry-forward "trustedchoice agencies have no carrier appointments" item the same session.
+
+**What landed:**
+- **Migration 0088** flipped `affiliations.type` for Trusted Choice from `network` → `cluster` so it now appears in the directory's cluster filter alongside SIAA, Ironpeak, Keystone, Smart Choice, etc. The existing affiliation row (`d5e91828-ce46-44ff-a8fd-b970881c4d57`) was kept; only `type` changed.
+- **One-off backfill script** `scripts/tag_trustedchoice.py` in the scraper repo (NOT git-tracked, follows session-2 sync pattern). Reuses `build_lookups` / `find_match` / `fetch_all` from `sync_to_agency_signal.py`. Pulled all 11,284 DI rows with `source_slug='trustedchoice_city_walk'`, cascade-matched against AS, upserted into `agency_affiliations` with `on_conflict='agency_id,affiliation_id'`.
+
+**Cascade match results (100% of cohort):**
+
+| Signal | Matched | % |
+|---|---:|---:|
+| phone+state | 10,706 | 94.9% |
+| addr+state+zip5 | 295 | 2.6% |
+| name+state+zip5 | 281 | 2.5% |
+| email | 2 | 0.0% |
+| **total** | **11,284** | **100.0%** |
+
+After dedupe by `agency_id` (some DI rows mapped to same AS agency via cascade): 11,264 unique upserts. Final state: **11,841 Trusted Choice links** (was 907 from earlier AdList load — +10,934 net-new).
+
+**Sync script update for future syncs:** `sync_to_agency_signal.py` AFFILIATION_SLUG_MAP now includes `"trustedchoice_city_walk": "Trusted Choice"`. Future DOT Intel syncs will route trustedchoice rows to `agency_affiliations` automatically (same pattern as UIIA).
+
+---
+
 ## 8. Live state at end of session
 
 | Check | Value |
@@ -278,15 +302,16 @@ Notable observation: `unmatched_ref` for carriers was substantial across files (
 | Agency Signal site | https://directory.seven16group.com — HTTP 200 |
 | Vercel latest deploy | `dpl_BNc5bWWjoznaVoq2A7fBauSrQuAg` (commit `4c38859`) READY. Next push triggers redeploy with migrations 0084-0087 |
 | Supabase | `sdlsdovuljuymgymarou` ACTIVE_HEALTHY |
-| `public.agencies` | **38,377** (was 20,739) |
-| `public.agency_carriers` | **205,115** (was 191,201) |
-| `public.agency_affiliations` | **7,801** (was 7,748) |
-| `public.contacts` | 87,434 (unchanged — no source data) |
+| `public.agencies` | **41,705** (was 20,739) |
+| `public.agency_carriers` | **212,378** (was 191,201) |
+| `public.agency_affiliations` | **19,807** (was 7,748; +12,059 — UIIA, AdList, Trusted Choice) |
+| `public.contacts` | **119,180** (was 87,434; +31,746 from AdList) |
 | `public.carriers` | 1,369 (was 1,366; +3 Berkley OpCos) |
-| `public.affiliations` | 184 (+2: UIIA, TRS) |
+| `public.affiliations` | 185 (+2: UIIA, TRS; Trusted Choice retyped network → cluster) |
+| Trusted Choice links | **11,841** (was 0 before AdList; backfilled via tag_trustedchoice.py) |
 | `public.data_load_denylist` (active canaries) | 16 (was 13) |
 | `mv_vertical_summary` | refreshed 2026-05-09 |
-| Migrations | 0001-0087 |
+| Migrations | 0001-0088 |
 
 ---
 
@@ -301,7 +326,7 @@ Notable observation: `unmatched_ref` for carriers was substantial across files (
 
 1. **Contacts gap.** DOT Intel has no person-level data (FirstName/LastName/Mobile/CEmail/Title 0% filled). The contact-extraction step needs to be added to the scraper before any meaningful contact-level enrichment can happen for these 17K+ new agencies.
 
-2. **trustedchoice agencies have no carrier appointments.** 11,284 trustedchoice_city_walk agencies inserted, but trustedchoice is a multi-carrier directory and isn't in `CARRIER_SLUG_MAP`. They'll show up in agency searches but won't surface in carrier-filtered queries until we figure out how to attribute them. May need a "Trusted Choice" affiliation tag instead.
+2. ✅ **trustedchoice agencies tagged as Trusted Choice cluster.** RESOLVED in §7c (Load 3 same session). All 11,284 DI trustedchoice rows cascade-matched 100% to AS agencies + linked to Trusted Choice affiliation; affiliation re-typed from `network` → `cluster` so it surfaces in the directory cluster filter alongside SIAA, Ironpeak, etc.
 
 3. **Berkley regional OpCos may need parent linkage.** Migration 0085 added them with `group_name = 'W. R. Berkley Insurance Group'` but no explicit parent_id (the `carriers` table doesn't have a parent_id column). Parent-child rollup happens elsewhere in the schema; verify the 3 new rows surface correctly in the W.R. Berkley parent rollup if/when that's exercised.
 
