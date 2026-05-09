@@ -146,7 +146,7 @@ export default async function SavedListsPage({
                       ? l.filter_json.querystring
                       : null;
                   return (
-                    <tr key={l.id}>
+                    <tr key={l.id} className={l.has_updates ? "bg-brand-50/60 hover:bg-brand-50" : "hover:bg-gray-50"}>
                       <td className="px-4 py-3">
                         <Link
                           href={`/build-list/download?id=${l.id}&name=${encodeURIComponent(l.name)}`}
