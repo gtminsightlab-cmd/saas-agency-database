@@ -319,8 +319,10 @@ After dedupe by `agency_id` (some DI rows mapped to same AS agency via cascade):
 
 ### Post-session MUST-DO (security)
 
-- **Rotate Supabase service-role keys for both DOT Intel and Agency Signal.** The 3 `default`/`seven16group`/`vercel_prod_2026_05_01` Agency Signal secret keys were briefly visible in a screenshot Master O sent in chat (verifying which to copy). The DOT Intel hardcoded key was visible in the script file. Conservative move: rotate the AS `default` key (the one used today) AND the DOT Intel `SUPABASE_SERVICE_KEY` after this session ends.
-  - Action: Supabase dashboard → both projects → API → New secret key → revoke old → update `scrapers/seven16-scraper/seven16-scraper/.env`.
+- ✅ **Service-role key rotation COMPLETE (2026-05-09 same session).** Both projects rotated and verified end-to-end. Final state:
+  - DOT Intel (`vbhlacdrcqdqnvftqtin`) secret keys: just `dotintel_5_9_26` (in scraper `.env`). Old `dotintel` revoked.
+  - Agency Signal (`sdlsdovuljuymgymarou`) secret keys: `scraper_5_9_26` (in scraper `.env`) + `vercel_prod_2026_05_01` (untouched, used by live site Vercel build). Old `default`, `seven16group`, and accidentally-created `roll_service_roll_key` all revoked.
+  - Verification: scraper dry-run pulled 11,284 DI + 41,705 AS rows successfully; directory.seven16group.com still HTTP 200. Advisors baseline unchanged.
 
 ### Carry-forward — Agency Signal-side
 
