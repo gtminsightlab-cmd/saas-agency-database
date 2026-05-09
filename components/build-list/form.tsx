@@ -316,7 +316,7 @@ export function BuildListForm({ data, initial }: { data: FilterData; initial?: I
             <div className="space-y-3">
               <IncludeExcludeToggle name="cr_m" value={carriersMode} onChange={setCarriersMode} />
               <AndOrToggle name="cr_c" value={carriersCombo} onChange={setCarriersCombo} />
-              <MultiSelect options={data.carriers} selected={carriers} onChange={setCarriers} columns={1} maxVisible={400} />
+              <MultiSelect options={data.carriers} selected={carriers} onChange={setCarriers} columns={2} maxVisible={400} />
             </div>
           </FilterRow>
         </FilterSection>
@@ -326,7 +326,7 @@ export function BuildListForm({ data, initial }: { data: FilterData; initial?: I
           <FilterRow label="Affiliations" description="Clusters, networks, and associations the agency belongs to.">
             <div className="space-y-3">
               <IncludeExcludeToggle name="af_m" value={affiliationsMode} onChange={setAffiliationsMode} />
-              <MultiSelect options={data.affiliations} selected={affiliations} onChange={setAffiliations} columns={1} maxVisible={300} />
+              <MultiSelect options={data.affiliations} selected={affiliations} onChange={setAffiliations} columns={2} maxVisible={300} />
             </div>
           </FilterRow>
         </FilterSection>
