@@ -155,7 +155,6 @@ export function BuildListForm({ data, initial }: { data: FilterData; initial?: I
             minority !== "any" ||
             !!(premiumMin || premiumMax || revenueMin || revenueMax || empMin || empMax)
           }
-          defaultOpen
         >
           <FilterRow
             label="Account Type"
