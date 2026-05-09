@@ -135,11 +135,15 @@ Threshold IQ session established the pattern: each product repo has a `docs/STAT
 
 ---
 
-## Part 1 — Agency Signal (live)
+## Part 1 — Agency Signal (live, now in its own dedicated session as of 2026-05-07)
 
+> **Now runs in its own dedicated Claude Code session** (parallel to DOT Intel and Threshold IQ). Inception handoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_1_HANDOFF.md`](../handoffs/AGENCY_SIGNAL_SESSION_1_HANDOFF.md). Inside-view: [`docs/STATE.md`](../STATE.md). Refresh handoff: [`docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md`](../handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md). Future updates to this Part 1 should be made by the dedicated session; Parts 0 / 0.5 / 2 are owned by the family hub session, the Threshold IQ session, and the DOT Intel session respectively.
+>
 > **Tier 0 closed 2026-05-01 (session 13).** All 7 Tier 0 tasks complete: service-role key rotated, migration drift fixed (0057–0083 in repo), D-008 added, 4 context docs in repo, Vercel env vars verified, prod healthy.
 >
 > **Sprint 0 closed 2026-05-01 (session 14, Claude Code migration).** Working clone moved outside OneDrive to `C:\Users\GTMin\Projects\saas-agency-database\`. Native git, Git Credential Manager-cached creds (no more per-session PAT). `CLAUDE.md` added at repo root for future Claude Code sessions. OneDrive folder deprecated for code edits — kept only for vendor `data/` archive. Production verified READY post-push (commit `c75c96b`).
+>
+> **Steady-state production 2026-05-01 → 2026-05-07.** No app code shipped during this window — every active session in the family was DOT Intel demo prep or Threshold IQ build. Last app code commit: `8829d38` (2026-04-27). DB counts verified unchanged 2026-05-07 (20,739 / 87,434 / 191,201).
 
 ### 1.1 Production health (verified 2026-05-01, session 14)
 
