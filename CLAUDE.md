@@ -1,16 +1,27 @@
-# Seven16 Group — Agency Signal
+# Seven16 Group — Agency Signal (and family hub)
 
-Multi-tenant B2B commercial insurance agency directory. **Live in production** at https://directory.seven16group.com (cutting over to agencysignal.co). Part of the Seven16 family of products (sister product: DOT Intel — full rebuild greenlit).
+This repo is **Agency Signal** — a multi-tenant B2B commercial insurance agency directory live in production at https://directory.seven16group.com (planned cutover to agencysignal.co). It is **also the family hub** for Seven16 Group: every other product references `docs/context/` here as the single source of truth.
+
+**Three live or staging products in the Seven16 family:**
+
+| Product | Live URL | Repo | Supabase satellite |
+|---|---|---|---|
+| **Agency Signal** (this repo) | https://directory.seven16group.com | saas-agency-database | sdlsdovuljuymgymarou |
+| **DOT Intel** | https://www.dotintel.io | dotintel2 | vbhlacdrcqdqnvftqtin |
+| **Threshold IQ** | https://staging.thresholdiq.io | seven16-distribution | yyuchyzmzzwbfoovsskz |
+
+Plus the **seven16-platform** control plane (`soqqmkfasufusoxxoqzx`, no app yet) for shared auth + entitlements per D-008.
 
 ---
 
 ## Read these first, in order
 
-1. [docs/context/MASTER_CONTEXT.md](docs/context/MASTER_CONTEXT.md) — the hub. Single source of truth.
-2. [docs/context/DECISION_LOG.md](docs/context/DECISION_LOG.md) — every locked decision (D-001 through D-008). If you're about to relitigate something, check here first.
-3. [docs/context/SESSION_STATE.md](docs/context/SESSION_STATE.md) — what's live, what's deferred, current DB counts, deployment HEAD.
-4. [docs/context/FOLDER_AND_MEMORY_MAP.md](docs/context/FOLDER_AND_MEMORY_MAP.md) — folder layout + infrastructure IDs (Supabase, Vercel, Stripe, GitHub).
-5. [docs/handoffs/](docs/handoffs/) — most recent session handoff for chronological context.
+1. [docs/STATE.md](docs/STATE.md) — **Agency Signal inside-view, written from inside this repo.** Mirrors the family-ledger Part 1 with extra detail. Read this when this repo is the active focus.
+2. [docs/context/MASTER_CONTEXT.md](docs/context/MASTER_CONTEXT.md) — the family hub. Single source of truth.
+3. [docs/context/DECISION_LOG.md](docs/context/DECISION_LOG.md) — every locked decision (D-001 through D-011). If you're about to relitigate something, check here first.
+4. [docs/context/SESSION_STATE.md](docs/context/SESSION_STATE.md) — what's live, what's deferred, current DB counts, deployment HEAD.
+5. [docs/context/FOLDER_AND_MEMORY_MAP.md](docs/context/FOLDER_AND_MEMORY_MAP.md) — folder layout + infrastructure IDs (Supabase, Vercel, Stripe, GitHub).
+6. [docs/handoffs/](docs/handoffs/) — most recent session handoff for chronological context. **Note:** if recent SESSION_N_HANDOFFs are all DOT-Intel-specific, also read [docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md](docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md) — orientation refresh that exists specifically because Agency Signal hasn't been the active focus since session 14.
 
 When the hub and a memory note disagree, the hub wins. Update the memory; don't leave a quiet contradiction.
 
@@ -49,14 +60,20 @@ Default tenant: `ce52fe1e-aac7-4eee-8712-77e71e2837ce` (slug `seven16`).
 
 ## Current focus
 
-**Tier 1 of Seven16 master-plan rollout** — foundation for the three-Supabase-project topology (D-008). Specifically:
+**As of 2026-05-07:** Agency Signal itself is in **steady-state production** (no active feature work — last app code commit was `8829d38` on 2026-04-27, 11 days silent). Active sessions across the family have been:
 
-1. Create `seven16-platform` Supabase project (auth + tenants + entitlements + master control center).
-2. Decide JWT-sharing pattern between platform and product satellites.
-3. Plan Agency Signal auth migration (build alongside, don't execute on day one).
-4. Doppler + Sentry + 1Password rollout in parallel.
+- **DOT Intel** (sessions 15-20) — mid-May working group demo prep. All three demo blockers closed (force-dynamic, canonical demo carrier, /contact RLS). Coverage amounts ETL completed (session 19). Premium Estimator module shipped (session 20).
+- **Threshold IQ** (parallel) — Phase A foundation + Phase B item 2 (AI extraction) live at staging.thresholdiq.io.
 
-Detailed opening move in [docs/handoffs/SESSION_13_HANDOFF.md](docs/handoffs/SESSION_13_HANDOFF.md) under "Tier 1 — opening move for session 14".
+**Likely next active scenarios for this repo:**
+1. First paying customer surfaces → Stripe sandbox → production cutover.
+2. Sprint 1C (shared JWT/Doppler/Sentry) ships across all three satellites → this satellite joins the runbook.
+3. Family pricing collaborative session → Producer ($19) + Growth ($99) confirmation, possibly Hygiene Credit refresh.
+4. Domain cutover → directory.seven16group.com → agencysignal.co.
+
+Sprint 1B (D-008 control plane) closed in session 14 — `seven16-platform` is created, schema applied, 5 products + 9 plans seeded. Sprint 1C remains the next family-level architectural move.
+
+For full inside-view context, read [docs/STATE.md](docs/STATE.md). For why Agency Signal has been quiet, read [docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md](docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md).
 
 ---
 

@@ -140,7 +140,7 @@ User retried form. Green "Thank you for reaching out" success state fired. SQL: 
 User asked: "I do not think we set up a company email yet for this for those to come in, or did we?"
 
 Answered: **No mailbox, no notifications.** The `info@dotintel.io` shown on the /contact page is decorative HTML — not connected to any real mailbox. The form does NOT send email anywhere; it only INSERTs into `leads`. To make the form useful in production we need both:
-1. A real mailbox at `info@dotintel.io` (Cloudflare Email Routing → forward to `gtminsightlab@outlook.com` is free + ~10 min).
+1. A real mailbox at `info@dotintel.io` (Cloudflare Email Routing → forward to `gtminsightlab@gmail.com` is free + ~10 min).
 2. A notification trigger — Supabase database webhook on INSERT → Resend / Sendgrid email to that mailbox.
 
 Both logged as post-demo items. For working group day, leads silently land in the DB — fine for the small audience size; query the table to see them.
