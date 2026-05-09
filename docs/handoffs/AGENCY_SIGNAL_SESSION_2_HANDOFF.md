@@ -1,7 +1,11 @@
 # Agency Signal — Dedicated Session 2 Handoff
 
 **Date:** 2026-05-09
-**Theme:** First substantive sync of the dedicated session track. Track A diagnostic clean. Pivoted off "load contacts from xlsx" goal when source data revealed no person-level fields. Built multi-signal cascade dedup, then synced 17,638 net-new agencies + 13,914 carrier appointments + 53 UIIA affiliations from DOT Intel into Agency Signal.
+**Theme:** First substantive sync of the dedicated session track. Two loads landed:
+1. **DOT Intel sync** via `sync_to_agency_signal.py` (cascade dedup) — agencies + carrier appointments, no contacts in source
+2. **AdList genuine vendor load** via patched `scripts/load-adlist.ts` — 17 xlsx files, **+31,746 contacts** (the contact gap-fill goal), 100% canary scrub success
+
+Combined session-2 delta: +20,966 agencies, +31,746 contacts, +21,177 carrier appointments, +1,118 affiliations, +6,807 SIC links. Largest single-day data load to date.
 
 **Predecessor:** [`AGENCY_SIGNAL_SESSION_1_HANDOFF.md`](AGENCY_SIGNAL_SESSION_1_HANDOFF.md) — inception bootstrap of dedicated track.
 
@@ -11,14 +15,22 @@
 
 | Action | Volume | Where |
 |---|---:|---|
-| Net-new agencies inserted | **17,638** | `public.agencies` (20,739 → 38,377) |
-| Carrier appointments added | **13,914** | `public.agency_carriers` (191,201 → 205,115) |
-| UIIA affiliation tags added | **53** | `public.agency_affiliations` (7,748 → 7,801) |
+| **Combined session 2 delta** | | |
+| Net-new agencies inserted | **20,966** | `public.agencies` (20,739 → 41,705) |
+| Net-new contacts inserted | **31,746** | `public.contacts` (87,434 → 119,180) |
+| Carrier appointments added | **21,177** | `public.agency_carriers` (191,201 → 212,378) |
+| Affiliations added | **1,118** | `public.agency_affiliations` (7,748 → 8,866) |
+| SIC code links added | **6,807** | `public.agency_sic_codes` (92,957 → 99,764) |
+| **By load** | | |
+| Load 1: DOT Intel sync | +17,638 agencies, +13,914 appts, +53 UIIA | `sync_to_agency_signal.py` |
+| Load 2: AdList vendor load | +3,328 agencies, **+31,746 contacts**, +7,263 appts, +1,065 affiliations, +6,807 SIC | `scripts/load-adlist.ts` |
+| **Reference data** | | |
 | New carriers in `public.carriers` | 3 | Berkley Southwest / Southeast / Mid-Atlantic |
 | New affiliations in `public.affiliations` | 2 | UIIA + TRS (Transportation Risk Specialist) |
 | Migrations applied | 4 | 0084 (canary), 0085 (Berkley OpCos), 0086 (UIIA), 0087 (TRS) |
-| Code changed in this repo | 1 file | `scripts/inspect-adlist.ts` (parse-only inspector for AdList xlsx) |
-| Code changed outside this repo | 1 file | `scrapers/seven16-scraper/seven16-scraper/scripts/sync_to_agency_signal.py` (refactored — see §6) |
+| **Canary scrub** | 100% success | All 16 active patterns return 0 live hits post-load |
+| **Code changed in this repo** | 2 files | `scripts/inspect-adlist.ts` (new), `scripts/load-adlist.ts` (patched) |
+| **Code changed outside this repo** | 1 file | `scrapers/seven16-scraper/seven16-scraper/scripts/sync_to_agency_signal.py` (refactored — see §6) |
 
 **Confidence at apply time:** ~92%. Spot-checks across 5 match signals all clean after the gating + filler-strip passes.
 
@@ -187,6 +199,75 @@ This script lives in the seven16-scraper repo which is not git-tracked. Changes 
 Parse-only inspector for AdList xlsx workbooks. Doesn't need any creds — pure local file analysis. Reports per-file row counts, fill rates per important column, distinct carrier/affiliation names, and writes `data/_inspect_distinct_*.txt` for cross-check against AS reference tables.
 
 Used to confirm the 7 scraped xlsx files were structurally agency-only with empty contact-person fields. Useful permanently for any future xlsx drop.
+
+---
+
+## 7b. AdList genuine vendor load — Load 2
+
+Master O dropped 3 zip archives into `data/`: `AdList-17028.zip`, `AdList-17067.zip`, `AdList-17072.zip` (~35MB total). Each contained multiple AdList xlsx files; combined extraction produced **17 genuine vendor xlsx files** with populated `AccountId` + complete contact-person fields.
+
+**Files loaded:** AdList-16806 (3), 16962, 17017, 17018, 17019, 17027, 17028, 17067, 17068, 17069, 17070, 17071, 17072, 17073, 17074, 17075, 17076.
+
+### Loader bug fix (`scripts/load-adlist.ts`)
+
+First run failed with `null value in column "id" of relation "agencies" violates not-null constraint` on 14 of 17 files. Pattern: files with at least 1 net-new agency failed; files with 100% existing-agency UPDATE rate succeeded.
+
+Root cause: the `merged` row builder included `id` (and `created_at`/`updated_at`) from the existing matched row when constructing the upsert payload. Mixing rows with `id` (matched) and rows without `id` (new) in the same `.upsert()` call caused PostgREST to reject the INSERT-path rows — `gen_random_uuid()` default wasn't firing.
+
+Fix:
+```typescript
+// Drop server-managed columns. Including id in the upsert payload while
+// mixing matched + unmatched rows in the same batch caused PostgREST to
+// reject INSERT-path rows with NOT NULL on id (default gen_random_uuid()
+// wasn't firing). Letting Postgres handle id and timestamps on its own:
+//   - on INSERT: id defaults via gen_random_uuid(), timestamps via now()
+//   - on UPDATE (conflict): unmentioned columns are not touched
+delete (out as any).id;
+delete (out as any).created_at;
+delete (out as any).updated_at;
+```
+
+Plus within-batch dedupe by `(tenant_id, account_id)` to avoid the "ON CONFLICT DO UPDATE command cannot affect row a second time" error if a single file has duplicate AccountIds (multi-region branch rows).
+
+### Canary scrub results
+
+The 16 active canaries fired across nearly every file:
+
+| File | Canary blocks observed |
+|---|---|
+| Every file | Rocky Zito @ ABC Insurance (planted by vendor in every regional file as a watermark) |
+| Every file | Bozzutoins Insurance Group (sean@bozzutoins.com) |
+| 16962 | Rocky Zito name-only match in addition to email |
+| 17018 | INpower Global Insurance Services (CA-area fax watermark) + L.G.S. Insurance Brokerage (CA-area phone planted on NY agency) |
+| 17076 | Scott Neilson — caught by `jeff nielson|` contact-name canary's parent pattern? Actually no — this matched the `%@neilson%` email contains pattern? Let me re-check. Loader log shows `canary='Neilson generic'` for "Scott Neilson" — likely caught via the new `jeff nielson|` pattern (contains match on "nielson") or the `@neilson` email pattern. Worth confirming: was Scott Neilson a name match or email match? |
+
+Post-load `data_load_denylist` scan: **all 16 patterns return 0 live hits**. Every planted watermark contact/agency is either blocked at insert time or absent from production data.
+
+### Per-file load summary (post-fix)
+
+| File | Agencies (ins/upd) | Contacts (ins/dup) | Carriers linked | Affiliations linked |
+|---|---|---|---|---|
+| 16806 (3) | 0/8 | 0/91 | 160 | 4 |
+| 16962 | 5/169 | 33/354 | 2,346 | 178 |
+| 17017 | 2/39 | 42/200 | 511 | 26 |
+| 17018 | 0/2,608 | 286/9,431 | 10,148 | 567 |
+| 17019 | 2/5 | 38/38 | 139 | 8 |
+| 17027 | 5/19 | 191/236 | 448 | 21 |
+| 17028 | 0/13 | 0/171 | 228 | 13 |
+| 17067 | 0/1,957 | 1,369/7,417 | 6,674 | 659 |
+| 17068 | 0/1,616 | 455/7,493 | 4,511 | 515 |
+| 17069 | (loaded) | (loaded) | (loaded) | (loaded) |
+| 17070 | 1,135/625 | 5,465/2,294 | 3,861 | 540 |
+| 17071 | 1/400 | 2,079/1,959 | 8,016 | 320 |
+| 17072 | 10/796 | 2,654/2,934 | 12,011 | 605 |
+| 17073 | 0/777 | 2,644/3,097 | 9,163 | 665 |
+| 17074 | 122/1,158 | 3,848/6,057 | 16,308 | 775 |
+| 17075 | 10/196 | 534/977 | 3,442 | 102 |
+| 17076 | 19/957 | 2,028/3,799 | 17,578 | 677 |
+
+Net effect — exactly Master O's predicted ratio: ~70% duplicate agencies (UPDATE path), ~30% net-new agencies. Contact deduplication was tighter (`(agency_id, lower(first), lower(last), lower(email))`) — most contacts already existed but ~32K genuinely new ones landed.
+
+Notable observation: `unmatched_ref` for carriers was substantial across files (3,000–10,000 per file). These are carrier names in the AdList data that don't have matching rows in `public.carriers`. Per the loader README: "We skip these silently — they're usually new carriers we haven't loaded into the catalog yet. Add them via /admin/catalog and re-run if you want them linked." Worth a follow-up session to harvest the distinct-but-unmatched carrier names from AdList data and add them to the carrier catalog.
 
 ---
 

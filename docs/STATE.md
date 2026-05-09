@@ -1,6 +1,6 @@
 # Agency Signal — STATE.md (inside view)
 
-**Last updated:** 2026-05-09 (Agency Signal Session 2 of the dedicated track: DOT Intel → Agency Signal sync shipped — 17,638 agencies + 13,914 carrier appointments + 53 UIIA affiliations)
+**Last updated:** 2026-05-09 (Agency Signal Session 2 of the dedicated track: DOT Intel sync + AdList genuine-vendor load. **+20,966 agencies, +31,746 contacts, +21,177 carrier appointments, +1,118 affiliations** — biggest single-day data load to date. 100% canary scrub success.)
 **Companion to:** [`docs/context/SESSION_STATE.md`](context/SESSION_STATE.md) Part 1.
 **Pattern source:** Inside-view STATE.md adopted family-wide 2026-05-02 — see `dotintel2/docs/STATE.md` and `seven16-distribution/docs/STATE.md` for parallel examples. Each product repo carries one. This file was queued in session 16, finally shipped 2026-05-07.
 
@@ -44,17 +44,19 @@ This repo is also the **family hub** — the docs/context/ folder is the single 
 
 | Table | Rows | Notes |
 |---|---:|---|
-| `public.agencies` | **38,377** | +17,638 from DOT Intel sync (session 2 of dedicated track, 2026-05-09). Pre-sync: 20,739 |
-| `public.contacts` | **87,434** | Unchanged — no contact data captured upstream yet (DOT Intel scrapers haven't been extended to person-level fields) |
-| `public.agency_carriers` | **205,115** | +13,914 net-new carrier appointments from DOT Intel sync. 16,239 attempted, 2,325 already existed (UPSERT no-op). Pre-sync: 191,201 |
-| `public.agency_sic_codes` | 92,957 | Industry codes per agency |
-| `public.agency_affiliations` | **7,801** | +53 from UIIA tag (session 2, 2026-05-09). UIIA + TRS now in `affiliations` table for filter use |
+| `public.agencies` | **41,705** | +20,966 in 2026-05-09 session 2 (17,638 from DOT Intel sync + 3,328 from AdList). Pre-session: 20,739 |
+| `public.contacts` | **119,180** | **+31,746 from AdList load — the contact gap-fill** (DOT Intel sync added 0; source has no person data). Pre-session: 87,434 |
+| `public.agency_carriers` | **212,378** | +21,177 in session 2 (13,914 from DOT Intel sync + 7,263 from AdList). Pre-session: 191,201 |
+| `public.agency_sic_codes` | **99,764** | +6,807 from AdList load |
+| `public.agency_affiliations` | **8,866** | +1,118 in session 2 (53 UIIA from DOT Intel + 1,065 from AdList — IIABA, Trusted Choice, etc.) |
 | `public.carriers` | **1,369** | +3 Berkley regional OpCos (Southwest, Southeast, Mid-Atlantic) added migration 0085 |
 | `public.affiliations` | 184 | +2 (UIIA migration 0086, TRS migration 0087) |
 | `auth.users` | 2 | Master O + one other test/admin user |
 | `public.tenants` | 1 | Single tenant (Seven16) — multi-tenant infrastructure shipped, no second tenant onboarded yet |
 
-**Most-recent agency added:** 2026-05-09 (DOT Intel sync — session 2 of dedicated track)
+**Most-recent agency added:** 2026-05-09 (AdList vendor load via patched `scripts/load-adlist.ts` — 17 genuine xlsx files extracted from 3 zip archives)
+
+**Canary scrub results (2026-05-09 AdList load):** 16 active canaries fired across 17 files, blocking the planted Neilson watermarks (Rocky Zito @ ABC Insurance, Bozzutoins Insurance Group, INpower Global Insurance Services, L.G.S. Insurance Brokerage, jeffneilson@programbusiness.com, and a name-match on Scott Neilson in 17076). Post-load scan: 0 live hits across all 16 patterns — clean.
 
 **Carrier coverage highlights** (post 2026-05-09 sync):
 - Liberty Mutual: **8,255** appointments (+4,207 from sync)
@@ -88,6 +90,7 @@ Active feature work spanned sessions 4–14. Highlights:
 | Session 14 | Sprint 0: working clone moved out of OneDrive, native git with GCM auth, CLAUDE.md added | — |
 | Dedicated 1 (2026-05-08) | Inception of Agency Signal dedicated session track | — |
 | Dedicated 2 (2026-05-09) | DOT Intel → AS sync: 17,638 agencies + 13,914 carrier appts + 53 UIIA affiliations. Cascade dedup w/ name-sim gates. 4 migrations (canary, Berkley OpCos, UIIA, TRS) | 0084–0087 |
+| Dedicated 2 cont. (2026-05-09) | AdList vendor load: 17 genuine xlsx files (3 zips) loaded via patched `scripts/load-adlist.ts`. **+31,746 contacts** (the contact gap-fill goal), +3,328 agencies, +7,263 carrier appts, +1,065 affiliations, +6,807 SIC links. 100% canary scrub success across 16 patterns. Loader bug fixed: drop server-managed columns + within-batch dedupe on (tenant_id, account_id) | — (no DDL) |
 
 **Migrations live: 0001–0087**. Repo + DB in sync as of 2026-05-09.
 

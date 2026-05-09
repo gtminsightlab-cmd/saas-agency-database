@@ -145,7 +145,15 @@ Threshold IQ session established the pattern: each product repo has a `docs/STAT
 >
 > **Steady-state production 2026-05-01 → 2026-05-07.** No app code shipped during this window — every active session in the family was DOT Intel demo prep or Threshold IQ build. Last app code commit: `8829d38` (2026-04-27). DB counts verified unchanged 2026-05-07 (20,739 / 87,434 / 191,201).
 >
-> **Dedicated Session 2 — 2026-05-09 — DOT Intel sync.** First substantive session of the dedicated track. Track A diagnostic clean. Pivoted off "load contacts from xlsx" goal when 7 dropped xlsx files revealed empty AccountId + 0% person fields (root cause: DOT Intel scraper hasn't been extended to extract person-level data). Pivoted to direct DOT Intel → Agency Signal sync via `sync_to_agency_signal.py`. Built 5-signal cascade dedup with state + name-similarity gates (filler-word strip on insurance-domain words, threshold 0.5). 4 migrations applied (0084 canary expansion, 0085 Berkley OpCos, 0086 UIIA, 0087 TRS). Sync result: +17,638 agencies (20,739 → 38,377), +13,914 carrier appointments (191,201 → 205,115), +53 UIIA affiliations (7,748 → 7,801). Contacts unchanged. Inside view: [`docs/STATE.md`](../STATE.md). Session handoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_2_HANDOFF.md`](../handoffs/AGENCY_SIGNAL_SESSION_2_HANDOFF.md). **Post-session MUST-DO:** rotate Supabase service-role keys for both DOT Intel and Agency Signal — `default` AS key was briefly visible in a screenshot during this session.
+> **Dedicated Session 2 — 2026-05-09 — DOT Intel sync + AdList vendor load.** First substantive session of the dedicated track. Track A diagnostic clean. Pivoted off "load contacts from xlsx" when 7 dropped xlsx files revealed empty AccountId + 0% person fields. Two loads landed:
+>
+> **Load 1 — DOT Intel → Agency Signal sync** via `sync_to_agency_signal.py`. Built 5-signal cascade dedup with state + name-similarity gates (filler-word strip on insurance-domain words, threshold 0.5). 4 migrations applied (0084 canary expansion, 0085 Berkley OpCos, 0086 UIIA, 0087 TRS). Sync result: +17,638 agencies, +13,914 carrier appointments, +53 UIIA affiliations.
+>
+> **Load 2 — AdList genuine vendor load** via patched `scripts/load-adlist.ts`. 17 xlsx files extracted from 3 zip archives. **+31,746 contacts (the contact gap-fill goal)**, +3,328 agencies, +7,263 carrier appointments, +1,065 affiliations, +6,807 SIC code links. 16 canaries fired across 17 files (Rocky Zito @ ABC, Bozzutoins, INpower Global, L.G.S. Brokerage, jeffneilson@programbusiness.com, Scott Neilson in 17076) — 100% scrub success, post-load scan returns 0 live hits across all 16 patterns. Loader bug found + fixed: drop server-managed columns (id/created_at/updated_at) from the merged-row payload + within-batch dedupe on (tenant_id, account_id).
+>
+> **Combined session-2 delta:** +20,966 agencies (20,739 → 41,705), +31,746 contacts (87,434 → 119,180), +21,177 carrier appointments (191,201 → 212,378), +1,118 affiliations (7,748 → 8,866), +6,807 SIC links (92,957 → 99,764). Largest single-day data load to date.
+>
+> Inside view: [`docs/STATE.md`](../STATE.md). Session handoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_2_HANDOFF.md`](../handoffs/AGENCY_SIGNAL_SESSION_2_HANDOFF.md). **Post-session MUST-DO:** rotate Supabase service-role keys for both DOT Intel and Agency Signal — `default` AS key was briefly visible in a screenshot during this session.
 
 ### 1.1 Production health (verified 2026-05-01, session 14)
 
@@ -157,17 +165,18 @@ Threshold IQ session established the pattern: each product repo has a `docs/STAT
 | OneDrive copy | `C:\Users\GTMin\OneDrive\...\Saas Agency Database\` | 🟡 Deprecated for code; vendor data/ archive only |
 | Supabase project | `sdlsdovuljuymgymarou` (seven16group, us-east-1, pg 17.6.1) | ✅ Healthy — unchanged in Sprint 1B |
 
-### 1.2 Database counts (tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`) — post 2026-05-09 sync
+### 1.2 Database counts (tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`) — post 2026-05-09 session 2
 
 | Table | Count | Notes |
 |---|---|---|
-| `agencies` | **38,377** | +17,638 from DOT Intel sync (Dedicated Session 2). Pre-sync: 20,739 |
-| `agency_carriers` | **205,115** | +13,914 net-new appointments. Pre-sync: 191,201 |
-| `agency_affiliations` | **7,801** | +53 UIIA tags (Dedicated Session 2). Pre-sync: 7,748 |
-| `contacts` | **87,434** | Unchanged — DOT Intel scrapers not yet extended to person-level extraction |
-| `carriers` | **1,369** | +3 Berkley regional OpCos (Southwest / Southeast / Mid-Atlantic) via migration 0085 |
+| `agencies` | **41,705** | +20,966 in session 2 (17,638 DOT Intel sync + 3,328 AdList). Pre-session: 20,739 |
+| `contacts` | **119,180** | **+31,746 from AdList load** — the contact gap-fill goal. Pre-session: 87,434 |
+| `agency_carriers` | **212,378** | +21,177 in session 2 (13,914 DOT Intel + 7,263 AdList). Pre-session: 191,201 |
+| `agency_affiliations` | **8,866** | +1,118 in session 2 (53 UIIA + 1,065 from AdList — IIABA, Trusted Choice, etc.) |
+| `agency_sic_codes` | **99,764** | +6,807 from AdList load |
+| `carriers` | **1,369** | +3 Berkley regional OpCos via migration 0085 |
 | `affiliations` | **184** | +2 (UIIA migration 0086, TRS migration 0087) |
-| `data_load_denylist` (active) | **16** | +3 from migration 0084 (programbusiness.com domain, Jeff Neilson + Nielson names) |
+| `data_load_denylist` (active) | **16** | +3 from migration 0084 (programbusiness.com domain, Jeff Neilson + Nielson names). 100% scrub success across all 17 AdList files; post-load scan returns 0 live hits |
 
 Carrier coverage post 2026-05-09 sync (top 10 by appointments):
 - Liberty Mutual: 8,255 (+4,207 from sync)

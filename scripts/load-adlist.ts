@@ -374,13 +374,33 @@ async function upsertAgencies(rows: AgencyRow[]) {
     for (const [k, v] of Object.entries(newRow)) {
       if (v !== null && v !== undefined && v !== "") out[k] = v;
     }
+    // Drop server-managed columns. Including id in the upsert payload while
+    // mixing matched + unmatched rows in the same batch caused PostgREST to
+    // reject INSERT-path rows with NOT NULL on id (default gen_random_uuid()
+    // wasn't firing). Letting Postgres handle id and timestamps on its own:
+    //   - on INSERT: id defaults via gen_random_uuid(), timestamps via now()
+    //   - on UPDATE (conflict): unmentioned columns are not touched
+    delete (out as any).id;
+    delete (out as any).created_at;
+    delete (out as any).updated_at;
     return out;
   });
 
+  // Within-batch dedupe by (tenant_id, account_id). PostgREST rejects upsert
+  // when the same conflict tuple appears twice in one INSERT (saw this in
+  // sync_to_agency_signal.py earlier). For agency files with duplicate
+  // AccountIds (multi-region branch rows), keep the last occurrence.
+  const seen_acct = new Map<string, number>();
+  for (let i = 0; i < merged.length; i++) {
+    const k = `${merged[i].tenant_id}|${merged[i].account_id}`;
+    seen_acct.set(k, i);
+  }
+  const merged_dedup = Array.from(seen_acct.values()).sort((a, b) => a - b).map((i) => merged[i]);
+
   let inserted = 0;
   let updated = 0;
-  for (let i = 0; i < merged.length; i += 100) {
-    const slice = merged.slice(i, i + 100);
+  for (let i = 0; i < merged_dedup.length; i += 100) {
+    const slice = merged_dedup.slice(i, i + 100);
     const { data, error } = await supabase
       .from("agencies")
       .upsert(slice, { onConflict: "tenant_id,account_id" })
@@ -391,7 +411,7 @@ async function upsertAgencies(rows: AgencyRow[]) {
       else inserted++;
     }
   }
-  return { inserted, updated, total: merged.length };
+  return { inserted, updated, total: merged_dedup.length };
 }
 
 async function upsertContacts(rows: ContactRow[]) {
