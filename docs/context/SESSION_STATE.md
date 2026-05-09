@@ -144,6 +144,8 @@ Threshold IQ session established the pattern: each product repo has a `docs/STAT
 > **Sprint 0 closed 2026-05-01 (session 14, Claude Code migration).** Working clone moved outside OneDrive to `C:\Users\GTMin\Projects\saas-agency-database\`. Native git, Git Credential Manager-cached creds (no more per-session PAT). `CLAUDE.md` added at repo root for future Claude Code sessions. OneDrive folder deprecated for code edits — kept only for vendor `data/` archive. Production verified READY post-push (commit `c75c96b`).
 >
 > **Steady-state production 2026-05-01 → 2026-05-07.** No app code shipped during this window — every active session in the family was DOT Intel demo prep or Threshold IQ build. Last app code commit: `8829d38` (2026-04-27). DB counts verified unchanged 2026-05-07 (20,739 / 87,434 / 191,201).
+>
+> **Dedicated Session 2 — 2026-05-09 — DOT Intel sync.** First substantive session of the dedicated track. Track A diagnostic clean. Pivoted off "load contacts from xlsx" goal when 7 dropped xlsx files revealed empty AccountId + 0% person fields (root cause: DOT Intel scraper hasn't been extended to extract person-level data). Pivoted to direct DOT Intel → Agency Signal sync via `sync_to_agency_signal.py`. Built 5-signal cascade dedup with state + name-similarity gates (filler-word strip on insurance-domain words, threshold 0.5). 4 migrations applied (0084 canary expansion, 0085 Berkley OpCos, 0086 UIIA, 0087 TRS). Sync result: +17,638 agencies (20,739 → 38,377), +13,914 carrier appointments (191,201 → 205,115), +53 UIIA affiliations (7,748 → 7,801). Contacts unchanged. Inside view: [`docs/STATE.md`](../STATE.md). Session handoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_2_HANDOFF.md`](../handoffs/AGENCY_SIGNAL_SESSION_2_HANDOFF.md). **Post-session MUST-DO:** rotate Supabase service-role keys for both DOT Intel and Agency Signal — `default` AS key was briefly visible in a screenshot during this session.
 
 ### 1.1 Production health (verified 2026-05-01, session 14)
 
@@ -155,19 +157,29 @@ Threshold IQ session established the pattern: each product repo has a `docs/STAT
 | OneDrive copy | `C:\Users\GTMin\OneDrive\...\Saas Agency Database\` | 🟡 Deprecated for code; vendor data/ archive only |
 | Supabase project | `sdlsdovuljuymgymarou` (seven16group, us-east-1, pg 17.6.1) | ✅ Healthy — unchanged in Sprint 1B |
 
-### 1.2 Database counts (tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`)
+### 1.2 Database counts (tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`) — post 2026-05-09 sync
 
-| Table | Count |
-|---|---|
-| `agencies` | **20,739** |
-| `agency_carriers` | **191,201** |
-| `contacts` | ~87,214 (snapshot from session 7 — verify before quoting publicly) |
+| Table | Count | Notes |
+|---|---|---|
+| `agencies` | **38,377** | +17,638 from DOT Intel sync (Dedicated Session 2). Pre-sync: 20,739 |
+| `agency_carriers` | **205,115** | +13,914 net-new appointments. Pre-sync: 191,201 |
+| `agency_affiliations` | **7,801** | +53 UIIA tags (Dedicated Session 2). Pre-sync: 7,748 |
+| `contacts` | **87,434** | Unchanged — DOT Intel scrapers not yet extended to person-level extraction |
+| `carriers` | **1,369** | +3 Berkley regional OpCos (Southwest / Southeast / Mid-Atlantic) via migration 0085 |
+| `affiliations` | **184** | +2 (UIIA migration 0086, TRS migration 0087) |
+| `data_load_denylist` (active) | **16** | +3 from migration 0084 (programbusiness.com domain, Jeff Neilson + Nielson names) |
 
-Carrier coverage from session 12 multi-file load:
-- Cincinnati Insurance Company: 1,681 appointments
-- Guard Insurance Group: 1,116
-- Berkley National Insurance Company: 1,470 (+ 13 wholesalers from migration 0082)
-- Utica National Insurance Group: 599
+Carrier coverage post 2026-05-09 sync (top 10 by appointments):
+- Liberty Mutual: 8,255 (+4,207 from sync)
+- Nationwide: 4,273 (+1,031)
+- Chubb Group of Insurance Companies: 4,070 (+121)
+- Zurich Insurance Company: 3,919 (+1,134)
+- Selective: 2,935 (+1,937)
+- Cincinnati Insurance Company: 2,572 (+891)
+- Utica National: 2,090 (+1,258)
+- Accident Fund Insurance Company of America: 1,912 (+1,586)
+- Acadia Insurance Company: 653 (+323)
+- Berkley regional OpCos: Southwest 374 / Southeast 320 / Mid-Atlantic 216 (all NEW via 0085)
 
 ### 1.3 ✅ RESOLVED — migration drift fixed 2026-05-01
 

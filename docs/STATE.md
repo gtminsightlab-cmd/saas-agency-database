@@ -1,6 +1,6 @@
 # Agency Signal — STATE.md (inside view)
 
-**Last updated:** 2026-05-07 (Agency Signal refresh after 11 days of zero app-code activity while DOT Intel demo prep dominated focus)
+**Last updated:** 2026-05-09 (Agency Signal Session 2 of the dedicated track: DOT Intel → Agency Signal sync shipped — 17,638 agencies + 13,914 carrier appointments + 53 UIIA affiliations)
 **Companion to:** [`docs/context/SESSION_STATE.md`](context/SESSION_STATE.md) Part 1.
 **Pattern source:** Inside-view STATE.md adopted family-wide 2026-05-02 — see `dotintel2/docs/STATE.md` and `seven16-distribution/docs/STATE.md` for parallel examples. Each product repo carries one. This file was queued in session 16, finally shipped 2026-05-07.
 
@@ -34,8 +34,8 @@ This repo is also the **family hub** — the docs/context/ folder is the single 
 | Canonical clone | `C:\Users\GTMin\Projects\saas-agency-database\` | Native git, GCM auth, outside OneDrive (per Sprint 0, session 14) |
 | Stack | Next.js 14 App Router · React 18 · TypeScript · Tailwind · `@supabase/ssr` · Stripe v17 · Vercel · Cloudflare DNS | — |
 | Supabase satellite | `sdlsdovuljuymgymarou` (project name `seven16group`, us-east-1, pg 17.6.1.105) | ✅ ACTIVE_HEALTHY |
-| Latest production deploy | `dpl_BbyPFC6TYovvoQFzqrGzGiZLV7GL` (commit `ae73d78`) | ✅ READY |
-| Last app code commit | `8829d38` (2026-04-27) — `fix(analytics): replace undefined totalCarriers with carriers.length` | 🟡 **11 days silent** — all commits since then are docs/migration sync |
+| Latest production deploy | `dpl_BNc5bWWjoznaVoq2A7fBauSrQuAg` (commit `4c38859`) | ✅ READY (next push will redeploy with migrations 0084–0087) |
+| Last app code commit | `8829d38` (2026-04-27) — `fix(analytics): replace undefined totalCarriers with carriers.length` | 🟡 **12 days silent on app code** — session 2 added migrations + new data; no app code touched |
 | Default tenant | `ce52fe1e-aac7-4eee-8712-77e71e2837ce` (slug `seven16`) | — |
 
 ---
@@ -44,22 +44,30 @@ This repo is also the **family hub** — the docs/context/ folder is the single 
 
 | Table | Rows | Notes |
 |---|---:|---|
-| `public.agencies` | **20,739** | 79% with email · 85% with web · 99% with phone · 41% with LinkedIn URL · 83% with revenue · 92% with employees |
-| `public.contacts` | **87,434** | 84% with email_primary · 23% with mobile_phone · 85% with title · ~99% marked is_primary |
-| `public.agency_carriers` | 191,201 | Carrier appointments per agency |
+| `public.agencies` | **38,377** | +17,638 from DOT Intel sync (session 2 of dedicated track, 2026-05-09). Pre-sync: 20,739 |
+| `public.contacts` | **87,434** | Unchanged — no contact data captured upstream yet (DOT Intel scrapers haven't been extended to person-level fields) |
+| `public.agency_carriers` | **205,115** | +13,914 net-new carrier appointments from DOT Intel sync. 16,239 attempted, 2,325 already existed (UPSERT no-op). Pre-sync: 191,201 |
 | `public.agency_sic_codes` | 92,957 | Industry codes per agency |
-| `public.agency_affiliations` | 7,748 | UIIA / IIABA / etc. |
-| `public.carriers` | 1,366 | Insurance carriers (NOT motor carriers — distinct from DOT Intel's 50K FMCSA carriers) |
+| `public.agency_affiliations` | **7,801** | +53 from UIIA tag (session 2, 2026-05-09). UIIA + TRS now in `affiliations` table for filter use |
+| `public.carriers` | **1,369** | +3 Berkley regional OpCos (Southwest, Southeast, Mid-Atlantic) added migration 0085 |
+| `public.affiliations` | 184 | +2 (UIIA migration 0086, TRS migration 0087) |
 | `auth.users` | 2 | Master O + one other test/admin user |
 | `public.tenants` | 1 | Single tenant (Seven16) — multi-tenant infrastructure shipped, no second tenant onboarded yet |
 
-**Most-recent agency added:** 2026-04-27 (consistent with focus shift to DOT Intel since session 14)
+**Most-recent agency added:** 2026-05-09 (DOT Intel sync — session 2 of dedicated track)
 
-**Carrier coverage highlights** (from session 12 multi-file load):
-- Cincinnati Insurance Company: 1,681 appointments
-- Berkley National Insurance Company: 1,470 (+ 13 wholesalers via migration 0082)
-- Guard Insurance Group: 1,116
-- Utica National Insurance Group: 599
+**Carrier coverage highlights** (post 2026-05-09 sync):
+- Liberty Mutual: **8,255** appointments (+4,207 from sync)
+- Nationwide: **4,273** (+1,031)
+- Chubb Group of Insurance Companies: **4,070** (+121)
+- Zurich Insurance Company: **3,919** (+1,134)
+- Selective: **2,935** (+1,937)
+- Cincinnati Insurance Company: **2,572** (+891)
+- Utica National: **2,090** (+1,258)
+- Accident Fund Insurance Company of America: **1,912** (+1,586)
+- Berkley regional OpCos (Southwest 374 / Southeast 320 / Mid-Atlantic 216) — net-new entries via migration 0085
+
+**Sync method:** `sync_to_agency_signal.py` (lives in `scrapers/seven16-scraper/seven16-scraper/scripts/` outside this repo). Multi-signal cascade dedup (email → web → phone+state → name+state+zip5 → addr+state+zip5) with verification gates on web (state match + name-sim ≥ 0.5 with filler-stripped names) and addr_state_zip (name-sim ≥ 0.5). Refactored 2026-05-09 to read creds from `.env` (formerly hardcoded).
 
 ---
 
@@ -78,8 +86,10 @@ Active feature work spanned sessions 4–14. Highlights:
 | Session 12 | 8-file vendor xlsx load: 634 new agencies + 3,819 carrier appointments | 0083 |
 | Session 13 | Tier 0 cleanup: rotated leaked service-role key, synced 27 migrations from live DB to repo, added D-008, saved 4 context docs | (sync) |
 | Session 14 | Sprint 0: working clone moved out of OneDrive, native git with GCM auth, CLAUDE.md added | — |
+| Dedicated 1 (2026-05-08) | Inception of Agency Signal dedicated session track | — |
+| Dedicated 2 (2026-05-09) | DOT Intel → AS sync: 17,638 agencies + 13,914 carrier appts + 53 UIIA affiliations. Cascade dedup w/ name-sim gates. 4 migrations (canary, Berkley OpCos, UIIA, TRS) | 0084–0087 |
 
-**Migrations live: 0001–0083**. Repo + DB in sync as of session 13.
+**Migrations live: 0001–0087**. Repo + DB in sync as of 2026-05-09.
 
 ---
 
