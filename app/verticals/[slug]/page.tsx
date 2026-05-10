@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Truck, Crosshair } from "lucide-react";
+import { ArrowRight, ExternalLink, Truck, Crosshair } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MarketingNav } from "@/components/marketing/nav";
 import { Sidebar } from "@/components/app/sidebar";
@@ -160,6 +160,39 @@ export default async function VerticalDetailPage({ params }: { params: { slug: s
           </div>
         </div>
       </section>
+
+      {/* SISTER-PRODUCT CROSS-REFERENCE — trucking only */}
+      {isTrucking && (
+        <section className="mx-auto max-w-7xl px-4 pt-8">
+          <a
+            href="https://www.dotintel.io/solutions"
+            target="_blank"
+            rel="noopener"
+            className="group flex flex-col gap-4 rounded-lg border border-navy-200 bg-gradient-to-r from-navy-50 to-white px-6 py-5 transition hover:border-navy-300 hover:bg-navy-50 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div className="flex items-start gap-4">
+              <span className="mt-0.5 inline-flex h-10 w-10 flex-none items-center justify-center rounded-full bg-navy-100 text-navy-700">
+                <Truck className="h-5 w-5" />
+              </span>
+              <div>
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-navy-600">
+                  <span>Sister product · Seven16 Group</span>
+                </div>
+                <p className="mt-1 text-base font-semibold text-navy-800">
+                  Need fleet &amp; non-fleet carrier-side data?
+                </p>
+                <p className="mt-1 text-sm text-gray-600">
+                  DOT Intel covers the carrier side: FMCSA filings, power-units, operating authority, coverage limits, and active insurer per DOT — for fleet and non-fleet trucking. Agency Signal (here) covers the distribution side.
+                </p>
+              </div>
+            </div>
+            <span className="inline-flex flex-none items-center gap-2 rounded-md border border-navy-200 bg-white px-4 py-2 text-sm font-semibold text-navy-700 group-hover:border-navy-300 group-hover:bg-navy-50">
+              Open DOT Intel
+              <ExternalLink className="h-4 w-4" />
+            </span>
+          </a>
+        </section>
+      )}
 
       {/* SEGMENT GROUPS */}
       <section className="mx-auto max-w-7xl px-4 py-12">
