@@ -32,8 +32,9 @@ const SEGMENT_META: Record<string, { label: string; color: string; bg: string; b
   unknown:                 { label: "Unsegmented",           color: "text-gray-600",    bg: "bg-gray-50",    border: "border-gray-200",    order: 9 },
 };
 
-export default async function VerticalDetailPage({ params }: { params: { slug: string } }) {
-  const supabase = createClient();
+export default async function VerticalDetailPage({ params: _params }: { params: Promise<{ slug: string }> }) {
+  const params = await _params;
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

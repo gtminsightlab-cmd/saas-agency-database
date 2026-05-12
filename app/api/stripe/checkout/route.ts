@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "invalid_plan" }, { status: 400 });
   }
 
-  const supabase = createSupabase();
+  const supabase = await createSupabase();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.redirect(`${APP_URL}/sign-up?plan=${plan}`);

@@ -14,7 +14,7 @@ import { UploadForm } from "./upload-form";
 export const dynamic = "force-dynamic";
 
 export default async function DataEngineSourcesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // What's the current canary count? (informs the user before they upload)
   const [

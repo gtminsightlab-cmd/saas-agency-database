@@ -47,7 +47,7 @@ const FILTER_KEY_LABELS: Record<string, string> = {
 };
 
 export default async function SearchAnalyticsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const now = new Date();
   const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();

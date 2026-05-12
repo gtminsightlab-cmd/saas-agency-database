@@ -39,7 +39,7 @@ const ROLE_ICON: Record<string, typeof Crown> = {
 };
 
 export async function AuditLogPanel() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: rows, error } = await supabase
     .from("audit_log")
     .select("id,actor_email,actor_role,action,resource_type,resource_id,created_at")

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function AdminVerticalsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: verticals } = await supabase
     .from("mv_vertical_summary")
     .select(

@@ -41,7 +41,7 @@ export async function GET(request: Request) {
   });
   if (blocked) return blocked;
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Auth check — must be a logged-in user
   const { data: { user } } = await supabase.auth.getUser();
@@ -108,7 +108,7 @@ function csvNum(v: string | null | undefined) {
 }
 
 async function runAgencyQuery(
-  supabase: ReturnType<typeof createClient>,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   qs: URLSearchParams
 ): Promise<string> {
   // Direct filters

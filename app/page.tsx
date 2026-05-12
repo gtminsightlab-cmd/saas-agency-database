@@ -18,7 +18,7 @@ const VERTICAL_FALLBACK = [
 
 
 export default async function MarketingHome() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   const [carriers, affiliations, plans, tiers, verticalsRes] = await Promise.all([

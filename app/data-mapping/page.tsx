@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function DataMappingPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: dict } = await supabase
     .from("data_dictionary_fields")
     .select("table_name, column_name, data_type, is_nullable, description")

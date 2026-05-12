@@ -68,7 +68,7 @@ const COLOR_CLASSES: Record<string, { ring: string; bg: string; text: string; bo
 };
 
 export default async function VerticalsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

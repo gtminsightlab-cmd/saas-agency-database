@@ -33,7 +33,7 @@ const ACCEPTED_MIMES = new Set([
 const ACCEPTED_EXT = /\.(xlsx|xls|xlsm)$/i;
 
 export async function POST(request: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Auth — must be super_admin
   const { data: { user } } = await supabase.auth.getUser();

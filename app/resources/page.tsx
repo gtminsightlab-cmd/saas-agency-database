@@ -73,7 +73,7 @@ const CATEGORY_STYLES: Record<Article["category"], { bg: string; text: string; b
 };
 
 export default async function ResourcesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

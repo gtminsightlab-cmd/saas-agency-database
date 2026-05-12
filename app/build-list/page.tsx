@@ -60,10 +60,11 @@ function parseInitialFromSearchParams(qs: Record<string, string | string[] | und
 export default async function BuildListPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const initial = parseInitialFromSearchParams(searchParams);
-  const supabase = createClient();
+  const sp = await searchParams;
+  const initial = parseInitialFromSearchParams(sp);
+  const supabase = await createClient();
 
   const [
     accountTypes, locationTypes, ams, mgmt, titles, depts,

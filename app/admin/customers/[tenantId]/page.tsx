@@ -36,11 +36,12 @@ type Entitlement = {
 type Wallet = { app_user_id: string; balance: number; last_refresh_at: string | null };
 
 export default async function TenantDetail({
-  params,
+  params: _params,
 }: {
-  params: { tenantId: string };
+  params: Promise<{ tenantId: string }>;
 }) {
-  const supabase = createClient();
+  const params = await _params;
+  const supabase = await createClient();
 
   const [
     { data: tenant },

@@ -24,7 +24,7 @@ type LimitRow = {
 };
 
 export default async function UsageIndex() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Current month start (UTC)
   const now = new Date();

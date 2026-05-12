@@ -53,7 +53,7 @@ type CanaryRow = {
 };
 
 export default async function DataQualityPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     agenciesRes,

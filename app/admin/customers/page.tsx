@@ -42,14 +42,15 @@ function pickDir(v: string | undefined): SortDir {
 }
 
 export default async function CustomersIndex({
-  searchParams,
+  searchParams: _searchParams,
 }: {
-  searchParams: { sort?: string; dir?: string };
+  searchParams: Promise<{ sort?: string; dir?: string }>;
 }) {
+  const searchParams = await _searchParams;
   const sort: SortKey = pickSort(searchParams.sort);
   const dir: SortDir = pickDir(searchParams.dir);
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     { data: tenants },

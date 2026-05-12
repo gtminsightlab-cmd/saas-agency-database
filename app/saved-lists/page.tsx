@@ -31,13 +31,14 @@ const LABEL: Record<SortKey, string> = {
 export default async function SavedListsPage({
   searchParams,
 }: {
-  searchParams: { sort?: string; dir?: string };
+  searchParams: Promise<{ sort?: string; dir?: string }>;
 }) {
-  const sort: SortKey = pickSort(searchParams.sort);
-  const dir: SortDir = pickDir(searchParams.dir);
+  const sp = await searchParams;
+  const sort: SortKey = pickSort(sp.sort);
+  const dir: SortDir = pickDir(sp.dir);
   const ascending = dir === "asc";
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   let q = supabase
     .from("saved_lists")

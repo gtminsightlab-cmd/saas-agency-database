@@ -168,7 +168,7 @@ const PROVIDERS: Provider[] = [
 ];
 
 export default async function IntegrationsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     { data: stripeCustomers },

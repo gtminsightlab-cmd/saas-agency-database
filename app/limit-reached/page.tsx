@@ -31,14 +31,15 @@ type UsageSummary = {
 };
 
 export default async function LimitReachedPage({
-  searchParams,
+  searchParams: _searchParams,
 }: {
-  searchParams: { metric?: string; cap?: string; used?: string };
+  searchParams: Promise<{ metric?: string; cap?: string; used?: string }>;
 }) {
+  const searchParams = await _searchParams;
   const blockedMetric = searchParams.metric ?? "search";
   const blockedLabel  = METRIC_LABEL[blockedMetric] ?? METRIC_LABEL.search;
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const [{ data: { user } }, { data: summaryRaw }, { data: appUserRow }] =
     await Promise.all([
       supabase.auth.getUser(),

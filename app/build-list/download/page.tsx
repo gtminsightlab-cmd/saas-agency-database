@@ -33,11 +33,12 @@ function pickDir(v: string | undefined): SortDir {
 }
 
 export default async function DownloadPage({
-  searchParams,
+  searchParams: _searchParams,
 }: {
-  searchParams: { id?: string; name?: string; sort?: string; dir?: string };
+  searchParams: Promise<{ id?: string; name?: string; sort?: string; dir?: string }>;
 }) {
-  const supabase = createClient();
+  const searchParams = await _searchParams;
+  const supabase = await createClient();
   const listId = searchParams.id ?? null;
   const listName = searchParams.name ?? "Untitled list";
   const sort: SortKey = pickSort(searchParams.sort);

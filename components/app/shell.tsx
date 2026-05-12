@@ -8,7 +8,7 @@ import { Sidebar } from "./sidebar";
  * <AppShell>{children}</AppShell> to get auth gating + sidebar nav.
  */
 export async function AppShell({ children }: { children: React.ReactNode }) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();

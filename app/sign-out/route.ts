@@ -10,7 +10,7 @@ import { NextResponse, type NextRequest } from "next/server";
  * Behavior: clears the Supabase session cookie and 303-redirects to /sign-in.
  */
 async function handle(request: NextRequest) {
-  const supabase = createClient();
+  const supabase = await createClient();
   await supabase.auth.signOut();
   const { origin } = new URL(request.url);
   return NextResponse.redirect(`${origin}/sign-in`, { status: 303 });

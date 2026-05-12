@@ -3,7 +3,7 @@ import { ShieldCheck, ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export async function HygieneWidget() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase.from("v_my_hygiene_summary").select("*").maybeSingle();
   const updatesThisMonth = data?.updates_this_month ?? 0;
   const listsNeedingRedownload = data?.lists_needing_redownload ?? 0;

@@ -24,10 +24,10 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(
   _request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const supabase = createClient();
-  const slug = params.slug;
+  const supabase = await createClient();
+  const { slug } = await params;
 
   // 1. Auth gate
   const {

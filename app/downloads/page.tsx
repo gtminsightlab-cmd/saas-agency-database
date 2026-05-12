@@ -6,7 +6,7 @@ import clsx from "clsx";
 export const dynamic = "force-dynamic";
 
 export default async function DownloadsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase
     .from("downloads")
     .select("id,type,status,records_count,file_url,created_at,completed_at,saved_list_id")

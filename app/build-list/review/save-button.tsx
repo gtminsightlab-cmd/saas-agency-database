@@ -15,7 +15,7 @@ export function SaveListButton({ filterQs }: { filterQs: string }) {
   async function save() {
     setSaving(true);
     setError(null);
-    const supabase = createClient();
+    const supabase = await createClient();
     const {
       data: { user }
     } = await supabase.auth.getUser();
@@ -144,7 +144,7 @@ function asNum(v: string | null): number | null {
 }
 
 async function computeCountsForFilter(
-  supabase: ReturnType<typeof createClient>,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   filterQs: string
 ): Promise<{ accounts: number; contacts: number; contactsWithEmail: number }> {
   try {

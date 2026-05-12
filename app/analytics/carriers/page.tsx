@@ -34,7 +34,7 @@ type Kpis = {
 const MIN_AGENCY_THRESHOLD = 150;
 
 export default async function AnalyticsCarriersPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();

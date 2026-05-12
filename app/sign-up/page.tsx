@@ -32,11 +32,12 @@ const VERTICAL_LEFT_RAIL: Record<string, {
 type LeftRailMode = "invite" | "vertical" | "default";
 
 export default async function SignUpPage({
-  searchParams,
+  searchParams: _searchParams,
 }: {
-  searchParams: { vertical?: string; invited?: string; email?: string; plan?: string };
+  searchParams: Promise<{ vertical?: string; invited?: string; email?: string; plan?: string }>;
 }) {
-  const supabase = createClient();
+  const searchParams = await _searchParams;
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   // Already signed in? Send them straight to the app.

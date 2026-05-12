@@ -37,13 +37,14 @@ type RecentSearch = {
 export default async function AiSupportPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const q = pickStr(searchParams.q);
-  const cat = (pickStr(searchParams.cat) as SuggestedCategory) || "agencies";
+  const sp = await searchParams;
+  const q = pickStr(sp.q);
+  const cat = (pickStr(sp.cat) as SuggestedCategory) || "agencies";
   const activeCat = CATEGORY_ORDER.includes(cat) ? cat : "agencies";
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     { count: agenciesCount },
@@ -190,7 +191,7 @@ function pickStr(v: string | string[] | undefined): string {
 }
 
 async function previewCount(
-  supabase: ReturnType<typeof createClient>,
+  supabase: Awaited<ReturnType<typeof createClient>>,
   s: ReturnType<typeof parseAiQuery>["summary"]
 ): Promise<number | null> {
   let q = supabase.from("agencies").select("id", { count: "exact", head: true });

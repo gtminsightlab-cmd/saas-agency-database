@@ -8,14 +8,15 @@ import { CatalogEditor } from "./editor";
 export const dynamic = "force-dynamic";
 
 export default async function CatalogTablePage({
-  params,
+  params: _params,
 }: {
-  params: { table: string };
+  params: Promise<{ table: string }>;
 }) {
+  const params = await _params;
   const config = getTableConfig(params.table);
   if (!config) notFound();
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Fetch all rows. None of these tables exceed ~1,400 rows so we don't need pagination yet.
   const orderClauses: { column: string; ascending: boolean }[] = [];

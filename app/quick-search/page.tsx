@@ -6,7 +6,7 @@ import { QuickSearchForm } from "./form";
 export const dynamic = "force-dynamic";
 
 export default async function QuickSearchPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const [depts, titles, accountsRes, contactsRes, contactsEmailRes] = await Promise.all([
     supabase.from("departments").select("id,name").order("sort_order"),
     supabase.from("contact_title_roles").select("id,name").order("sort_order"),

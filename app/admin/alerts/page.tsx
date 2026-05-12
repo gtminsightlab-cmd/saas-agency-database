@@ -43,7 +43,7 @@ type SystemHealth = {
 type ExportProbe = "501" | "ok" | "error" | "skip";
 
 export default async function AlertsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Current month start for usage_logs
   const now = Date.now();

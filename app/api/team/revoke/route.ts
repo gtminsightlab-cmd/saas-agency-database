@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Missing invite id" }, { status: 400 });
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ message: "Not authenticated" }, { status: 401 });

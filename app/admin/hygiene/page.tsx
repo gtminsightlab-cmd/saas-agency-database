@@ -25,7 +25,7 @@ const KIND_ICON: Record<string, typeof ShieldAlert> = {
 };
 
 export default async function HygienePage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [{ data: canaries }, { data: domains }] = await Promise.all([
     supabase

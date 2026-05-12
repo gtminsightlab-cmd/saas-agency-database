@@ -18,14 +18,14 @@ export const dynamic = "force-dynamic";
  */
 export async function DELETE(
   _request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const id = params.id;
+  const { id } = await params;
   if (!id) {
     return NextResponse.json({ error: "missing_id" }, { status: 400 });
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { data: { user }, error: authErr } = await supabase.auth.getUser();
   if (authErr || !user) {

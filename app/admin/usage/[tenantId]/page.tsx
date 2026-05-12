@@ -10,11 +10,12 @@ export const dynamic = "force-dynamic";
 type Tenant = { id: string; name: string; slug: string | null; created_at: string };
 
 export default async function TenantUsageDetail({
-  params,
+  params: _params,
 }: {
-  params: { tenantId: string };
+  params: Promise<{ tenantId: string }>;
 }) {
-  const supabase = createClient();
+  const params = await _params;
+  const supabase = await createClient();
 
   const { data: tenant } = await supabase
     .from("tenants")

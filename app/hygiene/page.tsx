@@ -6,7 +6,7 @@ import { Sparkles } from "lucide-react";
 export const dynamic = "force-dynamic";
 
 export default async function HygienePage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [summary, recentEvents, ent] = await Promise.all([
     supabase.from("v_my_hygiene_summary").select("*").maybeSingle(),

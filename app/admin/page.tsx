@@ -15,7 +15,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function AdminOverview() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // Counts (RLS initplan fix in mig 0036 makes these fast)
   const [

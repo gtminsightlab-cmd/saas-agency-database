@@ -20,7 +20,7 @@ const COLOR: Record<string, { bg: string; text: string; border: string }> = {
 };
 
 export default async function IntegrationsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/sign-in?next=/integrations");
 

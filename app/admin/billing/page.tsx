@@ -55,7 +55,7 @@ type Plan = {
 };
 
 export default async function BillingPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     subsResult,

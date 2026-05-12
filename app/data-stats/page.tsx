@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export default async function DataStatsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const [agencies, contacts, carriers, affiliations, topLists, topMembers, states, metros, depts, titles] = await Promise.all([
     supabase.from("agencies").select("id", { count: "exact", head: true }),
     supabase.from("contacts").select("id", { count: "exact", head: true }),

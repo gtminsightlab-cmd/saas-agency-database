@@ -48,7 +48,7 @@ type SystemHealth = {
 };
 
 export default async function SystemHealthPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data: healthRaw, error: healthErr } = await supabase.rpc("get_system_health");
   const health = (healthRaw ?? null) as SystemHealth | null;
 

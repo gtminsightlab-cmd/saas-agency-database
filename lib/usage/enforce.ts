@@ -42,7 +42,7 @@ export async function enforceUsage(
   metadata?: Record<string, unknown>
 ): Promise<EnforceResult | null> {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase.rpc("enforce_usage", {
       p_action: metric,
       p_quantity: quantity,

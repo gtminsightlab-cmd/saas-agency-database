@@ -29,7 +29,7 @@ const TABLE_ICONS: Record<string, typeof Database> = {
 };
 
 async function getStats(t: CatalogTableConfig) {
-  const supabase = createClient();
+  const supabase = await createClient();
   const total = await supabase.from(t.table).select("*", { count: "exact", head: true });
   const activeCount = t.hasActive
     ? await supabase

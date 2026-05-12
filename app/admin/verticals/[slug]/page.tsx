@@ -7,11 +7,12 @@ import { CarrierManager } from "./manager";
 export const dynamic = "force-dynamic";
 
 export default async function AdminVerticalDetail({
-  params,
+  params: _params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const supabase = createClient();
+  const params = await _params;
+  const supabase = await createClient();
   const { data: vertical } = await supabase
     .from("vertical_markets")
     .select("id,slug,name,description")

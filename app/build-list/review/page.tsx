@@ -50,11 +50,12 @@ const ACCOUNT_LABEL: Record<AccountSortKey, string> = {
 };
 
 export default async function ReviewPage({
-  searchParams
+  searchParams: _searchParams
 }: {
-  searchParams: Record<string, string>;
+  searchParams: Promise<Record<string, string>>;
 }) {
-  const supabase = createClient();
+  const searchParams = await _searchParams;
+  const supabase = await createClient();
 
   const usageResult = await enforceUsageOrRedirect("search", 1, {
     route: "/build-list/review",

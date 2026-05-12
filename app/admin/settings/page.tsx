@@ -20,7 +20,7 @@ type Plan = { name: string; price_cents: number; interval: string; active: boole
 type Tenant = { id: string; name: string };
 
 export default async function AdminSettingsPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [
     { data: flags, error: flagErr },

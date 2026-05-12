@@ -50,7 +50,7 @@ export type AiSearchDictionary = {
  * tables are tiny and most are cached in PostgREST.
  */
 export async function loadAiSearchDictionary(): Promise<AiSearchDictionary> {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [accountTypes, statesUS, statesCA, carriers, affiliations, locationTypes] =
     await Promise.all([

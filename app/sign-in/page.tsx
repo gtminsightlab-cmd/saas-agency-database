@@ -3,11 +3,12 @@ import { SignInForm } from "./form";
 
 export const dynamic = "force-dynamic";
 
-export default function SignInPage({
-  searchParams
+export default async function SignInPage({
+  searchParams: _searchParams
 }: {
-  searchParams?: { next?: string; error?: string };
+  searchParams?: Promise<{ next?: string; error?: string }>;
 }) {
+  const searchParams = await _searchParams;
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* Left — marketing rail */}

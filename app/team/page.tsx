@@ -29,7 +29,7 @@ type TeamRow = {
 };
 
 export default async function TeamPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const [{ data: seatRows }, { data: teamRows }] = await Promise.all([
     supabase.rpc("get_my_seat_info"),
