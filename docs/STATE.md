@@ -1,6 +1,6 @@
 # Agency Signal — STATE.md (inside view)
 
-**Last updated:** 2026-05-09 (Agency Signal Session 2 of the dedicated track: DOT Intel sync + AdList genuine-vendor load. **+20,966 agencies, +31,746 contacts, +21,177 carrier appointments, +1,118 affiliations** — biggest single-day data load to date. 100% canary scrub success.)
+**Last updated:** 2026-05-12 (Session 3: Next 14 → 16 / React 18 → 19 upgrade closing 24 CVEs + first real caching layer on /build-list + /verticals. UX-parity-with-Neilson polish on /build-list + /saved-lists. See [`docs/handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md).)
 **Companion to:** [`docs/context/SESSION_STATE.md`](context/SESSION_STATE.md) Part 1.
 **Pattern source:** Inside-view STATE.md adopted family-wide 2026-05-02 — see `dotintel2/docs/STATE.md` and `seven16-distribution/docs/STATE.md` for parallel examples. Each product repo carries one. This file was queued in session 16, finally shipped 2026-05-07.
 
@@ -34,8 +34,11 @@ This repo is also the **family hub** — the docs/context/ folder is the single 
 | Canonical clone | `C:\Users\GTMin\Projects\saas-agency-database\` | Native git, GCM auth, outside OneDrive (per Sprint 0, session 14) |
 | Stack | Next.js 14 App Router · React 18 · TypeScript · Tailwind · `@supabase/ssr` · Stripe v17 · Vercel · Cloudflare DNS | — |
 | Supabase satellite | `sdlsdovuljuymgymarou` (project name `seven16group`, us-east-1, pg 17.6.1.105) | ✅ ACTIVE_HEALTHY |
-| Latest production deploy | `dpl_BNc5bWWjoznaVoq2A7fBauSrQuAg` (commit `4c38859`) | ✅ READY (next push will redeploy with migrations 0084–0087) |
-| Last app code commit | `8829d38` (2026-04-27) — `fix(analytics): replace undefined totalCarriers with carriers.length` | 🟡 **12 days silent on app code** — session 2 added migrations + new data; no app code touched |
+| Latest production deploy | `dpl_CMTzDwjpMZ35AjCxgWQkCnVMcnSR` (commit `e16508f`) | ✅ READY, 33s Turbopack build |
+| Last app code commit | `e16508f` (2026-05-12) — `perf(verticals, admin): cache mv_vertical_summary + wire cache invalidation` | Active development; session 3 shipped 12 commits |
+| Stack version | **Next 16.2.6** (was 14.2.15) · **React 19.2.6** (was 18.3.1) · ESLint 10.3 · TypeScript 5.6 · Turbopack | Family-aligned (Threshold IQ 16.2.4, dotintel2 16.2.3) |
+| npm audit | **0 critical** · 1 high (xlsx, no upstream fix, scripts/ only) · 2 moderate (postcss transitive) | Was 1 critical + 3 high pre-upgrade |
+| Caching layer | `lib/cache/build-list-refs.ts` — 3 cached loaders, 2 invalidation tags, 1 admin-side invocation wired (CatalogEditor) | First real caching infra shipped this session |
 | Default tenant | `ce52fe1e-aac7-4eee-8712-77e71e2837ce` (slug `seven16`) | — |
 
 ---
