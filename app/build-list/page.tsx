@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { RecordsCounter } from "@/components/build-list/records-counter";
 import { BuildListForm, type FilterData, type InitialFilters } from "@/components/build-list/form";
+import { getBuildListFilterData } from "@/lib/cache/build-list-refs";
 
 export const dynamic = "force-dynamic";
 
@@ -66,48 +67,25 @@ export default async function BuildListPage({
   const initial = parseInitialFromSearchParams(sp);
   const supabase = await createClient();
 
+  // Reference data is cached for 1 hour (lib/cache/build-list-refs.ts).
+  // Counts are tenant-scoped via RLS, so we keep them on the authed client.
   const [
-    accountTypes, locationTypes, ams, mgmt, titles, depts,
-    statesUS, statesCA, metros, carriers, affiliations, sic,
-    accountsRes, contactsRes, contactsEmailRes
+    filterData,
+    accountsRes,
+    contactsRes,
+    contactsEmailRes,
   ] = await Promise.all([
-    supabase.from("account_types").select("id,code,label,sort_order").eq("active", true).order("sort_order"),
-    supabase.from("location_types").select("id,code,name,sort_order").order("sort_order"),
-    supabase.from("agency_management_systems").select("id,code,label,sort_order").eq("active", true).order("label"),
-    supabase.from("management_levels").select("id,name,sort_order").order("sort_order"),
-    supabase.from("contact_title_roles").select("id,name,sort_order").order("sort_order"),
-    supabase.from("departments").select("id,name,sort_order").order("sort_order"),
-    supabase.from("states").select("id,code,name,country").eq("country", "US").order("sort_order"),
-    supabase.from("states").select("id,code,name,country").eq("country", "CA").order("sort_order"),
-    supabase.from("metro_areas").select("id,code,name").order("name"),
-    supabase.rpc("list_carriers_with_appointments"),
-    supabase.from("affiliations").select("id,canonical_name,type").eq("active", true).order("canonical_name"),
-    supabase.from("sic_codes").select("id,sic_code,description").order("sic_code").limit(1000),
+    getBuildListFilterData(),
     supabase.from("agencies").select("id", { count: "exact", head: true }),
     supabase.from("contacts").select("id", { count: "exact", head: true }),
-    supabase.from("contacts").select("id", { count: "exact", head: true }).not("email_primary", "is", null)
+    supabase.from("contacts").select("id", { count: "exact", head: true }).not("email_primary", "is", null),
   ]);
 
   const accountsCount = accountsRes.count ?? 0;
   const contactsCount = contactsRes.count ?? 0;
   const contactsEmailCount = contactsEmailRes.count ?? 0;
 
-  const data: FilterData = {
-    accountTypes: (accountTypes.data ?? []).map((x) => ({ value: x.id, label: x.label })),
-    locationTypes: (locationTypes.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    amsOptions: (ams.data ?? []).map((x) => ({ value: x.id, label: x.label })),
-    managementLevels: (mgmt.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    contactTitleRoles: (titles.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    departments: (depts.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    states: [
-      ...(statesUS.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: "US" })),
-      ...(statesCA.data ?? []).map((x) => ({ value: x.id, label: x.name, sublabel: "CA" }))
-    ],
-    metroAreas: (metros.data ?? []).map((x) => ({ value: x.id, label: x.name })),
-    carriers: (carriers.data ?? []).map((x: { id: string; name: string; group_name: string | null }) => ({ value: x.id, label: x.name, sublabel: x.group_name ?? undefined })),
-    affiliations: (affiliations.data ?? []).map((x) => ({ value: x.id, label: x.canonical_name, sublabel: x.type })),
-    industries: (sic.data ?? []).map((x) => ({ value: x.id, label: `${x.sic_code}${x.description ? " — " + x.description : ""}` }))
-  };
+  const data: FilterData = filterData;
 
   return (
     <AppShell>
