@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import type { CatalogTableConfig, ColumnDef } from "../_lib/config";
+import { revalidateBuildListRefs } from "../actions";
 
 type Row = Record<string, any> & { id: string };
 
@@ -97,6 +98,7 @@ export function CatalogEditor({
     setRows((rs) => rs.map((r) => (r.id === editingId ? { ...r, ...patch } : r)));
     cancelEdit();
     showToast("ok", "Saved");
+    void revalidateBuildListRefs();
   }
 
   function startCreate() {
@@ -139,6 +141,7 @@ export function CatalogEditor({
     setRows((rs) => [...rs, data as Row]);
     cancelCreate();
     showToast("ok", "Row added");
+    void revalidateBuildListRefs();
     startTransition(() => router.refresh());
   }
 
@@ -163,6 +166,7 @@ export function CatalogEditor({
     }
     setRows((rs) => rs.map((x) => (x.id === r.id ? { ...x, active: next } : x)));
     showToast("ok", next ? "Activated" : "Deactivated");
+    void revalidateBuildListRefs();
   }
 
   async function deleteRow(r: Row) {
@@ -184,6 +188,7 @@ export function CatalogEditor({
     }
     setRows((rs) => rs.filter((x) => x.id !== r.id));
     showToast("ok", "Deleted");
+    void revalidateBuildListRefs();
   }
 
   return (

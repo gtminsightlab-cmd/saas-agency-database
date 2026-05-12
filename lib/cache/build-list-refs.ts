@@ -126,3 +126,50 @@ export const getVerticalMarkets = unstable_cache(
   ["vertical-markets"],
   { revalidate: 3600, tags: ["build-list-refs", "verticals-refs"] },
 );
+
+/**
+ * Full vertical summary (mv_vertical_summary) — drives the cards on /verticals.
+ * Refreshed when an admin reruns the materialized view; not on every render.
+ * 1-hour TTL matches the typical mv-refresh cadence; invalidate via
+ *   revalidateTag('verticals-refs')
+ * after any REFRESH MATERIALIZED VIEW mv_vertical_summary.
+ */
+export type VerticalSummaryRow = {
+  slug: string;
+  name: string;
+  description: string;
+  icon_key: string;
+  color_token: string;
+  sort_order: number;
+  mapped_carrier_count: number;
+  agencies_with_exposure: number;
+  agencies_growing: number;
+  agencies_specialist: number;
+  agency_count: number;
+  location_count: number;
+  contact_count: number;
+  contacts_with_email: number;
+  contacts_with_mobile: number;
+  agencies_with_linkedin: number;
+  agencies_with_web: number;
+  agencies_with_email: number;
+};
+
+export const getVerticalsSummary = unstable_cache(
+  async (): Promise<VerticalSummaryRow[]> => {
+    const supabase = anon();
+    const { data } = await supabase
+      .from("mv_vertical_summary")
+      .select(
+        "slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count," +
+        "agencies_with_exposure,agencies_growing,agencies_specialist," +
+        "agency_count,location_count,contact_count," +
+        "contacts_with_email,contacts_with_mobile," +
+        "agencies_with_linkedin,agencies_with_web,agencies_with_email",
+      )
+      .order("sort_order");
+    return (data ?? []) as unknown as VerticalSummaryRow[];
+  },
+  ["verticals-summary"],
+  { revalidate: 3600, tags: ["verticals-refs"] },
+);

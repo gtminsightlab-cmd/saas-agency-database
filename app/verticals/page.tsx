@@ -27,6 +27,7 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { MarketingNav } from "@/components/marketing/nav";
 import { Sidebar } from "@/components/app/sidebar";
+import { getVerticalsSummary } from "@/lib/cache/build-list-refs";
 
 export const dynamic = "force-dynamic";
 
@@ -82,17 +83,10 @@ export default async function VerticalsPage() {
     hasActivePlan = !!ent && ent.status === "active";
   }
 
-  const { data } = await supabase
-    .from("mv_vertical_summary")
-    .select(
-      "slug,name,description,icon_key,color_token,sort_order,mapped_carrier_count," +
-      "agencies_with_exposure,agencies_growing,agencies_specialist," +
-      "agency_count,location_count,contact_count," +
-      "contacts_with_email,contacts_with_mobile," +
-      "agencies_with_linkedin,agencies_with_web,agencies_with_email"
-    )
-    .order("sort_order");
-  const live = (data ?? []) as unknown as VerticalSummary[];
+  // Cached at module scope (lib/cache/build-list-refs.ts). 1-hour TTL,
+  // invalidate via revalidateTag('verticals-refs') after any
+  // REFRESH MATERIALIZED VIEW mv_vertical_summary.
+  const live = (await getVerticalsSummary()) as unknown as VerticalSummary[];
   const verticals: VerticalSummary[] = live.length > 0 ? live : (VERTICAL_FALLBACK as VerticalSummary[]);
 
   // Authenticated users see this page inside the app shell (sidebar nav);
