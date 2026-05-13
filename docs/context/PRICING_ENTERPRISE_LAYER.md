@@ -52,28 +52,37 @@ So Enterprise+ is a different pricing **surface** sharing the same product, not 
 ### 3.2 Per-state pricing formula
 
 ```
-state_price = base + (agency_count × per_record_value × email_quality_multiplier)
+state_price = max($1,000, min($2,000, $500 + contacts_with_email × $0.20))
 ```
 
 | Variable | Value | Why |
 |---|---|---|
 | `base` | $500 | Per-state activation overhead (engineering, entitlement, support onboarding) |
-| `per_record_value` | $0.50 baseline | Anchored to a sniper-agent willingness-to-pay benchmark for an enriched agency lead |
-| `email_quality_multiplier` | 0.7 → 1.3 | 0.7 for states with <30% email coverage; 1.0 baseline; 1.3 for states with >70% coverage |
-| Floor | **$1,000/state** | Lower bound regardless of formula output |
-| Cap | **$2,000/state** | Upper bound regardless of formula output |
+| `per_lead_value` | $0.20 | Per verified email contact. Anchored against typical B2B data benchmarks ($0.10–$0.50 per verified record); positions Seven16 mid-market. |
+| Floor | **$1,000/state** | Minimum state price. Covers activation cost regardless of data depth. |
+| Cap | **$2,000/state** | Maximum state price. Prevents a single premium state from anchoring above ~$12,500 ÷ 6. |
+
+**Why verified email contacts, not agencies?** A buyer values reachable people, not entities. Contacts-per-agency varies wildly (NH 10.3, MI 7.2, FL 5.7) — pricing on agency count alone undercharges high-density states like NY and MI. **Contacts-with-email is the buyer's actual KPI**: people they can put on an email outreach the day after purchase. Pricing on this unit aligns vendor revenue with buyer value.
 
 This formula is the calibration tool; **the customer never sees the formula** — they see tier-grouped per-state prices (§3.3).
 
-### 3.3 State tier breakdown (STRUCTURE LOCKED, ASSIGNMENTS PENDING DATA VALIDATION)
+### 3.3 State tier assignment — FULLY LOCKED (2026-05-12)
 
-| Tier | Price / state | Approximate count | Selection criteria |
-|---|---|---|---|
-| **Tier 1 — High density** | **$2,000** | ~10 states | Top quintile by (agency_count × email_pct) — typically CA, TX, NY, FL, OH, PA, IL, GA, NC, MI (illustrative) |
-| **Tier 2 — Medium density** | **$1,500** | ~15 states | Middle range — typically southern + mid-atlantic + west states (illustrative) |
-| **Tier 3 — Lower density** | **$1,000** | ~25 states | Smaller-volume states — WY, VT, ND, AK, etc. (illustrative) |
+Tier assignment rule: **verified-email-contact buckets**. Buyer-facing UI shows the tier price; the rule explains the rationale. Validated against live data on 2026-05-12 against `sdlsdovuljuymgymarou` (Agency Signal Supabase satellite).
 
-**Specific state-to-tier assignments are pending** the queries in §8. The 10/15/25 split is illustrative; final breakpoints come from the actual percentile distribution.
+| Tier | Price / state | Rule | Count | States |
+|---|---|---|---|---|
+| **Tier 1 — High density** | **$2,000** | ≥5,000 verified email contacts | 5 | CA, MI, NY, OH, PA |
+| **Tier 2 — Medium density** | **$1,500** | 2,000–4,999 verified email contacts | 15 | CO, FL, GA, IA, IL, IN, KY, LA, MA, MN, MO, NC, NJ, TX, WI |
+| **Tier 3 — Lower density** | **$1,000** | <2,000 verified email contacts | 28 | AL, AR, AZ, CT, DE, ID, KS, MD, ME, MS, MT, ND, NE, NH, NM, NV, OK, OR, RI, SC, SD, TN, UT, VA, VT, WA, WV, WY |
+| **Territorial add-ons** | **$0** | <50 verified email contacts | 3 | AK (17 contacts), DC (17), HI (6) |
+
+**Totals:** 5 + 15 + 28 + 3 = **51 jurisdictions covered**. The three territorial add-ons (AK, DC, HI) are no-charge inclusions to any purchase — completes the "all jurisdictions" story without charging for trivially-small data.
+
+**Surprises in the data worth noting (defensible if a buyer challenges):**
+- **MI is Tier 1** despite ranking #7 by agency count — it has the densest contact data (7.2 contacts/agency).
+- **TX and FL are Tier 2**, not Tier 1 — they have many agencies but fewer contacts-per-agency.
+- **NH at Tier 3** is genuinely high-quality (96% email rate, 10.3 contacts/agency) but only 1,746 total emails — below the Tier 2 threshold.
 
 ### 3.4 Bundle discount ladder
 
@@ -85,13 +94,21 @@ This formula is the calibration tool; **the customer never sees the formula** �
 | **5–9 states** | Sum × 0.85 (15% bundle discount) | ~$850–$1,700 |
 | **10–24 states** | Sum × 0.70 (30% bundle discount) | ~$700–$1,400 |
 | **25–49 states** | Flat **$9,500** | ~$190–$380 |
-| **All 50 states** | Flat **$12,500** | **$250** |
+| **All 50 states + 3 territorial add-ons (AK, DC, HI)** | Flat **$12,500** | **$250** |
+
+**Overflow protection (mandatory):** `final_price = min(computed_bundle, $12,500)`. The bundle ladder NEVER exceeds the all-50 ceiling. Worked example: a buyer picks the top 9 premium states (5 Tier 1 + 4 Tier 2) = 5×$2,000 + 4×$1,500 = $16,000 × 0.85 = **$13,600** at the ladder rate. UI displays: *"Your 9 states cost $13,600. Upgrade to all 50 + 3 territories for $12,500 — you'd save $1,100."* The arbitrage becomes a conversion event; the buyer self-selects all-50 every time the ladder exceeds the ceiling. Implementation: client-side comparison runs on every state-selection state change.
+
+**Marketing math (locked):**
+- À la carte all-50: 5×$2,000 + 15×$1,500 + 28×$1,000 = **$64,500**
+- Bundle ceiling: **$12,500**
+- Effective bundle discount: **81%**
+- vs. Neilson's $25k all-50: **50% undercut**
 
 **Why this shape works:**
 - Single-state buyers (small MGAs testing the data) still pay full freight at $1,000–$2,000 — covers our cost easily.
 - Multi-state buyers see clear bundle savings unlocking as they click more.
 - 25-state cliff at $9,500 creates a moment where the buyer's brain says "for $3,000 more I get the entire country" — the same psychology Neilson ran on Master O at renewal.
-- All-50 ceiling at $12,500 = **50% undercut of Neilson's $25k** while covering AgencySignal's full $35k/yr maintenance cost from 3 customers.
+- All-50 ceiling at $12,500 covers Agency Signal's full $35k/yr maintenance cost from **3 customers**.
 
 ### 3.5 Included credits at Enterprise+
 
@@ -196,37 +213,33 @@ create table appointment_attributions (
 
 ---
 
-## 8. Validation tasks before publishing prices
+## 8. Validation — completed 2026-05-12
 
-Two queries must run before specific per-state prices ship to the pricing page:
+### 8.1 Database snapshot at validation
 
-### 8.1 `agency_count_by_state`
+Live query against `sdlsdovuljuymgymarou` (Agency Signal Supabase satellite) on 2026-05-12 produced:
 
-```sql
-select
-  state,
-  count(*) as agency_count,
-  count(*) filter (where email is not null and email <> '') as email_count,
-  round(100.0 * count(*) filter (where email is not null and email <> '') / count(*), 1) as email_pct
-from directory.agencies
-where status = 'active'
-group by state
-order by agency_count desc;
-```
+| Metric | Value |
+|---|---|
+| Total agencies | **41,705** |
+| Total contacts | **135,453** |
+| Contacts with verified email | **115,892 (85.6%)** |
+| Jurisdictions with data | 51 (50 states + DC; PR excluded — 1 agency only) |
 
-Run against the AgencySignal Supabase satellite (`sdlsdovuljuymgymarou`).
+### 8.2 Pricing unit changed from agency count → verified email contacts
 
-### 8.2 Tier breakpoints
+Initial brief draft used `agency_count × email_quality_multiplier` as the composite score. During validation Master O directed pricing to anchor on **verified email contacts** (the buyer's reachable-people KPI), not agency count. Formula was rewritten as `state_price = max($1,000, min($2,000, $500 + contacts_with_email × $0.20))`. Tier breakpoints at **≥5,000 / 2,000–4,999 / <2,000** verified contacts.
 
-Compute composite score per state: `agency_count × (0.7 + 0.6 × email_pct/100)`. Rank states by composite. Top 20% by score → Tier 1 ($2,000). Middle 40% → Tier 2 ($1,500). Bottom 40% → Tier 3 ($1,000). Adjust breakpoints if the natural distribution suggests different cut points (e.g., if there's a clear gap between rank 12 and rank 13, use that as the Tier 1 boundary).
+### 8.3 What is published vs. internal
 
-### 8.3 What gets published only after the above
+| Buyer-facing | Internal-only |
+|---|---|
+| Tier 1/2/3 grouping (§3.3) | The pricing formula (§3.2) |
+| Per-state price ($1,000 / $1,500 / $2,000) | The contact-count rule (≥5,000 etc.) |
+| All-50 ceiling at $12,500 | The à la carte $64,500 calculation |
+| The "50% undercut vs. Neilson" headline | Underlying contact counts per state |
 
-- Specific state-to-tier assignments
-- The "save $X vs. à la carte" number shown next to the all-50 button
-- Any per-state quote in marketing copy
-
-Until then, the Enterprise tier page can publish the **structure** (slider, ceiling, formula explanation) without specific state names — sales conversations can quote tier prices verbally.
+Sales conversations may quote underlying contact counts to credibility-build with a Distribution Expander who's done their homework, but the pricing page shows tier-grouped prices only.
 
 ---
 
@@ -246,7 +259,7 @@ Until then, the Enterprise tier page can publish the **structure** (slider, ceil
 ## 10. Open questions — surface when implementing
 
 1. **Map UI vs. multi-select for state slider.** Interactive US map is more delightful but harder to build and ADA-compliant; multi-select dropdown is simpler. Recommendation: ship multi-select first, iterate to map. *Surface when:* scoping the Enterprise tier page build.
-2. **Per-lead pricing as alternative to per-state.** Master O raised this as a possible unit. Recommendation: keep state as the access unit (matches Neilson's mental model the market is trained on); use credits for per-record actions inside that access (per D-014). Per-lead pricing would fragment the buyer's decision into thousands of micro-purchases — wrong unit for an annual-contract sale. *Surface if:* a customer specifically asks for per-lead pricing during a demo.
+2. **Future per-lead consumption layer.** State purchase = access entitlement (per §7). Per-record actions inside that access are metered via credits (per D-014). If a buyer specifically asks for "show me only the leads I'm going to act on" pricing, consider a "leads consumed" metric on top of the state subscription. *Surface when:* a customer specifically asks during a demo. (Per-state remains the primary unit — already validated by Neilson training the market on it.)
 3. **Distribution+ qualification standard.** §5 says "mutually defined at contract" — but a default template would speed early deals. Draft template: "agent meets appetite criteria + signs producer agreement + bound first policy within 120 days." *Surface when:* first Distribution+ contract is negotiated.
 4. **Renewal mechanics for state-mix changes.** What happens if a customer wants to drop NY and add OH at renewal? Recommendation: allow state-mix changes at renewal at the current tier price; charge a $500 admin fee for mid-term changes. *Surface when:* first renewal cycle approaches.
 5. **DOT Intel Enterprise+ outcome SKU scope.** §5 references appointments as the outcome unit — that's clean for AgencySignal. For DOT Intel, the equivalent might be "qualified submission routed to MGA" or "carrier bound after intro." Needs definition with first carrier/MGU contract. *Surface when:* first DOT Intel Enterprise+ contract conversation.
@@ -257,11 +270,12 @@ Until then, the Enterprise tier page can publish the **structure** (slider, ceil
 
 In dependency order:
 
-1. **Run §8.1 query** against AgencySignal Supabase satellite. Fills in tier assignments.
-2. **Draft Enterprise tier page copy** with structure-locked content. Hold publication until §8.1 results are in.
+1. ~~**Run §8.1 query** against AgencySignal Supabase satellite. Fills in tier assignments.~~ **DONE 2026-05-12** (§8).
+2. **Draft Enterprise tier page copy** using locked tier assignments from §3.3. Persona: VP of Distribution at MGAs/wholesalers/carriers.
 3. **Schema migration** for `customer_entitlements` + `appointment_attributions` (§7). Lands in `seven16-platform` satellite per D-008.
-4. **Stripe product catalog setup**: state SKUs (~50 line items), bundle SKUs (Distribution Suite Standard + Outcome), Enterprise Volume SKUs, Distribution+ usage-based SKU.
-5. **Demo conversations**: 5–8 Distribution Expander demos before publishing prices. Validate tier breakpoints and $12,500 ceiling against live reactions.
+4. **Stripe product catalog setup**: state SKUs (~50 line items per tier), bundle SKUs (Distribution Suite Standard + Outcome), Enterprise Volume SKUs, Distribution+ usage-based SKU. Implement the overflow-protection rule (§3.4) in the cart logic.
+5. **Demo conversations**: 5–8 Distribution Expander demos before publishing prices. Validate the $12,500 ceiling and the tier breakpoints against live reactions. Watch specifically for pushback on MI being Tier 1 (data-driven, but counter-intuitive vs. brand-name perception of TX/FL).
+6. **MASTER_CONTEXT.md refresh** — §1 still says "20,739 agencies" (stale). Live data shows 41,705 agencies / 135,453 contacts. Worth a separate `docs(master-context)` commit to keep the hub doc accurate.
 
 ---
 
