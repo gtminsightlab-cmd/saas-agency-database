@@ -1,6 +1,6 @@
 # Master Context — Seven16 Group
 
-**Last updated:** 2026-05-10 (DOT Intel session 25 — directory build kickoff; D-012 added)
+**Last updated:** 2026-05-12 (D-014 + D-015 added — consumption engine inside locked tiers + Enterprise+ layer for second ICP)
 **Purpose:** Single source of truth that any new Claude session (or human collaborator) reads first to get oriented. Everything else points back to this hub.
 
 > **If you are a Claude session reading this for the first time:** read this hub end-to-end, then open the three spokes linked at the bottom (Decision Log, Session State, Folder & Memory Map). Then ask Master O what's next. Do not start substantive work without doing this pass first.
@@ -62,6 +62,10 @@ The Agency Signal $19 Producer tier is the lead-with-the-little-guy bet. Every o
 | **Threshold IQ** | Pricing model is set in the seven16-distribution build session, but not yet integrated with the family pricing strategy. Reformulate collaboratively in a future session before locking in `seven16-platform.plans`. |
 | **Growtheon** | Working price: $97/mo flat. Margin model (reseller vs. white-label control) is open question #2 in §7. Lock when building Growtheon offer pages. |
 | **Seven16Recruit** | Pricing TBD pending attorney W-2 review, scope finalization, and stealth → public transition (open question #3 in §7). |
+
+**Consumption engine (D-014, 2026-05-12):** Locked tiers above are the *membership floor*. Each paid tier also ships with a monthly credit allotment, and users top up via a $5-increment slider with stepped bonus credits (+0% → +45% cap at $1,000+). Subscription credits expire monthly with rollover cap; top-up credits never expire. Variable consumption for PDF/image uploads (5 credits base + per-MB surcharge). Full spec: [PRICING_CREDITS_AND_TOPUPS.md](PRICING_CREDITS_AND_TOPUPS.md).
+
+**Enterprise+ layer (D-015, 2026-05-12):** Second-ICP packaging (Distribution Expanders — VPs of Distribution at MGAs/wholesalers/carriers, explicitly outside D-011's small-firm design target). Agency Signal state-based slider: $1,000–$2,000/state, $12,500 all-50 ceiling (50% undercut of Neilson's $25k). DOT Intel volume packs at $499/$1,499/quote. Distribution+ outcome SKU at $300–$500 per qualified appointment. Distribution Suite bundle at $22,500/yr. Sits inside the existing $399+ / $499+ Enterprise bands — published packaging, not new tiers. Specific per-state prices structure-locked, price-pending the `agency_count_by_state` query. Full spec: [PRICING_ENTERPRISE_LAYER.md](PRICING_ENTERPRISE_LAYER.md).
 
 ---
 
