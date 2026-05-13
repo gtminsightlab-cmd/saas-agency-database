@@ -1,6 +1,6 @@
 # Master Context — Seven16 Group
 
-**Last updated:** 2026-05-12 (D-014 + D-015 added + D-015 fully locked against live database — consumption engine + Enterprise+ state pricing on verified email contacts)
+**Last updated:** 2026-05-12 (D-014 + D-015 fully locked + Agency Signal data snapshot refreshed 20,739 → 41,705 agencies)
 **Purpose:** Single source of truth that any new Claude session (or human collaborator) reads first to get oriented. Everything else points back to this hub.
 
 > **If you are a Claude session reading this for the first time:** read this hub end-to-end, then open the three spokes linked at the bottom (Decision Log, Session State, Folder & Memory Map). Then ask Master O what's next. Do not start substantive work without doing this pass first.
@@ -17,7 +17,7 @@
 
 | Product | Domain | State | One-liner |
 |---|---|---|---|
-| **Agency Signal** | agencysignal.co (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: 20,739 agencies, 191,201 carrier appointments, 400+ writing companies. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". |
+| **Agency Signal** | agencysignal.co (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: **41,705 agencies, 263,657 carrier appointments, 1,085 carriers with active appointments** (1,369 in directory total), 135,453 contacts (85.6% with verified email). Data snapshot 2026-05-12. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". *Marketing copy on the live site remains conservative per DECISION_LOG §2 "pricing copy is placeholder until data inventory catches up."* |
 | **DOT Intel** | dotintel.io | **Live demo build at dotintel.io.** v1 risk scoring with public methodology page + Ineligible band + historical-insurance factors shipped 2026-05-10 (sessions 21-24). **Directory build kickoff session 25 (2026-05-10):** five new schemas (agent / wholesaler / carrier_market / content / marketplace) hosted in this satellite per D-012 — spec + status at `dotintel2/docs/specs/dotintel-directory-build-{spec,status}.md`. Phase 1 Task 1.B (content schema) live. | Trucking / commercial-insurance intelligence platform, FMCSA-data-backed, plus the new claim-side directory layer. |
 | **Threshold IQ** | thresholdiq.io (Cloudflare zone secured 2026-05-02) | **Build in progress** in a separate Claude Code session at `CRM for MGU and Recruiting/seven16-distribution/` (working name `seven16-distribution`). | Multi-tenant operating CRM for emerging MGUs, wholesalers, and program administrators. Producer lifecycle, contracting, licensing, E&O tracking, appointments, exception-based compliance. Tenant zero = Seven16 Group (internal dogfood). Brand framing: "doorway / underwriting threshold / growth threshold" — see D-009 brand brief. Pricing locked in the build session, family integration pending. |
 
