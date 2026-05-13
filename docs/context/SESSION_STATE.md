@@ -1,18 +1,34 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-10 (DOT Intel session 25 — directory build kickoff + content schema shipped, Vercel READY commit `289027a`)
+**Last updated:** 2026-05-12 (Session 21 — pricing strategy locked, D-014 + D-015 + data snapshot refresh)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
 
-### Quick-ref: where each repo lives + latest commit (end of session 15 → updated session 16)
+### Quick-ref: where each repo lives + latest commit
 
-| Repo | Canonical clone | Latest `origin/main` commit |
+| Repo | Canonical clone | Latest commit on `main` |
 |---|---|---|
-| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `194493a` — session 19: walkthrough quick-fill instructions + coverage line updated |
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `769400d` — session 21: MASTER_CONTEXT data snapshot refresh (20,739 → 41,705 agencies) — local only, **not pushed** |
 | `dotintel2` (DOT Intel marketing + demo dashboard + directory build host per D-012) | `C:\Users\GTMin\Projects\dotintel2\` | `289027a` — session 25: directory build kickoff (spec/kickoff/status archived + 32 Stitch UI mocks) + Task 1.B `content` schema live on `vbhlacdrcqdqnvftqtin` |
 | `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | `fe2381d` — Threshold IQ session 2026-05-02 handoff committed |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
+
+### Session 21 (2026-05-12) — Pricing strategy locked
+
+Three commits to `saas-agency-database` `main` (local only, not yet pushed):
+- `915e4fe` — D-014 consumption engine brief + D-015 Enterprise+ brief
+- `f11287b` — D-015 fully locked against live data
+- `769400d` — MASTER_CONTEXT data snapshot refresh
+
+**Full handoff:** [`docs/handoffs/SESSION_21_PRICING_HANDOFF.md`](../handoffs/SESSION_21_PRICING_HANDOFF.md)
+
+Key locked outcomes:
+- **D-014:** Credit + top-up engine inside locked subscription tiers. $5-increment slider, +0% → +45% bonus ceiling. Variable consumption for PDF/image uploads.
+- **D-015:** Enterprise+ pricing for the second ICP (Distribution Expanders). Agency Signal state-based slider on **verified email contacts**: 5 Tier 1 ($2,000), 15 Tier 2 ($1,500), 28 Tier 3 ($1,000), 3 territorial add-ons ($0). All-50 ceiling $12,500 = 50% undercut of Neilson's $25k. Distribution+ outcome SKU $300–$500/qualified appointment. Distribution Suite bundle $22,500/yr.
+- **Data refresh:** Live Agency Signal database now has 41,705 agencies / 263,657 carrier appointments / 1,085 active writing companies / 135,453 contacts (85.6% with verified email).
+
+**Next session opening move:** Enterprise tier page copy draft (uses everything locked in D-015). Schema/Stripe implementation needs engineering bandwidth and can wait.
 
 ### Memory files seeded today
 
