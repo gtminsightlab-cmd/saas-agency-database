@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { ForgotPasswordForm } from "./form";
 
-export const dynamic = "force-dynamic";
-
 export default function ForgotPasswordPage() {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">

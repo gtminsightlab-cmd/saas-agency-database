@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { SignInForm } from "./form";
 
-export const dynamic = "force-dynamic";
-
 export default async function SignInPage({
   searchParams: _searchParams
 }: {
