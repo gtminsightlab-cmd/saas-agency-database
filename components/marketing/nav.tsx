@@ -23,6 +23,9 @@ export function MarketingNav({ isAuthed }: { isAuthed: boolean }) {
           <a href="/#pricing" className="hidden sm:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Pricing
           </a>
+          <Link href="/enterprise" className="hidden md:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
+            Enterprise
+          </Link>
           {isAuthed ? (
             <Link
               href="/build-list"
