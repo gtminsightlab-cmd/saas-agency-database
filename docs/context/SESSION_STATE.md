@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-12 (Session 21 — pricing strategy locked, D-014 + D-015 + data snapshot refresh)
+**Last updated:** 2026-05-14 (AS Session 4 prep — decision-log reconciliation: D-016 + D-017 logged for dotintel2 brand split + no-source-attribution; §6 "always recommend next path" standing rule added; stale "not yet pushed" pricing-commit note cleared)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
@@ -9,17 +9,19 @@
 
 | Repo | Canonical clone | Latest commit on `main` |
 |---|---|---|
-| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `769400d` — session 21: MASTER_CONTEXT data snapshot refresh (20,739 → 41,705 agencies) — local only, **not pushed** |
-| `dotintel2` (DOT Intel marketing + demo dashboard + directory build host per D-012) | `C:\Users\GTMin\Projects\dotintel2\` | `289027a` — session 25: directory build kickoff (spec/kickoff/status archived + 32 Stitch UI mocks) + Task 1.B `content` schema live on `vbhlacdrcqdqnvftqtin` |
-| `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | `fe2381d` — Threshold IQ session 2026-05-02 handoff committed |
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `fea5b34` — merge of feat/foundations-sprint (Vercel Speed Insights + Analytics + security headers); all session-21 pricing commits (`915e4fe` / `f11287b` / `769400d`) pushed |
+| `dotintel2` (DOT Intel marketing + demo dashboard + directory build host per D-012; brand-split now spans dotcarriers.io + dotagencies.io + dotintel.io per D-016) | `C:\Users\GTMin\Projects\dotintel2\` | Past session 28 — Sentry pilot + Vercel Speed Insights + Analytics + security headers merged on `main`. Working tree has uncommitted CSA-schema + training-hub work in progress. |
+| `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | Far past `fe2381d` — Phase E strategic core fully shipped end-to-end (E-1 through E-10 + Phase G producer network). Only unblocked work remaining is E-6-S3 polish + E-9 backfill. STATE.md inside the repo is the authoritative inside view. |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
 
 ### Session 21 (2026-05-12) — Pricing strategy locked
 
-Three commits to `saas-agency-database` `main` (local only, not yet pushed):
+Three commits to `saas-agency-database` `main` — all pushed to origin (verified 2026-05-14):
 - `915e4fe` — D-014 consumption engine brief + D-015 Enterprise+ brief
 - `f11287b` — D-015 fully locked against live data
 - `769400d` — MASTER_CONTEXT data snapshot refresh
+
+Also pushed since session 21: `9b0a2f3` (Session 21 pricing handoff + STATE refresh), `92de72f` (Vercel Speed Insights + Analytics + security headers), `fea5b34` (merge to main).
 
 **Full handoff:** [`docs/handoffs/SESSION_21_PRICING_HANDOFF.md`](../handoffs/SESSION_21_PRICING_HANDOFF.md)
 
