@@ -74,6 +74,10 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 
 - **Pre-launch security gates (cross-product)** — trigger: any "launch," "tell my network," "we're going live with X." Memory `project_pre_launch_security_gates.md`. Mandatory pre-launch upgrades: GitHub Advanced Security ($49/u/mo for private-repo secret scanning — N/A here since this repo is public), Upstash rate limiting, PITR on satellites holding customer data ($100/mo), CSP headers, Better Stack uptime ($25/mo).
 
+- **UI refresh by brand-systems designer (cross-repo, family-wide)** — trigger: designer engaged + brand system delivered. Sequenced AFTER seven16group.com apex build (which defines the brand). AI-generated UI smell across the family is a credibility tax; a polished, distinctive design system is a credibility multiplier worth ~$5–15k freelance investment. Deliverables expected: Figma design system + Tailwind tokens + component library + brand voice guidelines. Cascading rollout per product, not big-bang. See family memory `reference_seven16group_apex_plan.md` + `feedback_no_slop_in_copy.md`.
+
+- **seven16group.com apex build (new repo + Vercel project)** — trigger: brand-systems designer delivered + services-arm scope locked (D-XXX) + bundle-location decision (D-XXX). Holding-company + marketing-agency front door. Architecturally separate from this repo. See family memory `reference_seven16group_apex_plan.md`.
+
 ---
 
 ## Killed (with reason + date)
