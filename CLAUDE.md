@@ -14,11 +14,21 @@ Plus the **seven16-platform** control plane (`soqqmkfasufusoxxoqzx`, no app yet)
 
 ---
 
-## Read these first, in order
+## Session boot order (read in this order, every session)
+
+1. [`docs/BACKLOG.md`](docs/BACKLOG.md) — strategic continuity. What's active, what's queued, what's deferred, what's done. **Read first.** (Working Agreement Rule 6.)
+2. Latest handoff in [`docs/handoffs/`](docs/handoffs/) — tactical state. The highest-numbered file is current truth. (Rule 1.) **Note on numbering:** this repo has two handoff streams — `SESSION_<N>_HANDOFF.md` (family-hub work) and `AGENCY_SIGNAL_SESSION_<N>_HANDOFF.md` (Agency Signal product work). Read the highest-numbered of whichever stream is relevant to today's arc; check both if the arc isn't obvious.
+3. [`docs/WORKING_AGREEMENT.md`](docs/WORKING_AGREEMENT.md) — the 7 standing rules + daily session protocol. Locked 2026-05-15. Identical across `dotintel2` / `saas-agency-database` / `seven16-distribution`.
+
+After reading the three above, propose a 5–10 bullet plan and wait for thumbs-up before touching files. End every session by updating the backlog → writing the next handoff → `git push` → writing the next-session prompt (Rule 5).
+
+---
+
+## Deeper context (read on a need-to-know basis)
 
 1. [docs/STATE.md](docs/STATE.md) — **Agency Signal inside-view, written from inside this repo.** Mirrors the family-ledger Part 1 with extra detail. Read this when this repo is the active focus.
 2. [docs/context/MASTER_CONTEXT.md](docs/context/MASTER_CONTEXT.md) — the family hub. Single source of truth.
-3. [docs/context/DECISION_LOG.md](docs/context/DECISION_LOG.md) — every locked decision (D-001 through D-011). If you're about to relitigate something, check here first.
+3. [docs/context/DECISION_LOG.md](docs/context/DECISION_LOG.md) — every locked decision (D-001 through D-015). If you're about to relitigate something, check here first.
 4. [docs/context/SESSION_STATE.md](docs/context/SESSION_STATE.md) — what's live, what's deferred, current DB counts, deployment HEAD.
 5. [docs/context/FOLDER_AND_MEMORY_MAP.md](docs/context/FOLDER_AND_MEMORY_MAP.md) — folder layout + infrastructure IDs (Supabase, Vercel, Stripe, GitHub).
 6. [docs/handoffs/](docs/handoffs/) — most recent session handoff for chronological context. **Note:** if recent SESSION_N_HANDOFFs are all DOT-Intel-specific, also read [docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md](docs/handoffs/AGENCY_SIGNAL_REFRESH_2026_05_07.md) — orientation refresh that exists specifically because Agency Signal hasn't been the active focus since session 14.
