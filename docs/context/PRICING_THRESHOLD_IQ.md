@@ -186,26 +186,42 @@ For:
 
 ---
 
-## 10. Charter Member integration — PENDING MASTER O DECISION
+## 10. Charter Member integration — LOCKED 2026-05-15 (option (a))
 
-D-018 (amended by D-021) states "Charter Members get best TIQ submission band rate locked for life." With three named TIQ tiers now locked, the integration needs concrete mechanics. Three options:
+D-018 (amended by D-021) states "Charter Members get best TIQ submission band rate locked for life." Master O confirmed CTO recommendation of **option (a)** on 2026-05-15.
 
-| Option | What charter member gets | Effective discount example | CTO recommendation |
-|---|---|---|---|
-| **(a) Subscription discount + best overage rate** | 25% off subscription at whatever tier they're on + always Scale-tier overage rate ($1/sub) regardless of tier | Charter Launch = $375/mo + $1 overage. Charter Growth = $1,125 + $1 overage. Charter Scale = $3,000 + $1 (already Scale rate). | ✅ **Recommended.** Compounds with universal credit max-bonus (per D-018 amended). Scales naturally as charter member grows from Launch → Growth → Scale. Subscription discount earns immediate ROI; lowest-tier overage rate becomes more valuable as their submission volume grows. |
-| **(b) Always Launch subscription + Scale overage** | Pay Launch fee ($500) at any tier + always Scale-tier overage rate | Charter member with 1,000 sub/mo = $500 + 500 × $1 = $1,000 total (vs. Growth standard at $1,500/mo including 500 + 500 × $2 = $2,500). Big benefit for small-firm wedge. | Most generous to small operators but creates weird tier semantics ("they're on Scale features but Launch pricing"). |
-| **(c) Flat % off everything** | 30% off subscription + 30% off overage at any tier | Charter Launch = $350/mo + $2.10 overage. Charter Growth = $1,050 + $1.40. Charter Scale = $2,800 + $0.70. Simplest math. | Cleanest to explain; less compounding with credit-bonus logic from D-018. |
+**The mechanic:**
+- **25% off subscription** at whatever tier the charter member is on
+- **PLUS always Scale-tier overage rate ($1/sub)** regardless of which tier they're subscribed to
+- Both benefits locked for life per D-018 amended
 
-**My CTO recommendation: option (a).** Reasons:
-1. Compounds with the D-018 credit max-bonus tier (Charter Members already get +40% credit bonus permanently)
-2. Tier semantics stay clean (charter member on "Growth" really IS on Growth, just with charter rate)
-3. Scales with growth — as charter member moves from Launch → Growth → Scale, their charter benefit ROI grows
-4. 25% off subscription is psychologically meaningful without crushing TIQ unit economics
-5. Always-Scale-overage protects them from overage explosion as volume grows (most valuable when they need it most)
+**Charter Member TIQ pricing:**
 
-**Master O decision needed before this doc is "complete."** Until decided, slide 17–18 of the Charter Member deck (and the SESSION_3 `/pricing` page build) hand-waves "Charter Member rate."
+| Standard tier | Standard fee | Standard overage | **Charter fee** | **Charter overage** | Charter total at tier's included submissions |
+|---|---|---|---|---|---|
+| **Launch** | $500/mo | $3/sub | **$375/mo** | **$1/sub** | $375/mo for 100 sub |
+| **Growth** | $1,500/mo | $2/sub | **$1,125/mo** | **$1/sub** | $1,125/mo for 500 sub |
+| **Scale** | $4,000/mo | $1/sub | **$3,000/mo** | **$1/sub** | $3,000/mo for 2,000 sub |
 
----
+**Example math (compounding charter member ROI):**
+- Charter Launch member at 250 submissions/mo (150 over Launch's 100 included): $375 + 150 × $1 = **$525 total** (vs. standard Launch at $500 + 150 × $3 = $950, OR standard Growth at $1,500). Charter Launch member running 2.5× their included submissions still pays less than standard Launch.
+- Charter Growth member at 750 submissions/mo (250 over Growth's 500 included): $1,125 + 250 × $1 = **$1,375 total** (vs. standard Growth at $1,500 + 250 × $2 = $2,000).
+- Charter Scale member at 3,500 submissions/mo (1,500 over Scale's 2,000 included): $3,000 + 1,500 × $1 = **$4,500 total** (vs. standard Scale at $4,000 + 1,500 × $1 = $5,500).
+
+**Why this compounds with the rest of D-018:** Charter Members already get +40% credit bonus on top-ups (effective $0.107/credit on universal credits per amended D-018). The TIQ charter mechanic adds 25% off subscription + best overage rate. A charter member running TIQ + buying Agency Signal leads + buying DOT Intel lookups + monitoring with DOT Alerts is getting compound discount across all four surfaces. **A single charter member can save thousands per year vs. standard pricing** — that's the founding-member offer in concrete dollar terms.
+
+**Why option (a) over (b) or (c):**
+- Tier semantics stay clean: charter member on Growth really IS on Growth tier (just with charter rate). No "Scale features at Launch pricing" weirdness.
+- Scales with charter member's business growth (each new tier they move into = new discount value compounds)
+- 25% subscription discount is psychologically meaningful without crushing TIQ unit economics
+- Always-Scale-overage protects charter members from overage explosion as their submission volume grows
+- Compounds cleanly with the universal credit max-bonus from amended D-018
+
+**Cascaded to:**
+- `saas-agency-database/docs/context/DECISION_LOG.md` D-018 entry (amendment note)
+- Charter Member deck on Desktop (slides 17-18 can now render real charter math)
+- `seven16-distribution/docs/handoffs/SESSION_3_PROMPT.md` (TIQ subsection of /pricing page can render charter math)
+- Family memory `project_charter_member_program.md` (specific charter rates per surface)
 
 ## 11. Recommended internal operating model
 

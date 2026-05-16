@@ -104,26 +104,48 @@ Yes. You can change plans as your fleet grows or contracts. Upgrades are prorate
 
 ---
 
-## 8. Charter Member integration — PENDING MASTER O DECISION
+## 8. Charter Member integration — LOCKED 2026-05-15 (option (a))
 
-D-018 (amended by D-021) states "Charter Members get best alerts per-unit rate locked for life." With the new flat-tier-band model, the integration needs concrete mechanics. Three options:
+D-018 (amended by D-021) states "Charter Members get best alerts per-unit rate locked for life." Master O confirmed CTO recommendation of **option (a)** on 2026-05-15.
 
-| Option | What charter member gets | Example | CTO note |
-|---|---|---|---|
-| **(a) 25% off whatever tier they're on** | Charter pays 75% of their fleet-size tier price | Charter Growing Fleet (8 drivers) = $67.50/mo (vs $90 standard) | ✅ **Recommended.** Compounds with credit max-bonus + TIQ charter rate. Tier semantics stay clean. Scales with growth — Charter member moving from Small → Growing → Regional sees the discount apply at each step. |
-| **(b) Always pay the next-tier-down rate** | Charter Small Fleet pays Owner-Operator rate, Charter Growing pays Small Fleet rate, etc. | Charter Regional Fleet (25 drivers) = $90/mo (Growing Fleet rate, vs Regional $175) | Most generous mid-range; creates tier semantic weirdness ("Regional features at Growing pricing"); breaks down for Owner-Operator (no tier below). |
-| **(c) Always pay Large Fleet effective per-unit ($3.50)** with monthly minimum $25 | Charter Small Fleet (5 drivers) = max($25, 5 × $3.50) = $25/mo. Charter Growing Fleet (15 drivers) = 15 × $3.50 = $52.50/mo. Charter Regional Fleet (40 drivers) = 40 × $3.50 = $140/mo. | Most generous to mid-size fleets; computationally complex; doesn't align with the "no per-alert charges" simplicity story. |
+**The mechanic:**
+- **25% off whatever fleet-size tier the charter member is on**
+- Discount applies at every tier; scales with charter member's fleet growth
+- Locked for life per D-018 amended
 
-**My CTO recommendation: option (a)** — 25% off whatever tier they're on. Reasons:
-1. Compounds cleanly with credit max-bonus (D-018 amended) and TIQ charter rate (PRICING_THRESHOLD_IQ.md §10)
-2. Marketing copy is dead simple: "Charter Members get 25% off DOT Alerts forever, at any fleet size."
-3. Scales with fleet growth — the discount applies at each new tier
-4. Doesn't create tier semantic weirdness
+**Charter Member DOT Alerts pricing:**
+
+| Tier | Drivers | Standard fee | **Charter fee** | Charter effective per-driver |
+|---|---|---|---|---|
+| **Owner-Operator** | 1 | $25/mo | **$18.75/mo** | $18.75/driver |
+| **Small Fleet** | 2–5 | $50/mo | **$37.50/mo** | $7.50–$18.75/driver |
+| **Growing Fleet** | 6–15 | $90/mo | **$67.50/mo** | $4.50–$11.25/driver |
+| **Regional Fleet** | 16–40 | $175/mo | **$131.25/mo** | $3.28–$8.20/driver |
+| **Large Fleet** | 41–100 | $350/mo | **$262.50/mo** | $2.63–$6.40/driver |
+| **Enterprise** | 101+ | $500+/mo | **$375+/mo** (25% off negotiated) | Custom |
+
+**Why option (a):**
+1. Compounds cleanly with credit max-bonus (Charter Members already get +40% credit bonus from D-018 amended) + TIQ charter rate (25% off subscription + always Scale-tier overage from PRICING_THRESHOLD_IQ §10)
+2. Marketing copy is dead simple: **"Charter Members get 25% off DOT Alerts forever, at any fleet size."**
+3. Scales with fleet growth — the discount applies at each new tier the charter member moves into
+4. Doesn't create tier semantic weirdness (charter member on Growing Fleet really IS on Growing Fleet, just at charter rate)
 5. Aligns with the "predictable monthly fee per fleet size" core value prop (just at a charter rate)
 
-**Master O decision needed before:** (a) SESSION_3 `/pricing` page renders Charter Member alerts math, (b) Charter Member deck slide 17 finalizes Charter pricing example.
+**Compound discount example (charter member with multi-product adoption):**
 
----
+Charter member running a 15-truck fleet + TIQ Growth + buying Agency Signal credits:
+- **DOT Alerts** (Growing Fleet): $67.50/mo (vs. $90 standard) — saves $270/year
+- **TIQ** (Growth tier, charter rate): $1,125/mo + $1/sub overage (vs. $1,500 + $2/sub standard) — saves $4,500/year base + overage savings scale with submission volume
+- **Agency Signal credits:** +40% bonus on every top-up forever (vs. tier-bonus-bands for non-charter) — saves 20–40% on lead acquisition spend
+- **Compound annual savings: $5,000+ baseline, scaling much higher with usage volume**
+
+That's the founding-member offer in concrete dollar terms.
+
+**Cascaded to:**
+- `saas-agency-database/docs/context/DECISION_LOG.md` D-018 entry (amendment note)
+- Charter Member deck on Desktop (slides 17-18 can now render real compound charter math)
+- `seven16-distribution/docs/handoffs/SESSION_3_PROMPT.md` (alerts subsection of /pricing page can render charter math)
+- Family memory `project_charter_member_program.md` (specific charter rates per surface)
 
 ## 9. Commercial guardrails
 
