@@ -37,3 +37,4 @@ data/
 
 # Temporary scratch
 .test_*
+.vercel
