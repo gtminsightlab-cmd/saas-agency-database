@@ -2,7 +2,7 @@
 
 The 7 standing rules + daily session protocol for any Claude Code session in this repo. Identical across `dotintel2`, `saas-agency-database`, and `seven16-distribution` — temporary divergence noted in §Rule-5 below pending cross-repo cascade (one repo per session per Rule 2).
 
-Locked: 2026-05-15. Rule 5 amended SESSION_24 (2026-05-15) to add FAMILY_HEALTH.md update per [`ANTI_DECAY_PROTOCOL.md`](context/ANTI_DECAY_PROTOCOL.md) Mechanism #1.
+Locked: 2026-05-15. Rules 2 + 5 amended SESSION_24 (2026-05-15) — Rule 2(b) cross-repo prep artifact exception added; Rule 5 step 1 adds FAMILY_HEALTH.md update per [`ANTI_DECAY_PROTOCOL.md`](context/ANTI_DECAY_PROTOCOL.md) Mechanism #1.
 
 ---
 
@@ -12,7 +12,21 @@ Locked: 2026-05-15. Rule 5 amended SESSION_24 (2026-05-15) to add FAMILY_HEALTH.
 Every session ends with `SESSION_<N>_HANDOFF.md`. The highest-numbered one is current state. If confused about where things stand, read that file. Ignore everything else.
 
 **Rule 2 — One session per repo at a time.**
-Two Claude Code sessions in the same working tree will collide. Run sessions sequentially per repo. Exception: a git worktree (different folder, different branch) is the safe parallel pattern when truly needed.
+Two Claude Code sessions in the same working tree will collide. Run sessions sequentially per repo.
+
+**Reading another family repo's files is always allowed** — needed for cross-product context (FAMILY_HEALTH.md refreshes, dependency map updates, design layouts).
+
+**Writing to another family repo from this session is restricted.** Two exceptions to the "one session per repo" wall:
+
+(a) **Git worktree.** A different folder + different branch of the same repo is the safe parallel pattern when truly needed.
+
+(b) **Cross-repo prep artifact pattern (added SESSION_24, 2026-05-15).** A session in Repo A may produce paste-ready prep artifacts FOR Repo B's next session — `SESSION_<N>_PROMPT.md` drafts, full script content as chat output or as a `.md` scaffold in Repo A's tree, dependency notes, design layouts — provided:
+  1. The artifact lives in Repo A's tree OR in chat output. Zero file writes to Repo B's working tree.
+  2. Zero git commits in Repo B from this session.
+  3. Zero migrations applied to Repo B's Supabase satellite from this session.
+  4. Repo B has no active Claude Code session running.
+
+The next Repo B-owned session executes the artifact. The collision risk Rule 2 protects against (two Claude processes racing the same .git) is preserved by clauses 1+2+4. **Default behavior remains: open a fresh Repo B session for Repo B work.** Rule 2(b) is the efficiency carve-out when cross-product context is already loaded and the prep is short.
 
 **Rule 3 — One arc per session.**
 Don't mix "CSA ingest" + "directory work" + "training UI" in one session. Pick the ONE arc you're advancing. When you finish — or realize you need to switch — end the session, write the handoff, start a new one.

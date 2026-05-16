@@ -26,8 +26,13 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 
 2. **[AS] Per-user data cache via `@vercel/kv` or Upstash Redis (~half day).** Cache `app_users` + `v_my_entitlement` per-user with short TTL — saves ~200ms/authed-page render. Free tier covers current scale. Needs invalidation strategy on user settings changes. Lower urgency than items 0–1 above; consider when scaling pressure becomes real.
 
-3. **[HUB] Cascade WORKING_AGREEMENT.md Rule 5 amendment to `dotintel2` + `seven16-distribution`** (~5 min each). SESSION_24 added a sub-bullet to Rule 5 in saas-agency-database only ("if material, refresh `FAMILY_HEALTH.md` at session close" per ANTI_DECAY_PROTOCOL Mechanism #1). Rule 2 requires one repo per session for cross-repo rule changes — so dotintel2 and seven16-distribution copies of WORKING_AGREEMENT.md diverge until cascaded in their respective next sessions. Drop into the next session of each of those repos as a 5-min open-the-session edit. Until cascaded, saas-agency-database family-hub sessions handle the FAMILY_HEALTH refresh on their behalf.
-   *Source:* `WORKING_AGREEMENT.md` §Rule-5 footer note + SESSION_24_HANDOFF.md.
+3. **[HUB] Cascade WORKING_AGREEMENT.md Rule 2 + Rule 5 amendments to `dotintel2` + `seven16-distribution`** (~5 min each repo, two rules in one edit). SESSION_24 amended two rules in saas-agency-database only:
+   - **Rule 2(b)** — new cross-repo prep artifact exception. A session in Repo A may produce paste-ready prep artifacts (next-session prompts, draft scripts, design layouts) for Repo B's next session under 4 clauses (no file writes / commits / migrations in Repo B; no active Repo B session running). Codified after Master O surfaced the legitimate cross-product context need during the SODA ingest design discussion.
+   - **Rule 5 step 1** — new "if material, refresh `FAMILY_HEALTH.md` at session close" sub-bullet per ANTI_DECAY_PROTOCOL Mechanism #1.
+
+   Rule 2 itself requires one repo per session for cross-repo rule changes — so dotintel2 and seven16-distribution copies of WORKING_AGREEMENT.md diverge until cascaded in their respective next sessions. Drop into the next session of each of those repos as a 5-min open-the-session edit. Until cascaded: saas-agency-database family-hub sessions handle FAMILY_HEALTH refresh on their behalf, AND Rule 2(b) cross-repo prep artifact pattern operates safely from saas-agency-database (since the rule is locally defined there).
+
+   *Source:* `WORKING_AGREEMENT.md` §Rule-2 + §Rule-5 footer note + SESSION_24_HANDOFF.md.
 
 4. **[HUB] Schema migration: `customer_entitlements` + `appointment_attributions` in `seven16-platform` satellite (`soqqmkfasufusoxxoqzx`).** State-level RLS enforcement + outcome SKU attribution tracking per D-015 §7. Required before Stripe catalog setup can wire end-to-end. *Source:* [`docs/context/PRICING_ENTERPRISE_LAYER.md`](context/PRICING_ENTERPRISE_LAYER.md) §11.3.
 

@@ -23,10 +23,11 @@ Plus housekeeping: committed the two dangling SESSION_23-close leftovers (`.giti
 
 - **[`docs/context/FAMILY_HEALTH.md`](../context/FAMILY_HEALTH.md) v1** (NEW) — per-repo snapshot across 4 family repos, cross-product dependency map, Charter Member program status, D-021 pricing surface lock status, external dependency table, parked/spinoff repo register. v1 caveat captured inline: aging buckets approximate until Mechanism #2 (per-item `[YYYY-MM-DD]` timestamps) lands in each repo's next session.
 
-### Working Agreement amendment
+### Working Agreement amendments (two rules touched)
 
-- **`docs/WORKING_AGREEMENT.md` Rule 5 amended** — added step 1 sub-bullet: "If the session materially changed repo state, active arc, queue, or any cross-product dependency, update `docs/context/FAMILY_HEALTH.md` per ANTI_DECAY_PROTOCOL Mechanism #1." Daily-session-protocol Close-step row updated to match. Header note flags temporary cross-repo divergence pending cascade.
-- **Cross-repo cascade queued** (BACKLOG #3) — `dotintel2` and `seven16-distribution` copies of WORKING_AGREEMENT.md cascade the amendment in their respective next sessions (Rule 2 — one repo per session for cross-repo rule changes). Until cascaded, saas-agency-database family-hub sessions handle FAMILY_HEALTH refresh on their behalf.
+- **`docs/WORKING_AGREEMENT.md` Rule 5 amended** — added step 1 sub-bullet: "If the session materially changed repo state, active arc, queue, or any cross-product dependency, update `docs/context/FAMILY_HEALTH.md` per ANTI_DECAY_PROTOCOL Mechanism #1." Daily-session-protocol Close-step row updated to match.
+- **`docs/WORKING_AGREEMENT.md` Rule 2(b) added** (session tail amendment, after FAMILY_HEALTH commit) — new cross-repo prep artifact exception. A session in Repo A may produce paste-ready prep artifacts (next-session prompts, draft scripts, design layouts) FOR Repo B's next session, under 4 clauses: no file writes to Repo B's tree, no commits in Repo B, no migrations against Repo B's satellite, no active Repo B Claude session. Codified after the SODA ingest layout discussion surfaced the legitimate cross-product context use case — the existing "one session per repo" wall was forcing inefficient session churn when cross-product context was already loaded and the prep was short. Collision-risk protection preserved by clauses 1+2+4.
+- **Cross-repo cascade queued** (BACKLOG #3) — `dotintel2` and `seven16-distribution` copies of WORKING_AGREEMENT.md cascade BOTH Rule 2 + Rule 5 amendments in their respective next sessions (Rule 2 itself requires one repo per session for cross-repo rule changes). Until cascaded: saas-agency-database family-hub sessions handle FAMILY_HEALTH refresh on their behalf, AND Rule 2(b) prep artifact pattern operates from saas-agency-database since the rule is locally defined there.
 
 ### Housekeeping (SESSION_23-close leftovers)
 

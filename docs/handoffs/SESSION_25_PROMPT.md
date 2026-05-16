@@ -164,7 +164,9 @@ STEP 5 — DO NOT in this session
     UI is its own session
   • Update WORKING_AGREEMENT.md across dotintel2 or
     seven16-distribution (Rule 2 — those cascades happen in those
-    repos' own next sessions per BACKLOG #3)
+    repos' own next sessions per BACKLOG #3; cascade now covers
+    BOTH Rule 2(b) cross-repo prep artifact pattern + Rule 5
+    FAMILY_HEALTH update)
   • Build Enterprise+ state-slider SKUs (D-015 complexity — its own
     session)
   • Skip webhook signature verification (security gate per
@@ -190,9 +192,11 @@ Family doctrine reminders:
     dashboard; never paste keys in conversation
 
 Open implementation queue (surface as relevant during planning):
-  • Cascade Rule 5 amendment to dotintel2 + seven16-distribution
-    (BACKLOG #3 — 5 min each in their respective next sessions, NOT
-    this session)
+  • Cascade Rule 2(b) + Rule 5 amendments to dotintel2 +
+    seven16-distribution (BACKLOG #3 — 5 min each in their
+    respective next sessions, NOT this session). Rule 2(b) =
+    cross-repo prep artifact exception; Rule 5 = FAMILY_HEALTH.md
+    update at close.
   • PRICING_CREDITS_AND_TOPUPS.md amendment banner (trivial)
   • Quote-routing fees operational spec ($100-300/lead per
     `project_dotagencies_dotcarriers_monetization_model.md`)
