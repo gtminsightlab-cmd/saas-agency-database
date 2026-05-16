@@ -1,106 +1,142 @@
-# DOTAgencies Learning Center — Pricing Spec (PLACEHOLDER)
+# DOTAgencies Learning Center — Pricing Spec
 
-**Last updated:** 2026-05-15
+**Locked:** 2026-05-15
 **Parent decision:** D-021 §"Training (DOTAgencies Learning Center) — individual modules + agency/wholesaler team packages"
-**Status:** ⚠️ PLACEHOLDER — substantive pricing decisions still need Master O input. This doc captures what's known + flags what needs locking before the Learning Center can ship full pricing on the SESSION_3 `/pricing` page.
+**Surface:** dotagencies.io/learn
+**Buyers:** retail producers (individual), agencies (team packs), wholesalers/MGAs (team packs)
+
+> **Supersedes prior placeholder version of this doc.** Master O locked pricing model + Learning Center v1 scope 2026-05-15.
 
 ---
 
-## What's known (locked or near-locked)
+## 1. Learning Center v1 — single course (with more to follow)
 
-| Item | Value | Source |
-|---|---|---|
-| Product surface | dotagencies.io/learn | Family STATE + D-016 brand split |
-| Module count | 9 modules | Master O strategy doc + dotintel2 STATE.md |
-| Module structure | Quizzes + flashcards + per-module exam | Master O strategy doc |
-| Pass threshold | 70% score per module | Master O strategy doc |
-| Cert at completion | Yes — visible on DOTAgencies directory listing | Existing implementation (session 28 training cert) |
-| Entry price band | "Under $20" | Master O strategy doc |
-| External cert recommended at completion | MCIEF TRS | Master O strategy doc |
-| Charter Member rate | 25% off (per D-018 amended, applied family-wide) | D-018 amended by D-021 |
-| Database row counts | 9 modules + 23 lessons + 106 flashcards | dotintel2 STATE.md §3 db state |
+The Learning Center launches with **one course / one module** in v1. It is intentionally a funnel-input product designed to get producers interested in the DOT Intel platform.
+
+**Course topic:** how to use DOT Intel to (a) generate trucking insurance leads and (b) determine which insurance markets a given DOT account should be matched to, based on risk profile.
+
+**Why this single-course-first launch matters:**
+- Producer completes the course → understands the product → high probability of trying DOT Intel paid tier
+- Cert holders get a badge visible on their DOTAgencies directory listing → directory becomes more useful for everyone
+- Single course is shippable NOW; future modules ship as additional SKUs (purchased separately OR bundled later)
+
+**Future module pipeline (not in v1, but architectural placeholder for):** advanced lead-gen techniques, niche specialization paths (per insurance company appointment), wholesaler operating playbook, MGU launch toolkit, etc. Each future module is its own SKU at launch.
 
 ---
 
-## ⚠️ NEEDS MASTER O DECISION
+## 2. Individual Producer pricing — LOCKED
 
-### Pricing model — pick one (or describe your own)
-
-| Option | Mechanics | Pros | Cons |
-|---|---|---|---|
-| **(a) Pay-per-module** | $9–$15/module, buy individually | Lowest barrier to entry; clear value per module | Most users won't complete sequence without bundle |
-| **(b) Course bundle (all 9 modules)** | $79 one-time for the full 9-module path + cert | Simple to explain; aligns with the "trucking specialist path" framing | Misses upsell from people only wanting 1-2 modules |
-| **(c) Hybrid: per-module OR bundle** | $15/module OR $79 for all 9 + cert | Best of both worlds; "buy what you need, save with bundle" | Slight complexity; needs cart logic |
-| **(d) Annual subscription** | $99/yr for all current modules + future modules + cert refresh | Recurring revenue; covers future module shipments | New SaaS billing surface for one-off product |
-
-**My CTO recommendation: option (c) — hybrid per-module OR bundle.** Reasons:
-1. "Under $20 per module" matches Master O's stated entry-price target
-2. Bundle at $79 = ~$8.78/module effective (38% bundle discount) — significant enough to drive bundle uptake
-3. Hybrid covers two buyer behaviors: dabblers (one or two modules) AND committed specialists (whole path)
-4. Bundle creates clear value moment for the certificate completion (no one buys all 9 modules separately just to get the cert)
-5. Charter Members at 25% off: $11.25/module OR $59.25 for full bundle — keeps the offer materially better than standard
-
-**Master O decision needed.**
-
-### Team packages — agency/wholesaler pricing
-
-If an agency owner wants to put their 10 producers through the course as a team, what's the model?
-
-| Option | Mechanics |
+| Item | Value |
 |---|---|
-| **(a) Per-seat license** | $79 standard bundle × N producers (no discount) |
-| **(b) Team pack discounts** | 5–9 producers: 10% off. 10–24: 20% off. 25+: 30% off. (Per-seat with volume discount.) |
-| **(c) Flat agency license** | $499/yr for unlimited producers under one agency (covers all current employees + new hires for 12 months) |
-| **(d) Hybrid: team pack OR flat license** | Smaller teams pick team pack; larger teams pick flat license; system surfaces the better deal |
-
-**My CTO recommendation: option (d) — hybrid team pack OR flat license.** Reasons:
-1. 10-producer team: 10 × $79 × 0.80 (team pack) = $632 OR flat $499 → system suggests flat license (better deal at this size)
-2. 5-producer team: 5 × $79 × 0.90 = $355.50 OR flat $499 → system suggests team pack (better at this size)
-3. The math automatically picks the right offer; reduces buyer's cognitive load
-4. Charter Member agencies get 25% off whichever path they're on
-5. Volume discount + flat-license alternative covers small-agency-to-MGA spectrum
-
-**Master O decision needed.**
-
-### Wholesaler team packages
-
-Same model as agency but for wholesaler/MGA teams (which may be 25–100+ producers). The team pack discount could extend further OR the flat-license model could have a wholesaler-tier ($1,499/yr unlimited under wholesaler umbrella).
-
-**Master O decision needed.**
-
-### Future modules
-
-When new modules ship (beyond the initial 9), what happens?
-- Bundle buyers: do they get new modules free? Or upgrade fee?
-- Annual subscribers (if option (d) above): yes, included
-- Per-module buyers: pay separately for new modules
-
-**Master O decision needed.**
+| **Course price (individual producer)** | **$29.95** one-time |
+| Charter Member rate (per D-018 amended) | **$22.46** (25% off) |
+| Certificate at completion | Included; displays as badge on DOTAgencies directory listing |
+| Course access | Lifetime (no subscription) |
 
 ---
 
-## Charter Member integration (locked once core pricing is locked)
+## 3. Agency team packs — LOCKED (toggle 1–25 producers with volume discount)
 
-Per D-018 amended: Charter Members get 25% off whatever pricing model lands above. Applies to individual modules, bundles, team packages, and any future subscription product. Locked once core pricing model is locked.
+Agencies can purchase team packs covering multiple producers. UI uses a toggle slider 1–25; discount tier shows based on selected quantity.
+
+| Producer count | Discount | Per-seat effective | Pack price | Charter pack (25% off pack price) |
+|---|---|---|---|---|
+| **1–4** | 0% (no discount) | $29.95 | $29.95 × N | $22.46 × N |
+| **5** | **12%** off | $26.36 | $131.78 | $98.83 |
+| **6–10** | **20%** off | $23.96 | $143.76 (6) → $239.60 (10) | $107.82 (6) → $179.70 (10) |
+| **11–14** | **20%** off (continues from 6–10 band — no new tier mid-range) | $23.96 | $263.56 (11) → $335.44 (14) | $197.67 (11) → $251.58 (14) |
+| **15–19** | **30%** off | $20.97 | $314.48 (15) → $398.34 (19) | $235.86 (15) → $298.76 (19) |
+| **20–25** | **35%** off | $19.47 | $389.35 (20) → $486.69 (25) | $292.01 (20) → $365.01 (25) |
+
+**Charter Member rate on team packs: 25% off the calculated pack price** (per D-018 amended, applies to Learning Center as it does to every other paid product).
+
+**Note on 11–14 band:** Master O's spec defined explicit discount bands at 5 (12%), 6–10 (20%), 15–19 (30%), 20–25 (35%) but did not specify 11–14. CTO call: continue the 20% rate through 11–14 to avoid introducing a 5th discount tier in the middle range (keeps the UI toggle simple). If a different intermediate rate is preferred, supersede this in a follow-up amendment.
 
 ---
 
-## Strategic rationale (CTO/PM frame)
+## 4. Wholesaler team packs
 
-The Learning Center is **the lowest-friction entry point in the entire Seven16 family.** "Under $20" prices are below the impulse-purchase threshold for almost any working producer. The job of this product is:
+Wholesalers / MGAs / MGUs purchasing for their producer networks use the same 1–25 toggle as agencies. **Above 25 producers, pricing moves to custom quote** (volume-negotiated, typically wholesalers will exceed 25 producers).
 
-1. **CAC reducer for DOT Intel + Agency Signal.** Course completers are 10× more likely to convert to paid SaaS subscriptions because they've already self-identified as trucking-niche specialists.
-2. **Category authority signal.** Seven16 becomes the brand that trains trucking-insurance specialists, which builds long-term credibility independent of any single product.
+Wholesaler team packs of 26+ → contact for custom rate. Internal anchor for negotiation: ~$15/seat at 50+ producers, ~$10/seat at 100+. To be refined as first wholesaler deal informs.
+
+---
+
+## 5. Agency dashboard for team-pack purchasers — BUILD TODO
+
+**Required feature when team packs are built (NOT live in v1 of Learning Center):** agencies that purchase team packs get access to an admin dashboard showing:
+- Progress of each producer through the course (modules started, completed, in-progress)
+- Quiz scores per producer per module
+- Certification status (passed / failed / not-yet-attempted) per producer
+- Ability to nudge producers who haven't completed
+- Ability to re-assign seats if a producer leaves the agency
+
+**Build implication:** new admin surface in dotagencies.io OR DOT Intel dashboard for agency-tier accounts. Schema additions to track per-producer-per-module progress + scores.
+
+**Queue:** added to dotintel2 BACKLOG as a deferred-until-team-packs-ship item in the next dotintel2 session.
+
+---
+
+## 6. Future modules — pricing approach
+
+When module #2 ships (and #3, #4, etc.):
+- Each module priced individually at $29.95 (anchor maintained)
+- Bundle discount available when buying multiple modules at once (TBD specific bands; suggest 2 modules = 10% off, 3+ = 15% off — to be locked when module #2 lands)
+- "Trucking Specialist Path" bundle (all currently-shipped modules + cert): TBD when 3+ modules exist
+- Existing customers who bought module #1 individually do NOT automatically get module #2 free; standalone purchase required
+- Team-pack toggle extends per-module (i.e., agency buying module #2 for 10 producers uses the same toggle ladder)
+
+---
+
+## 7. Charter Member integration — LOCKED
+
+Per D-018 amended: Charter Members get **25% off** any Learning Center purchase:
+- Individual course: $22.46 (vs. $29.95 standard)
+- Team packs: 25% off the calculated pack price at any discount tier
+- Future modules: 25% off list
+
+Charter Member benefit compounds with team-pack volume discounts — a charter agency buying a 15-producer pack pays $235.86 (vs. $314.48 standard at the 30% volume discount).
+
+---
+
+## 8. Strategic rationale
+
+- **$29.95 single-module price** is psychologically a "yes" for a working producer — below the $50 threshold most agencies don't even require approval for
+- **Volume discount ladder rewards agency scale** without crushing per-seat economics for small operators
+- **Single-course v1 lets us validate** which producers actually complete + convert to DOT Intel paid users; the data informs module #2 design
+- **Agency dashboard feature** transforms Learning Center from "individual training product" → "agency-wide capability investment" (much higher ARPU)
+- **Future modules as standalone SKUs** preserves optionality — we can A/B test pricing on module #2 without disrupting module #1 buyers
+- **Charter Member 25% off** keeps the Learning Center friendly to the founding network without compromising the per-seat economics
+
+---
+
+## 9. Cross-product flywheel role
+
+Learning Center is **the lowest-friction entry point in the entire Seven16 family**. The job of this product is:
+
+1. **CAC reducer for DOT Intel + Agency Signal.** Course completers are dramatically more likely to convert to paid SaaS subscriptions because they've already self-identified as specialists.
+2. **Category authority signal.** Seven16 becomes the brand that trains trucking-insurance specialists.
 3. **Cross-product flywheel input.** Cert holders get a badge on their DOTAgencies directory listing → directory becomes more useful → carriers/fleets choosing producers see who's actually trained → more business flows to cert holders → more producers want the cert.
+4. **Wholesaler-side acquisition channel.** Wholesalers buying team packs for their producer network = direct cross-sell into TIQ for the wholesaler + Agency Signal for the wholesaler.
 
-This is why the pricing model matters: a too-high price kills the funnel-input function. A too-low price (free) loses the value-anchoring effect. "Under $20 per module" is the right band — needs the specific number locked.
-
----
-
-## When this doc gets out of date
-
-Update when: (a) Master O picks pricing model from §"NEEDS MASTER O DECISION" above, (b) any module pricing changes, (c) team-package model is locked, (d) new module ships (beyond the initial 9), (e) annual subscription option is added, (f) external partnership pricing (e.g., MCIEF discount path) is added.
+The course-as-funnel-input model is intentional — the $29.95 ROI calculation should show through the SaaS conversion math, not from the course revenue itself.
 
 ---
 
-*End PRICING_LEARNING_CENTER.md (PLACEHOLDER — needs Master O input on pricing model + team packages)*
+## 10. Open numeric refinements (refine as data informs)
+
+- **11–14 producer band discount** — currently continues 20% from the 6–10 band; could be raised to 25% as intermediate tier if data shows that range is a common purchase point
+- **Wholesaler 26+ custom rate** — anchor at ~$15/seat at 50+, ~$10/seat at 100+; refine after first wholesaler deal
+- **Module #2 standalone vs. bundle pricing** — TBD when module #2 ships
+- **Trucking Specialist Path bundle** — TBD when 3+ modules exist
+- **Annual subscription option for all-modules-access** — explicitly NOT in v1; revisit when module catalog hits 5+
+
+---
+
+## 11. When this doc gets out of date
+
+Update when: (a) module #2 or beyond ships, (b) any pricing band changes, (c) agency dashboard feature ships (remove the BUILD TODO), (d) annual subscription option is added, (e) first wholesaler team-pack deal informs the custom-rate anchor.
+
+---
+
+*End PRICING_LEARNING_CENTER.md — LOCKED 2026-05-15*
