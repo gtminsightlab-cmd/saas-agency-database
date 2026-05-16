@@ -1,6 +1,6 @@
 # Agency Signal + Seven16 Family Hub — Backlog
 
-Last reviewed: 2026-05-15 (after AS Session 4 close, ahead of AS Session 5 open. HEAD `899b47d` on `main`.)
+Last reviewed: 2026-05-15 (after family-hub SESSION_24 close — Family Health Snapshot v1 + Rule 5 amendment. AS Session 5 Active arc unchanged. HEAD = SESSION_24 close commit on `main`.)
 
 > **How to use:** Read this file first on every session open (Rule 6). End every session with a Backlog edit — promote, defer, kill, or done. Each entry has enough context to act cold: what / why / file paths / next step.
 >
@@ -26,23 +26,26 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 
 2. **[AS] Per-user data cache via `@vercel/kv` or Upstash Redis (~half day).** Cache `app_users` + `v_my_entitlement` per-user with short TTL — saves ~200ms/authed-page render. Free tier covers current scale. Needs invalidation strategy on user settings changes. Lower urgency than items 0–1 above; consider when scaling pressure becomes real.
 
-3. **[HUB] Schema migration: `customer_entitlements` + `appointment_attributions` in `seven16-platform` satellite (`soqqmkfasufusoxxoqzx`).** State-level RLS enforcement + outcome SKU attribution tracking per D-015 §7. Required before Stripe catalog setup can wire end-to-end. *Source:* [`docs/context/PRICING_ENTERPRISE_LAYER.md`](context/PRICING_ENTERPRISE_LAYER.md) §11.3.
+3. **[HUB] Cascade WORKING_AGREEMENT.md Rule 5 amendment to `dotintel2` + `seven16-distribution`** (~5 min each). SESSION_24 added a sub-bullet to Rule 5 in saas-agency-database only ("if material, refresh `FAMILY_HEALTH.md` at session close" per ANTI_DECAY_PROTOCOL Mechanism #1). Rule 2 requires one repo per session for cross-repo rule changes — so dotintel2 and seven16-distribution copies of WORKING_AGREEMENT.md diverge until cascaded in their respective next sessions. Drop into the next session of each of those repos as a 5-min open-the-session edit. Until cascaded, saas-agency-database family-hub sessions handle the FAMILY_HEALTH refresh on their behalf.
+   *Source:* `WORKING_AGREEMENT.md` §Rule-5 footer note + SESSION_24_HANDOFF.md.
 
-4. **[HUB] Schema migration: `credit_wallets`, `credit_ledger`, `credit_consumption_rates` in `seven16group` satellite (`sdlsdovuljuymgymarou`).** Per D-014. **Verify first:** scaffolding may exist — `credit_wallets` + `credit_ledger` showed up in `list_tables` during session 21; state unconfirmed. Run advisors after DDL.
+4. **[HUB] Schema migration: `customer_entitlements` + `appointment_attributions` in `seven16-platform` satellite (`soqqmkfasufusoxxoqzx`).** State-level RLS enforcement + outcome SKU attribution tracking per D-015 §7. Required before Stripe catalog setup can wire end-to-end. *Source:* [`docs/context/PRICING_ENTERPRISE_LAYER.md`](context/PRICING_ENTERPRISE_LAYER.md) §11.3.
 
-5. **[HUB] Stripe product catalog setup (~50 state SKUs).** Three Agency Signal tiers × tier-pricing + bundle SKUs (Distribution Suite Standard + Outcome) + DOT Intel Enterprise Volume Pack SKUs + Distribution+ usage-based SKU. Implement overflow-protection (D-015 §3.4) in cart logic so total never exceeds $12,500 all-50 ceiling. Use Stripe MCP for product creation; webhook endpoints dashboard-only per memory `feedback_stripe_mcp_webhook_dashboard_only.md`.
+5. **[HUB] Schema migration: `credit_wallets`, `credit_ledger`, `credit_consumption_rates` in `seven16group` satellite (`sdlsdovuljuymgymarou`).** Per D-014. **Verify first:** scaffolding may exist — `credit_wallets` + `credit_ledger` showed up in `list_tables` during session 21; state unconfirmed. Run advisors after DDL.
 
-6. **[HUB] 5–8 Distribution Expander demos.** Pressure-test the $12,500 ceiling and the MI-is-Tier-1 / TX-is-Tier-2 / NH-is-Tier-3 surprises against live reactions before publishing prices broadly. ICP = VPs of Distribution at MGAs/wholesalers/carriers (Neilson-replacement buyers). `/enterprise` page now exists to drive the demo conversation.
+6. **[HUB] Stripe product catalog setup (~50 state SKUs).** Three Agency Signal tiers × tier-pricing + bundle SKUs (Distribution Suite Standard + Outcome) + DOT Intel Enterprise Volume Pack SKUs + Distribution+ usage-based SKU. Implement overflow-protection (D-015 §3.4) in cart logic so total never exceeds $12,500 all-50 ceiling. Use Stripe MCP for product creation; webhook endpoints dashboard-only per memory `feedback_stripe_mcp_webhook_dashboard_only.md`. **CTO-recommended next family-hub session per SESSION_24 close.**
 
-7. **[AS] Wire `revalidateVerticalsRefs()` into admin "Refresh verticals" button.** Server action exists but no admin UI calls it. Needs a button that runs `REFRESH MATERIALIZED VIEW mv_vertical_summary` + invokes the revalidation.
+7. **[HUB] 5–8 Distribution Expander demos.** Pressure-test the $12,500 ceiling and the MI-is-Tier-1 / TX-is-Tier-2 / NH-is-Tier-3 surprises against live reactions before publishing prices broadly. ICP = VPs of Distribution at MGAs/wholesalers/carriers (Neilson-replacement buyers). `/enterprise` page now exists to drive the demo conversation.
 
-8. **[AS] RLS advisory cleanup — `public._trucking_load_log` in `sdlsdovuljuymgymarou`.** RLS disabled (flagged session 21). Decision: enable + add super-admin-only policy, OR rename to confirm internal-only. Quick win.
+8. **[AS] Wire `revalidateVerticalsRefs()` into admin "Refresh verticals" button.** Server action exists but no admin UI calls it. Needs a button that runs `REFRESH MATERIALIZED VIEW mv_vertical_summary` + invokes the revalidation.
 
-9. **[AS] Carrier-table dedupe migration.** Catalog has 4× Cincinnati variants, 3× Selective, 3× Nationwide collapsing to same `normCarrier` key. First-match-wins via `Map.set` is deterministic but a future migration would tidy. Links resolve correctly today.
+9. **[AS] RLS advisory cleanup — `public._trucking_load_log` in `sdlsdovuljuymgymarou`.** RLS disabled (flagged session 21). Decision: enable + add super-admin-only policy, OR rename to confirm internal-only. Quick win.
 
-10. **[AS] ~150 long-tail novel carriers** in `data/_unmatched_carriers.tsv` still need `/admin/catalog` entries. Low priority but a clean polish task.
+10. **[AS] Carrier-table dedupe migration.** Catalog has 4× Cincinnati variants, 3× Selective, 3× Nationwide collapsing to same `normCarrier` key. First-match-wins via `Map.set` is deterministic but a future migration would tidy. Links resolve correctly today.
 
-11. **[AS] Carry-from-older-sessions list (verify still needed before picking up — STATE.md §7):** contacts load for 8 session-12 vendor files, `account_type_id` backfill for 634 new agencies, WRB.xlsx vs AdList-17028.xlsx duplicate-file confirmation, MiEdge confidence-tiered fuzzy matcher, V5 parent grain remediation, retail trucking load (1,328 agents). Some of these may have been overtaken by the May AdList + DOT Intel sync work — confirm row counts before re-running.
+11. **[AS] ~150 long-tail novel carriers** in `data/_unmatched_carriers.tsv` still need `/admin/catalog` entries. Low priority but a clean polish task.
+
+12. **[AS] Carry-from-older-sessions list (verify still needed before picking up — STATE.md §7):** contacts load for 8 session-12 vendor files, `account_type_id` backfill for 634 new agencies, WRB.xlsx vs AdList-17028.xlsx duplicate-file confirmation, MiEdge confidence-tiered fuzzy matcher, V5 parent grain remediation, retail trucking load (1,328 agents). Some of these may have been overtaken by the May AdList + DOT Intel sync work — confirm row counts before re-running.
 
 ---
 
@@ -88,6 +91,7 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 
 ## Done (audit trail, newest first)
 
+- [2026-05-15] **Family-hub SESSION_24** — Anti-Decay Protocol Mechanism #1 shipped. Created [`docs/context/FAMILY_HEALTH.md`](context/FAMILY_HEALTH.md) v1 with per-repo snapshot (4 repos: saas-agency-database, dotintel2, seven16-distribution, seven16-platform), cross-product dependency map, Charter Member program status row, 7 D-021 pricing surface lock status, external dependency table. Amended `WORKING_AGREEMENT.md` Rule 5 in saas-agency-database (only — Rule 2 cascade pending in dotintel2 + seven16-distribution next sessions). Housekeeping: committed dangling SESSION_23-close leftovers (`.gitignore` `.vercel` ignore + revised SESSION_24_PROMPT.md with stricter Step 0 guard).
 - [2026-05-15] Backlog system bootstrapped — `docs/BACKLOG.md` + `docs/WORKING_AGREEMENT.md` seeded from AS Session 4 handoff + Session 5 kickoff + STATE.md + family memory.
 - [2026-05-14] **AS Session 4** — Family DECISION_LOG reconciliation (added D-016 three-domain brand split, D-017 no source-attribution in `directory.*`, 2 new §6 standing rules — "always recommend next path as CTO/PM" + "no paid services until DOT Intel revenue"). **`/enterprise` tier page shipped** (D-015 Distribution Expander ICP, 832 lines, commit `e77c29d`). Next 16 hygiene greens (`force-dynamic` stripped from auth pages, `middleware.ts` → `proxy.ts`, commit `f52b38b`). Parallel `feat/sentry-install` session merged `899b47d` — Sentry pilot live via `@sentry/nextjs` on `directory-admin` Sentry project, tunnel route `/monitoring`.
 - [2026-05-14] **Vercel Speed Insights + Analytics + security headers** merged via parallel `feat/foundations-sprint` session (`fea5b34`) — HSTS, X-CTO nosniff, X-Frame SAMEORIGIN, Referrer strict-origin-when-cross-origin, Permissions (camera/mic/geo/FLoC off), DNS prefetch on.
@@ -112,6 +116,6 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 - Latest Agency Signal product handoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_4_HANDOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_4_HANDOFF.md)
 - Next Agency Signal kickoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_5_KICKOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_5_KICKOFF.md)
 - Working agreement: [`docs/WORKING_AGREEMENT.md`](WORKING_AGREEMENT.md)
-- Family hub (this repo): [`docs/context/MASTER_CONTEXT.md`](context/MASTER_CONTEXT.md), [`DECISION_LOG.md`](context/DECISION_LOG.md) (D-001 through D-017 + §6 standing rules), [`SESSION_STATE.md`](context/SESSION_STATE.md), [`ENGINEERING_DOCTRINE.md`](context/ENGINEERING_DOCTRINE.md)
+- Family hub (this repo): [`docs/context/MASTER_CONTEXT.md`](context/MASTER_CONTEXT.md), [`DECISION_LOG.md`](context/DECISION_LOG.md) (D-001 through D-021 + §6 standing rules), [`SESSION_STATE.md`](context/SESSION_STATE.md), [`ENGINEERING_DOCTRINE.md`](context/ENGINEERING_DOCTRINE.md), [`ANTI_DECAY_PROTOCOL.md`](context/ANTI_DECAY_PROTOCOL.md), [`FAMILY_HEALTH.md`](context/FAMILY_HEALTH.md) (cross-product snapshot, updated at session close)
 - Inside-view: [`docs/STATE.md`](STATE.md) *(last updated end of AS Session 3 — Session 4 deltas are in `AGENCY_SIGNAL_SESSION_4_HANDOFF.md` §5)*
 - Pricing briefs locked 2026-05-12: [`docs/context/PRICING_CREDITS_AND_TOPUPS.md`](context/PRICING_CREDITS_AND_TOPUPS.md), [`docs/context/PRICING_ENTERPRISE_LAYER.md`](context/PRICING_ENTERPRISE_LAYER.md)
