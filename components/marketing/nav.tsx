@@ -26,6 +26,10 @@ export function MarketingNav({ isAuthed }: { isAuthed: boolean }) {
           <Link href="/enterprise" className="hidden md:block text-sm text-gray-700 hover:text-gray-900 px-3 py-2">
             Enterprise
           </Link>
+          <Link href="/charter" className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-gold-700 hover:text-gold-800 px-3 py-2">
+            Charter
+            <span className="rounded-full bg-gold-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-gold-800">50–75 seats</span>
+          </Link>
           {isAuthed ? (
             <Link
               href="/build-list"
