@@ -1,25 +1,20 @@
 import Link from "next/link";
 import {
   ArrowRight, Check, Coins, Layers, ShieldCheck, BadgeCheck,
-  Mail, Network, Clock, Lock, BookOpen, Truck, Building2, Megaphone,
+  Mail, Network, Clock, Lock, Truck, Building2, Megaphone,
 } from "lucide-react";
 import { MarketingNav } from "@/components/marketing/nav";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
-// ─── Compound savings worked example (per SESSION_23 deck slide 18) ─────
-// 15-truck fleet running TIQ Growth + Agency Signal credits + DOT Alerts +
-// claimed agency listing + 10 Learning Center seats. Charter Member rate
-// vs. standard list, conservative — credit bonus is FUEL value, not
-// straight discount, so it's understated here.
+// ─── Compound savings worked example ────────────────────────────────────
+// 15-truck operator running DOT Intel + Agency Signal stack: DOT Alerts
+// + Agency Signal credits + DOT Intel lookups + claimed agency listing +
+// 10 Learning Center seats. Charter Member rate vs. standard list,
+// conservative — credit bonus is FUEL value, not straight discount, so
+// it's understated here.
 const SAVINGS = [
-  {
-    line: "Threshold IQ Growth subscription",
-    standard: 1500 * 12,
-    charter:  1125 * 12, // 25% off
-    note: "Standard $1,500/mo. Charter $1,125/mo (25% off) + always Scale-tier overage at $1/sub instead of $2.",
-  },
   {
     line: "DOT Alerts Growing Fleet tier (6–15 trucks)",
     standard: 90 * 12,
@@ -32,6 +27,13 @@ const SAVINGS = [
     charter:  150 * 12, // same outlay, but +40% bonus = 1,400 effective credits
     note: "Same $150/mo outlay. Charter gets +40% bonus credits permanently → 1,400 credits delivered for the same $150. Effective per-credit price drops to ~$0.107 vs. $0.15 list. The 400 bonus credits/mo = $720/yr in free fuel.",
     bonusFuelValue: 720,
+  },
+  {
+    line: "DOT Intel — 200 lookups/mo with PDF exports (~3 credits each)",
+    standard: 90 * 12,
+    charter:  90 * 12, // same outlay, +40% bonus = 840 credits delivered for the same $90
+    note: "Same $90/mo outlay (600 credits/mo at $0.15 list). Charter +40% bonus = 840 credits delivered for the same $90 — that's 80 extra DOT lookups/mo at zero marginal cost. ~$432/yr fuel value.",
+    bonusFuelValue: 432,
   },
   {
     line: "Agency listing on directory.seven16group.com (1 location)",
@@ -56,19 +58,13 @@ const TOTAL_BASELINE_VALUE = STRAIGHT_SAVINGS + BONUS_FUEL;
 const USD = (n: number) =>
   n.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
-// ─── The seven Charter surfaces ─────────────────────────────────────────
+// ─── The six Charter surfaces ───────────────────────────────────────────
 const SURFACES = [
   {
     icon: Coins,
     title: "Universal credits — permanent +40% bonus",
     rate: "Effective ~$0.107/credit forever (vs. $0.15 list)",
     body: "Every top-up converts at the top bonus band. The $5–$1,000+ slider doesn't change. The bonus multiplier just stays on, permanently.",
-  },
-  {
-    icon: BookOpen,
-    title: "Threshold IQ — 25% off + Scale-tier overage rate",
-    rate: "Launch $375/mo · Growth $1,125/mo · Scale $3,000/mo",
-    body: "Whatever subscription tier you sit on, 25% off the published price. Plus: overage on submissions is always charged at the Scale-tier rate ($1/sub) even if you're paying Launch or Growth pricing.",
   },
   {
     icon: ShieldCheck,
@@ -146,8 +142,8 @@ export default async function CharterPage() {
             <p className="mt-6 text-lg leading-8 text-gray-200">
               Charter Members occupy the best pricing tier on every Seven16 product they buy &mdash; permanently.
               Not 50% off a fixed bundle, not a 12-month introductory rate. The discount tier itself is yours,
-              forever, across DOT Intel, Agency Signal, Threshold IQ, DOTCarriers, DOTAgencies,
-              the Learning Center, and anything Seven16 ships under this family architecture.
+              forever, across DOT Intel, Agency Signal, DOTCarriers, DOTAgencies, the Learning Center,
+              and anything Seven16 ships under this family architecture.
             </p>
             <p className="mt-4 text-base leading-7 text-gray-300">
               Cap: <span className="font-semibold text-white">50&ndash;75 accounts total</span>. Enrollment window:{" "}
@@ -206,13 +202,13 @@ export default async function CharterPage() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="max-w-3xl">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-              Year-one math for a 15-truck operator running the full stack.
+              Year-one math for a 15-truck operator running the full DOT Intel + Agency Signal stack.
             </h2>
             <p className="mt-4 text-gray-600 leading-7">
               The Charter price isn&rsquo;t a single SKU discount &mdash; it compounds across every product
-              you adopt. A small agency principal running Threshold IQ Growth + Agency Signal credits +
-              DOT Alerts on the fleet + an agency directory listing + 10 Learning Center seats sees the
-              following at standard vs. Charter, year one:
+              you adopt. A small agency principal running DOT Alerts on the fleet + Agency Signal credits +
+              DOT Intel lookups + an agency directory listing + 10 Learning Center seats sees the following
+              at standard vs. Charter, year one:
             </p>
           </div>
 
@@ -266,9 +262,10 @@ export default async function CharterPage() {
           </div>
 
           <p className="mt-8 text-sm text-gray-600 leading-7 max-w-3xl">
-            Scale this up. A 50-truck operator running Threshold IQ Scale + higher credit spend + multi-location
-            directory + 25 Learning Center seats is closer to <span className="font-semibold text-gray-900">$15,000–$25,000/year
-            in compound Charter value</span> &mdash; locked for as long as the account stays active.
+            Scale this up. A 50-truck operator running 500+ DOT lookups/month + heavier Agency Signal credit
+            spend + multi-location directory + 25 Learning Center seats is closer to{" "}
+            <span className="font-semibold text-gray-900">$4,000–$7,000/year in compound Charter value</span>{" "}
+            &mdash; locked for as long as the account stays active.
           </p>
         </div>
       </section>
@@ -278,7 +275,7 @@ export default async function CharterPage() {
         <div className="mx-auto max-w-7xl px-4">
           <div className="max-w-3xl">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-              Seven surfaces. One Charter tier across all of them.
+              Six surfaces. One Charter tier across all of them.
             </h2>
             <p className="mt-4 text-gray-600 leading-7">
               Charter Members occupy the best published rate on every product they touch, permanently. New
