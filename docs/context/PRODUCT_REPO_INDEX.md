@@ -1,9 +1,11 @@
 # Seven16 Product → Repo → Project Index
 
-**Last updated:** 2026-05-15 (created SESSION_24)
+**Last updated:** 2026-05-15 (SESSION_24 tail — Threshold IQ removed per D-022)
 **Purpose:** Canonical lookup for "which repo, Vercel project, Supabase satellite, and live URL does each Seven16 product live at?" Read this on session open if you're unsure which product you're working on, or paste the per-product session-opener snippets into a new Claude session to orient it instantly.
 
-> **Why this exists:** with 4 active code repos (3 product + 1 control plane) plus multiple brand domains routed through host-header middleware, "which path do I open?" is a frequent friction point. This index resolves it in one screen.
+> **Why this exists:** with 2 family-active code repos (Agency Signal + DOT Intel cluster) plus the seven16-platform control plane Supabase satellite, "which path do I open?" is a frequent friction point. This index resolves it in one screen.
+>
+> **2026-05-15 SESSION_24:** Threshold IQ (seven16-distribution) spun out of the Seven16 family per D-022. Removed from main lookup; preserved in "Paths that look like products but aren't" register for historical reference. Wind-down (Vercel/GitHub/Supabase/Cloudflare cleanup) deferred to a follow-up session.
 
 ---
 
@@ -13,22 +15,22 @@
 |---|---|---|---|---|---|
 | **Agency Signal** + family hub | `C:\Users\GTMin\Projects\saas-agency-database\` | [`gtminsightlab-cmd/saas-agency-database`](https://github.com/gtminsightlab-cmd/saas-agency-database) | `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` | `sdlsdovuljuymgymarou` (project name `seven16group`, us-east-1, Pro plan) | [directory.seven16group.com](https://directory.seven16group.com) · [/charter](https://directory.seven16group.com/charter) · [/enterprise](https://directory.seven16group.com/enterprise) |
 | **DOT Intel + DOTCarriers + DOTAgencies + Learning Center** (one codebase, 3 brand domains routed via host-header middleware per D-016) | `C:\Users\GTMin\Projects\dotintel2\` | [`gtminsightlab-cmd/dotintel2`](https://github.com/gtminsightlab-cmd/dotintel2) | `prj_4tnPATJjP4Bahg2RFw4DwlTuNa8S` | `vbhlacdrcqdqnvftqtin` (DOT Intel satellite, Pro plan, same org) | [dotcarriers.io](https://dotcarriers.io) (operator directory) · [dotagencies.io](https://dotagencies.io) (agent + wholesaler directory + cert) · [www.dotintel.io](https://www.dotintel.io) (intelligence dashboard + bundle hub) |
-| **Threshold IQ** (MGU operating CRM) | `C:\Users\GTMin\Projects\seven16-distribution\` | [`gtminsightlab-cmd/seven16-distribution`](https://github.com/gtminsightlab-cmd/seven16-distribution) | `prj_c6kzFEhpw6Uwb12TECUidKlBxOwr` | `yyuchyzmzzwbfoovsskz` | [staging.thresholdiq.io](https://staging.thresholdiq.io) (production cutover deferred) |
 | **seven16-platform** (shared control plane — auth + tenants + entitlements + master control center, per D-008) | _no code repo yet_ | _no GitHub repo yet_ | _no Vercel project yet_ | `soqqmkfasufusoxxoqzx` (Supabase only) | n/a |
 
-**Org-level note:** all 4 Supabase satellites live in the `dotintel` Supabase org. Pro plan ($25/mo) covers them all + daily backups. PITR ($100/mo per project) is the only per-project paid add-on and is not yet enabled — flagged as a pre-launch security gate per `project_pre_launch_security_gates.md`.
+**Org-level note:** family-active satellites live in the `dotintel` Supabase org — Pro plan ($25/mo) covers them all + daily backups. After TIQ wind-down (per D-022), 3 family-active satellites remain: `sdlsdovuljuymgymarou` (Agency Signal), `vbhlacdrcqdqnvftqtin` (DOT Intel), `soqqmkfasufusoxxoqzx` (seven16-platform). PITR ($100/mo per project) is the only per-project paid add-on and is not yet enabled — flagged as a pre-launch security gate per `project_pre_launch_security_gates.md`.
 
 ---
 
 ## Desktop launchers — recommended pattern
 
-Three pre-configured `.bat` shortcuts on the Desktop. Double-click each → `cd` into the canonical native-git path + run Claude. Avoids the OneDrive `.git`-is-broken trap.
+Two pre-configured `.bat` shortcuts on the Desktop. Double-click each → `cd` into the canonical native-git path + run Claude. Avoids the OneDrive `.git`-is-broken trap.
 
 | File | Lands you in |
 |---|---|
 | `Open Claude — Agency Signal.bat` | `C:\Users\GTMin\Projects\saas-agency-database\` |
 | `Open Claude — DOT Intel.bat` | `C:\Users\GTMin\Projects\dotintel2\` |
-| `Open Claude — Threshold IQ.bat` | `C:\Users\GTMin\Projects\seven16-distribution\` |
+
+**Removed 2026-05-15 per D-022:** `Open Claude — Threshold IQ.bat` (TIQ spun out of family). Scheduled for deletion in TIQ wind-down session.
 
 ---
 
@@ -40,12 +42,16 @@ Always make the first message to a new Claude session start with this, regardles
 Run pwd. Confirm output is one of these canonical paths:
   - C:\Users\GTMin\Projects\saas-agency-database    (Agency Signal + family hub)
   - C:\Users\GTMin\Projects\dotintel2                (DOT Intel cluster: dotintel.io + dotcarriers.io + dotagencies.io + Learning Center)
-  - C:\Users\GTMin\Projects\seven16-distribution     (Threshold IQ)
 
 If pwd shows ANY path under \OneDrive\, STOP. The OneDrive .git is
 permanently broken (OneDrive sync corrupts git internals). Tell me to
 close + relaunch from the Desktop .bat shortcut for the correct product.
 Do not proceed past this check if wrong directory.
+
+Note: seven16-distribution (Threshold IQ) was spun out of the family
+2026-05-15 per D-022. The repo at C:\Users\GTMin\Projects\seven16-distribution
+still exists locally pending TIQ wind-down session, but no new family-track
+sessions should open against it.
 ```
 
 ---
@@ -96,27 +102,9 @@ For SODA / CSA ingest work specifically, also read:
 Then propose plan, await thumbs-up.
 ```
 
-### Threshold IQ work
-*(MGU CRM, marketing v2, /pricing page build, Charter integration mechanics)*
+### ~~Threshold IQ work~~ — REMOVED 2026-05-15 per D-022
 
-```
-You are continuing the seven16-distribution / Threshold IQ track.
-
-Read in order (per Working Agreement Rule 6):
-  1. docs/BACKLOG.md
-  2. docs/handoffs/SESSION_<latest>_HANDOFF.md
-     (current latest = SESSION_1 rebaseline, 2026-05-15)
-  3. C:\Users\GTMin\Projects\saas-agency-database\docs\context\FAMILY_HEALTH.md
-     (cross-product snapshot)
-  4. C:\Users\GTMin\Projects\saas-agency-database\docs\context\DECISION_LOG.md
-     (family decisions, esp. D-019 superseded → D-020 positioning lock →
-     D-021 pricing architecture)
-  5. C:\Users\GTMin\Projects\saas-agency-database\docs\context\PRICING_THRESHOLD_IQ.md
-     (TIQ operational pricing spec — Launch $500 / Growth $1,500 / Scale $4,000)
-  6. docs/STATE.md
-
-Then propose plan, await thumbs-up.
-```
+TIQ spun out of Seven16 family. No new TIQ family-track sessions. If you need to do TIQ wind-down work (Vercel project delete, GitHub archive, Supabase pause, Cloudflare DNS, Stripe cleanup), open a saas-agency-database session and treat it as a "TIQ wind-down" arc — execute the cleanup tasks listed in `docs/context/FAMILY_HEALTH.md` Items Requiring Attention.
 
 ---
 
@@ -124,6 +112,7 @@ Then propose plan, await thumbs-up.
 
 | Name | Status | What it is |
 |---|---|---|
+| **`seven16-distribution` / Threshold IQ** | **Spun out 2026-05-15 per D-022** | Was the MGU operating CRM at `staging.thresholdiq.io`. Repo `gtminsightlab-cmd/seven16-distribution`, Vercel `prj_c6kzFEhpw6Uwb12TECUidKlBxOwr`, Supabase `yyuchyzmzzwbfoovsskz`. Master O continues building a CRM/AMS-shape product **separately, outside the Seven16 family** (different directory; not in `C:\Users\GTMin\Projects\`). TIQ wind-down (Vercel project delete, GitHub archive, Supabase pause, Cloudflare `thresholdiq.io` decision, Stripe cleanup) queued as a follow-up session per FAMILY_HEALTH Items Requiring Attention. Until wind-down: do NOT open new sessions against the seven16-distribution repo for family-track work. |
 | `dotintel-intelligence` | Parked | Legacy "Agency Intelligence" Next 14 build. Subdomain `intelligence.dotintel.io` resolves to a dead build. Decommission queued in dotintel2 BACKLOG #8 (redirect to `directory.seven16group.com/verticals`). Own-session work in the parked repo when picked up. |
 | `Killing Commercial` | Separate project, not a Seven16 product | At `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Killing Commercial\`. Scraping + synthesis project. Dropped planning docs into dotintel2 on 2026-05-13 (`docs/KILLING_COMMERCIAL_TRAINING_HUB.md`, `docs/TRAINING_HUB_SESSION_HANDOFF.md`). Separate Claude track. |
 | **`seven16group.com` apex** | Planned, not built | Holding-company + marketing-agency front door. Separate future repo. Brand-systems designer engagement is the trigger. See family memory `reference_seven16group_apex_plan.md`. |
@@ -157,7 +146,7 @@ Returns one of:
 |---|---|
 | `https://github.com/gtminsightlab-cmd/saas-agency-database.git` | Agency Signal / family hub |
 | `https://github.com/gtminsightlab-cmd/dotintel2.git` | DOT Intel cluster (3 brand domains, one codebase) |
-| `https://github.com/gtminsightlab-cmd/seven16-distribution.git` | Threshold IQ |
+| ~~`https://github.com/gtminsightlab-cmd/seven16-distribution.git`~~ | ⚫ Threshold IQ — spun out per D-022, wind-down pending |
 
 Unambiguous. Works even if `pwd` somehow gives a confusing path.
 

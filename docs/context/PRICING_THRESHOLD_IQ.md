@@ -1,9 +1,13 @@
 # Threshold IQ — Pricing & Onboarding Spec
 
-**Locked:** 2026-05-15
+> ⚫ **ARCHIVED 2026-05-15 per D-022.** Threshold IQ was spun out of the Seven16 family. This spec is preserved in-place per Rule 4 (decisions stay in record) but is **no longer family-active**. The TIQ pricing tiers (Launch $500 / Growth $1,500 / Scale $4,000) and Charter integration mechanics documented below are HISTORICAL — they applied to the family product before TIQ departed. Master O continues building a CRM/AMS-shape product separately, outside the Seven16 family architecture, in a different directory. See `DECISION_LOG.md` D-022 for the full departure record. Charter Member offer surfaces drop from 7 to 6 (TIQ removed); see `/charter` page on directory.seven16group.com for the current 6-surface compound savings example.
+
+---
+
+**Locked:** 2026-05-15 (archived same day per D-022)
 **Parent decision:** D-021 (Seven16 Credits & Usage Pricing Architecture) — this doc fills in the TIQ-specific numeric tiers + onboarding operational model that D-021 flagged as "pending cost modeling."
-**Positioning anchor:** D-020 (TIQ positioning lock — "Run your MGU like a bigger shop")
-**Charter Member integration:** amended D-018 (see §"Charter Member integration" below — final integration model PENDING Master O confirmation)
+**Positioning anchor:** D-020 (TIQ positioning lock — "Run your MGU like a bigger shop") — ⚫ superseded by D-022
+**Charter Member integration:** amended D-018 (see §"Charter Member integration" below — final integration model PENDING Master O confirmation) — ⚫ TIQ surface removed from offer per D-022
 
 > **Note on labeling:** Master O's source draft (2026-05-15) used "DOT Intel" in several places as a copy-paste artifact. This spec is for **Threshold IQ (TIQ)** per the family product architecture — TIQ is the wholesaler / MGA / MGU operating system; DOT Intel is the trucking-insurance intelligence platform (separate product, separate satellite). All product references throughout this doc are to TIQ.
 
