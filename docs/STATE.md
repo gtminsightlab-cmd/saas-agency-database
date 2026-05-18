@@ -1,6 +1,6 @@
 # Agency Signal — STATE.md (inside view)
 
-**Last updated:** 2026-05-12 (Session 3: Next 14 → 16 / React 18 → 19 upgrade closing 24 CVEs + first real caching layer on /build-list + /verticals. UX-parity-with-Neilson polish on /build-list + /saved-lists. See [`docs/handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md).)
+**Last updated:** 2026-05-18 (D-023 architect-review refresh: positioning sharpened to "Distribution intelligence for commercial insurance"; 7-pillar product taxonomy locked; Neilson + ProgramBusiness as adjacent competitive references; row counts refreshed from live DB; admin module count corrected 13 → 17; verified/claimed profile flow queued Tier 1.x. See `docs/agency-signal-status.html` for the single-pane-of-glass view and [`docs/context/DECISION_LOG.md`](context/DECISION_LOG.md) D-023.) Prior 2026-05-12 (Session 3: Next 14 → 16 / React 18 → 19 upgrade closing 24 CVEs + first real caching layer on /build-list + /verticals. UX-parity-with-Neilson polish on /build-list + /saved-lists. See [`docs/handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md).)
 **Companion to:** [`docs/context/SESSION_STATE.md`](context/SESSION_STATE.md) Part 1.
 **Pattern source:** Inside-view STATE.md adopted family-wide 2026-05-02 — see `dotintel2/docs/STATE.md` and `seven16-distribution/docs/STATE.md` for parallel examples. Each product repo carries one. This file was queued in session 16, finally shipped 2026-05-07.
 
@@ -20,6 +20,53 @@ Family rules that bind this repo:
 For the broader family + decision history, read `docs/context/{MASTER_CONTEXT,DECISION_LOG,SESSION_STATE}.md` before substantive work. Decisions D-001 through D-011 are locked.
 
 This repo is also the **family hub** — the docs/context/ folder is the single source of truth for Seven16 family-wide state. Cross-product handoffs land in `docs/handoffs/`.
+
+---
+
+## 1.5 Product boundary (D-023 / ADR-023)
+
+Locked 2026-05-18 from architect strategy review. Full content at [`docs/decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md`](decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md) + [`docs/strategy/agency-signal-product-boundaries.md`](strategy/agency-signal-product-boundaries.md).
+
+### Core positioning
+
+> **Distribution intelligence for commercial insurance.**
+
+Agency Signal is not a generic lead list. The moat is appointment-aware targeting + vertical specialization + saved-list refresh + data hygiene + Enterprise+ distribution recommendations — not raw row count.
+
+### Agency Signal owns
+
+- commercial insurance agency directory · producer directory · agency profile intelligence · producer profile intelligence · agency × carrier appointment intelligence · vertical/niche segmentation · build-list workflows · saved-list workflows · saved-list refresh / change detection · data hygiene / confidence scoring · enterprise distribution expansion · agency universe mapping · state/vertical/carrier filtering · export-ready agency and producer datasets · future market/program discovery layer (parked Pillar 9)
+
+### Agency Signal does NOT own
+
+- DOT / FMCSA risk scoring → DOT Intel's lane
+- trucking pricing analysis / DOT alerts / quote routing / readiness → DOT Intel
+- AMS workflows / CRM workflows / submission management / policy admin / quote-bind / claims → out of family per D-022
+- Go High Level services directly → Growtheon's lane (D-010)
+
+### Two-ICP model
+
+| ICP | Users | Pricing |
+|---|---|---|
+| 1 — Consumer / Producer Tier | Working producers · small retail agencies · small wholesalers · commercial insurance operators | Free / Producer / Growth / Enterprise (all under $500 P-card per D-002) |
+| 2 — Enterprise+ Distribution Expander | MGA distribution leaders · carrier distribution leaders · wholesaler growth teams · program administrators · insurtechs | D-015 state slider: $1,000–$2,000/state · $12,500 all-50 ceiling · Distribution+ outcome SKU $300–$500/qualified appointment |
+
+### 9 product pillars
+
+1. Agency Directory — [domain doc](domains/domain-agency-directory.md)
+2. Producer Intelligence — [domain doc](domains/domain-producer-intelligence.md)
+3. Carrier Appointment Intelligence — [domain doc](domains/domain-carrier-appointment-intelligence.md)
+4. Vertical / Segment Intelligence — [domain doc](domains/domain-vertical-segment-intelligence.md)
+5. Build Lists — [combined doc](domains/domain-build-lists-saved-lists.md)
+6. Saved List Intelligence — [combined doc](domains/domain-build-lists-saved-lists.md) (refresh backend = BACKLOG #1)
+7. Distribution Expander — [domain doc](domains/domain-distribution-expander.md)
+8. Data Quality / Hygiene — [domain doc](domains/domain-data-quality-hygiene.md)
+9. Future Market Discovery — **PARKED** — [domain doc](domains/domain-market-discovery.md)
+
+### Adjacent competitive references
+
+- **Neilson Marketing** — Enterprise+ pricing anchor (50% undercut per D-015). See [neilson-competitive-boundary.md](strategy/neilson-competitive-boundary.md).
+- **ProgramBusiness** — long-term anchor for parked Pillar 9. See [programbusiness-competitive-boundary.md](strategy/programbusiness-competitive-boundary.md).
 
 ---
 
@@ -45,15 +92,15 @@ This repo is also the **family hub** — the docs/context/ folder is the single 
 
 ## 3. Database state (`sdlsdovuljuymgymarou`, tenant `ce52fe1e-aac7-4eee-8712-77e71e2837ce`)
 
-| Table | Rows | Notes |
+| Table | Rows (2026-05-18 live) | Notes |
 |---|---:|---|
-| `public.agencies` | **41,705** | +20,966 in 2026-05-09 session 2 (17,638 from DOT Intel sync + 3,328 from AdList). Pre-session: 20,739 |
-| `public.contacts` | **119,180** | **+31,746 from AdList load — the contact gap-fill** (DOT Intel sync added 0; source has no person data). Pre-session: 87,434 |
-| `public.agency_carriers` | **212,378** | +21,177 in session 2 (13,914 from DOT Intel sync + 7,263 from AdList). Pre-session: 191,201 |
-| `public.agency_sic_codes` | **99,764** | +6,807 from AdList load |
-| `public.agency_affiliations` | **8,866** | +1,118 in session 2 (53 UIIA from DOT Intel + 1,065 from AdList — IIABA, Trusted Choice, etc.) |
-| `public.carriers` | **1,369** | +3 Berkley regional OpCos (Southwest, Southeast, Mid-Atlantic) added migration 0085 |
-| `public.affiliations` | 184 | +2 (UIIA migration 0086, TRS migration 0087) |
+| `public.agencies` | **32,951** | Down −8,754 from 2026-05-12 STATE snapshot (41,705). Drift likely from post-load dedup + cross-product sync churn. Verify deletion source in next session. |
+| `public.contacts` | **135,453** | Up +16,273 from 2026-05-12 (119,180). Continued AdList + sync ingest. The contact gap-fill goal compounds. |
+| `public.agency_carriers` | **264,063** | Up +51,685 from 2026-05-12 (212,378). Cross-product appointment sync activity. |
+| `public.agency_sic_codes` | **99,764** | Unchanged from session 2. |
+| `public.agency_affiliations` | **20,266** | Up +11,400 from 2026-05-12 (8,866). |
+| `public.carriers` | **1,369** | Unchanged. +3 Berkley regional OpCos (Southwest, Southeast, Mid-Atlantic) added migration 0085. |
+| `public.affiliations` | **106** | Down from 184 (sync dedup; verify). |
 | `auth.users` | 2 | Master O + one other test/admin user |
 | `public.tenants` | 1 | Single tenant (Seven16) — multi-tenant infrastructure shipped, no second tenant onboarded yet |
 
@@ -113,9 +160,9 @@ Active feature work spanned sessions 4–14. Highlights:
 
 ---
 
-## 6. 13 admin modules (Catalog editor / Hygiene & Refresh / etc.)
+## 6. 17 admin pages (Catalog editor / Hygiene & Refresh / etc.)
 
-Fully spec'd in memory `project_admin_control_center_spec.md`. All 13 modules have Live page routes per session 7. Build-out priority order:
+Live count corrected 2026-05-18: 17 admin `page.tsx` routes exist under `app/admin/` (was documented as 13). The 4 additional pages beyond the original 13-module spec: `/admin/alerts`, `/admin/data-quality`, `/admin/integrations`, `/admin/customers/[tenantId]`. Fully spec'd in memory `project_admin_control_center_spec.md`. Build-out priority order:
 
 | # | Module | Status |
 |---|---|---|

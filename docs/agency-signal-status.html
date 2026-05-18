@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Agency Signal — Project Status</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --border-strong: #3f3f46;
+    --text: #fafafa;
+    --text-muted: #a1a1aa;
+    --text-faint: #71717a;
+    --oxblood: #7a2e2a;
+    --oxblood-bright: #a64242;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --blue: #3b82f6;
+    --red: #ef4444;
+    --mono: ui-monospace, "JetBrains Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --serif: "Iowan Old Style", "Apple Garamond", Georgia, "Times New Roman", serif;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
+  body { max-width: 1280px; margin: 0 auto; padding: 24px 32px 80px; }
+  a { color: var(--oxblood-bright); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, .mono { font-family: var(--mono); font-size: 12.5px; }
+  h1 { font-family: var(--serif); font-weight: 600; font-size: 34px; letter-spacing: -0.02em; }
+  h2 { font-family: var(--serif); font-weight: 600; font-size: 22px; letter-spacing: -0.01em; margin: 0 0 12px; }
+  h3 { font-weight: 600; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 8px; }
+  h4 { font-weight: 600; font-size: 14px; margin: 0 0 4px; }
+
+  header { border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 32px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  .tagline { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--text-muted); margin-top: 6px; }
+  .meta { font-family: var(--mono); font-size: 11.5px; color: var(--text-faint); text-align: right; line-height: 1.7; }
+  .meta strong { color: var(--text); font-weight: 500; }
+
+  section { margin-bottom: 36px; }
+  .grid { display: grid; gap: 16px; }
+  .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 900px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 16px; }
+  .card-2 { background: var(--surface-2); }
+
+  .kpi { font-family: var(--mono); font-size: 28px; font-weight: 500; line-height: 1; margin: 4px 0; }
+  .kpi-label { font-size: 11px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.08em; }
+  .kpi-sub { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; }
+
+  .pill { display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 500; padding: 2px 8px; border-radius: 999px; letter-spacing: 0.04em; text-transform: uppercase; vertical-align: 2px; }
+  .pill-shipped { background: rgba(34,197,94,0.12); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+  .pill-active { background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid rgba(59,130,246,0.25); }
+  .pill-queued { background: rgba(245,158,11,0.10); color: var(--amber); border: 1px solid rgba(245,158,11,0.25); }
+  .pill-deferred { background: rgba(113,113,122,0.12); color: var(--text-muted); border: 1px solid var(--border-strong); }
+  .pill-rejected { background: rgba(239,68,68,0.10); color: var(--red); border: 1px solid rgba(239,68,68,0.25); }
+  .pill-stub { background: rgba(122,46,42,0.18); color: var(--oxblood-bright); border: 1px solid rgba(122,46,42,0.35); }
+  .pill-sandbox { background: rgba(245,158,11,0.06); color: var(--amber); border: 1px solid rgba(245,158,11,0.18); }
+  .pill-gap { background: rgba(239,68,68,0.06); color: var(--red); border: 1px solid rgba(239,68,68,0.18); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td.num { font-family: var(--mono); font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+  .row { display: flex; gap: 12px; align-items: baseline; }
+  .row.between { justify-content: space-between; }
+  .stack { display: flex; flex-direction: column; gap: 4px; }
+  .muted { color: var(--text-muted); }
+  .faint { color: var(--text-faint); }
+  .small { font-size: 12px; }
+
+  ul { margin: 0; padding-left: 18px; }
+  ul li { margin-bottom: 4px; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .legend > span { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-muted); }
+
+  .section-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  .section-bar::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .principle { padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 3px; }
+  .principle-num { font-family: var(--mono); font-size: 11px; color: var(--oxblood-bright); display: block; margin-bottom: 2px; }
+  .principle-title { font-weight: 500; font-size: 13px; margin-bottom: 2px; }
+  .principle-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  .adr { padding: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 3px; }
+  .adr-id { font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
+  .adr-title { font-weight: 500; margin: 2px 0 6px; }
+  .adr-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.45; }
+
+  .domain-card { padding: 14px; background: var(--surface); border-left: 3px solid var(--border-strong); border-radius: 0 3px 3px 0; }
+  .domain-active { border-left-color: var(--blue); }
+  .domain-shipped { border-left-color: var(--green); }
+  .domain-stub { border-left-color: var(--oxblood-bright); }
+  .domain-sandbox { border-left-color: var(--amber); }
+
+  .stack-table td { font-size: 12.5px; padding: 6px 10px; }
+  .stack-rejected td:first-child { text-decoration: line-through; color: var(--text-faint); }
+
+  footer { margin-top: 60px; padding-top: 20px; border-top: 1px solid var(--border); font-family: var(--mono); font-size: 11px; color: var(--text-faint); }
+  .note { background: rgba(122,46,42,0.08); border-left: 3px solid var(--oxblood); padding: 10px 14px; font-size: 12.5px; color: var(--text-muted); border-radius: 0 3px 3px 0; }
+  .gap-note { background: rgba(239,68,68,0.06); border-left: 3px solid var(--red); padding: 10px 14px; font-size: 12.5px; color: var(--text-muted); border-radius: 0 3px 3px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>Agency Signal</h1>
+    <div class="tagline">Distribution intelligence for commercial insurance. $19 starts the conversation.</div>
+  </div>
+  <div class="meta">
+    <div>Status snapshot · <strong>D-023 architect review</strong></div>
+    <div>2026-05-18</div>
+    <div>Branch <strong>main</strong></div>
+    <div>HEAD <strong>fd3b360</strong> · D-022 family-doc cleanup</div>
+    <div>Position lock · <strong>D-023 2026-05-18</strong></div>
+    <div>Live · <strong>directory.seven16group.com</strong></div>
+  </div>
+</header>
+
+<section>
+  <div class="section-bar"><h2>What Agency Signal is</h2></div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Positioning <span class="pill pill-active">D-023 locked 2026-05-18</span></h3>
+      <p style="font-size:14.5px; line-height:1.55;"><strong>The distribution intelligence layer for commercial insurance.</strong> Helps producers, agencies, MGAs, wholesalers, carriers, and program administrators find, segment, and prioritize agencies + producers by geography, carrier appointment, vertical, contact quality, and distribution fit.</p>
+      <p class="muted small" style="margin-top:8px;">Rejected language: "lead-gen tool" · "prospecting platform" · "ZoomInfo for insurance" · "Neilson-replacement at consumer tier" · "agency database." Agency Signal is an <em>intelligence layer</em>, not a list. The moat is appointment-aware targeting + vertical specialization + saved-list refresh + data hygiene + Enterprise+ distribution recommendations — not raw row count.</p>
+      <p class="small" style="margin-top:10px; color: var(--text);"><strong>ICP entry → growth path:</strong> $19 Producer wedge (working producers + 1–10-producer retail agencies + small wholesalers, $0–50M premium) → $99 Growth → $399+ Enterprise. Distribution Expander VPs at MGAs/wholesalers/carriers buy in via the D-015 second-ICP layer separately.</p>
+      <p class="muted small" style="margin-top:8px;">Live at <span class="mono">directory.seven16group.com</span>; future apex <span class="mono">agencysignal.co</span> reserved but unscheduled (per D-004).</p>
+    </div>
+    <div class="card">
+      <h3>What it is NOT <span class="pill pill-rejected">D-023</span></h3>
+      <ul class="muted">
+        <li>NOT a CRM — no contact/opportunity pipeline, no email sequences</li>
+        <li>NOT an AMS — no policy data, no E&amp;O, no commission tracking</li>
+        <li>NOT a generic list broker (ZoomInfo / Apollo) — agency + producer shape, not generic B2B</li>
+        <li>NOT a DOT risk-scoring platform — that's DOT Intel's lane</li>
+        <li>NOT a Neilson replacement at consumer tier — only Enterprise+ slider competes</li>
+        <li>NOT a full ProgramBusiness clone — market discovery is parked for Tier 1.x, not core today</li>
+        <li>NOT Go High Level services directly — that's Growtheon's lane (D-010 reseller)</li>
+        <li>NOT submission / clearance / quote-bind / policy admin / claims — out of family per D-022</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Two-ICP frame</h2></div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Consumer tier <span class="pill pill-active">Live + active arc</span></h3>
+      <p class="muted small">D-002 / D-011 design target. Free / $19 Producer / $99 Growth / $399+ Enterprise — every paid tier under the $500 P-card threshold so a working producer can buy without procurement. Multi-seat invitations on paid plans (3 seats). 2027 bundle target: $179/mo Seven16 Intelligence = DOT Intel Business + AS Growth (D-005).</p>
+    </div>
+    <div class="card">
+      <h3>Enterprise+ Distribution Expander <span class="pill pill-queued">D-015 locked · GTM queued</span></h3>
+      <p class="muted small">Second ICP — VPs of Distribution at MGAs/wholesalers/carriers. State-based slider $1,000–$2,000/state (anchored on verified email contacts, not agency count). $12,500 all-50 ceiling = 50% undercut of Neilson's $25k. Distribution+ outcome SKU $300–$500 per qualified appointment. <span class="mono">/enterprise</span> page shipped 2026-05-14 (commit <span class="mono">e77c29d</span>) to drive demo conversations.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Build phases</h2></div>
+  <table>
+    <thead><tr><th style="width:80px;">Phase</th><th>Scope</th><th style="width:140px;">Status</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>Foundation (sessions 1–9): Supabase init · multi-tenant schema · RLS day-one · 17-module admin shell (dark-themed) · AI Support page (pg_trgm) · multi-seat invitations · audit log · feature flags</td><td><span class="pill pill-shipped">Shipped</span></td></tr>
+      <tr><td class="num">2</td><td>Vendor data + verticals (sessions 10–12): V5 grain finding · 12 verticals (4 original + 8 added migration 0051) · 1,419-row Master Trucking DB · trucking-segment badges · Berkley operating-units + 13 wholesalers · ISC fix · 8-file vendor xlsx load (634 new agencies + 3,819 appts)</td><td><span class="pill pill-shipped">Shipped</span></td></tr>
+      <tr><td class="num">3</td><td>Sprint 0 + dedicated track (sessions 13–14 + AS Dedicated 1–4): leaked-key rotation · native git out of OneDrive · CLAUDE.md · DOT Intel sync (17,638 agencies / 13,914 appts) · AdList load (31,746 contacts gap-fill) · Next 14→16 + React 18→19 (24 CVEs closed) · caching layer · Sentry pilot · /enterprise + /charter pages</td><td><span class="pill pill-shipped">Shipped</span></td></tr>
+      <tr><td class="num">4</td><td>Steady-state + cross-product (current, since 2026-04-27): no AS-app feature commits 21 days · family-hub sessions 15–24 advanced pricing (D-014, D-015, D-018, D-021, D-022) + ANTI_DECAY_PROTOCOL + Charter Member program. AS Session 5 Option A (SWR client-cache) is the queued reopen.</td><td><span class="pill pill-active">In progress</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Recent sessions</h2></div>
+  <table>
+    <thead><tr><th style="width:160px;">Session</th><th>Wedge</th><th style="width:110px;">Commit</th></tr></thead>
+    <tbody>
+      <tr><td class="num">Family-hub 24 (close)</td><td>D-022 TIQ family departure · /charter rebuilt without TIQ · family docs cleaned · 6 surfaces locked</td><td class="num">fd3b360</td></tr>
+      <tr><td class="num">Family-hub 24</td><td>Anti-Decay Protocol Mechanism #1 (FAMILY_HEALTH.md v1) · Rule 2(b) cross-repo prep · dotintel2 SESSION_30 artifact (~870 lines) · /charter shipped · PRODUCT_REPO_INDEX</td><td class="num">9c0e000</td></tr>
+      <tr><td class="num">Family-hub 23</td><td>D-021 pricing numeric refinement · Learning Center locked ($29.95/seat) · Directory listings refined (DOT carriers FREE, wholesalers $1k/mo)</td><td class="num">—</td></tr>
+      <tr><td class="num">Family-hub 22</td><td>Charter Member integrations locked · 3 new pricing docs (Directory Listings · Lead Downloads · Learning Center)</td><td class="num">—</td></tr>
+      <tr><td class="num">Family-hub 21</td><td>D-014 universal credits + D-015 Enterprise+ state-slider locked · MASTER_CONTEXT data snapshot refreshed</td><td class="num">769400d</td></tr>
+      <tr><td class="num">AS Session 4</td><td>Family DECISION_LOG reconciliation (D-016, D-017 + 2 standing rules) · /enterprise tier page (832 lines) · Next 16 hygiene · Sentry pilot</td><td class="num">e77c29d</td></tr>
+      <tr><td class="num">AS Session 3</td><td>Next 14→16 + React 18→19 (24 CVEs closed) · first real caching layer (lib/cache/build-list-refs.ts) · Neilson UX-parity polish</td><td class="num">8829d38</td></tr>
+      <tr><td class="num">AS Dedicated 2</td><td>DOT Intel → AS sync (17,638 agencies + 13,914 carrier appts) · AdList vendor load (31,746 contacts gap-fill) · 100% canary scrub across 16 patterns</td><td class="num">—</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Tier roadmap</h2></div>
+  <div class="grid grid-3">
+    <div class="card">
+      <h3>Tier 1.0 — Live in production</h3>
+      <p class="muted small" style="margin-bottom:10px;">Customer-facing surfaces shipping value today.</p>
+      <ul class="small">
+        <li>Directory search + filters (12 verticals) <span class="pill pill-shipped">Shipped</span></li>
+        <li>Build-list flow + save + download <span class="pill pill-shipped">Shipped</span></li>
+        <li>Carrier search + analytics dashboard <span class="pill pill-shipped">Shipped</span></li>
+        <li>Multi-tenant auth + 3-seat invitations <span class="pill pill-shipped">Shipped</span></li>
+        <li>17-module admin control center <span class="pill pill-shipped">Shipped (partial: 5/8/9 incomplete)</span></li>
+        <li>Stripe sandbox checkout + webhook <span class="pill pill-sandbox">Sandbox</span></li>
+        <li><span class="mono">/enterprise</span> tier page (D-015 demo driver) <span class="pill pill-shipped">Shipped</span></li>
+        <li><span class="mono">/charter</span> Charter Member page <span class="pill pill-shipped">Shipped 2026-05-15</span></li>
+        <li><span class="mono">/methodology</span> page <span class="pill pill-shipped">Shipped</span></li>
+        <li>Trucking-segment badges (5 tiers) <span class="pill pill-shipped">Shipped</span></li>
+        <li>Berkley OpCos + 13 wholesalers + ISC <span class="pill pill-shipped">Shipped</span></li>
+        <li>Sentry observability (directory-admin) <span class="pill pill-shipped">Pilot</span></li>
+        <li>Caching layer (build-list refs) <span class="pill pill-shipped">Shipped</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tier 1.x — Active or queued (next 30d)</h3>
+      <p class="muted small" style="margin-bottom:10px;">In flight or top of backlog.</p>
+      <ul class="small">
+        <li>SWR client-cache on /build-list + /saved-lists <span class="pill pill-active">Active arc</span></li>
+        <li>Saved-lists update-detection backend <span class="pill pill-queued">Queued #1</span></li>
+        <li>Stripe catalog migration (6 D-021/D-022 surfaces) <span class="pill pill-queued">Queued #7 · CTO-recommended</span></li>
+        <li><span class="mono">credit_consumption_rates</span> table <span class="pill pill-gap">Missing — D-014 partial</span></li>
+        <li><span class="mono">customer_entitlements</span> in seven16-platform <span class="pill pill-gap">Missing — D-015 §7</span></li>
+        <li>Per-user @vercel/kv data cache <span class="pill pill-queued">Queued #2</span></li>
+        <li>Cascade Rule 2(b) + Rule 5 to dotintel2 <span class="pill pill-queued">Queued #3</span></li>
+        <li>5–8 Distribution Expander demos <span class="pill pill-queued">Queued #8</span></li>
+        <li>Wire revalidateVerticalsRefs() admin button <span class="pill pill-queued">Queued #9</span></li>
+        <li><span class="mono">_trucking_load_log</span> RLS cleanup <span class="pill pill-queued">Queued #10</span></li>
+        <li>Carrier-table dedupe (4× Cincinnati etc.) <span class="pill pill-queued">Queued #11</span></li>
+        <li>~150 unmatched carriers → admin/catalog <span class="pill pill-queued">Queued #12</span></li>
+        <li>Charter Member deck rebuild for Gamma <span class="pill pill-queued">Path D</span></li>
+        <li>Verified / claimed profile flow (D-023) <span class="pill pill-queued">New 2026-05-18</span></li>
+        <li>Producer-centric segmentation views (Pillar 2) <span class="pill pill-queued">New 2026-05-18</span></li>
+        <li>Confidence badges + stale alerts in UI (Pillar 7) <span class="pill pill-queued">New 2026-05-18</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Tier 2.0 — Deferred (trigger-based)</h3>
+      <p class="muted small" style="margin-bottom:10px;">Parked until a specific event fires.</p>
+      <ul class="small">
+        <li>Stripe sandbox → production cutover <span class="pill pill-deferred">First paying customer</span></li>
+        <li>Hygiene Credit Stripe wiring <span class="pill pill-deferred">Sub of above</span></li>
+        <li>Trust copy + Hygiene Credit live-ship <span class="pill pill-deferred">Data inventory catch-up</span></li>
+        <li>Phase 3 CMO rewrite (testimonials/logos) <span class="pill pill-deferred">2–3 paying customers</span></li>
+        <li>A/B test sweep (3 tests) <span class="pill pill-deferred">500+ visitors/wk</span></li>
+        <li>Domain cutover to agencysignal.co <span class="pill pill-deferred">Quiet DNS week</span></li>
+        <li>Sprint 1C (shared JWT/Doppler/Sentry) <span class="pill pill-deferred">Platform runbook lands</span></li>
+        <li>8 empty verticals (mig 0051) <span class="pill pill-deferred">Carrier mapping defined</span></li>
+        <li>Pre-launch security gates (Upstash, PITR, CSP) <span class="pill pill-deferred">Pre-launch</span></li>
+        <li>xlsx → exceljs migration <span class="pill pill-deferred">No upstream patch</span></li>
+        <li>UI refresh by brand-systems designer <span class="pill pill-deferred">Designer engaged</span></li>
+        <li>Contacts dedup edge case (+16,273 churn) <span class="pill pill-deferred">Bandwidth</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="legend">
+    <span><span class="pill pill-shipped">Shipped</span> In production</span>
+    <span><span class="pill pill-active">Active</span> Arc in flight</span>
+    <span><span class="pill pill-queued">Queued</span> Planned</span>
+    <span><span class="pill pill-deferred">Deferred</span> Trigger-based</span>
+    <span><span class="pill pill-sandbox">Sandbox</span> Stripe sandbox-only</span>
+    <span><span class="pill pill-gap">Gap</span> Drift / partial scaffolding</span>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Product pillars (9) <span class="pill pill-active" style="vertical-align:8px;">D-023 locked · ADR-023</span></h2></div>
+  <div class="grid grid-2">
+    <div class="domain-card domain-shipped">
+      <h4>1. Agency Directory <span class="pill pill-shipped">Shipped</span></h4>
+      <p class="muted small">Search + filter + profile + save commercial insurance agencies. Filters by state, city, carrier appointment, vertical, contact quality. Fuzzy search via pg_trgm (D-006 standing rule). <strong>32,951</strong> agency rows live. Future: verified/claimed profile flow.</p>
+      <p class="small faint mono" style="margin-top:6px;">app/agency-directory/page.tsx · app/build-list/* · app/verticals/* · <a href="domains/domain-agency-directory.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-active">
+      <h4>2. Producer Intelligence <span class="pill pill-active">Schema in · UI light</span></h4>
+      <p class="muted small">Identify and segment individual producers by title, agency, geography, vertical, specialty. <strong>135,453</strong> contact rows live. UI surfaces today are agency-first; producer-centric segmentation views queued. Eventually: activity/credibility signals.</p>
+      <p class="small faint mono" style="margin-top:6px;">public.contacts · contact_title_roles · departments · management_levels · <a href="domains/domain-producer-intelligence.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-shipped">
+      <h4>3. Carrier Appointment Intelligence <span class="pill pill-shipped">Shipped · core differentiator</span></h4>
+      <p class="muted small">Which agencies have which carrier appointments, in which states, supporting which verticals. <strong>264,063</strong> agency × carrier rows live. <strong>1,369</strong> carriers indexed including Berkley OpCos + 13 wholesalers + ISC. This is what makes Agency Signal more than a list.</p>
+      <p class="small faint mono" style="margin-top:6px;">public.agency_carriers · public.carriers · public.affiliations · <a href="domains/domain-carrier-appointment-intelligence.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-shipped">
+      <h4>4. Vertical / Segment Intelligence <span class="pill pill-shipped">12 verticals · 8 empty</span></h4>
+      <p class="muted small">Commercial insurance niche segmentation: trucking · construction · WC · GL · commercial auto · BOP · property · E&amp;S · 4 more shipped + 8 empty awaiting carrier mapping. Per-vertical pages with carriers, segment badges (5 tiers), and agency lists. <span class="mono">/methodology</span> page surfaces the approach.</p>
+      <p class="small faint mono" style="margin-top:6px;">public.vertical_markets · public.carrier_verticals · app/verticals/[slug]/page.tsx · <a href="domains/domain-vertical-segment-intelligence.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-shipped">
+      <h4>5. Build Lists <span class="pill pill-shipped">Self-serve monetization</span></h4>
+      <p class="muted small">Build a targeted agency or producer list from filters (state · vertical · carrier · contact confidence · size) → name → save → export. Today: build + save + download shipped (<strong>4</strong> saved lists in production).</p>
+      <p class="small faint mono" style="margin-top:6px;">app/build-list/* · app/build-list/review · app/build-list/download · <a href="domains/domain-build-lists-saved-lists.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-active">
+      <h4>6. Saved List Intelligence <span class="pill pill-queued">Refresh queued · BACKLOG #1</span></h4>
+      <p class="muted small">Turn static exports into SaaS. Saved-list snapshots · update detection · changed records (new/removed agencies, new/stale contacts, new appointment indicators) · refresh alerts. UI tints row on <span class="mono">has_updates=true</span> since AS Session 3 (commit <span class="mono">e1bfc89</span>); <strong>backend update-detection = BACKLOG #1 (~4–5 hrs)</strong>. THIS is what separates AS from static data vendors.</p>
+      <p class="small faint mono" style="margin-top:6px;">public.saved_lists · saved_list_snapshots (proposed 0091) · saved_list_changes (proposed 0091) · <a href="domains/domain-build-lists-saved-lists.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-active">
+      <h4>7. Distribution Expander <span class="pill pill-queued">D-015 locked · GTM queued</span></h4>
+      <p class="muted small">Enterprise+ second ICP — "Which agencies should we appoint, recruit, or prioritize in this state / vertical / LOB?" State-based slider $1,000–$2,000/state · $12,500 all-50 ceiling (50% Neilson undercut) · Distribution+ outcome SKU $300–$500/qualified appointment. <span class="mono">/enterprise</span> page shipped 2026-05-14 to drive demo conversations. Build-out queued; <strong>5–8 demos</strong> = next pressure-test.</p>
+      <p class="small faint mono" style="margin-top:6px;">app/enterprise/page.tsx · PRICING_ENTERPRISE_LAYER.md · D-015 · <a href="domains/domain-distribution-expander.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-shipped">
+      <h4>8. Data Quality / Hygiene <span class="pill pill-shipped">Engine in · UI light</span></h4>
+      <p class="muted small">Trust engine. 16-row Neilson denylist + 16-pattern canary scrub (100% block success AS Dedicated 2) · 36-row email-domain denylist · audit_log (1,317 rows, trigger-populated) · dedup keys · <span class="mono">hygiene_events</span> + <span class="mono">saved_list_hygiene_flags</span> stubs ready. Surface this as a feature (confidence badges · stale alerts · "needs verification" flags) — not just backend plumbing.</p>
+      <p class="small faint mono" style="margin-top:6px;">data_load_denylist · email_domain_denylist · audit_log · hygiene_events · saved_list_hygiene_flags · <a href="domains/domain-data-quality-hygiene.md">domain doc</a></p>
+    </div>
+    <div class="domain-card domain-stub">
+      <h4>9. Future Market Discovery <span class="pill pill-deferred">PARKED · 3-condition trigger</span></h4>
+      <p class="muted small">ProgramBusiness-adjacent layer — searchable market profiles · program profiles · coverage categories · state availability · featured markets · market alerts. <strong>Build only when:</strong> (1) Pillar 6 saved-list intelligence is shipped and proven; (2) Pillar 8 data trust signals visible in UI; (3) 5–8 Enterprise+ demos validate market-side demand. Until then ProgramBusiness is a benchmark, not a build target.</p>
+      <p class="small faint mono" style="margin-top:6px;">future · separate session when 3 triggers fire · <a href="domains/domain-market-discovery.md">domain doc</a></p>
+    </div>
+  </div>
+  <div class="note" style="margin-top:16px;">Pillars 1–7 are the customer-facing product structure per D-023. <strong>Cross-cutting concerns</strong> (not pillars, just infrastructure): the 17-module Admin Control Center (admin shell at <span class="mono">app/admin/*</span>), Stripe + billing layer (<span class="mono">app/api/stripe/*</span> · 7 sandbox products, 5 obsolete per D-022), Data engine + ingest scripts (<span class="mono">scripts/load-adlist.ts</span> et al.), and the Family Hub doc layer (<span class="mono">docs/context/</span> as single source of truth for the entire Seven16 family). These keep AS running but are not the product surface.</div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Adjacent competitive references (D-023)</h2></div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Neilson Marketing <span class="pill pill-active">Primary anchor</span></h3>
+      <p class="muted small">Sells insurance-specific agent/broker/MGA/wholesaler data with state and vertical slicing. Land-and-expand pricing: $10k entry (5+2 free states), $1,500/state add-on, $25k all-50 ceiling at renewal (per <span class="mono">reference_neilson_pricing_mechanics.md</span>).</p>
+      <p class="small" style="margin-top:8px; color: var(--text);"><strong>Borrow:</strong> data segmentation · verified contacts · MGA/wholesaler datasets · state &amp; vertical slicing · data hygiene positioning · enterprise distribution-growth framing.</p>
+      <p class="muted small" style="margin-top:8px;"><strong>Avoid:</strong> generic list-broker posture · "buy a list" commodity feel · telemarketing/data-resale vibe · undifferentiated volume claim.</p>
+      <p class="small" style="margin-top:8px; color: var(--text);"><strong>Our edge:</strong> intelligence layer (not data vendor) · dynamic agency universe (not static lists) · distribution strategy (not campaign support) · saved-lists + refresh + change detection (not static exports) · agency × producer × appointment × vertical × territory intelligence (not just contact data). $12,500 all-50 ceiling = 50% Neilson undercut per D-015.</p>
+    </div>
+    <div class="card">
+      <h3>ProgramBusiness <span class="pill pill-deferred">Long-term anchor · market discovery</span></h3>
+      <p class="muted small">Searchable insurance markets · program discovery · storefront/listing profiles · category browsing · market alerts · retail-agent placement utility. Validates user demand for market-finding UX.</p>
+      <p class="small" style="margin-top:8px; color: var(--text);"><strong>Borrow (when triggered):</strong> searchable market profiles · storefront/listing model · category browsing · "find markets" UX · featured programs · market alerts · retail-agent utility patterns.</p>
+      <p class="muted small" style="margin-top:8px;"><strong>Avoid:</strong> broad all-lines marketplace now · full submission marketplace · insurance-news sprawl · quote workflow (belongs in other products, not AS).</p>
+      <p class="small" style="margin-top:8px; color: var(--text);"><strong>Our edge:</strong> find the right agency/producer/channel (not find a market) · agency + producer + market intelligence (not storefront directory) · distribution expansion by state/vertical · MGA/wholesaler/carrier growth intelligence. <strong>Market discovery is parked until saved-list intelligence + data trust + Enterprise+ demos mature.</strong></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Architectural decisions (AS-relevant subset of D-001…D-023)</h2></div>
+  <div class="grid grid-2">
+    <div class="adr"><span class="adr-id">D-001 · Accepted 2026-04-30</span><div class="adr-title">Brand architecture = Option C</div><div class="adr-desc">Separate brands for the market, shared infrastructure for the business, single login for the customer. AS is one product surface among many in the family.</div></div>
+    <div class="adr"><span class="adr-id">D-002 · Accepted 2026-04-30</span><div class="adr-title">Every consumer tier under $500 P-card threshold</div><div class="adr-desc">$19 Producer / $99 Growth / $399+ Enterprise. Producer = working-producer wedge; expense without manager sign-off. Locks pricing copy until data inventory catches up.</div></div>
+    <div class="adr"><span class="adr-id">D-004 · Accepted 2026-04-30</span><div class="adr-title">Agency Signal = new market name</div><div class="adr-desc">Was "SaaS Agency Database" / "Agency Data Seven16." Same build, new name. Older docs map to this.</div></div>
+    <div class="adr"><span class="adr-id">D-005 · Accepted 2026-04-30</span><div class="adr-title">2027 bundle = $179/mo Seven16 Intelligence</div><div class="adr-desc">DOT Intel Business + Agency Signal Growth. Bundle math anchor: more than either single tier, less than the sum. AS is the producer-side leg.</div></div>
+    <div class="adr"><span class="adr-id">D-006 · Accepted 2026-04-30</span><div class="adr-title">Shared auth + RLS day-one</div><div class="adr-desc">One Supabase org, one Stripe customer per user across products. Retrofitting would be expensive. RLS on every multi-tenant table, no exceptions.</div></div>
+    <div class="adr"><span class="adr-id">D-008 · Accepted 2026-05-01</span><div class="adr-title">Multi-project Supabase topology</div><div class="adr-desc">AS satellite = <span class="mono">sdlsdovuljuymgymarou</span> (project name "seven16group", us-east-1, pg 17). Per-satellite Pro cost = $10/mo. Family at maturity = 4 satellites + 1 control plane.</div></div>
+    <div class="adr"><span class="adr-id">D-011 · Accepted 2026-05-02</span><div class="adr-title">Target = emerging/startup small firms</div><div class="adr-desc">Fill the gap legacy carrier-grade / large-broker tools / GHL-enterprise CRMs are too robust/expensive for. Pass the "would an emerging firm with one P-card actually buy this today?" test.</div></div>
+    <div class="adr"><span class="adr-id">D-013 · Accepted 2026-05-12</span><div class="adr-title">Directory mirror cadence = nightly via Vercel-Cron-→-Edge-Function</div><div class="adr-desc">AS agencies + contacts mirror to dotintel2 satellite nightly. Pattern is now family template for any cron writing to a non-public schema. Mirror filter = ≥1 transportation-vertical carrier appt.</div></div>
+    <div class="adr"><span class="adr-id">D-014 · Accepted 2026-05-12 · amended D-021</span><div class="adr-title">Universal credit consumption engine</div><div class="adr-desc">Monthly credit allotments inside locked tiers + $5-increment top-up slider (bonus 0% → +45% at $1,000+) + variable AI consumption. Base credit = $0.15 (was $0.29). Wallet at account level. <span class="mono">credit_wallets</span> + <span class="mono">credit_ledger</span> scaffolded; <span class="mono">credit_consumption_rates</span> missing.</div></div>
+    <div class="adr"><span class="adr-id">D-015 · Accepted 2026-05-12</span><div class="adr-title">Enterprise+ Distribution Expander pricing</div><div class="adr-desc">Second ICP. State-based slider $1,000–$2,000/state · $12,500 all-50 ceiling = 50% Neilson undercut · Distribution+ outcome SKU $300–$500/qualified appointment · Distribution Suite bundle $22,500/yr. <span class="mono">customer_entitlements</span> + <span class="mono">appointment_attributions</span> migration pending.</div></div>
+    <div class="adr"><span class="adr-id">D-017 · Accepted 2026-05-12</span><div class="adr-title">No source-attribution in directory.* schemas</div><div class="adr-desc">AS data mirrors to dotintel2 with <span class="mono">upstream_id</span> (not <span class="mono">agency_signal_id</span>) and source columns DROPPED. Edge Function strips on every nightly UPSERT, not just initial backfill. Keeps cross-product dependency opaque externally.</div></div>
+    <div class="adr"><span class="adr-id">D-018 · Accepted 2026-05-15 · amended D-021</span><div class="adr-title">Charter Member program — best tier permanently</div><div class="adr-desc">Cap 50–75 accounts · 60–90 day enrollment · best pricing tier across everything they buy (was "50% off Charter Bundle"). Required exchange: case study + quarterly feedback + multi-product use. <span class="mono">/charter</span> page live; Stripe revenue capture blocked on catalog migration.</div></div>
+    <div class="adr"><span class="adr-id">D-021 · Accepted 2026-05-15</span><div class="adr-title">Seven16 Credits + Usage Pricing Architecture</div><div class="adr-desc">À la carte SKUs + universal credit currency + cross-sell via volume bonus bands. Supersedes tier-pricing approach (D-019). Account-level wallets across products. Lookup loyalty bumps (+10/15/20% on next purchase).</div></div>
+    <div class="adr"><span class="adr-id">D-022 · Accepted 2026-05-15</span><div class="adr-title">Threshold IQ spun out of Seven16 family</div><div class="adr-desc">Family-active products reduce to DOT Intel cluster + Agency Signal + seven16-platform control plane. TIQ tiers archived; Charter Member offer drops from 7 surfaces to 6. <span class="mono">/charter</span> page rebuilt without TIQ. 2027 bundle (D-005) unchanged — bundle never included TIQ.</div></div>
+    <div class="adr"><span class="adr-id">D-023 · Accepted 2026-05-18 ★ NEW</span><div class="adr-title">Agency Signal positioning lock — "Distribution intelligence for commercial insurance"</div><div class="adr-desc">7-pillar product taxonomy (Agency Directory · Producer Intelligence · Carrier Appointment Intelligence · Vertical/Segment Intelligence · Build Lists/Saved Lists · Distribution Expander · Data Quality/Hygiene). Neilson + ProgramBusiness as adjacent competitive references. Verified/claimed profile flow queued Tier 1.x. Architect strategy review ratifies ~80% of existing family doctrine; D-023 codifies the sharpening.</div></div>
+  </div>
+  <p class="muted small" style="margin-top:12px;">All decisions at <span class="mono">docs/context/DECISION_LOG.md</span>. D-007/D-009/D-010/D-012/D-016/D-019/D-020 are family-architectural but not AS-touching (DOT Intel rebuild, TIQ name, Growtheon delivery, directory build host, brand split, superseded TIQ tiers, superseded TIQ positioning).</p>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Standing rules (Family DECISION_LOG §6)</h2></div>
+  <div class="grid grid-3">
+    <div class="principle"><span class="principle-num">#01</span><div class="principle-title">Plugins-first, escalate-last</div><div class="principle-desc">Supabase / Vercel / Stripe / Cloudflare-via-WebFetch / Bash MCPs before asking Master O. He's the last resort.</div></div>
+    <div class="principle"><span class="principle-num">#02</span><div class="principle-title">Explain like 5</div><div class="principle-desc">Numbered steps · exact button names · paste-ready commands · predict the next prompt. Master O is a non-developer founder.</div></div>
+    <div class="principle"><span class="principle-num">#03</span><div class="principle-title">Exhaustive handoffs</div><div class="principle-desc">Chronological log + migrations + commits + identifiers + lessons + opening move. End every state-changing session with one.</div></div>
+    <div class="principle"><span class="principle-num">#04</span><div class="principle-title">Canary filter + dedupe on every external load</div><div class="principle-desc">Vendor files have decoys. Ask for canary patterns before guessing. Dry-run + report stats before loading.</div></div>
+    <div class="principle"><span class="principle-num">#05</span><div class="principle-title">Cancelled = closed scope</div><div class="principle-desc">"Skip that" means delete from list, not defer. Document under "Do not reopen." See cancelled work in DECISION_LOG §5.</div></div>
+    <div class="principle"><span class="principle-num">#06</span><div class="principle-title">Carrier search = fuzzy/strong match</div><div class="principle-desc">pg_trgm normalized lowercase, tolerate Inc/Corp/Co suffix variants. Internal/programmatic by carrier_id is fine.</div></div>
+    <div class="principle"><span class="principle-num">#07</span><div class="principle-title">Pricing copy = placeholder until data catches up</div><div class="principle-desc">Don't revise scale claims (100k producers, 70% email density, $12.5k National DB) based on data scale.</div></div>
+    <div class="principle"><span class="principle-num">#08</span><div class="principle-title">Secrets never in chat</div><div class="principle-desc">Clipboard → dashboard only. Vercel sensitive env vars are write-only — any local cache must not leak into git.</div></div>
+    <div class="principle"><span class="principle-num">#09</span><div class="principle-title">OneDrive .git is permanently broken</div><div class="principle-desc">Canonical clone at <span class="mono">C:\Users\GTMin\Projects\saas-agency-database</span>. Native git + GCM cached creds.</div></div>
+    <div class="principle"><span class="principle-num">#10</span><div class="principle-title">Always recommend next path as CTO/PM</div><div class="principle-desc">Lead with the opinionated SaaS-best-practice recommendation framed via dependency / longest-lead-time / revenue-adjacency / reversibility. Never a flat menu.</div></div>
+    <div class="principle"><span class="principle-num">#11</span><div class="principle-title">No paid third-party data until DOT Intel is revenue-generating</div><div class="principle-desc">Free FMCSA + USPS Web Tools only. Defer Twilio Lookup, paid VIN history, commercial address validators to post-revenue backlog.</div></div>
+    <div class="principle"><span class="principle-num">#12</span><div class="principle-title">RLS forced on every multi-tenant table</div><div class="principle-desc">No exceptions. Including stub tables and event tables. Super-admin bypass only. Verified Sprint 0e.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Tech stack</h2></div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Locked stack</h3>
+      <table class="stack-table">
+        <tr><td><strong>Frontend</strong></td><td>Next.js 16.2.6 (App Router) · React 19.2.6 · TS 5.6 strict · Tailwind 3.4 · Turbopack</td></tr>
+        <tr><td><strong>Database</strong></td><td>Supabase Postgres 17.6 · RLS forced · pg_trgm · multi-tenant scoped via current_tenant_id()</td></tr>
+        <tr><td><strong>Auth</strong></td><td>Supabase Auth via @supabase/ssr 0.5 · 3-seat invitations on paid plans (mig 0055)</td></tr>
+        <tr><td><strong>Hosting</strong></td><td>Vercel Pro · auto-deploy from main · prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV</td></tr>
+        <tr><td><strong>DNS</strong></td><td>Cloudflare · CNAME directory → Vercel · DNS-only (grey cloud)</td></tr>
+        <tr><td><strong>Payments</strong></td><td>Stripe v17 · sandbox <span class="mono">acct_1TLUF6HmqSDkUoqw</span> · webhook signature-verified</td></tr>
+        <tr><td><strong>Observability</strong></td><td>Sentry 10.53 (directory-admin pilot) · Vercel Speed Insights 2.0 · Vercel Analytics 2.0 · Supabase logs · audit_log table</td></tr>
+        <tr><td><strong>AI surfaces</strong></td><td>None wired today · pg_trgm RPC powers /ai-support (search-based, not LLM-based)</td></tr>
+        <tr><td><strong>Vendor ingest</strong></td><td>tsx 4.19 + xlsx 0.18 (scripts/ only — vuln flagged, defer migration)</td></tr>
+        <tr><td><strong>Utility</strong></td><td>clsx 2.1 · lucide-react 0.451 icons</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Rejected stack <span class="pill pill-rejected">Inferred</span></h3>
+      <table class="stack-table stack-rejected">
+        <tr><td>Auth0 / Clerk</td><td>→ Supabase Auth</td></tr>
+        <tr><td>Datadog</td><td>→ Sentry + Vercel</td></tr>
+        <tr><td>PostHog</td><td>→ Vercel Analytics</td></tr>
+        <tr><td>Self-hosted Postgres</td><td>→ Supabase managed</td></tr>
+        <tr><td>Docker / Kubernetes</td><td>→ Vercel handles</td></tr>
+        <tr><td>Python microservices</td><td>→ Next.js API routes (TS only; sync script is the only Python exception, lives outside repo)</td></tr>
+        <tr><td>Redis / Upstash</td><td>→ Not wired (pre-launch security gate only)</td></tr>
+        <tr><td>Kafka / RabbitMQ</td><td>→ Postgres LISTEN/NOTIFY potential</td></tr>
+        <tr><td>Mongo / DynamoDB</td><td>→ Postgres-only family</td></tr>
+        <tr><td>LangChain / LlamaIndex</td><td>→ Direct AI calls when wired (D-XXX TBD)</td></tr>
+        <tr><td>Pages Router</td><td>→ App Router</td></tr>
+        <tr><td>JS without TS</td><td>→ TS strict end-to-end</td></tr>
+        <tr><td>Tailwind v4</td><td>→ Tailwind 3.4 (held at 3.4 for stability)</td></tr>
+        <tr><td>exceljs (today)</td><td>→ xlsx 0.18 (deferred migration; vuln in scripts/ only)</td></tr>
+        <tr><td>Stripe Tax / Sigma</td><td>→ Not wired pre-revenue</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Data discipline (8 regimes)</h2></div>
+  <div class="grid grid-4">
+    <div class="card card-2 small"><strong>1. RLS forced (D-006)</strong><div class="muted" style="margin-top:4px;">Every multi-tenant table, no exceptions. Super-admin bypass via current_tenant_id() function.</div></div>
+    <div class="card card-2 small"><strong>2. Neilson exclusion</strong><div class="muted" style="margin-top:4px;"><span class="mono">data_load_denylist</span> (16 rows) blocks watermark patterns. Every load runs 16-canary post-scrub.</div></div>
+    <div class="card card-2 small"><strong>3. Canary + dedupe + dry-run</strong><div class="muted" style="margin-top:4px;">Standing rule per DECISION_LOG §6. 100% scrub success across 16 patterns AS Dedicated 2.</div></div>
+    <div class="card card-2 small"><strong>4. Audit log</strong><div class="muted" style="margin-top:4px;">1,317 rows · trigger-populated on high-value admin tables · migration 0044. SOC 2 audit trail.</div></div>
+    <div class="card card-2 small"><strong>5. Email domain denylist</strong><div class="muted" style="margin-top:4px;">36 rows. Disposable/junk filtering on contact ingest. Hand-curated from vendor experience.</div></div>
+    <div class="card card-2 small"><strong>6. Multi-tenant scoping</strong><div class="muted" style="margin-top:4px;">Default tenant <span class="mono">ce52fe1e-aac7-4eee-8712-77e71e2837ce</span> (seven16). No second tenant yet.</div></div>
+    <div class="card card-2 small"><strong>7. Stripe sandbox-only</strong><div class="muted" style="margin-top:4px;">No card storage. Webhook signature-verified. Live cutover trigger = first paying customer.</div></div>
+    <div class="card card-2 small"><strong>8. Pre-launch security gates</strong><div class="muted" style="margin-top:4px;">Upstash rate limiting · PITR ($100/mo) · CSP headers · Better Stack uptime — all queued for paying-customer trigger.</div></div>
+  </div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Database snapshot</h2></div>
+  <div class="grid grid-4" style="margin-bottom:16px;">
+    <div class="card"><div class="kpi-label">Migrations applied</div><div class="kpi">62+</div><div class="kpi-sub">0001–0090 visible in repo · gaps in 0010–0036 + 0056 (likely live-DB-only) · STATE.md still says "0001–0087"</div></div>
+    <div class="card"><div class="kpi-label">Public tables</div><div class="kpi">44</div><div class="kpi-sub">RLS forced on every one · trigger-populated audit · per-tenant scoping via current_tenant_id()</div></div>
+    <div class="card"><div class="kpi-label">Verticals defined</div><div class="kpi">12</div><div class="kpi-sub">4 original + 8 added migration 0051 · 136 carrier-vertical mappings · 8 still empty</div></div>
+    <div class="card"><div class="kpi-label">Append-only event tables</div><div class="kpi">5</div><div class="kpi-sub">audit_log · usage_logs · downloads_ledger · credit_ledger · hygiene_events</div></div>
+  </div>
+  <div class="grid grid-4">
+    <div class="card"><div class="kpi-label">Agencies</div><div class="kpi">32,951</div><div class="kpi-sub"><span class="pill pill-gap">−8,754 vs STATE.md</span> STATE last updated 2026-05-12</div></div>
+    <div class="card"><div class="kpi-label">Contacts</div><div class="kpi">135,453</div><div class="kpi-sub"><span class="pill pill-gap">+16,273 vs STATE.md</span> Post AS Dedicated 2 + later churn</div></div>
+    <div class="card"><div class="kpi-label">Agency × Carrier</div><div class="kpi">264,063</div><div class="kpi-sub"><span class="pill pill-gap">+51,685 vs STATE.md</span> Cross-product sync activity</div></div>
+    <div class="card"><div class="kpi-label">Carriers</div><div class="kpi">1,369</div><div class="kpi-sub">Master Trucking DB + Berkley regional OpCos + 13 wholesalers + ISC</div></div>
+  </div>
+  <div class="gap-note" style="margin-top:16px;"><strong>Documentation gap:</strong> STATE.md row counts are 6 days stale and undercounting/overcounting by material amounts. The data has churned through cross-product sync runs and possibly cleanups that weren't captured in handoffs. <strong>Action:</strong> 5-minute refresh pass on STATE.md §3 + migration reconciliation against live DB.</div>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Gaps to fill</h2></div>
+  <table>
+    <thead><tr><th style="width:60px;">#</th><th>Gap</th><th style="width:170px;">Severity / trigger</th></tr></thead>
+    <tbody>
+      <tr><td class="num">1</td><td>STATE.md row counts stale by 6 days; agencies / contacts / agency_carriers / affiliations all drifted materially</td><td><span class="pill pill-gap">High · doc trust</span></td></tr>
+      <tr><td class="num">2</td><td>Migration count in STATE.md ("0001–0087") doesn't match repo (0001–0090 visible, gaps in 0010–0036 + 0056) — likely live DB has more</td><td><span class="pill pill-gap">High · doc trust</span></td></tr>
+      <tr><td class="num">3</td><td>5 obsolete Stripe sandbox products from pre-D-021 era still active; should archive (active:false) before D-021 catalog ships</td><td><span class="pill pill-gap">Medium · Stripe catalog session</span></td></tr>
+      <tr><td class="num">4</td><td><span class="mono">credit_consumption_rates</span> table missing in <span class="mono">sdlsdovuljuymgymarou</span> — required for D-014 per-tool credit costs</td><td><span class="pill pill-gap">High · D-014 blocker</span></td></tr>
+      <tr><td class="num">5</td><td><span class="mono">customer_entitlements</span> + <span class="mono">appointment_attributions</span> missing in <span class="mono">soqqmkfasufusoxxoqzx</span> — required for D-015 state-level RLS + outcome SKU tracking</td><td><span class="pill pill-gap">High · D-015 blocker</span></td></tr>
+      <tr><td class="num">6</td><td>17 admin pages live but STATE.md still says 13 modules; status of 5/8/9 partial vs. shipped not reconciled</td><td><span class="pill pill-gap">Medium · doc trust</span></td></tr>
+      <tr><td class="num">7</td><td>DOT Intel sync script (<span class="mono">sync_to_agency_signal.py</span>) lives OUTSIDE this repo at <span class="mono">scrapers/seven16-scraper/seven16-scraper/scripts/</span> — coordination risk</td><td><span class="pill pill-deferred">Medium · operational hygiene</span></td></tr>
+      <tr><td class="num">8</td><td>Hygiene Credit promised in trust copy + locked since session 9-10; Stripe wiring (Subscription Schedule vs. programmatic coupon) not chosen</td><td><span class="pill pill-deferred">Trigger: paying-customer cutover</span></td></tr>
+      <tr><td class="num">9</td><td>Trust copy ("Two of the top 10," "Dual-Agent Verification Pipeline," Hygiene Credit framing) locked but never shipped to live site</td><td><span class="pill pill-deferred">Trigger: data inventory catch-up</span></td></tr>
+      <tr><td class="num">10</td><td>agencysignal.co domain reserved but DNS not wired</td><td><span class="pill pill-deferred">Trigger: quiet DNS week</span></td></tr>
+      <tr><td class="num">11</td><td><span class="mono">_trucking_load_log</span> RLS disabled (advisory flagged session 21)</td><td><span class="pill pill-queued">Low · quick win</span></td></tr>
+      <tr><td class="num">12</td><td>8 of 12 verticals empty (migration 0051 created shells; no carrier mapping)</td><td><span class="pill pill-deferred">Trigger: carrier mapping per vertical defined</span></td></tr>
+      <tr><td class="num">13</td><td>Carrier-table dedupe (4× Cincinnati, 3× Selective, 3× Nationwide collapsing to same normCarrier key) — first-match-wins works today, future migration would tidy</td><td><span class="pill pill-queued">Low</span></td></tr>
+      <tr><td class="num">14</td><td>~150 long-tail unmatched carriers in <span class="mono">data/_unmatched_carriers.tsv</span> need /admin/catalog entries</td><td><span class="pill pill-queued">Low · polish</span></td></tr>
+      <tr><td class="num">15</td><td>Contacts dedup edge case (+16,273 churn from AS Dedicated 2 AdList re-run) — NULL handling in keyOf() lets some duplicates through</td><td><span class="pill pill-deferred">Bandwidth</span></td></tr>
+      <tr><td class="num">16</td><td>84 pre-existing SECURITY DEFINER advisor warnings · ext-in-public · pg_trgm-in-public · mv_vertical_summary API-readable</td><td><span class="pill pill-deferred">Bandwidth · pre-existing</span></td></tr>
+      <tr><td class="num">17</td><td>xlsx 0.18 prototype-pollution + ReDoS (no upstream patch). Used scripts/ only. Migrate to exceljs someday.</td><td><span class="pill pill-deferred">No upstream patch</span></td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Next session targets</h2></div>
+  <div class="card">
+    <h3>AS-side options (priority order per D-023 architect review)</h3>
+    <ol style="padding-left:20px; font-size:13px;">
+      <li><strong>Saved-lists update-detection backend</strong> (~4–5 hrs). Migration 0091_saved_list_snapshots.sql + Vercel-Cron + Edge Function + delta-export button. <strong>BACKLOG #1 + D-023 Pillar 5 + architect Priority 3.</strong> "A static export is a list vendor. A refreshed saved list is SaaS." This is the highest-leverage move per D-023 thesis. The architect's proposed <span class="mono">saved_list_snapshots</span> + <span class="mono">saved_list_changes</span> tables would land here.</li>
+      <li><strong>AS Session 5 Option A — SWR client-cache</strong> (~2–2.5 hrs · 4 files). Smaller perf win on /build-list + /saved-lists. Closes the perf story from AS Session 3. Listed as in-progress Active arc in BACKLOG.</li>
+      <li><strong>Stripe catalog migration (D-021 · 6 surfaces)</strong> (~1 full session · 5–8 files). Universal credits · DOT Alerts · directory listings · lead downloads · Learning Center · Charter Member flag. Plus archive 5 obsolete sandbox products. Unblocks Charter Member outreach revenue capture per FAMILY_HEALTH dependency map. Important but not Pillar-1 thesis-critical.</li>
+      <li><strong>STATE.md refresh pass</strong> (~30 min). Reconcile §3 row counts + §6 admin module count + migration list against live DB. Doc-trust win — architect Priority 1.</li>
+      <li><strong>Distribution Expander UX thesis spec</strong> (~half session). The Pillar 6 enterprise workflow: state → vertical → target agency profile → carrier-appointment filter → recommended agency list → export. Spec the screen flow before building — architect Priority 2.</li>
+      <li><strong>Verified / claimed profile flow scoping</strong> (~30 min). Pillar 7 trust feature; new per D-023. <span class="mono">agency_profiles</span> extension (verified · claimed_by · public_slug · last_verified_at columns on existing <span class="mono">agencies</span>) + claim flow UX. Scope only this session; build later — architect Priority 4.</li>
+    </ol>
+  </div>
+  <h3 style="margin-top:18px;">Master-O tasks (not Claude work)</h3>
+  <ul class="small muted">
+    <li><strong>Archive obsolete Stripe products</strong> — 5 of 7 sandbox products are stale per D-022. Stripe MCP can flag <span class="mono">active:false</span> programmatically once approved.</li>
+    <li><strong>Stripe webhook endpoint events</strong> — must be registered via dashboard (Stripe MCP can't): <span class="mono">checkout.session.completed</span> · <span class="mono">customer.subscription.updated</span> · <span class="mono">customer.subscription.deleted</span> · <span class="mono">invoice.paid</span>.</li>
+    <li><strong>Supabase Auth dashboard</strong> — leaked-password protection (HaveIBeenPwned check). 1-click in dashboard if not yet enabled.</li>
+    <li><strong>Domain cutover decision</strong> — agencysignal.co reserved; trigger is a quiet DNS week.</li>
+    <li><strong>Hygiene Credit mechanism</strong> — pick Stripe Subscription Schedule (phased) vs. programmatic coupon at month 6+12.</li>
+    <li><strong>Trust copy live-ship decision</strong> — when does data inventory catch up to "100k producers" and "70% email density"?</li>
+    <li><strong>5–8 Distribution Expander demos</strong> — pressure-test the $12,500 ceiling and the MI-Tier-1 / TX-Tier-2 / NH-Tier-3 surprises with live VP-of-Distribution reactions before broad publication.</li>
+  </ul>
+</section>
+
+<footer>
+  Agency Signal project status · D-023 architect review · 2026-05-18
+  <br/>
+  Status file at <span class="mono">docs/agency-signal-status.html</span> — re-open anytime for at-a-glance view. Update at the close of any AS-touching session.
+</footer>
+
+</body>
+</html>

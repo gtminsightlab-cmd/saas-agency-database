@@ -1,6 +1,6 @@
 # Agency Signal + Seven16 Family Hub — Backlog
 
-Last reviewed: 2026-05-15 (after family-hub SESSION_24 tail — D-022 TIQ family departure recorded. Family-active product count reduced from 3 + 1 control plane to 2 + 1 control plane. /charter page rebuilt without TIQ; family docs cleaned. AS Session 5 Active arc unchanged.)
+Last reviewed: 2026-05-18 (D-023 Agency Signal positioning lock — architect strategy review. 9-pillar product taxonomy locked at [`docs/decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md`](decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md); 5 strategy docs at [`docs/strategy/`](strategy/); 8 domain docs at [`docs/domains/`](domains/); 6-table proposed migration at [`supabase/migrations/0091_agency_signal_d023_tables_proposed.sql`](../supabase/migrations/0091_agency_signal_d023_tables_proposed.sql). Pillar 9 Market Discovery parked. Verified/claimed profile + producer segmentation + confidence-badges-in-UI added to Tier 1.x. Prior 2026-05-15: SESSION_24 tail — D-022 TIQ family departure recorded.)
 
 > **How to use:** Read this file first on every session open (Rule 6). End every session with a Backlog edit — promote, defer, kill, or done. Each entry has enough context to act cold: what / why / file paths / next step.
 >
@@ -57,6 +57,18 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 ---
 
 ## Deferred (parked, will surface on a trigger)
+
+- **[AS] Pillar 9 — Future Market Discovery (ProgramBusiness-adjacent)** — explicitly parked per D-023 / ADR-023. Documented at [`docs/domains/domain-market-discovery.md`](domains/domain-market-discovery.md). **Trigger:** all three of (1) saved-list intelligence (Pillar 6 / BACKLOG #1) shipped + proven; (2) data trust signals visible in UI (Pillar 8 — verified badges, confidence scores, stale alerts); (3) Enterprise+ Distribution Expander demos (5–8) validate market-side demand. Until then ProgramBusiness is a benchmark, not a build target.
+
+- **[AS] Verified / claimed agency profile flow** — Pillar 1 + 8 cross-cut, NEW per D-023. Agencies claim and correct their own profile → inbound SEO + trust + future monetization. Tier 1.x, not active build. Schema preview in `0091_agency_signal_d023_tables_proposed.sql` (agency_profiles columns or extension table).
+
+- **[AS] Verified / claimed producer profile flow** — Pillar 2 + 8 cross-cut, NEW per D-023. Tier 1.x. Schema preview in `0091_agency_signal_d023_tables_proposed.sql` (producer_profiles columns).
+
+- **[AS] Producer-centric segmentation views** — Pillar 2, NEW per D-023. Existing UI is agency-first; need producer-first segmentation surfaces. Tier 1.x.
+
+- **[AS] Confidence badges + stale alerts in UI** — Pillar 8, NEW per D-023. Surface confidence + freshness in `/agency-directory` + `/saved-lists` as product feature, not just backend plumbing. Tier 1.x.
+
+- **[AS] Distribution Expander UX workflow build** — Pillar 7, the post-`/enterprise`-page workflow surfaces (state-targeting · vertical-segments · appointment-opportunities · export-jobs · data-quality dashboards). Trigger: schema migration for `customer_entitlements` + `appointment_attributions` lands in `seven16-platform` satellite (BACKLOG #5).
 
 - **Stripe sandbox → production cutover** — trigger: first paying customer ready to convert. Account `acct_1TLUF6HmqSDkUoqw`, webhook endpoint `https://directory.seven16group.com/api/stripe/webhook`, events `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid`.
 
@@ -120,6 +132,7 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 ## Source-of-truth pointers (read these on session open)
 
 - This file (read first per Rule 6)
+- **D-023 / ADR-023 — Agency Signal positioning lock (2026-05-18):** [`docs/decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md`](decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md) + [`docs/strategy/agency-signal-positioning.md`](strategy/agency-signal-positioning.md) (core thesis) + [`docs/strategy/agency-signal-product-boundaries.md`](strategy/agency-signal-product-boundaries.md) (owns / does NOT own) + [`docs/strategy/neilson-competitive-boundary.md`](strategy/neilson-competitive-boundary.md) + [`docs/strategy/programbusiness-competitive-boundary.md`](strategy/programbusiness-competitive-boundary.md) + [`docs/strategy/distribution-expander-thesis.md`](strategy/distribution-expander-thesis.md). 8 domain docs at [`docs/domains/`](domains/). Status dashboard at [`docs/agency-signal-status.html`](agency-signal-status.html). Proposed schema at [`supabase/migrations/0091_agency_signal_d023_tables_proposed.sql`](../supabase/migrations/0091_agency_signal_d023_tables_proposed.sql) (NOT YET APPLIED).
 - Latest family-hub handoff: [`docs/handoffs/SESSION_21_PRICING_HANDOFF.md`](handoffs/SESSION_21_PRICING_HANDOFF.md)
 - Latest Agency Signal product handoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_4_HANDOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_4_HANDOFF.md)
 - Next Agency Signal kickoff: [`docs/handoffs/AGENCY_SIGNAL_SESSION_5_KICKOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_5_KICKOFF.md)
