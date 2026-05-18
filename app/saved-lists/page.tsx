@@ -43,7 +43,7 @@ export default async function SavedListsPage({
   let q = supabase
     .from("saved_lists")
     .select(
-      "id,name,created_at,accounts_count,contacts_count,contacts_with_email_count,has_updates,filter_json",
+      "id,name,created_at,accounts_count,contacts_count,contacts_with_email_count,has_updates,filter_json,last_run_at,last_acknowledged_at",
       { count: "exact" }
     )
     .limit(200);
@@ -146,8 +146,15 @@ export default async function SavedListsPage({
                     typeof l.filter_json?.querystring === "string"
                       ? l.filter_json.querystring
                       : null;
+                  const lastRunLabel = l.last_run_at
+                    ? `Last checked ${new Date(l.last_run_at).toISOString().slice(0, 10)}`
+                    : "Not yet checked";
                   return (
-                    <tr key={l.id} className={l.has_updates ? "bg-brand-50/60 hover:bg-brand-50" : "hover:bg-gray-50"}>
+                    <tr
+                      key={l.id}
+                      className={l.has_updates ? "bg-brand-50/60 hover:bg-brand-50" : "hover:bg-gray-50"}
+                      title={lastRunLabel}
+                    >
                       <td className="px-4 py-3">
                         <Link
                           href={`/build-list/download?id=${l.id}&name=${encodeURIComponent(l.name)}`}
@@ -174,7 +181,12 @@ export default async function SavedListsPage({
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <SavedListRowActions id={l.id} name={l.name} filterQs={qs} />
+                        <SavedListRowActions
+                          id={l.id}
+                          name={l.name}
+                          filterQs={qs}
+                          hasUpdates={!!l.has_updates}
+                        />
                       </td>
                     </tr>
                   );
