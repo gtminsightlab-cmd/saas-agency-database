@@ -1,6 +1,6 @@
 # Session State — Seven16 Group
 
-**Last updated:** 2026-05-14 (AS Session 4 prep — decision-log reconciliation: D-016 + D-017 logged for dotintel2 brand split + no-source-attribution; §6 "always recommend next path" standing rule added; stale "not yet pushed" pricing-commit note cleared)
+**Last updated:** 2026-05-19 (SESSION_27 close — internal-app foundation shell + Recruit Lists wrap shipped. First slice of Sessions 27-32 internal-app redesign epic. Tailwind palette swapped brand-* → #0F766E teal-700 anchor. 5 new components/app/* primitives (PageHeader, Breadcrumbs, TopBar, MetricCard, DataTable). Sidebar relabeled per Master O resolution lock. Recruit Lists page rewritten with 5-KPI row + DataTable wrapper + StatusPill + sonner toasts.)
 **Companion to:** [MASTER_CONTEXT.md](MASTER_CONTEXT.md)
 
 > Snapshot of where each product stands **right now**. Three platform products in the family — Agency Signal (live), DOT Intel (demo build at dotintel.io), Threshold IQ (build in progress in another session) — plus standalone-capable add-ons (Growtheon reseller, Seven16Recruit stealth) and parked future products. Read the relevant section before starting work.
@@ -9,7 +9,7 @@
 
 | Repo | Canonical clone | Latest commit on `main` |
 |---|---|---|
-| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `fea5b34` — merge of feat/foundations-sprint (Vercel Speed Insights + Analytics + security headers); all session-21 pricing commits (`915e4fe` / `f11287b` / `769400d`) pushed |
+| `saas-agency-database` (family hub + Agency Signal) | `C:\Users\GTMin\Projects\saas-agency-database\` | `0a8b2dc` — feat(d-024,intel-app): foundation shell + Recruit Lists wrap (Session 27). Deploy `dpl_8SRxpyK5q3kwXVBnUzpmM5zdBn8s` READY at directory.seven16group.com (42s build). |
 | `dotintel2` (DOT Intel marketing + demo dashboard + directory build host per D-012; brand-split now spans dotcarriers.io + dotagencies.io + dotintel.io per D-016) | `C:\Users\GTMin\Projects\dotintel2\` | Past session 28 — Sentry pilot + Vercel Speed Insights + Analytics + security headers merged on `main`. Working tree has uncommitted CSA-schema + training-hub work in progress. |
 | `seven16-distribution` (Threshold IQ) | `C:\Users\GTMin\Projects\seven16-distribution\` | Far past `fe2381d` — Phase E strategic core fully shipped end-to-end (E-1 through E-10 + Phase G producer network). Only unblocked work remaining is E-6-S3 polish + E-9 backfill. STATE.md inside the repo is the authoritative inside view. |
 | `dotintel-intelligence` (parked) | `C:\Users\GTMin\Projects\dotintel-intelligence\` | `d302a3a` — no new work, parked |
