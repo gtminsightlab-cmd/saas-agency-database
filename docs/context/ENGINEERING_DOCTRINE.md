@@ -31,6 +31,73 @@ For the *why* (product strategy, business context, locked architectural decision
 - **Frontend:** Next.js App Router, Tailwind, TypeScript strict mode.
 - **Auth:** `@supabase/ssr` middleware refresh on every request.
 
+## Front-end production standard (D-024)
+
+**Locked 2026-05-18 per Master O directive.** This is a standing architecture requirement for the entire build.
+
+**The front end is not just the visual layer. It is part of the product architecture.** We are building a production-grade application, not a demo. Every screen, workflow, and component must be stable, responsive, accessible, and understandable to real users.
+
+### The 10 standards (every major screen, workflow, and component)
+
+1. **Responsive layout.** Desktop / tablet / mobile all work. No fixed-width layouts that break on smaller screens. Tables, dashboards, forms, workflows, admin screens, and settings pages need a mobile-safe layout strategy.
+
+2. **Loading states.** The user should always know what the app is doing. When the app is saving, loading, uploading, analyzing, syncing, generating, checking, or processing — the UI must say so clearly (`Loading dashboard…` · `Saving changes…` · `Uploading file…` · `Processing document…` · `Running analysis…` · `Checking status…` · `Syncing records…` · `Generating result…`). The UI must never feel frozen or dead while work is happening in the background.
+
+3. **Error states.** Every async action needs a friendly failure state. No raw technical errors to users. No blank screens. Provide clear recovery: retry / refresh / go back / contact support where appropriate.
+
+4. **Empty states.** When there is no data, explain what that means and what the user can do next. Empty tables, dashboards, lists, tasks, uploads, reports, and search results must never feel broken.
+
+5. **Success states.** When something saves, submits, uploads, completes, syncs, or generates successfully — tell the user. Confirmation matters.
+
+6. **Accessibility.** Semantic HTML, proper labels, keyboard navigation, visible focus states, accessible modals/drawers, screen-reader-friendly status updates. **Color cannot be the only way to communicate meaning.**
+
+7. **Error boundaries.** One broken section must not crash the entire application. Add top-level and section-level error boundaries around complex areas: dashboards, data tables, AI panels, file processing, integrations, workflow modules, admin tools.
+
+8. **State management discipline.** Keep state clean and scoped. Do not overuse global state. Clean up timers, listeners, subscriptions, stale requests, and long-running async calls. Prevent memory leaks and stale updates after users leave a page.
+
+9. **Performance.** Optimize for slow connections and older devices. Route-based code splitting. Lazy loading. Optimized assets. Pagination/virtualization for large lists. Minimal third-party bloat. Users do not download code for modules they are not using.
+
+10. **Defensive UI.** Assume API data can be partial, missing, delayed, malformed, or unavailable. The UI must handle this gracefully without crashing.
+
+### Definition of done
+
+A screen is not complete until it handles all of:
+
+- loading
+- empty
+- error
+- retry
+- success
+- mobile
+- keyboard navigation
+- screen readers
+- partial data
+- slow connection
+- user leaving mid-request
+- malformed or missing response fields
+
+### How we operationalize this
+
+- **Shared primitives** — build per repo, compose everywhere:
+  - `components/ui/LoadingState.tsx` — spinner + skeleton + "Saving…" / "Loading…" variants
+  - `components/ui/EmptyState.tsx` — icon + heading + body + primary CTA pattern
+  - `components/ui/ErrorState.tsx` — friendly message + retry button + optional support link
+  - `components/ui/SuccessToast.tsx` — toast/inline with auto-dismiss
+  - `components/ui/ErrorBoundary.tsx` — section + page-level error boundaries
+  - `components/ui/StatusPill.tsx` — accessible status indicators (color + icon + text, never color-alone)
+
+- **Toast library:** `sonner` (locked 2026-05-18) — modern, small bundle, accessible by default. Standardize across repos.
+
+- **A11y lint:** `eslint-plugin-jsx-a11y` (locked 2026-05-18) enabled in each repo's lint config.
+
+- **Apply on touch.** Existing screens that don't meet the standard are brought up to it whenever a session edits them. New screens hit the bar before merge.
+
+- **The 12-point Definition of Done is the ship gate.** Code review (Claude or human) checks against the list before declaring a screen "done."
+
+When this doctrine and a quick fix are in tension, the doctrine wins. When this doctrine and an existing memory note disagree, this doctrine wins — update the memory.
+
+---
+
 ## Skills to consult before working
 
 These are Claude Code skills — invoke when the task matches.
@@ -92,3 +159,4 @@ Example for dotintel.io:
 ## Revision history
 
 - **2026-05-10** — initial doctrine. Adapted from Master O's pasted CLAUDE doctrine; file-count rule softened from strict 2-file to "~5 typical, ask above ~7" with strict 2-file reserved for high-risk changes; added the "no paid services until revenue" standing rule; structured as family-level so repo-local CLAUDE.md files can point here.
+- **2026-05-18** — added "Front-end production standard (D-024)" section per Master O directive. Codifies 10-standard / 12-point-DoD bar for every screen + tooling locks (`sonner`, `eslint-plugin-jsx-a11y`) + shared `components/ui/*` primitives + apply-on-touch policy for existing screens.

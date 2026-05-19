@@ -58,11 +58,16 @@ Agreement Rule 6):
      (D-023 + Pillar 6 + Stripe catalog).
   3. docs/context/FAMILY_HEALTH.md  ← Cross-product snapshot; refreshed
      end of SESSION_25.
-  4. docs/context/DECISION_LOG.md  ← D-001 through D-023 + §6 standing
-     rules. D-023 is the latest lock (Agency Signal 9-pillar taxonomy).
-  5. docs/context/PRICING_STRIPE_CATALOG.md  ← Canonical Stripe SKU
+  4. docs/context/DECISION_LOG.md  ← D-001 through D-024 + §6 standing
+     rules. **D-024 is the latest lock (Front-End Production Standard,
+     2026-05-18)** — every screen meets a 10-standard / 12-point-DoD bar
+     before "done." If you do Path A, full doctrine at:
+  5. docs/context/ENGINEERING_DOCTRINE.md  ← §"Front-end production
+     standard (D-024)" + tooling locks (`sonner`, `eslint-plugin-jsx-a11y`)
+     + shared `components/ui/*` primitive list.
+  6. docs/context/PRICING_STRIPE_CATALOG.md  ← Canonical Stripe SKU
      map (shipped SESSION_25).
-  6. (optional) docs/decisions/adr-023-*.md + docs/strategy/ + docs/domains/
+  7. (optional) docs/decisions/adr-023-*.md + docs/strategy/ + docs/domains/
      ← D-023 supporting docs if you need deeper context.
 
 ═══════════════════════════════════════════════════════════════
@@ -90,56 +95,77 @@ STEP 2 — STATE AT SESSION OPEN
 STEP 3 — ACTIVE ARC FOR SESSION_26 (CTO recommendation)
 ═══════════════════════════════════════════════════════════════
 
-**Path A — Pillar 7 entitlements schema in seven16-platform satellite
-(~30-45 min, ~1 migration file + apply + verify).**
+**Path A — D-024 Front-End Production Standard implementation
+(~3-4 hrs, ~8-10 files). Shared UI primitives + Pillar 6 hardening
+as first compliance pass.**
 
-Lands the schema BACKLOG #5 calls for. Unblocks both:
-  (i) D-015 Enterprise+ state-level RLS scoping (which agencies a
-      buyer can see when they purchase per-state)
-  (ii) Distribution+ outcome SKU attribution tracking
-       ($300-$500/qualified appointment)
-  (iii) Cross-product credit-wallet flow (universal credit purchases
-        from AS or DOT Intel route through entitlements check)
+D-024 was locked 2026-05-18 (after Pillar 6 backend shipped) — every
+screen must hit a 10-standard / 12-point-DoD bar. Today's Pillar 6 UI
+falls below that bar: `alert()` calls for errors, no visible loading
+indicator, `title=` instead of `aria-label`, no error boundary, no
+success confirmation. This session builds the shared primitives that
+make compliance easy AND brings Pillar 6 UI up to standard as the
+first applied case.
 
-Schema:
-  - public.customer_entitlements (
-      customer_id uuid, product_id uuid, scope_type text,
-      scope_value text, granted_at timestamptz, expires_at timestamptz,
-      ...
-    ) per D-015 §7
-  - public.appointment_attributions (
-      customer_id, agency_id, attribution_type, qualified_at, ...
-    ) for outcome SKU tracking
+Scope:
 
-Both tenant-scoped via current_tenant_id() (same RLS pattern as
-sdlsdovuljuymgymarou) but on `soqqmkfasufusoxxoqzx`. After apply, run
-advisors to confirm zero new SECURITY DEFINER warnings.
+  (a) Install tooling:
+      - `npm i sonner` (locked toast library per D-024)
+      - `npm i -D eslint-plugin-jsx-a11y` (locked a11y lint per D-024)
+      - Enable a11y plugin in eslint flat config
 
-Bundle option: pair with BACKLOG #6 — credit_consumption_rates table
-in sdlsdovuljuymgymarou (~10 min addition). Same session.
+  (b) Build shared primitives at `components/ui/`:
+      - LoadingState.tsx — spinner + skeleton + message variants
+      - EmptyState.tsx — icon + heading + body + CTA pattern
+      - ErrorState.tsx — friendly message + retry button + support link
+      - SuccessToast.tsx — wraps sonner with project styling
+      - ErrorBoundary.tsx — section + page-level
+      - StatusPill.tsx — accessible status (color + icon + text)
+
+  (c) Add `<Toaster />` to app root layout
+  (d) Pillar 6 UI hardening pass:
+      - Replace `alert(...)` in row-actions.tsx with toast.error
+      - Add visible loading spinner during "Downloading…"
+      - Add success toast on completion ("3 changes downloaded")
+      - Add ErrorBoundary around the saved-lists table
+      - Replace `title=` with `aria-label` on icon-only buttons
+      - Handle "zero changes since last ack" empty state (currently
+        downloads empty CSV)
+      - Test keyboard nav + screen reader announcements
+
+After this session, future Claude sessions reuse the primitives so
+every new screen ships at the bar without re-rolling the wheel.
 
 ═══════════════════════════════════════════════════════════════
 STEP 4 — ALTERNATIVES (if Master O wants to redirect)
 ═══════════════════════════════════════════════════════════════
 
-  • **Path B — AS Session 5 Option A SWR client-cache** (~2-2.5 hrs).
+  • **Path B — Pillar 7 entitlements schema in seven16-platform
+    satellite** (~30-45 min, ~1 migration). BACKLOG #5. Unblocks:
+    D-015 Enterprise+ state-level RLS scoping, Distribution+ outcome
+    SKU attribution, cross-product credit-wallet flow. Schema:
+    `public.customer_entitlements` + `public.appointment_attributions`
+    in soqqmkfasufusoxxoqzx, RLS forced + tenant-scoped. Pair with
+    BACKLOG #6 credit_consumption_rates table (~10 min addition).
+    Lower lift than Path A; valuable but no live Enterprise+ customer
+    waiting on it yet.
+
+  • **Path C — AS Session 5 Option A SWR client-cache** (~2-2.5 hrs).
     Install swr, wrap data loaders on /build-list + /saved-lists,
     revalidation on focus + manual refresh. Closes the perf story
-    from AS Session 3. Lower-priority than Path A but smaller risk.
+    from AS Session 3. Smaller risk than Path A but doesn't build
+    long-term primitives.
 
-  • **Path C — Distribution Expander UX thesis spec** (~half session).
+  • **Path D — Distribution Expander UX thesis spec** (~half session).
     Document the Pillar 7 enterprise workflow: state → vertical →
     target agency profile → carrier-appointment filter → recommended
     agency list → export. Spec the screen flow BEFORE building.
-    Depends on Path A entitlements schema being defined (can spec
-    against the planned schema in parallel).
 
-  • **Path D — STATE.md refresh sweep** (~30 min). Reconcile §3 row
-    counts (already partially refreshed SESSION_25) + §6 admin module
-    count + migration list against live DB. Doc-trust win. Pair with
-    any of A/B/C as session tail-end.
+  • **Path E — STATE.md refresh sweep** (~30 min). Reconcile §3 row
+    counts + §6 admin module count + migration list against live DB.
+    Doc-trust win. Pair with any other path as session tail-end.
 
-  • **Path E — Verified/claimed profile flow scoping** (~30 min).
+  • **Path F — Verified/claimed profile flow scoping** (~30 min).
     Tier 1.x feature; agency_profiles + producer_profiles columns
     landed in migration 0091; flow UX needs design. Spec only,
     build later.
@@ -189,6 +215,11 @@ STEP 6 — DO NOT in this session
   • Treat Bindlab as a Seven16-family sibling product (per D-022 it's
     outside the family; per Master O 2026-05-18 directive, AS does
     not intersect with Bindlab going forward)
+  • Ship ANY screen below the D-024 Front-End Production Standard
+    (locked 2026-05-18). 10 standards + 12-point Definition of Done
+    is the ship gate. Use shared components/ui/* primitives (build
+    them this session if doing Path A); apply-on-touch policy for
+    existing screens not yet brought up to standard.
 
 ═══════════════════════════════════════════════════════════════
 STEP 7 — STANDING DISCIPLINE
