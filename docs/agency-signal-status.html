@@ -118,13 +118,13 @@
     <div class="tagline">Distribution intelligence for commercial insurance. $19 starts the conversation.</div>
   </div>
   <div class="meta">
-    <div>Status snapshot · <strong>SESSION_25 close</strong></div>
-    <div>2026-05-18 · 7 commits this session</div>
+    <div>Status snapshot · <strong>SESSION_26 close</strong></div>
+    <div>2026-05-18 · 5 commits today (b8defba homepage redesign · f24b3f3 npmrc fix · a6765f5 close-out docs · a98a91f partner-program doctrine · earlier SESSION_25 trail)</div>
     <div>Branch <strong>main</strong></div>
-    <div>HEAD <strong>49c1e43</strong> · D-024 front-end standard</div>
+    <div>HEAD <strong>a98a91f</strong> · Partner Program family-wide doctrine locked</div>
     <div>Position lock · <strong>D-023 2026-05-18</strong></div>
     <div>FE standard · <strong>D-024 2026-05-18</strong></div>
-    <div>Live · <strong>directory.seven16group.com</strong></div>
+    <div>Live · <strong>directory.seven16group.com</strong> · homepage redesign READY</div>
   </div>
 </header>
 
@@ -186,6 +186,8 @@
   <table>
     <thead><tr><th style="width:160px;">Session</th><th>Wedge</th><th style="width:110px;">Commit</th></tr></thead>
     <tbody>
+      <tr><td class="num">Family-hub 26 (close)</td><td><strong>Marketing homepage redesign SHIPPED</strong> · first major D-024 application · 6 <span class="mono">components/ui/*</span> primitives + 13 marketing section components + sonner Toaster + flat-config jsx-a11y · live data audit replaced brief's understated numbers · brand naming clarified (Agency Signal canonical, Seven16 Group = holding co owning AS + BindLab + DotIntel) · <strong>Seven16 Group Partner Program doctrine locked</strong> family-wide · Sessions 27-32 internal-app redesign epic queued</td><td class="num">a98a91f</td></tr>
+      <tr><td class="num">Family-hub 25 (close)</td><td>D-023 9-pillar Agency Signal positioning lock + 22-file deliverable set · Pillar 6 saved-list refresh backend SHIPPED (mig 0091/0092 + Edge Function + cron + ack/delta APIs + UI) · Stripe catalog migration shipped to sandbox (6 D-021 surfaces + Charter coupon L1Ngigfc)</td><td class="num">5db5603</td></tr>
       <tr><td class="num">Family-hub 24 (close)</td><td>D-022 TIQ family departure · /charter rebuilt without TIQ · family docs cleaned · 6 surfaces locked</td><td class="num">fd3b360</td></tr>
       <tr><td class="num">Family-hub 24</td><td>Anti-Decay Protocol Mechanism #1 (FAMILY_HEALTH.md v1) · Rule 2(b) cross-repo prep · dotintel2 SESSION_30 artifact (~870 lines) · /charter shipped · PRODUCT_REPO_INDEX</td><td class="num">9c0e000</td></tr>
       <tr><td class="num">Family-hub 23</td><td>D-021 pricing numeric refinement · Learning Center locked ($29.95/seat) · Directory listings refined (DOT carriers FREE, wholesalers $1k/mo)</td><td class="num">—</td></tr>
@@ -367,6 +369,38 @@
     <div class="adr"><span class="adr-id">D-024 · Accepted 2026-05-18 ★ NEW</span><div class="adr-title">Front-End Production Standard — every screen meets 10 standards + 12-point DoD</div><div class="adr-desc">"We are not building a demo." 10 standards (responsive · loading · error · empty · success · a11y · error boundaries · state discipline · performance · defensive UI) + 12-point Definition of Done (loading / empty / error / retry / success / mobile / keyboard / screen reader / partial data / slow connection / user-leaving-mid-request / malformed-response). Tooling locks: <span class="mono">sonner</span> + <span class="mono">eslint-plugin-jsx-a11y</span>. Shared <span class="mono">components/ui/*</span> primitives. Apply-on-touch policy. Full doctrine at <span class="mono">docs/context/ENGINEERING_DOCTRINE.md</span> §"Front-end production standard."</div></div>
   </div>
   <p class="muted small" style="margin-top:12px;">All decisions at <span class="mono">docs/context/DECISION_LOG.md</span>. D-007/D-009/D-010/D-012/D-016/D-019/D-020 are family-architectural but not AS-touching (DOT Intel rebuild, TIQ name, Growtheon delivery, directory build host, brand split, superseded TIQ tiers, superseded TIQ positioning).</p>
+</section>
+
+<section>
+  <div class="section-bar"><h2>Seven16 Group Partner Program <span class="pill pill-active" style="vertical-align:8px;">Family-wide doctrine · Locked 2026-05-18</span></h2></div>
+  <div class="note" style="margin-bottom:16px;">
+    <strong>DO NOT build a standalone referral, affiliate, partner, or commission system inside Agency Signal.</strong> The parent partner program lives at <span class="mono">partners.seven16group.com</span> and is the shared system of record for every Seven16 Group product. Agency Signal <em>participates</em> in the program; it does not host it.
+  </div>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>What the parent owns <span class="pill pill-active">partners.seven16group.com</span></h3>
+      <ul class="muted small">
+        <li>Customer referrals → platform credits</li>
+        <li>Approved affiliates → promotion rights</li>
+        <li>Certified partners → demo access · deal registration · higher commissions</li>
+        <li>Commission ledger + payout (cross-product)</li>
+        <li>Partner identity (separate from customer auth)</li>
+      </ul>
+      <p class="muted small" style="margin-top:10px;">Per-product PRODUCT_KEY: <span class="mono">agency_signal</span> · <span class="mono">dotintel</span> · <span class="mono">dotagencies</span>. Agency Signal's apply URL: <span class="mono">https://partners.seven16group.com/apply?product=agency_signal</span></p>
+    </div>
+    <div class="card">
+      <h3>What this product must eventually prepare <span class="pill pill-queued">Roadmap · parent not built yet</span></h3>
+      <ul class="muted small">
+        <li>Lightweight <span class="mono">/partners</span> stub page → primary CTA to parent apply URL</li>
+        <li>Sign-up flow attribution: <span class="mono">?ref=CODE</span> · <span class="mono">seven16_partner_ref</span> cookie · <span class="mono">product_key</span> metadata</li>
+        <li>Stripe webhook forwarding: <span class="mono">invoice.paid</span> / <span class="mono">invoice.refunded</span> / <span class="mono">charge.dispute.*</span> → parent reward handler</li>
+        <li>Admin attribution view (read-only · no manual payouts)</li>
+        <li>Partner demo-access role gates → seeded/fake data only · never live customer data · revocable</li>
+      </ul>
+      <p class="muted small" style="margin-top:10px;">Trigger to start build: parent hub exists at <span class="mono">partners.seven16group.com</span>. Until then: <strong>avoid architectural decisions that would block future integration</strong> (no in-product partner schema, no per-product commission tracking, no coupon-as-referral-reward in Stripe).</p>
+    </div>
+  </div>
+  <p class="muted small" style="margin-top:12px;">Full doctrine at family memory <span class="mono">project_seven16_partner_program.md</span>. Surfaces in every session touching referrals · affiliates · partners · commissions · coupon-as-reward · sign-up attribution. Cross-repo: DotIntel and DotAgencies sessions read the same memory file from the saas-agency-database hub.</p>
 </section>
 
 <section>
