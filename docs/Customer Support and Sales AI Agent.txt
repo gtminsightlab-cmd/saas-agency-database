@@ -1,0 +1,852 @@
+Here’s the copy/paste prompt to start the Claude Code session:
+
+You are Claude Code operating inside the Seven16 Group Support project folder.
+
+I am giving all the projects the same copy of the instructions so all projects are aware of what each other family project is responsible for in their build in anticipation of the customer support AI Agent to provide sales and support within their environment.
+
+Project domain:
+seven16groupsupport.com
+
+Mission:
+Build Seven16 Group Support as a standalone SaaS platform that serves as the centralized AI sales, support, onboarding, technical sales, customer service, account management, affiliate vetting, and 1099 sales partner vetting layer for the Seven16 product ecosystem.
+
+This is not a toy chatbot. Treat it as a serious, secure, API-first SaaS product.
+
+Supported Seven16 products:
+- DotIntel — dotintel.io
+- DotCarriers — dotcarriers.io
+- DotAgencies — dotagencies.io
+- Agency Signal — agencysignal.com
+- BindLab — bindlab.io
+- Future Seven16 products
+
+Core stack:
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Supabase
+- Supabase Auth
+- Supabase Postgres
+- Supabase RLS
+- Vercel
+- Cloudflare
+- GitHub
+
+Primary objective for this session:
+Read the existing project folder, understand the current state, and produce a practical implementation plan before making major changes.
+
+Do the following first:
+
+1. Inspect the repository structure.
+2. Identify the framework, package manager, dependencies, and current app structure.
+3. Check whether Supabase is already configured.
+4. Check whether there are existing migrations.
+5. Check whether auth, admin routes, API routes, and environment files already exist.
+6. Check whether Tailwind and shadcn/ui are already configured.
+7. Check for any existing documentation, README files, product notes, architecture notes, or TODO files.
+8. Summarize what exists.
+9. Identify gaps against the Seven16 Group Support master plan.
+10. Recommend the safest first build sequence.
+
+Do not immediately build everything.
+
+First produce:
+- Repo assessment
+- Current architecture summary
+- Gap list
+- Risk list
+- Proposed file/folder structure
+- Proposed database migration plan
+- Proposed first implementation phase
+- Questions only if truly blocking
+
+Architecture goals:
+- Standalone SaaS product
+- Multi-product support
+- Product-aware agent routing
+- Configurable AI agents
+- Embedded chat widget
+- Public support portal
+- Admin dashboard
+- Knowledge base
+- Conversation logging
+- Lead capture
+- Support ticket creation
+- Affiliate partner vetting
+- 1099 sales partner vetting
+- Audit logs
+- API-first design
+- Mobile-friendly UI
+- Secure by default
+
+Initial products to seed:
+- dotintel
+- dotcarriers
+- dotagencies
+- agencysignal
+- bindlab
+- seven16group
+
+Initial agents to seed:
+- Pre-Sales Agent
+- Sales Agent
+- Support Agent
+- Onboarding Agent
+- Technical Sales Agent
+- Account Manager Agent
+- Affiliate Partner Vetting Agent
+- 1099 Sales Partner Vetting Agent
+
+Core tables eventually needed:
+- organizations
+- user_profiles
+- products
+- product_domains
+- agents
+- agent_products
+- knowledge_items
+- knowledge_product_links
+- knowledge_agent_links
+- conversations
+- messages
+- conversation_events
+- leads
+- support_tickets
+- partner_applications
+- sales_partner_applications
+- api_keys
+- widget_configs
+- escalation_rules
+- audit_logs
+
+Security requirements:
+- Enable RLS on tenant-sensitive tables.
+- Never expose Supabase service role key to frontend.
+- Use Supabase Auth for dashboard users.
+- Use product-aware access controls.
+- Hash API keys.
+- Validate widget origins.
+- Use strict CORS.
+- Add audit logs for admin actions.
+- Separate public, customer, internal, and confidential knowledge.
+- Do not let AI agents leak internal knowledge.
+- Escalate legal, billing, compliance, outage, account-security, and confidential-data issues.
+
+Frontend requirements:
+- Mobile-first
+- Accessible
+- Loading states
+- Error states
+- Empty states
+- Error boundaries
+- Clean enterprise SaaS design
+- Fast on slow connections
+- Reusable components
+- Admin dashboard layout
+- Public support portal
+- Embedded widget foundation
+
+Preferred first implementation phase:
+1. Project inspection and assessment.
+2. Architecture notes written to docs/.
+3. Database migration plan.
+4. Core schema migration.
+5. Seed products and agents.
+6. Admin shell.
+7. Product admin page.
+8. Agent admin page.
+9. Public support portal.
+10. Basic chat interface.
+11. Conversation and message API routes.
+12. Product-aware agent router stub.
+13. Lead/ticket/application capture.
+14. Audit logging.
+15. Mobile and accessibility pass.
+
+Important:
+Before coding, give me the repo assessment and recommended build sequence. If you find existing files that conflict with this plan, do not overwrite them blindly. Explain the conflict and recommend the safest path.
+
+Start by inspecting the repository.
+how should I update the various projects so they can anticipate this in their build as customer and sales and account management support
+Thought for a couple of seconds
+
+You should update each product project with a “Support Platform Integration Readiness” instruction package.
+
+The key idea: each product should not build its own full support system. Each product should instead expose clean hooks, context, APIs, events, and UI slots so seven16groupsupport.com can plug in later.
+
+Below is the copy/paste prompt you can give Claude Code inside each project.
+
+Prompt for Each Product Project
+
+Use this for:
+
+DotIntel
+DotCarriers
+DotAgencies
+Agency Signal
+BindLab
+
+Copy/paste into Claude Code:
+
+You are Claude Code working inside this product project.
+
+Important architectural update:
+
+Seven16 Group is building a standalone centralized AI sales, support, onboarding, account management, technical sales, customer service, affiliate-vetting, and 1099 sales partner-vetting SaaS at:
+
+seven16groupsupport.com
+
+This current product should NOT build a full separate support/sales/onboarding system internally.
+
+Instead, update this project so it is ready to integrate with Seven16 Group Support as the centralized support layer.
+
+Your job in this session is to inspect the current project and prepare it for future support-platform integration.
+
+Primary goal:
+Make this product support-aware, support-integratable, and API-ready without overbuilding.
+
+Do not break existing product functionality.
+
+Do not hardcode the support platform deeply into business logic.
+
+Design clean extension points.
+
+The product should eventually be able to:
+- Embed the Seven16 support widget.
+- Send product context to the support platform.
+- Identify authenticated users securely.
+- Expose limited customer/account context through approved APIs.
+- Create support tickets through Seven16 Group Support.
+- Send product events to the support platform.
+- Allow account management support.
+- Allow onboarding support.
+- Allow technical sales support.
+- Allow pre-sales support from the public website.
+- Allow sales follow-up and lead capture.
+- Route users by product, role, plan, issue type, and account status.
+
+Current support platform domain:
+seven16groupsupport.com
+
+Assume this product may be one of:
+- dotintel
+- dotcarriers
+- dotagencies
+- agencysignal
+- bindlab
+
+First, inspect the repo and determine which product this is.
+
+Then produce an integration readiness assessment before coding.
+
+Do the following:
+
+1. Identify current app structure.
+2. Identify auth system.
+3. Identify user/account/org/customer model.
+4. Identify existing API routes.
+5. Identify existing dashboard/app shell.
+6. Identify public marketing pages.
+7. Identify billing/subscription logic if present.
+8. Identify onboarding flows if present.
+9. Identify current support/contact/help flows if present.
+10. Identify where an embedded support widget should eventually live.
+11. Identify what safe user/account context this product can pass to Seven16 Group Support.
+12. Identify what API endpoints this product should expose to the support platform.
+13. Identify security risks.
+14. Identify the safest first implementation steps.
+
+Do not immediately build everything.
+
+First produce:
+- Current repo assessment
+- Support integration gap list
+- Recommended widget placement
+- Recommended product context payload
+- Recommended support API endpoints
+- Recommended event/webhook design
+- Security checklist
+- Implementation plan
+
+Important design principle:
+This product owns its core business data.
+Seven16 Group Support owns conversations, support tickets, sales conversations, partner vetting, support routing, and AI-agent orchestration.
+
+This product should expose only the minimum safe context needed for support.
+
+Required integration concepts:
+
+1. Support Widget Slot
+
+Prepare a reusable component or integration point where the Seven16 support widget can later be mounted.
+
+Suggested component:
+
+components/support/Seven16SupportWidget.tsx
+
+It should eventually support:
+
+- productSlug
+- userId
+- organizationId
+- accountId
+- userEmail
+- userRole
+- subscriptionPlan
+- accountStatus
+- currentPath
+- currentFeature
+- signedContextToken
+- theme
+
+Do not expose sensitive information directly in the browser unless approved.
+
+2. Product Slug
+
+This product must have a clear product slug.
+
+Use one of:
+
+- dotintel
+- dotcarriers
+- dotagencies
+- agencysignal
+- bindlab
+
+Add it to environment/config if missing:
+
+NEXT_PUBLIC_PRODUCT_SLUG=
+NEXT_PUBLIC_SUPPORT_URL=https://seven16groupsupport.com
+
+3. Authenticated Support Context
+
+When a logged-in user opens support, the product should be able to send a secure signed context token to Seven16 Group Support.
+
+The context should include only safe fields:
+
+{
+  "product_slug": "",
+  "user_id": "",
+  "organization_id": "",
+  "email": "",
+  "role": "",
+  "plan": "",
+  "account_status": "",
+  "current_path": "",
+  "issued_at": "",
+  "expires_at": ""
+}
+
+Do not include:
+- API keys
+- secrets
+- payment details
+- private customer data
+- full database records
+- passwords
+- tokens from third-party services
+- confidential internal notes
+
+4. Public Pre-Sales Support
+
+On public marketing pages, the support widget should run in anonymous/pre-sales mode.
+
+Anonymous mode can pass:
+
+{
+  "product_slug": "",
+  "source_domain": "",
+  "source_url": "",
+  "mode": "public_presales"
+}
+
+5. In-App Customer Support
+
+Inside authenticated app pages, the support widget should run in customer-support mode.
+
+Authenticated mode can support:
+
+{
+  "mode": "customer_support",
+  "product_slug": "",
+  "user_context": "signed_token_only"
+}
+
+6. Onboarding Support
+
+If this product has onboarding steps, add support hooks for:
+
+- onboarding_started
+- onboarding_step_completed
+- onboarding_blocked
+- onboarding_completed
+
+These can later be sent to Seven16 Group Support.
+
+7. Account Management Support
+
+The product should be able to expose limited account-management context:
+
+- plan name
+- subscription status
+- seat count
+- usage tier
+- account age
+- main product module used
+- last login
+- high-level usage summary
+
+Do not expose payment method details or invoices unless a secure billing flow is explicitly designed.
+
+8. Product Events
+
+Prepare an event abstraction for future support analytics.
+
+Events may include:
+
+- user_signed_up
+- trial_started
+- subscription_started
+- subscription_canceled
+- onboarding_started
+- onboarding_completed
+- export_failed
+- download_failed
+- api_error
+- user_invited_team_member
+- user_requested_support
+- user_requested_demo
+- user_clicked_partner_program
+- user_hit_usage_limit
+
+Create a simple internal event helper if one does not exist.
+
+Suggested file:
+
+lib/support/events.ts
+
+9. Future Product API Endpoints
+
+Plan for these future internal endpoints.
+
+Do not expose them publicly without auth.
+
+Suggested routes:
+
+GET /api/internal/support/context
+Returns safe account/user/product context for the support platform.
+
+POST /api/internal/support/events
+Receives or sends product events related to support.
+
+POST /api/internal/support/ticket-link
+Links a support ticket ID from Seven16 Group Support back to this product.
+
+GET /api/internal/support/health
+Basic integration health check.
+
+10. API Security
+
+All support-platform API calls must eventually use one of:
+
+- signed JWT
+- server-to-server API key
+- webhook signature
+- allowlisted origin
+- short-lived signed context token
+
+Never trust client-provided context without verification.
+
+11. UI Requirements
+
+Any support entry point must be:
+
+- mobile-friendly
+- accessible
+- keyboard usable
+- screen-reader friendly
+- non-blocking
+- resilient if support service is offline
+- respectful of loading states
+- not disruptive to the core workflow
+
+12. Fallback Behavior
+
+If seven16groupsupport.com is unavailable:
+
+- Do not break the app.
+- Hide widget or show fallback contact form.
+- Log the failure.
+- Allow user to continue normal product use.
+
+13. Admin Settings
+
+If appropriate, add future configuration support for:
+
+- support enabled/disabled
+- support widget location
+- default support mode
+- allowed support contexts
+- support escalation contact
+- product support email
+- support integration status
+
+14. Documentation
+
+Create or update documentation:
+
+docs/support-integration-readiness.md
+
+The doc should include:
+
+- Product slug
+- Support integration strategy
+- Widget placement plan
+- Safe context payload
+- API endpoint plan
+- Event plan
+- Security notes
+- Open questions
+- Implementation status
+
+15. Do Not Overbuild Yet
+
+For this session, prefer:
+- assessment
+- docs
+- config preparation
+- clean stubs
+- helper functions
+- non-breaking widget placeholder
+
+Avoid:
+- building a full duplicate support system
+- hardcoding AI prompts
+- storing support conversations inside this product
+- exposing sensitive customer records
+- directly granting support platform write access
+- creating fragile dependencies on support availability
+
+Expected output:
+First give me a repo assessment and readiness plan.
+
+Then, if safe, implement the first non-breaking support integration preparation:
+- add environment variables to .env.example
+- create docs/support-integration-readiness.md
+- add support config helper
+- add support event helper stub
+- add support widget placeholder component
+- do not mount it globally unless clearly safe
+- do not break production behavior
+What Each Product Needs to Add
+
+Each product should get these minimum readiness pieces.
+
+1. Environment Variables
+
+Add to each project’s .env.example:
+
+NEXT_PUBLIC_PRODUCT_SLUG=
+NEXT_PUBLIC_SUPPORT_URL=https://seven16groupsupport.com
+
+SUPPORT_PLATFORM_API_URL=https://seven16groupsupport.com/api/v1
+SUPPORT_PLATFORM_API_KEY=
+SUPPORT_CONTEXT_SIGNING_SECRET=
+SUPPORT_WEBHOOK_SECRET=
+
+For each project:
+
+DotIntel:      NEXT_PUBLIC_PRODUCT_SLUG=dotintel
+DotCarriers:  NEXT_PUBLIC_PRODUCT_SLUG=dotcarriers
+DotAgencies:  NEXT_PUBLIC_PRODUCT_SLUG=dotagencies
+Agency Signal:NEXT_PUBLIC_PRODUCT_SLUG=agencysignal
+BindLab:      NEXT_PUBLIC_PRODUCT_SLUG=bindlab
+2. Support Widget Placeholder
+
+Each product should have a component like:
+
+components/support/Seven16SupportWidget.tsx
+
+Purpose:
+
+A safe placeholder for the future embedded support widget.
+
+It should not break the app if the support platform is down.
+
+It should eventually support:
+
+type Seven16SupportWidgetProps = {
+  productSlug: string;
+  mode: "public_presales" | "customer_support" | "onboarding" | "account_management" | "technical_sales";
+  userContextToken?: string;
+  currentPath?: string;
+  theme?: "light" | "dark" | "system";
+};
+3. Support Context Helper
+
+Each project should have:
+
+lib/support/context.ts
+
+Purpose:
+
+Build a safe support context payload for the centralized support platform.
+
+Safe payload:
+
+{
+  product_slug: string;
+  user_id?: string;
+  organization_id?: string;
+  email?: string;
+  role?: string;
+  plan?: string;
+  account_status?: string;
+  current_path?: string;
+  mode: string;
+  issued_at: string;
+  expires_at: string;
+}
+
+Never include:
+
+- passwords
+- API keys
+- auth tokens
+- service role keys
+- payment methods
+- private customer data
+- full user records
+- confidential internal notes
+4. Support Events Helper
+
+Each project should have:
+
+lib/support/events.ts
+
+Purpose:
+
+Create a future-safe way to emit customer-support and sales-support events.
+
+Example events:
+
+support_widget_opened
+support_message_started
+demo_requested
+sales_question_asked
+onboarding_started
+onboarding_step_completed
+onboarding_blocked
+onboarding_completed
+ticket_requested
+download_failed
+export_failed
+api_error
+billing_question_started
+partner_program_clicked
+usage_limit_reached
+5. Internal Support API Routes
+
+Each product should eventually expose:
+
+GET  /api/internal/support/context
+POST /api/internal/support/events
+POST /api/internal/support/ticket-link
+GET  /api/internal/support/health
+
+These should be protected by:
+
+- server-to-server API key
+- signed JWT
+- webhook signature
+- short-lived token
+
+Do not expose them as public unauthenticated routes.
+
+Product-Specific Instructions
+DotIntel
+
+DotIntel should prepare support around:
+
+- data search support
+- compliance/intelligence questions
+- download help
+- API support
+- account setup
+- product education
+- sales qualification
+
+Recommended support modes:
+
+public_presales
+customer_support
+technical_sales
+account_management
+
+Special events:
+
+search_failed
+export_failed
+download_failed
+data_source_question
+compliance_question_started
+api_key_question_started
+DotCarriers
+
+DotCarriers should prepare support around:
+
+- carrier search
+- appetite data
+- trucking/commercial auto carrier intelligence
+- carrier profile questions
+- download/API support
+- data accuracy feedback
+
+Recommended support modes:
+
+public_presales
+customer_support
+technical_sales
+account_management
+
+Special events:
+
+carrier_search_started
+carrier_profile_viewed
+appetite_question_started
+carrier_data_feedback
+download_failed
+api_error
+DotAgencies
+
+DotAgencies should prepare support around:
+
+- agency directory search
+- agency recruiting workflows
+- agency data quality
+- exports
+- lead list support
+- account growth questions
+
+Recommended support modes:
+
+public_presales
+customer_support
+account_management
+technical_sales
+
+Special events:
+
+agency_search_started
+agency_profile_viewed
+agency_export_failed
+agency_data_feedback
+recruiting_workflow_started
+Agency Signal
+
+Agency Signal should prepare support around:
+
+- prospecting
+- email verification
+- lead list building
+- downloads
+- credits/usage
+- account upgrades
+- API/data questions
+
+Recommended support modes:
+
+public_presales
+customer_support
+onboarding
+technical_sales
+account_management
+
+Special events:
+
+email_verification_started
+email_verification_failed
+lead_list_created
+download_failed
+credits_exhausted
+upgrade_clicked
+api_key_question_started
+BindLab
+
+BindLab needs the most careful integration because it touches AMS/CRM workflows and potentially sensitive insurance operations.
+
+BindLab should prepare support around:
+
+- onboarding
+- agency setup
+- user roles
+- submission intake
+- market selection workflow
+- rules manager education
+- document upload support
+- producer/account manager workflow
+- technical support
+
+Recommended support modes:
+
+customer_support
+onboarding
+technical_sales
+account_management
+
+Special events:
+
+agency_onboarding_started
+agency_onboarding_blocked
+submission_created
+submission_blocked
+document_upload_failed
+rules_manager_question_started
+carrier_market_question_started
+user_permission_question_started
+
+BindLab guardrail:
+
+Do not allow the support platform to make underwriting decisions, approve submissions, alter coverage, change binding status, or modify regulated insurance workflows without explicit human and system permission.
+
+For BindLab, support should explain workflows and create tickets, not make operational insurance decisions.
+
+The Architecture Rule to Give Every Project
+
+This is the most important line:
+
+This product should be support-integratable, not support-dependent.
+
+Meaning:
+
+- The app must keep working if Seven16 Group Support is offline.
+- The product should expose safe context, not raw data.
+- The centralized support platform owns support conversations.
+- The product owns product data and business workflows.
+- All write actions must be explicitly authorized.
+Recommended Build Sequence Across All Projects
+
+Do this in each product first:
+
+1. Add support integration documentation.
+2. Add product slug config.
+3. Add support URL config.
+4. Add support widget placeholder.
+5. Add support context helper.
+6. Add support event helper.
+7. Add internal support API route stubs.
+8. Add security notes.
+9. Do not deeply integrate yet.
+
+Then later, after seven16groupsupport.com exists:
+
+1. Mount widget on public marketing pages.
+2. Mount widget inside authenticated dashboard.
+3. Add signed context token.
+4. Add event posting.
+5. Add support ticket linking.
+6. Add account-context API.
+7. Add admin toggle for support.
+8. Add product-specific support playbooks.
