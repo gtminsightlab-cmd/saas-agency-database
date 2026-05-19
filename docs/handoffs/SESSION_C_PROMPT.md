@@ -1,182 +1,155 @@
 # SESSION_C — paste-ready prompt for next family-hub session
 
-**Date queued:** 2026-05-19 (end of Session B)
+**Date queued:** 2026-05-19 (end of Session B — Texas load COMPLETE)
 **Predecessor handoff:** [`SESSION_B_HANDOFF.md`](SESSION_B_HANDOFF.md)
 **Working directory required:** `C:\Users\GTMin\Projects\saas-agency-database\` (NOT OneDrive)
 **Live site:** https://directory.seven16group.com
 
 ---
 
-## Master O — before launching this session
+**Session B finished in one go** — the 367,484-row Texas DOI appointment load completed end-to-end after Master O refreshed the service-role key mid-conversation. `public.agency_carriers` now has 367,457 Texas rows tagged `source_type='state_doi_tx'` (+16,785 new TX agencies, +638 new carriers). Pillar 3 is real for Texas.
 
-Two 5-minute dashboard tasks. Both are required before Session C can do anything productive.
-
-### TASK A — Refresh SUPABASE_SERVICE_ROLE_KEY in `.env.local`
-
-The cached key returns HTTP 401 (rotated again post-Session-A).
-
-1. Open Edge or Chrome → https://supabase.com/dashboard/project/sdlsdovuljuymgymarou/settings/api
-2. Scroll to "Project API keys" section
-3. Find the row labeled **service_role** (the value starts with `sb_secret_`)
-4. Click the eye icon to reveal, then click "Copy"
-5. Open `C:\Users\GTMin\Projects\saas-agency-database\.env.local` in Notepad
-6. Find the line that starts with `SUPABASE_SERVICE_ROLE_KEY=`
-7. Replace EVERYTHING after the `=` with what you just copied (no quotes)
-8. Save the file (Ctrl+S), close Notepad
-
-### TASK B — Sanity-check the new key works
-
-In Windows Terminal / PowerShell:
-
-```powershell
-cd C:\Users\GTMin\Projects\saas-agency-database
-python scripts/load-tx-appointments.py --dry-run
-```
-
-You should see "service-role key OK" near the top. If you see "FATAL: SUPABASE_SERVICE_ROLE_KEY in .env.local is stale or invalid" — repeat TASK A; the paste didn't take or you grabbed a different key.
-
-Dry-run prints what WOULD be loaded without posting anything. Should end with "Finished 74 pages, 367,484 rows in <few seconds>" and "[DRY RUN] no rows posted."
-
-If dry-run works → you're ready to launch Session C below.
-
----
+**Session C = resume the paused Sessions 27-32 internal-app redesign epic with SESSION_28.** The pause was deliberate per the Session A pivot ("data work > UI re-skinning for product moat"); now that the data lands, the Vertical Intelligence redesign is meaningfully stronger because `/verticals` and `/verticals/[slug]` can show real state-resolved appointment density.
 
 Paste the block below verbatim into the first message of the next Claude Code session.
 
+---
+
 ```
 This is the SESSION_OPENER for Seven16 family-hub Session C —
-Texas 2026 appointment load FINISH (loader + Slices 4-6 + verify).
+resume SESSION_28 (Intelligence Home + Vertical Intelligence redesign).
 
 ═══════════════════════════════════════════════════════════════
-STEP 0 — VERIFY WORKING DIRECTORY BEFORE ANYTHING ELSE
+STEP 0 — VERIFY WORKING DIRECTORY
 ═══════════════════════════════════════════════════════════════
 
 Run `pwd` (PowerShell: `Get-Location`) and confirm output is:
 
   C:\Users\GTMin\Projects\saas-agency-database
 
-If you see ANY of these paths instead, STOP and alert Master O:
-  - Anything under \OneDrive\ (.git permanently broken per family memory)
-  - Anything under \.claude\projects\ (session-state, not a working dir)
-
-DO NOT proceed past Step 0 if working directory is wrong.
+If you see anything under \OneDrive\ or \.claude\projects\, STOP
+and alert Master O. Do NOT proceed past Step 0 if wrong.
 
 ═══════════════════════════════════════════════════════════════
-STEP 1 — CONFIRM MASTER-O TASK A + B COMPLETED
+STEP 1 — CONTEXT (only after Step 0 passes)
 ═══════════════════════════════════════════════════════════════
 
-Before reading anything, confirm with Master O:
-
-  • Did you refresh SUPABASE_SERVICE_ROLE_KEY in .env.local?
-  • Did `python scripts/load-tx-appointments.py --dry-run` print
-    "service-role key OK" + "Finished 74 pages, 367,484 rows" + "[DRY RUN]"?
-
-If either is "no" or "I'm not sure", point Master O at
-docs/handoffs/SESSION_C_PROMPT.md (the prefix BEFORE this block) for
-TASK A + B steps. Do NOT start Session C until both are confirmed.
-
-═══════════════════════════════════════════════════════════════
-STEP 2 — CONTEXT (only after Step 1 confirmed)
-═══════════════════════════════════════════════════════════════
-
-You are continuing the Seven16 family-hub track — Session C, the
-finish of the Texas 2026 DOI appointment load arc.
+You are continuing the Seven16 family-hub track — Session C.
+Sessions A + B (the state DOI appointment load arc) shipped in
+the prior conversation. Texas DOI 2026 data is LIVE in
+`public.agency_carriers` (367,457 rows tagged source_type='state_doi_tx').
 
 Working directory: C:\Users\GTMin\Projects\saas-agency-database\
 Live site: https://directory.seven16group.com
-Supabase satellite (Agency Signal): sdlsdovuljuymgymarou
+Supabase satellite: sdlsdovuljuymgymarou
 Default tenant: ce52fe1e-aac7-4eee-8712-77e71e2837ce
-Active load_id (opened Session B Slice 2):
-  1b83ad57-e3dc-4e50-b673-4722ac612d1c
 
 Read in this order (Working Agreement Rule 6):
 
-  1. docs/BACKLOG.md
-  2. docs/handoffs/SESSION_B_HANDOFF.md  ← what shipped + what's blocked
-  3. docs/context/DECISION_LOG.md  ← D-025 reminder (NPN+EIN agency identity,
-                                      state DOI authoritative)
-  4. supabase/migrations/0095_staging_load_rpc.sql  ← PostgREST bridge RPC
-                                                       you'll be calling
-  5. scripts/load-tx-appointments.py  ← Python loader (already exists,
-                                          ready to run)
-  6. scripts/session-c-slices-4-5-6.sql  ← Validation + resolver + promotion
-                                            SQL (already exists, paste into
-                                            MCP execute_sql per section)
+  1. docs/BACKLOG.md  ← Active arc is back to Sessions 27-32 epic.
+                        SESSION_28 is next slice.
+  2. docs/handoffs/SESSION_B_HANDOFF.md  ← Texas load shipped;
+                                            final results at bottom.
+  3. docs/handoffs/SESSION_28_PROMPT.md  ← Original SESSION_28 brief.
+                                            STILL VALID. Read in full.
+  4. docs/context/DECISION_LOG.md D-024  ← Front-end production
+                                            standard (10-standard /
+                                            12-point DoD).
+  5. docs/context/ENGINEERING_DOCTRINE.md §"Front-end production
+     standard (D-024)" — required.
+  6. Existing app surfaces to touch this session:
+     - app/verticals/page.tsx (current — needs redesign)
+     - app/verticals/[slug]/page.tsx (detail — needs polish)
+     - components/marketing/VerticalCardsSection.tsx (live-data wiring
+       reference but does NOT use AppShell)
+     - components/app/* (5 primitives shipped Session 27)
+     - components/app/sidebar.tsx (add Home link when /home exists)
 
 ═══════════════════════════════════════════════════════════════
-STEP 3 — PROPOSED 5-SLICE PLAN (~1.5-2 hrs)
+STEP 2 — KEY DELTA FROM ORIGINAL SESSION_28 PROMPT
 ═══════════════════════════════════════════════════════════════
 
-  1. **Slice 3-run — Bulk load via Python loader** (~10 min,
-     mostly unattended). Have Master O execute:
+The Vertical Intelligence redesign is now meaningfully stronger
+because Texas appointment data is live. Specifically:
 
-       cd C:\Users\GTMin\Projects\saas-agency-database
-       python scripts/load-tx-appointments.py
+  • mv_vertical_summary should now show real Texas data when joined
+    against the new 367k agency_carriers rows. Refresh the MV before
+    SESSION_28 starts — `REFRESH MATERIALIZED VIEW mv_vertical_summary`
+    via MCP execute_sql. If the MV def doesn't include state_filed
+    in its query, that's a separate decision (whether to extend it
+    to surface "Texas-specific specialist agencies" as a new pillar
+    drill-down).
 
-     Watch the per-chunk progress (~74 chunks at ~7-10s each).
-     End-state: 367,484 rows in ax_staging.appointments_raw,
-     ingest run finalized.
+  • VerticalOpportunityCard cards (Session 28 Slice 3) can show TX-
+    specific agency counts as a sub-metric where the data is dense.
 
-     If a chunk fails with HTTP 401 mid-run, key rotated; refresh
-     and use --start-page <N> to resume.
+  • Don't backfill SESSION_28 scope to chase the new data — just
+    let the existing query patterns benefit from richer underlying
+    rows. The 9-slice plan in SESSION_28_PROMPT.md stays.
 
-  2. **Slice 4 — Validation gates** (~15 min). Execute the SLICE 4
-     section of scripts/session-c-slices-4-5-6.sql via MCP execute_sql,
-     one INSERT-into-rejected statement at a time (6 gates).
-     End with the rejection-counts SELECT.
-     KILL-SWITCH: if any reason_code > 3,670 (1% of 367k), STOP and
-     surface to Master O.
+═══════════════════════════════════════════════════════════════
+STEP 3 — SESSION_28 PLAN (unchanged from original)
+═══════════════════════════════════════════════════════════════
 
-  3. **Slice 5 — Resolver** (~30 min). Execute the SLICE 5 section
-     (DROP+CREATE working table, then INSERT survivors, then 5 UPDATE
-     passes for agency tiers a-e). End with resolution-method
-     distribution SELECT and created_new sanity check.
-     KILL-SWITCH: if created_new > 30,000, STOP.
+Follow the 9-slice plan in SESSION_28_PROMPT.md verbatim.
+Highlights for memory:
 
-  4. **Slice 6 — Promote staging → public.agency_carriers** (~10 min).
-     Execute the SLICE 6 INSERT. Then UPDATE the ingest-run ledger to
-     completed.
-     Verify: count(*) WHERE state_filed='TX' should match
-     surviving raw count.
+  Slice 1 — Audit existing /verticals surfaces (~15 min, 0 writes)
+  Slice 2 — NEW /home route scaffolding (~30 min, 2 files)
+  Slice 3 — VerticalOpportunityCard primitive (~30 min, 1 file)
+  Slice 4 — /home page body with 4 KPI cards + Recommended Plays +
+            Recent Activity + Quick Actions (~60 min, 1 file)
+  Slice 5 — /verticals page redesign with AppShell + PageHeader +
+            VerticalOpportunityCard grid (~60 min, 1 file)
+  Slice 6 — /verticals/[slug] detail polish (~45 min, 1 file)
+  Slice 7 — Add Home link to sidebar (~10 min, 1 file)
+  Slice 8 — Apply-on-touch D-024 cleanup on 3 pre-existing
+            jsx-a11y errors flagged in SESSION_26 (~30 min, 2 files)
+  Slice 9 — D-024 DoD verify + commit + push + Vercel verify (~30 min)
 
-  5. **Slice 7+8 — Verify + commit + handoff + Session D prompt**
-     (~30 min). Run Slice 7 verification queries. Update docs (BACKLOG,
-     SESSION_STATE, FAMILY_HEALTH if material). Single squash commit
-     `feat(d-025): texas 2026 appointment load complete (Session C)`.
-     Push + verify Vercel READY. Write SESSION_D_PROMPT (likely
-     resumes the SESSION_28 UI redesign epic with Vertical Intelligence
-     now backed by real state-resolved data).
+Total: ~6 hours, ~10-12 committed files.
 
 ═══════════════════════════════════════════════════════════════
 STEP 4 — DO NOT in this session
 ═══════════════════════════════════════════════════════════════
 
-  • Skip the validation gates kill-switch (>1% rejection → STOP)
-  • Skip the resolver kill-switch (>30k created_new agencies → STOP)
-  • Touch any of the 263,657 pre-existing source_type-NULL agency_carriers
-    rows (separate decision; queued for a future session)
-  • Start a second state DOI ingest (FL, CA, etc.) without explicit
-    greenlight — Session C is Texas finish only
-  • Build any UI work (that's SESSION_28, queued for Session D+)
-  • Re-litigate the conservative-fallback NAIC decision (locked Session B)
+  • Touch the 367,457 newly-loaded state_doi_tx agency_carriers rows
+    (they're data; SESSION_28 is UI)
+  • Dedup the 16,785 new TX agencies vs the 3,086 originals — that
+    is a separate cleanup session, queued post-SESSION_28
+  • Start loading another state's DOI file (FL/CA/NY etc.) — queued
+    as own session, NOT this one
+  • Touch the 3 pending Master-O dashboard tasks (CRON_SECRET, Stripe
+    webhook, Sentry token from SESSION_25)
+  • Re-litigate the conservative-fallback NAIC mapping decision
+    (locked Session B; documented in
+    [[feedback_conservative_fallback_fuzzy_match_loads]])
+  • Re-litigate Tailwind palette swap / Sidebar relabel / per-page
+    composition pattern (all locked SESSION_27)
+  • Build a standalone referral / affiliate / partner system
+    (parent partner hub owns this per
+    [[project_seven16_partner_program]])
 
 ═══════════════════════════════════════════════════════════════
 STEP 5 — STANDING DISCIPLINE
 ═══════════════════════════════════════════════════════════════
 
-  • Plan-before-execute: announce the 5 slices, get thumbs-up before
-    Slice 1 (bulk load) and before Slice 6 (promotion to prod table).
-    The other slices are mechanical SQL pastes.
-  • Run advisors after Slice 6 (DDL-free but DML on prod table).
-  • RLS forced on every table touched (D-006 / Principle #1)
-  • Secrets never in chat — clipboard → dashboard only
-  • Source-type tagging discipline: only `state_doi_tx` for these rows
-  • D-017 reminder: no source attribution in `directory.*` mirrors
+  • Plan-before-execute: announce the 9 slices, thumbs-up before
+    files
+  • D-024 12-point DoD on every screen touched
+  • Apply-on-touch D-024 cleanup on pre-existing tech debt
+  • Always recommend next path as CTO/PM, not flat menu
+  • Native git from C:\Users\GTMin\Projects\saas-agency-database\
+  • Secrets never in chat — clipboard → dashboard
+  • Anti-slop on any copy
+  • RLS forced on every new multi-tenant table (D-006)
+  • Run advisors after any DDL (none expected this session)
 
 ═══════════════════════════════════════════════════════════════
 
-Confirm Step 0 + Step 1, then read files in Step 2 order. After reading,
-propose the 5-slice plan and wait for thumbs-up before Slice 1.
+Confirm Step 0, then read the files in Step 1 order. After reading,
+propose the 9-slice Session 28 plan (or whatever slice count fits
+Master O's bandwidth) for thumbs-up before executing.
 ```
 
 ---

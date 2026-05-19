@@ -1,4 +1,6 @@
-# Family-Hub Session B — Texas 2026 DOI appointment load (PARTIAL) (2026-05-19)
+# Family-Hub Session B — Texas 2026 DOI appointment load (COMPLETE) (2026-05-19)
+
+> **Update at session end** — Session B ran to completion in a single conversation. The "BLOCKED" state below was the mid-session state; after Master O refreshed the service-role key, the loader ran (367,484 rows in 57 seconds) and Slices 4-7 completed via MCP. Final results in the "Session B FINAL RESULTS" section appended at the bottom.
 
 **Date:** 2026-05-19
 **Repo:** `saas-agency-database` (family hub + Agency Signal)
@@ -178,10 +180,66 @@ Working artifacts NOT committed (gitignored under `tmp/`):
 
 ## What's NEXT (Session C scope, see SESSION_C_PROMPT.md)
 
-1. Master O refreshes service-role key (~5 min, dashboard)
-2. Run `python scripts/load-tx-appointments.py` (~5-10 min unattended)
-3. Run Slices 4-6 SQL via MCP (~30 min)
-4. Verify counts; commit + push + handoff
-5. If everything green, decide whether to start SESSION_28 (UI redesign) or queue the next state DOI ingest
+1. ~~Master O refreshes service-role key~~ — done end-of-session via PowerShell clipboard-paste (key value never entered chat)
+2. ~~Run `python scripts/load-tx-appointments.py`~~ — done, 367,484 rows in 57s
+3. ~~Run Slices 4-6 SQL via MCP~~ — done, all 367,457 surviving rows promoted
+4. ~~Verify counts; commit + push + handoff~~ — DONE
 
-— Session B close —
+Session C now resumes **SESSION_28 (Intelligence Home + Vertical Intelligence redesign)** with real Texas appointment density backing `/verticals`. See updated SESSION_C_PROMPT.md.
+
+---
+
+## Session B FINAL RESULTS (appended at close)
+
+**End-state metrics (verified live in `sdlsdovuljuymgymarou`):**
+
+| Metric | Before | After |
+|---|---:|---:|
+| `agency_carriers` total | 263,657 | **631,114** (+367,457) |
+| `agency_carriers WHERE state_filed='TX'` | 0 | **367,457** |
+| `agency_carriers WHERE source_type='state_doi_tx'` | 0 | **367,457** |
+| Distinct TX agency_ids | 0 | **16,785** |
+| Distinct TX carrier_ids | 0 | **937** |
+| `agencies` total | 41,705 | **58,490** (+16,785) |
+| `agencies state=TX` | 3,086 | **19,871** (+16,785) |
+| `agencies with NPN` | 0 | **16,764** |
+| `carriers` total | 1,369 | **2,007** (+638 from Slice 1) |
+| `carriers with NAIC` | 0 | **937** |
+
+**Spot-check passed:** NPN 2331759 → `DAY, DEADRICK & MARSHALL, INC.` (TX, EIN 520800754) with 5 distinct carriers (Employers Assurance, Employers Compensation, Employers Preferred, Great American, Liberty Mutual). Matches row 1 of the Texas 2026 CSV.
+
+**Slice 4 validation:** 27/367,484 rejected (0.007%, well under 1% kill-switch). 25 × `naic_format` (Mexican border-state carriers — Mapfre Mexico/Grupo Nacional Provincial/HDI Seguros/Qualitas — with NULL US NAIC, legitimately un-loadable through NAIC-keyed pipeline) + 2 × `ein_format` (truly malformed). 0 in all other gates.
+
+**Mid-session correction (Gate 4c relaxation):** Initial gate rejected 6,975 rows — all 8-digit EINs (source spreadsheet stripped leading `0`). Relaxed to accept `^[0-9]{8,9}$`; resolver pads 8-digit values to 9 via `'0' || ein`. Canonical EIN form in `public.agencies.ein` is now 9 digits, no hyphens.
+
+**Slice 5 resolver decisions:**
+- Tiers (a/b/c) NPN+EIN/NPN/EIN exact: **skipped** — existing agencies all had NULL NPN/EIN at session start; would have matched 0.
+- Tier (d) fuzzy_name_tx: **skipped per conservative-fallback doctrine** ([[feedback_conservative_fallback_fuzzy_match_loads]]). 52M comparisons would take 10+ min; accepted duplicate risk for ~500-1,000 overlapping agencies as future dedup work.
+- Tier (e) created_new: **all 367,457 → 16,785 distinct new TX agencies.**
+
+**Slice 6 promotion details:**
+- 367,457 rows INSERT'd; tagged `source_type='state_doi_tx'`, `state_filed='TX'`, `source_year=2026`, `appointment_status='confirmed'`, `verified=true`.
+- `appointment_status='confirmed'` because CHECK enum requires `observed | confirmed | lapsed | unknown`; state DOI files are regulator-filed = confirmed.
+- `lines_of_business` = `ARRAY[appointment_line]` with canonicalization: 'Property and Casualty' → 'P&C'; Life/Health/Title/Surety/Surplus Lines passed through.
+
+**Timing:** Slice 3 bulk load 57s; Slices 4-6 ~5 min (including retries); total Session B wall ~90 min.
+
+**Schema constraints encountered (document for next state ingest):**
+- `agencies.profile_status` CHECK: `unclaimed | pending | claimed | verified | flagged`. Use `unclaimed`.
+- `agency_carriers.appointment_status` CHECK: `observed | confirmed | lapsed | unknown`. Use `confirmed`.
+
+**Known queued follow-ups (NOT this session):**
+1. Dedup pass on pre-existing 3,086 TX agencies vs the 16,785 newly-inserted.
+2. NPN backfill on the original 41,705 agencies (still NULL NPN/EIN).
+3. 263,657 pre-existing `agency_carriers` rows still have NULL `source_type` + `state_filed`. Backfill/re-tag is a separate decision.
+4. NPN UNIQUE constraint promotion (verify with `GROUP BY npn HAVING count > 1` first).
+5. `ax_staging` cleanup — `appointments_raw` (367k) + `appointments_resolved` (367k) + `agency_assignments`(_idx) (16k each) persist for forensics; safe to DELETE after a few weeks.
+
+**Migration ledger after Session B:**
+- 0093 `extend_for_state_doi_appointments` ✓
+- 0094 `ax_staging_schema` ✓
+- 0095 `staging_load_rpc` ✓
+
+**Active load_id `1b83ad57-e3dc-4e50-b673-4722ac612d1c`** — `status='completed'` with full row counts + notes recorded.
+
+— Session B close (REAL close) —
