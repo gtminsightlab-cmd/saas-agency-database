@@ -10,19 +10,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Vibrant Teal — primary CTA / brand actions (anchored at brand-600 = #00A896)
+        // Deep Teal — primary CTA / brand actions (anchored at brand-600 = #0F766E, Tailwind teal-700)
+        // Replaced the brighter #00A896 ramp 2026-05-19 per Master O CMO brief 2 for the
+        // intelligence-workspace internal app surface. Marketing homepage uses Tailwind
+        // `blue-600` literal so it's insulated from this swap.
         brand: {
-          50:  "#E6F8F6",
-          100: "#B3EAE2",
-          200: "#80DBCE",
-          300: "#4DCDBA",
-          400: "#1ABEA5",
-          500: "#00B59C",
-          600: "#00A896",
-          700: "#008D7E",
-          800: "#006B5F",
-          900: "#004A40"
+          50:  "#F0FDFA",
+          100: "#CCFBF1",
+          200: "#99F6E4",
+          300: "#5EEAD4",
+          400: "#2DD4BF",
+          500: "#14B8A6",
+          600: "#0F766E",
+          700: "#115E59",
+          800: "#134E4A",
+          900: "#042F2E"
         },
+        // Intelligence accents — flat tokens (no full ramp).
+        // intel-cyan = data viz + chart accents; intel-dark = admin/data-terminal surfaces.
+        "intel-cyan": "#0891B2",
+        "intel-dark": "#07111F",
         // Deep Navy — headlines, navigation, dark-mode surface (anchored at navy-800 = #1A2B3C)
         navy: {
           50:  "#E8ECF0",

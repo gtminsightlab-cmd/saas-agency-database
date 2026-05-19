@@ -1,7 +1,11 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { BookmarkCheck, Users, DownloadCloud, Clock, Mail } from "lucide-react";
 import { SortableThLink, type SortDir } from "@/components/sortable-th";
 import { AppShell } from "@/components/app/shell";
+import { PageHeader } from "@/components/app/page-header";
+import { MetricCard } from "@/components/app/metric-card";
+import { DataTable } from "@/components/app/data-table";
+import { StatusPill } from "@/components/ui/StatusPill";
 import { createClient } from "@/lib/supabase/server";
 import SavedListRowActions from "./row-actions";
 
@@ -48,7 +52,6 @@ export default async function SavedListsPage({
     )
     .limit(200);
 
-  // Apply primary sort + secondary by created_at desc to stabilize ties.
   switch (sort) {
     case "name":
       q = q.order("name", { ascending, nullsFirst: false }).order("created_at", { ascending: false });
@@ -66,12 +69,27 @@ export default async function SavedListsPage({
       q = q.order("contacts_with_email_count", { ascending, nullsFirst: false }).order("created_at", { ascending: false });
       break;
     case "has_updates":
-      // sort by boolean — true grouped first when desc
       q = q.order("has_updates", { ascending }).order("created_at", { ascending: false });
       break;
   }
 
   const { data: lists, count } = await q;
+  const rows = lists ?? [];
+
+  // KPI aggregates. Constrained to the 200-row page; users with >200 lists
+  // will see approximate per-list sums. Total Lists uses the exact count.
+  const totalLists = count ?? 0;
+  const totalAgencies = rows.reduce((acc: number, l: any) => acc + (l.accounts_count ?? 0), 0);
+  const totalContacts = rows.reduce((acc: number, l: any) => acc + (l.contacts_count ?? 0), 0);
+  const readyToExportCount = rows.filter((l: any) => l.has_updates).length;
+  const lastRefreshAt = rows
+    .map((l: any) => l.last_run_at as string | null)
+    .filter(Boolean)
+    .sort()
+    .reverse()[0] as string | undefined;
+  const lastRefreshLabel = lastRefreshAt
+    ? new Date(lastRefreshAt).toISOString().slice(0, 10)
+    : "—";
 
   function sortHref(key: SortKey): string {
     const params = new URLSearchParams();
@@ -80,7 +98,6 @@ export default async function SavedListsPage({
       params.set("dir", dir === "asc" ? "desc" : "asc");
     } else {
       params.set("sort", key);
-      // Numeric/date columns default to descending (most useful first); name + has_updates default ascending.
       params.set("dir", key === "name" || key === "has_updates" ? "asc" : "desc");
     }
     return `/saved-lists?${params.toString()}`;
@@ -88,25 +105,36 @@ export default async function SavedListsPage({
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900">Saved Lists</h1>
-            <p className="mt-2 text-sm text-gray-600">
-              Click a list name to review and download. Use the action icons to edit filters, download a CSV, or delete a list.
-            </p>
-          </div>
-          <div className="relative w-full max-w-sm">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
-            <input
-              type="search"
-              placeholder="Type to Search lists"
-              className="w-full rounded-md border border-gray-300 pl-9 pr-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
-            />
-          </div>
+      <PageHeader
+        title="Recruit Lists"
+        subtitle="Saved targeting lists you can refresh, share, and export. Rows tinted teal have new data ready for delta export."
+        actions={
+          <Link
+            href="/build-list"
+            className="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+          >
+            Build a Recruit List
+          </Link>
+        }
+      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        {/* KPI row */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <MetricCard title="Total Lists" value={totalLists} icon={BookmarkCheck} />
+          <MetricCard title="Agencies Saved" value={totalAgencies} icon={Users} subtitle="Across all lists" />
+          <MetricCard title="Contacts Saved" value={totalContacts} icon={Mail} subtitle="Across all lists" />
+          <MetricCard
+            title="Ready to Export"
+            value={readyToExportCount}
+            icon={DownloadCloud}
+            subtitle="Lists with new data"
+            href={readyToExportCount > 0 ? "/saved-lists?sort=has_updates&dir=desc" : undefined}
+          />
+          <MetricCard title="Last Refresh" value={lastRefreshLabel} icon={Clock} />
         </div>
 
-        <div className="mb-2 flex items-center justify-between text-sm text-gray-500">
+        {/* Sort + total bar */}
+        <div className="flex items-center justify-between text-sm text-gray-500">
           <div>
             Sorted by <span className="font-semibold text-gray-700">{LABEL[sort]}</span>{" "}
             <span className="font-semibold text-gray-700">{dir === "asc" ? "↑" : "↓"}</span>
@@ -116,7 +144,20 @@ export default async function SavedListsPage({
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        {/* Table */}
+        <DataTable
+          state={rows.length === 0 ? "empty" : "ready"}
+          emptyHeading="No recruit lists yet"
+          emptyBody="Build your first targeting list on the Build Recruit List page. We'll save it here for refresh, sharing, and export."
+          emptyAction={
+            <Link
+              href="/build-list"
+              className="rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            >
+              Build a Recruit List
+            </Link>
+          }
+        >
           <table className="min-w-full divide-y divide-gray-200 text-sm">
             <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
               <tr>
@@ -126,86 +167,66 @@ export default async function SavedListsPage({
                 <SortableThLink label="Contacts"             sortKey="contacts"    activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
                 <SortableThLink label="Contacts with Emails" sortKey="emails"      activeSort={sort} dir={dir} hrefFor={sortHref} align="right" />
                 <SortableThLink label="Updates?"             sortKey="has_updates" activeSort={sort} dir={dir} hrefFor={sortHref} />
-                <th className="px-4 py-3">Actions</th>
+                <th scope="col" className="px-4 py-3">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {(lists ?? []).length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-4 py-12 text-center text-sm text-gray-500">
-                    You haven&apos;t saved any lists yet. Build one on the{" "}
-                    <Link href="/build-list" className="text-brand-600 font-semibold">
-                      Build a List
-                    </Link>{" "}
-                    page.
-                  </td>
-                </tr>
-              ) : (
-                lists!.map((l: any) => {
-                  const qs: string | null =
-                    typeof l.filter_json?.querystring === "string"
-                      ? l.filter_json.querystring
-                      : null;
-                  const lastRunLabel = l.last_run_at
-                    ? `Last checked ${new Date(l.last_run_at).toISOString().slice(0, 10)}`
-                    : "Not yet checked";
-                  return (
-                    <tr
-                      key={l.id}
-                      className={l.has_updates ? "bg-brand-50/60 hover:bg-brand-50" : "hover:bg-gray-50"}
-                      title={lastRunLabel}
-                    >
-                      <td className="px-4 py-3">
-                        <Link
-                          href={`/build-list/download?id=${l.id}&name=${encodeURIComponent(l.name)}`}
-                          className="font-semibold text-brand-700 hover:text-brand-800"
-                        >
-                          {l.name}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3 text-gray-600">
-                        {new Date(l.created_at).toISOString().slice(0, 10)}
-                      </td>
-                      <td className="px-4 py-3 text-right tabular-nums text-gray-700">
-                        {l.accounts_count?.toLocaleString?.() ?? "—"}
-                      </td>
-                      <td className="px-4 py-3 text-right tabular-nums text-gray-700">
-                        {l.contacts_count?.toLocaleString?.() ?? "—"}
-                      </td>
-                      <td className="px-4 py-3 text-right tabular-nums text-gray-700">
-                        {l.contacts_with_email_count?.toLocaleString?.() ?? "—"}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={l.has_updates ? "text-brand-600 font-medium" : "text-gray-500"}>
-                          {l.has_updates ? "Yes" : "No"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <SavedListRowActions
-                          id={l.id}
-                          name={l.name}
-                          filterQs={qs}
-                          hasUpdates={!!l.has_updates}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
+              {rows.map((l: any) => {
+                const qs: string | null =
+                  typeof l.filter_json?.querystring === "string"
+                    ? l.filter_json.querystring
+                    : null;
+                const lastRunLabel = l.last_run_at
+                  ? `Last checked ${new Date(l.last_run_at).toISOString().slice(0, 10)}`
+                  : "Not yet checked";
+                return (
+                  <tr
+                    key={l.id}
+                    className={l.has_updates ? "bg-brand-50/60 hover:bg-brand-50" : "hover:bg-gray-50"}
+                    title={lastRunLabel}
+                  >
+                    <td className="px-4 py-3">
+                      <Link
+                        href={`/build-list/download?id=${l.id}&name=${encodeURIComponent(l.name)}`}
+                        className="font-semibold text-brand-700 hover:text-brand-800"
+                      >
+                        {l.name}
+                      </Link>
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">
+                      {new Date(l.created_at).toISOString().slice(0, 10)}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums text-gray-700">
+                      {l.accounts_count?.toLocaleString?.() ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums text-gray-700">
+                      {l.contacts_count?.toLocaleString?.() ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums text-gray-700">
+                      {l.contacts_with_email_count?.toLocaleString?.() ?? "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusPill
+                        tone={l.has_updates ? "success" : "neutral"}
+                        label={l.has_updates ? "Yes" : "No"}
+                        srPrefix="Updates available"
+                      />
+                    </td>
+                    <td className="px-4 py-3">
+                      <SavedListRowActions
+                        id={l.id}
+                        name={l.name}
+                        filterQs={qs}
+                        hasUpdates={!!l.has_updates}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-6 flex justify-end">
-          <Link
-            href="/build-list"
-            className="rounded-md bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
-          >
-            Build a New List
-          </Link>
-        </div>
+        </DataTable>
       </div>
     </AppShell>
   );
 }
-
