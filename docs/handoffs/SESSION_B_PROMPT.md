@@ -64,41 +64,52 @@ Before doing anything substantive, read in this order
      normalization function.
 
 ═══════════════════════════════════════════════════════════════
-STEP 2 — BLOCKER CHECK: NAIC mapping spot-check
+STEP 2 — NAIC mapping decision (LOCKED at Session A close 2026-05-19)
 ═══════════════════════════════════════════════════════════════
 
-Master O must spot-check tmp/texas_naic_mapping.csv before
-ANY carriers.naic_code writes. Confirm before proceeding:
+Master O locked the CONSERVATIVE FALLBACK at Session A close:
 
-  • Did Master O open tmp/texas_naic_mapping.csv in Excel?
-  • Did he eyeball the 301 "review" band (the false-match risk band)
-    and flip false matches from "map"/"review" to "create"?
-  • Is there a "confirmed_action" column reflecting his decisions,
-    OR did he confirm "accept all map + treat all review as create"
-    as the conservative fallback?
+  • Accept all 300 "map" rows (score ≥0.92) as carrier_id matches
+    → UPDATE public.carriers SET naic_code = <naic_id> WHERE id = <matched_carrier_id>
+  • Treat all 301 "review" rows (score 0.75–0.92) as net-new carriers
+    → INSERT a fresh public.carriers row with the CSV's NAIC + name
+  • All 336 "create" rows (score <0.75) stay create
+    → INSERT a fresh public.carriers row each
 
-If unclear, STOP and ask Master O to spot-check OR confirm the
-conservative fallback ("accept 300 map; treat 301 review as create;
-already-flagged 336 create stays create — total 637 new carrier rows").
+  Net effect: 300 NAIC backfills on existing carriers + 637 new
+  carrier rows (301 + 336). Existing carriers row count goes from
+  1,369 → 2,006. Zero false-match-merger risk; some duplicate
+  carriers possible (e.g. "Chubb National" inserted while "Chubb
+  INA Group" stays) — accepted as cleanup work for a future dedup
+  migration, NOT this session.
 
-DO NOT write to carriers.naic_code or carriers without an
-explicit "go" from Master O on the mapping decisions.
+  Why conservative fallback over per-row spot-check: false-match
+  carrier mergers (Chubb National → Columbia National, etc.) would
+  permanently corrupt the directory. Over-creating is recoverable
+  via dedup. Master O confirmed this trade-off explicitly.
+
+DO NOT re-ask Master O about NAIC mapping — the decision is locked.
+Use tmp/texas_naic_mapping.csv as the source of truth for action
+buckets. If the CSV is missing, re-run scripts/texas-naic-mapping.py
+first (Slice 0).
 
 ═══════════════════════════════════════════════════════════════
 STEP 3 — PROPOSED 8-SLICE PLAN (~4 hrs)
 ═══════════════════════════════════════════════════════════════
 
-  1. **Carrier-side prep** (~30 min, 0 prod writes initially).
-     - Confirm Master O's NAIC mapping decisions from Step 2.
-     - SQL preview: how many existing carriers gain a naic_code?
-       How many new carrier rows would be inserted?
-     - Get Master O thumbs-up on the exact counts before writing.
-     - Then: UPDATE public.carriers SET naic_code = $1 WHERE id = $2
-       for all map-band (and accepted review-band) rows.
-       INSERT INTO public.carriers (name, naic_code, active) VALUES (...)
-       for create-band rows.
-     - Verify: count(*) where naic_code IS NOT NULL goes from 0 →
-       expected total.
+  1. **Carrier-side prep** (~30 min, conservative-fallback decision LOCKED per Step 2).
+     - Read tmp/texas_naic_mapping.csv (re-generate via
+       scripts/texas-naic-mapping.py if missing).
+     - SQL preview (read-only): print expected counts before writing —
+       300 carriers update + 637 new rows + final naic_code populated count.
+     - UPDATE public.carriers SET naic_code = $1 WHERE id = $2 for
+       all 300 "map" band rows (action=='map').
+     - INSERT INTO public.carriers (name, naic_code, active) VALUES (...)
+       for all 637 "review" + "create" band rows (action IN ('review','create')).
+       Use the CSV's csv_carrier_name as the new carrier name.
+     - Verify: count(carriers) goes 1,369 → 2,006; count(carriers WHERE
+       naic_code IS NOT NULL) goes 0 → 937.
+     - get_advisors after; clean = no new findings.
 
   2. **Open ingest run** (~10 min).
      INSERT INTO ax_staging.appointment_loads (
