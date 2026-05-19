@@ -87,6 +87,75 @@ STEP 2 — STATE AT SESSION OPEN
     per Session 27 Slice 2).
 
 ═══════════════════════════════════════════════════════════════
+STEP 2.5 — STANDING REMINDER: Seven16 Group Partner Program
+═══════════════════════════════════════════════════════════════
+
+HEADS UP — SEVEN16 GROUP PARTNER PROGRAM INTEGRATION
+
+We are creating a parent Seven16 Group Partner Program that will live at:
+
+partners.seven16group.com
+
+This will be the shared referral, affiliate, certified partner, deal
+registration, demo access, and commission tracking system for all
+Seven16 Group products.
+
+Important:
+Do NOT build a standalone referral, affiliate, partner, or commission
+system inside this product.
+
+This product should only prepare to integrate with the parent Seven16
+partner hub.
+
+Parent ownership:
+- Seven16 Group owns the partner program.
+- This product (Agency Signal) participates in the partner program.
+- Product-specific referral/partner logic should use the shared
+  Seven16 system.
+
+Future integration requirements for this product:
+1. Add a lightweight public page:
+   - /partners
+
+2. The /partners page should explain:
+   - This product participates in the Seven16 Group Partner Program.
+   - Customers may refer other businesses for platform credits.
+   - Approved affiliates may promote this product.
+   - Certified partners may qualify for demo access, deal registration,
+     and higher commissions.
+
+3. Primary CTA:
+   - https://partners.seven16group.com/apply?product=agency_signal
+
+4. Signup should eventually support:
+   - ?ref=REFERRAL_CODE
+   - seven16_partner_ref cookie
+   - product_key metadata
+
+5. Billing should eventually support:
+   - sending invoice.paid events to the Seven16 partner reward handler
+   - reversing pending rewards on refunds or chargebacks
+
+6. Admin should eventually support:
+   - viewing referral attribution for this product
+   - seeing whether a customer came through a Seven16 partner
+   - not manually paying commissions inside this product
+
+7. Security:
+   - partners should not access live customer data unless explicitly
+     authorized
+   - demo access should use seeded/fake demo data only
+   - any partner demo access must be role-based and revocable
+
+For now, do not implement the full partner system here. Just avoid
+architectural decisions that would block future integration with the
+Seven16 Group Partner Program.
+
+Full doctrine (family-wide, cross-repo) lives in family memory at
+`project_seven16_partner_program.md`. PRODUCT_KEY per product:
+agency_signal (this repo) / dotintel / dotagencies.
+
+═══════════════════════════════════════════════════════════════
 STEP 3 — ACTIVE ARC FOR SESSION_27 (CTO recommendation)
 ═══════════════════════════════════════════════════════════════
 
@@ -247,6 +316,11 @@ STEP 6 — DO NOT in this session
   • Rebrand the marketing homepage palette (it uses Tailwind
     blue-600 literal; insulated from the brand-* swap)
   • Relitigate any of the 4 resolution flags
+  • Build a standalone referral/affiliate/partner/commission system
+    in Agency Signal (Step 2.5 doctrine — parent hub at
+    partners.seven16group.com owns it, not this product)
+  • Add a coupon-as-referral-reward inside Stripe sandbox (same
+    reason — parent ledger only)
 
 ═══════════════════════════════════════════════════════════════
 STEP 7 — STANDING DISCIPLINE
