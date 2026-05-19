@@ -1,6 +1,6 @@
 # Seven16 Family Health Snapshot
 
-**Last refresh:** 2026-05-15 (SESSION_24 tail — Threshold IQ spun out per D-022. Family-active product count drops from 3 + 1 control plane to 2 + 1 control plane.)
+**Last refresh:** 2026-05-18 (SESSION_25 close — D-023 9-pillar Agency Signal positioning locked + Pillar 6 saved-list refresh backend shipped (BACKLOG #1) + Stripe catalog migration shipped to sandbox (5 archives + 13 new products + 22 prices + Charter coupon `L1Ngigfc`). Prior 2026-05-15: SESSION_24 tail — Threshold IQ spun out per D-022. Family-active product count drops from 3 + 1 control plane to 2 + 1 control plane.)
 **Mechanism source:** [`ANTI_DECAY_PROTOCOL.md`](ANTI_DECAY_PROTOCOL.md) Mechanism #1
 **Update cadence:** at the close of any family-touching session per Working Agreement Rule 5 sub-bullet.
 
@@ -12,7 +12,7 @@
 
 | Repo | Last commit | Days since session | Active arc | Days in-flight | Queue depth | Health |
 |---|---|---|---|---:|---:|:-:|
-| **saas-agency-database** | 2026-05-15 `fe57bce` (then D-022 cleanup commit) | 0 (SESSION_24 close) | (hub) D-022 TIQ departure cleanup → Stripe catalog (SESSION_25). (AS) AS Session 5 Option A — SWR client-cache on `/build-list` + `/saved-lists` | 0 (hub), 1 (AS) | 11 + 6 carry | 🟢 |
+| **saas-agency-database** | 2026-05-18 `5db5603` (5 commits this session) | 0 (SESSION_25 close) | (hub) D-023 9-pillar lock + Stripe catalog sandbox-shipped. (AS) Pillar 6 saved-list refresh backend SHIPPED (BACKLOG #1, end-to-end pipeline live: migration 0091/0092 + Edge Function + cron + ack/delta APIs + UI) | 0 (hub), 0 (AS) | 12 + 6 carry | 🟢 |
 | **dotintel2** | 2026-05-15 `6722f2d` | 1 (SESSION_29 close 2026-05-14) | Sub-arc 3A close — SODA-based CSA ingest pipeline (`scripts/csa-ingest-soda.ts` + percentile recompute migration + `/methodology` disclosure). Prep artifact ready at `saas-agency-database/docs/cross-repo/dotintel2_SESSION_30_ARTIFACT.md` | 2 | 9 | 🟢 |
 | **seven16-platform** | n/a — no code repo yet | n/a | Sprint 1C (shared JWT/Doppler/Sentry runbook across satellites) — not started | n/a | n/a | 🟡 |
 | ~~seven16-distribution~~ | ~~2026-05-15 `035c7ce`~~ | n/a — **SPUN OUT per D-022** | **Repo scheduled for wind-down** (Vercel project delete + GitHub archive + Supabase pause + Cloudflare DNS decision in a "TIQ wind-down" follow-up session). Not on the family-active roster. | n/a | n/a | ⚫ Spun out |
@@ -28,7 +28,9 @@
 - **`[ACTION] TIQ wind-down session`** — separate ~30-min follow-up session to delete Vercel project `prj_c6kzFEhpw6Uwb12TECUidKlBxOwr`, archive GitHub repo `gtminsightlab-cmd/seven16-distribution` (recommend archive, not delete — preserves git history if Master O wants to reference TIQ code patterns for the separate CRM/AMS he's building outside the family), pause or delete Supabase project `yyuchyzmzzwbfoovsskz`, decide Cloudflare `thresholdiq.io` DNS fate, clean any TIQ-tagged Stripe sandbox products, delete Desktop launcher `Open Claude — Threshold IQ.bat`. Not blocking; do when bandwidth allows.
 - **`[ACTION] dotintel2 SESSION_30 ready to launch`** — prep artifact drafted SESSION_24 tail under Rule 2(b): [`docs/cross-repo/dotintel2_SESSION_30_ARTIFACT.md`](../cross-repo/dotintel2_SESSION_30_ARTIFACT.md). Contains the paste-ready SESSION_30 prompt + full SODA ingest script draft + 2 migration drafts + testing protocol. Master O opens dotintel2 SESSION_30 and pastes §C as the first message.
 - **`[ACTION] dotintel2 dangling state`** — uncommitted in `dotintel2/`: `.gitignore` modified, `docs/SESSION_28_PROMPT.md` modified, 3 untracked files (`docs/KILLING_COMMERCIAL_TRAINING_HUB.md`, `docs/TRAINING_HUB_SESSION_HANDOFF.md`, `scripts/_mcp-mirror-helper.ts`). The two `*TRAINING_HUB*` docs were dropped in by a parallel "Killing Commercial" project session on 2026-05-13. **Cleanup steps documented in cross-repo artifact §A.** Resolve at dotintel2 SESSION_30 open.
-- **`[ACTION] Charter Member outreach`** — fully blocked on Stripe catalog migration (SESSION_25 Path A). Deck content needs slide-9/10 rebuild to remove TIQ from the surfaces grid + slide-18 recalc with new $1,500/yr baseline. Revenue capture cannot begin until Stripe SKUs exist.
+- **`[ACTION] Charter Member outreach`** — Stripe SKUs now LIVE in sandbox (D-021 catalog shipped SESSION_25 2026-05-18). Remaining blockers: (a) **Master O dashboard action — register Stripe webhook endpoint** at `https://directory.seven16group.com/api/stripe/webhook` for `checkout.session.completed` / `customer.subscription.*` / `invoice.paid` / `invoice.payment_failed` (Stripe MCP can't manage webhooks per `feedback_stripe_mcp_webhook_dashboard_only.md`); (b) deck content rebuild slide-9/10 (TIQ removed from surfaces grid) + slide-18 recalc with new $1,500/yr baseline.
+- **`[ACTION] Master O — set CRON_SECRET in Vercel`** — NEW SESSION_25. Daily 04:00 UTC cron for saved-list refresh (Pillar 6 BACKLOG #1) requires `CRON_SECRET` env var. Generate `openssl rand -base64 32`, Vercel dashboard → Settings → Env Variables → Add new (Sensitive, Production). Without this the cron returns 500 daily and no snapshots get written.
+- **`[ACTION] Master O — fix Sentry release-upload token`** — NEW SESSION_25. Every deploy logs `Invalid org token (401)` on the @sentry/nextjs After Production Compile step. Non-fatal (deploy succeeds) but spam in build logs. Sentry dashboard → rotate org token → set `SENTRY_AUTH_TOKEN` in Vercel.
 - **`[ACTION] dotintel2 D-number reconciliation`** — local D-012/D-013/D-014/D-015/D-016 in `dotintel2/docs/STATE.md` + SESSION_28's D-017a-g still need rename to family-ledger IDs (queued as dotintel2 BACKLOG #9). ~5 min when picked up; Rule 4 integrity depends on it.
 - **`[ACTION] dotintel2 STATE.md catch-up`** — last-updated header reads 2026-05-12; 2 sessions of drift (28 + 29) since. Queued as dotintel2 BACKLOG #4.
 
@@ -42,7 +44,7 @@ Format: `[STATUS] consumer → producer (notes)`
 |---|---|---|
 | **[LIVE]** | Agency Signal `directory.*` schemas → `mirror-agency-signal` Edge Function (nightly cron) | D-013; last verified healthy 2026-05-15. Mirror filter = agencies with ≥1 transportation-vertical carrier appointment. ~1,887 location-level rows + ~23,546 contacts mirrored. |
 | **[LIVE]** | All 7 D-021 pricing surfaces locked | Architecture is the producer; consumer surfaces (TIQ /pricing, dotintel2 marketing, Charter deck) can render. Implementation gated on Stripe catalog (next dependency). |
-| **[PENDING]** | Charter Member outreach revenue capture → Stripe catalog migration | SESSION_25 Path A target. Builds Stripe products + prices + entitlements for all 7 surfaces. Highest single-session ROI from here. |
+| **[LIVE-SANDBOX]** | Charter Member outreach revenue capture → Stripe catalog migration | SHIPPED SESSION_25 2026-05-18 to sandbox `acct_1TLUF6HmqSDkUoqw`. 6 D-021 surfaces (Universal Credits + DOT Alerts 6 tiers + Directory Listings 4 + Full DB + Learning Center 6 packs + Charter coupon `L1Ngigfc`). Canonical SKU map at `PRICING_STRIPE_CATALOG.md`. Still pending: webhook event registration (Master O dashboard action) + Pillar 7 entitlements schema in seven16-platform (BACKLOG #5) + Enterprise+ state SKUs (D-015 own session). |
 | **[CANCELLED]** | ~~TIQ `/pricing` page → PRICING_*.md specs~~ | TIQ spun out per D-022. Build no longer needed; spec `PRICING_THRESHOLD_IQ.md` archived. |
 | **[PENDING]** | `seven16-platform` shared JWT/auth runbook → Sprint 1C (Doppler + Sentry runbook across satellites) | All 3 product satellites partially observability-shipped (Speed Insights + Analytics + security headers via `403863b` / `fea5b34` / `d4245a9`); Sprint 1C ties them into shared auth runbook. Not started. |
 | **[PENDING]** | dotintel2 Killing Commercial Training Hub integration → planning docs only, zero code | Untracked planning docs in `dotintel2/docs/`. Dependent on agency dashboard for Learning Center team-pack admin (per SESSION_23 cascade). |
@@ -62,7 +64,7 @@ Format: `[STATUS] consumer → producer (notes)`
 | Deck content | 🟡 Slides 9/10 need rebuild — TIQ removed from surfaces grid. Slide 18 compound savings example needs recalc (baseline drops from $5,580/yr → ~$1,512/yr with TIQ removed; heavier-usage scaling to $4,000–$7,000/yr). |
 | Live `/charter` page | ✅ Rebuilt 2026-05-15 commit `fe57bce` with TIQ-free savings example. Live at [directory.seven16group.com/charter](https://directory.seven16group.com/charter). |
 | Deck render (Gamma) | 🟡 Pending — wait for deck rebuild |
-| Stripe revenue capture | 🟡 Blocked — pending SESSION_25 Path A Stripe catalog migration |
+| Stripe revenue capture | 🟡 Sandbox-ready — catalog shipped 2026-05-18 (PRICING_STRIPE_CATALOG.md). Webhook event registration (Master O dashboard) + Charter Member customer enrollment pending. Live cutover trigger remains first paying customer. |
 | 25%-off SKU integrations | ✅ DOT Alerts (any tier) · ✅ Directory listings · ✅ Learning Center · ✅ +40% credit bonus (effective ~$0.107/credit) · ✅ Charter badge recognition · ~~TIQ Scale-tier overage~~ (removed per D-022) |
 
 ---
