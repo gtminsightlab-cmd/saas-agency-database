@@ -54,20 +54,26 @@ Before doing anything substantive, read in this order (Working
 Agreement Rule 6):
 
   1. docs/BACKLOG.md  ← Anti-decay layer; read first per Rule 6.
-  2. docs/handoffs/SESSION_25_HANDOFF.md  ← What shipped 2026-05-18
-     (D-023 + Pillar 6 + Stripe catalog).
-  3. docs/context/FAMILY_HEALTH.md  ← Cross-product snapshot; refreshed
+  2. docs/handoffs/SESSION_26_HOMEPAGE_REDESIGN_BRIEF.md  ← **Path A
+     source brief** (Master O CMO review, archived 2026-05-18 at
+     SESSION_25 close). Read this if doing the homepage redesign.
+     Includes pre-session resolution flags (brand naming + hosting
+     destination) Master O answers at open.
+  3. docs/handoffs/SESSION_25_HANDOFF.md  ← What shipped 2026-05-18
+     (D-023 + Pillar 6 + Stripe catalog + D-024 doctrine).
+  4. docs/context/FAMILY_HEALTH.md  ← Cross-product snapshot; refreshed
      end of SESSION_25.
-  4. docs/context/DECISION_LOG.md  ← D-001 through D-024 + §6 standing
+  5. docs/context/DECISION_LOG.md  ← D-001 through D-024 + §6 standing
      rules. **D-024 is the latest lock (Front-End Production Standard,
      2026-05-18)** — every screen meets a 10-standard / 12-point-DoD bar
-     before "done." If you do Path A, full doctrine at:
-  5. docs/context/ENGINEERING_DOCTRINE.md  ← §"Front-end production
+     before "done."
+  6. docs/context/ENGINEERING_DOCTRINE.md  ← §"Front-end production
      standard (D-024)" + tooling locks (`sonner`, `eslint-plugin-jsx-a11y`)
-     + shared `components/ui/*` primitive list.
-  6. docs/context/PRICING_STRIPE_CATALOG.md  ← Canonical Stripe SKU
+     + shared `components/ui/*` primitive list. **Required reading for
+     Path A.**
+  7. docs/context/PRICING_STRIPE_CATALOG.md  ← Canonical Stripe SKU
      map (shipped SESSION_25).
-  7. (optional) docs/decisions/adr-023-*.md + docs/strategy/ + docs/domains/
+  8. (optional) docs/decisions/adr-023-*.md + docs/strategy/ + docs/domains/
      ← D-023 supporting docs if you need deeper context.
 
 ═══════════════════════════════════════════════════════════════
@@ -95,77 +101,118 @@ STEP 2 — STATE AT SESSION OPEN
 STEP 3 — ACTIVE ARC FOR SESSION_26 (CTO recommendation)
 ═══════════════════════════════════════════════════════════════
 
-**Path A — D-024 Front-End Production Standard implementation
-(~3-4 hrs, ~8-10 files). Shared UI primitives + Pillar 6 hardening
-as first compliance pass.**
+**Path A — Marketing homepage redesign per Master O CMO brief
+(~5-6 hrs, ~19-22 files). First major application of D-024
+Front-End Production Standard.**
 
-D-024 was locked 2026-05-18 (after Pillar 6 backend shipped) — every
-screen must hit a 10-standard / 12-point-DoD bar. Today's Pillar 6 UI
-falls below that bar: `alert()` calls for errors, no visible loading
-indicator, `title=` instead of `aria-label`, no error boundary, no
-success confirmation. This session builds the shared primitives that
-make compliance easy AND brings Pillar 6 UI up to standard as the
-first applied case.
+**Source brief:** `docs/handoffs/SESSION_26_HOMEPAGE_REDESIGN_BRIEF.md`
+(archived 2026-05-18 at SESSION_25 close, verbatim from Master O).
 
-Scope:
+**Thesis:** "Stop targeting agency titles. Start targeting verified
+carrier appointments." Reframe the homepage from "long-form explainer
++ pricing dive" to "distribution intelligence command center." Apollo.io
++ AM Best + Palantir aesthetic — serious, precise, data-rich.
 
-  (a) Install tooling:
-      - `npm i sonner` (locked toast library per D-024)
-      - `npm i -D eslint-plugin-jsx-a11y` (locked a11y lint per D-024)
-      - Enable a11y plugin in eslint flat config
+**Pre-session resolution flags (Master O answers at open):**
 
-  (b) Build shared primitives at `components/ui/`:
-      - LoadingState.tsx — spinner + skeleton + message variants
-      - EmptyState.tsx — icon + heading + body + CTA pattern
-      - ErrorState.tsx — friendly message + retry button + support link
-      - SuccessToast.tsx — wraps sonner with project styling
-      - ErrorBoundary.tsx — section + page-level
-      - StatusPill.tsx — accessible status (color + icon + text)
+  1. **Brand naming.** Brief uses "Seven16" as the product name; per
+     family D-001/D-003 Seven16 Group is the trust/authority layer
+     (NOT a product), and per D-004 the product is named "Agency
+     Signal." Options: (a) rename product Agency Signal → Seven16
+     (amends D-004), (b) keep Agency Signal canonical with "Seven16"
+     as customer-facing shorthand, (c) marketing-only name change.
 
-  (c) Add `<Toaster />` to app root layout
-  (d) Pillar 6 UI hardening pass:
-      - Replace `alert(...)` in row-actions.tsx with toast.error
-      - Add visible loading spinner during "Downloading…"
-      - Add success toast on completion ("3 changes downloaded")
-      - Add ErrorBoundary around the saved-lists table
-      - Replace `title=` with `aria-label` on icon-only buttons
-      - Handle "zero changes since last ack" empty state (currently
-        downloads empty CSV)
-      - Test keyboard nav + screen reader announcements
+  2. **Hosting destination.** Push to current `main` and let Vercel
+     auto-deploy to `directory.seven16group.com` (default), OR build
+     behind a feature flag, OR build directly on `agencysignal.co`
+     as cutover trigger.
 
-After this session, future Claude sessions reuse the primitives so
-every new screen ships at the bar without re-rolling the wheel.
+**Scope (preview — full detail in SESSION_26_HOMEPAGE_REDESIGN_BRIEF.md):**
+
+  (a) Tooling install (~10 min):
+      - `npm i sonner` (D-024 toast library)
+      - `npm i -D eslint-plugin-jsx-a11y` (D-024 a11y lint)
+      - `npx shadcn-ui@latest init` if not already configured
+
+  (b) Shared D-024 primitives at `components/ui/` (~45 min):
+      - LoadingState.tsx · EmptyState.tsx · ErrorState.tsx
+      - SuccessToast.tsx · ErrorBoundary.tsx · StatusPill.tsx
+
+  (c) 13 marketing section components at `components/marketing/`
+      (~3-4 hrs) per the brief:
+      - MarketingHeader · HeroSection · AppointmentSearchMockup
+      - ProblemSection · ComparisonSection · HowItWorksSection
+      - VerticalCardsSection · RecruitPlaysSection · MethodologySection
+      - DataTrustSection · PricingPreview · FinalCTA · MarketingFooter
+
+  (d) Page assembly (~30 min): `app/page.tsx` replaces current home
+      with new composition; `app/layout.tsx` adds <Toaster />.
+
+  (e) D-024 DoD checklist pass (~30 min): every section hits the
+      12-point bar (loading / empty / error / retry / success / mobile /
+      keyboard / screen reader / partial data / slow connection / user
+      leaving mid-request / malformed response).
+
+  (f) Pre-publish data verification: brief uses claims like "36,212
+      verified agencies" + "87,000+ contacts" + "60 parent groups" —
+      current DB shows different numbers (32,951 / 135,453 / TBD).
+      Per family standing rule "pricing copy is placeholder until
+      data inventory catches up" — pull live counts via SQL before
+      hardcoding into marketing copy.
+
+**Files in scope:** ~19-22 (well above ~5 typical) — needs
+plan-before-execute discipline + 7-10 bullet plan + thumbs-up before
+writes. Single-decision conceptual change so doesn't need to split.
+
+**Why this is the right Path A:**
+  • D-024 just locked SESSION_25 — first application is highest-value
+    when it's a customer-facing surface (vs. internal Pillar 6 UI)
+  • Master O explicit directive: "make this first priority next session"
+  • Current homepage is the conversion bottleneck (CMO finding)
+  • Builds D-024 shared primitives organically as we ship sections
+  • Pillar 6 UI hardening folds into this session naturally — the
+    components/ui/* primitives built here get applied to row-actions.tsx
+    as a bonus tail-end task if time allows
 
 ═══════════════════════════════════════════════════════════════
 STEP 4 — ALTERNATIVES (if Master O wants to redirect)
 ═══════════════════════════════════════════════════════════════
 
-  • **Path B — Pillar 7 entitlements schema in seven16-platform
+  • **Path B — D-024 shared primitives + Pillar 6 UI hardening
+    (focused, no marketing redesign)** (~3-4 hrs, ~8-10 files).
+    The narrower version of Path A's D-024 build — just the
+    components/ui/* primitives (LoadingState, EmptyState, ErrorState,
+    SuccessToast, ErrorBoundary, StatusPill) + apply them to today's
+    Pillar 6 UI (replace alert() with toast, add visible loading
+    spinner, add success confirmation, add error boundary,
+    aria-labels on icon buttons, handle "zero changes" empty state).
+    No marketing redesign. Pick this if Master O wants D-024 shipped
+    cleanly without bundling with the homepage redesign scope.
+
+  • **Path C — Pillar 7 entitlements schema in seven16-platform
     satellite** (~30-45 min, ~1 migration). BACKLOG #5. Unblocks:
     D-015 Enterprise+ state-level RLS scoping, Distribution+ outcome
     SKU attribution, cross-product credit-wallet flow. Schema:
     `public.customer_entitlements` + `public.appointment_attributions`
     in soqqmkfasufusoxxoqzx, RLS forced + tenant-scoped. Pair with
     BACKLOG #6 credit_consumption_rates table (~10 min addition).
-    Lower lift than Path A; valuable but no live Enterprise+ customer
-    waiting on it yet.
+    Lower lift; valuable but no live Enterprise+ customer waiting.
 
-  • **Path C — AS Session 5 Option A SWR client-cache** (~2-2.5 hrs).
+  • **Path D — AS Session 5 Option A SWR client-cache** (~2-2.5 hrs).
     Install swr, wrap data loaders on /build-list + /saved-lists,
     revalidation on focus + manual refresh. Closes the perf story
-    from AS Session 3. Smaller risk than Path A but doesn't build
-    long-term primitives.
+    from AS Session 3.
 
-  • **Path D — Distribution Expander UX thesis spec** (~half session).
+  • **Path E — Distribution Expander UX thesis spec** (~half session).
     Document the Pillar 7 enterprise workflow: state → vertical →
     target agency profile → carrier-appointment filter → recommended
     agency list → export. Spec the screen flow BEFORE building.
 
-  • **Path E — STATE.md refresh sweep** (~30 min). Reconcile §3 row
+  • **Path F — STATE.md refresh sweep** (~30 min). Reconcile §3 row
     counts + §6 admin module count + migration list against live DB.
     Doc-trust win. Pair with any other path as session tail-end.
 
-  • **Path F — Verified/claimed profile flow scoping** (~30 min).
+  • **Path G — Verified/claimed profile flow scoping** (~30 min).
     Tier 1.x feature; agency_profiles + producer_profiles columns
     landed in migration 0091; flow UX needs design. Spec only,
     build later.

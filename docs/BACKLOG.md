@@ -13,7 +13,10 @@ Last reviewed: 2026-05-18 (D-023 Agency Signal positioning lock — architect st
 ---
 
 ## Active arc
-[in-progress] **[AS Session 5] Option A — SWR client-cache on `/build-list` + `/saved-lists` (~2–2.5 hrs).**
+[in-progress] **[HUB / AS] SESSION_26 Path A — Marketing homepage redesign per Master O CMO brief (~5-6 hrs, ~19-22 files).** First major application of D-024 Front-End Production Standard. Reframe homepage as "distribution intelligence command center" per CMO brief at [`docs/handoffs/SESSION_26_HOMEPAGE_REDESIGN_BRIEF.md`](handoffs/SESSION_26_HOMEPAGE_REDESIGN_BRIEF.md). Build shared `components/ui/*` D-024 primitives + 13 marketing section components (MarketingHeader, HeroSection, AppointmentSearchMockup, ProblemSection, ComparisonSection, HowItWorksSection, VerticalCardsSection, RecruitPlaysSection, MethodologySection, DataTrustSection, PricingPreview, FinalCTA, MarketingFooter). Tooling: `sonner` + `eslint-plugin-jsx-a11y`. Pre-session resolution flags: brand naming (Seven16 vs Agency Signal product name; D-001/D-004 conflict) + hosting destination (directory.seven16group.com vs feature flag vs agencysignal.co cutover).
+*Why active:* Master O CMO review 2026-05-18 + directive to make this SESSION_26 first priority. Supersedes prior queued items. Folds Pillar 6 UI hardening + D-024 primitive build into one customer-facing deliverable.
+
+[deferred-priority] **[AS Session 5] Option A — SWR client-cache on `/build-list` + `/saved-lists` (~2–2.5 hrs).**
 Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focus + manual refresh, DOM only re-renders on diff. Pairs with the server-side `unstable_cache` shipped in AS Session 3 — closest user-facing match to "only new data loads on refresh." Files in scope: `package.json` / `package-lock.json`, `app/build-list/page.tsx`, `app/saved-lists/page.tsx`, possibly a small client wrapper if hooks need extraction.
 *Why active:* Recommended starting move per `AGENCY_SIGNAL_SESSION_4_HANDOFF.md` §6 + `AGENCY_SIGNAL_SESSION_5_KICKOFF.md`. Completes Session 3's perf story. Master O can re-target to Option B (saved-lists backend) or C (per-user KV cache) on session open.
 
