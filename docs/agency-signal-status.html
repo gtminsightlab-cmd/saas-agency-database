@@ -118,11 +118,12 @@
     <div class="tagline">Distribution intelligence for commercial insurance. $19 starts the conversation.</div>
   </div>
   <div class="meta">
-    <div>Status snapshot · <strong>D-023 architect review</strong></div>
-    <div>2026-05-18</div>
+    <div>Status snapshot · <strong>SESSION_25 close</strong></div>
+    <div>2026-05-18 · 7 commits this session</div>
     <div>Branch <strong>main</strong></div>
-    <div>HEAD <strong>fd3b360</strong> · D-022 family-doc cleanup</div>
+    <div>HEAD <strong>49c1e43</strong> · D-024 front-end standard</div>
     <div>Position lock · <strong>D-023 2026-05-18</strong></div>
+    <div>FE standard · <strong>D-024 2026-05-18</strong></div>
     <div>Live · <strong>directory.seven16group.com</strong></div>
   </div>
 </header>
@@ -217,15 +218,18 @@
         <li>Berkley OpCos + 13 wholesalers + ISC <span class="pill pill-shipped">Shipped</span></li>
         <li>Sentry observability (directory-admin) <span class="pill pill-shipped">Pilot</span></li>
         <li>Caching layer (build-list refs) <span class="pill pill-shipped">Shipped</span></li>
+        <li>Saved-lists refresh + change detection backend (Pillar 6) <span class="pill pill-shipped">Shipped 2026-05-18</span></li>
+        <li>"Download Updates" delta-export UI <span class="pill pill-shipped">Shipped 2026-05-18</span></li>
+        <li>Stripe catalog (6 D-021 surfaces in sandbox) <span class="pill pill-shipped">Shipped 2026-05-18</span></li>
       </ul>
     </div>
     <div class="card">
       <h3>Tier 1.x — Active or queued (next 30d)</h3>
       <p class="muted small" style="margin-bottom:10px;">In flight or top of backlog.</p>
       <ul class="small">
-        <li>SWR client-cache on /build-list + /saved-lists <span class="pill pill-active">Active arc</span></li>
-        <li>Saved-lists update-detection backend <span class="pill pill-queued">Queued #1</span></li>
-        <li>Stripe catalog migration (6 D-021/D-022 surfaces) <span class="pill pill-queued">Queued #7 · CTO-recommended</span></li>
+        <li>D-024 shared <span class="mono">components/ui/*</span> primitives + Pillar 6 UI hardening <span class="pill pill-queued">Path A — CTO-recommended SESSION_26</span></li>
+        <li>Pillar 7 entitlements schema (seven16-platform) <span class="pill pill-queued">Path B · BACKLOG #5</span></li>
+        <li>SWR client-cache on /build-list + /saved-lists <span class="pill pill-queued">Path C</span></li>
         <li><span class="mono">credit_consumption_rates</span> table <span class="pill pill-gap">Missing — D-014 partial</span></li>
         <li><span class="mono">customer_entitlements</span> in seven16-platform <span class="pill pill-gap">Missing — D-015 §7</span></li>
         <li>Per-user @vercel/kv data cache <span class="pill pill-queued">Queued #2</span></li>
@@ -298,10 +302,10 @@
       <p class="muted small">Build a targeted agency or producer list from filters (state · vertical · carrier · contact confidence · size) → name → save → export. Today: build + save + download shipped (<strong>4</strong> saved lists in production).</p>
       <p class="small faint mono" style="margin-top:6px;">app/build-list/* · app/build-list/review · app/build-list/download · <a href="domains/domain-build-lists-saved-lists.md">domain doc</a></p>
     </div>
-    <div class="domain-card domain-active">
-      <h4>6. Saved List Intelligence <span class="pill pill-queued">Refresh queued · BACKLOG #1</span></h4>
-      <p class="muted small">Turn static exports into SaaS. Saved-list snapshots · update detection · changed records (new/removed agencies, new/stale contacts, new appointment indicators) · refresh alerts. UI tints row on <span class="mono">has_updates=true</span> since AS Session 3 (commit <span class="mono">e1bfc89</span>); <strong>backend update-detection = BACKLOG #1 (~4–5 hrs)</strong>. THIS is what separates AS from static data vendors.</p>
-      <p class="small faint mono" style="margin-top:6px;">public.saved_lists · saved_list_snapshots (proposed 0091) · saved_list_changes (proposed 0091) · <a href="domains/domain-build-lists-saved-lists.md">domain doc</a></p>
+    <div class="domain-card domain-shipped">
+      <h4>6. Saved List Intelligence <span class="pill pill-shipped">SHIPPED 2026-05-18 · BACKLOG #1 closed</span></h4>
+      <p class="muted small">"A static export is a list vendor. A refreshed saved list is SaaS." Backend ships end-to-end: migration 0092 RPC + Edge Function <span class="mono">recompute-saved-lists</span> v1 ACTIVE (verify_jwt:true, D-013 family pattern) + Vercel cron at 04:00 UTC daily (via vercel.json) + ack + delta-export API routes + "Download Updates" UI button on /saved-lists. Detects agency_added/removed + contact_added/removed via set-diff against latest snapshot. Validated against live data: saved list <span class="mono">97636b60</span> currently shows +1 agency / +148 contacts since save time, ready to be captured on first cron run.</p>
+      <p class="small faint mono" style="margin-top:6px;">public.saved_lists · saved_list_snapshots · saved_list_changes · supabase/functions/recompute-saved-lists/index.ts · app/api/cron/saved-lists-refresh · app/api/saved-lists/[id]/{acknowledge,delta-export} · <a href="domains/domain-build-lists-saved-lists.md">domain doc</a></p>
     </div>
     <div class="domain-card domain-active">
       <h4>7. Distribution Expander <span class="pill pill-queued">D-015 locked · GTM queued</span></h4>
@@ -359,7 +363,8 @@
     <div class="adr"><span class="adr-id">D-018 · Accepted 2026-05-15 · amended D-021</span><div class="adr-title">Charter Member program — best tier permanently</div><div class="adr-desc">Cap 50–75 accounts · 60–90 day enrollment · best pricing tier across everything they buy (was "50% off Charter Bundle"). Required exchange: case study + quarterly feedback + multi-product use. <span class="mono">/charter</span> page live; Stripe revenue capture blocked on catalog migration.</div></div>
     <div class="adr"><span class="adr-id">D-021 · Accepted 2026-05-15</span><div class="adr-title">Seven16 Credits + Usage Pricing Architecture</div><div class="adr-desc">À la carte SKUs + universal credit currency + cross-sell via volume bonus bands. Supersedes tier-pricing approach (D-019). Account-level wallets across products. Lookup loyalty bumps (+10/15/20% on next purchase).</div></div>
     <div class="adr"><span class="adr-id">D-022 · Accepted 2026-05-15</span><div class="adr-title">Threshold IQ spun out of Seven16 family</div><div class="adr-desc">Family-active products reduce to DOT Intel cluster + Agency Signal + seven16-platform control plane. TIQ tiers archived; Charter Member offer drops from 7 surfaces to 6. <span class="mono">/charter</span> page rebuilt without TIQ. 2027 bundle (D-005) unchanged — bundle never included TIQ.</div></div>
-    <div class="adr"><span class="adr-id">D-023 · Accepted 2026-05-18 ★ NEW</span><div class="adr-title">Agency Signal positioning lock — "Distribution intelligence for commercial insurance"</div><div class="adr-desc">7-pillar product taxonomy (Agency Directory · Producer Intelligence · Carrier Appointment Intelligence · Vertical/Segment Intelligence · Build Lists/Saved Lists · Distribution Expander · Data Quality/Hygiene). Neilson + ProgramBusiness as adjacent competitive references. Verified/claimed profile flow queued Tier 1.x. Architect strategy review ratifies ~80% of existing family doctrine; D-023 codifies the sharpening.</div></div>
+    <div class="adr"><span class="adr-id">D-023 · Accepted 2026-05-18</span><div class="adr-title">Agency Signal positioning lock — "Distribution intelligence for commercial insurance"</div><div class="adr-desc">9-pillar product taxonomy (Agency Directory · Producer Intelligence · Carrier Appointment Intelligence · Vertical/Segment Intelligence · Build Lists · Saved List Intelligence · Distribution Expander · Data Quality/Hygiene · Future Market Discovery PARKED). Neilson + ProgramBusiness as adjacent competitive references. Verified/claimed profile flow queued Tier 1.x. Architect strategy review ratifies ~80% of existing family doctrine.</div></div>
+    <div class="adr"><span class="adr-id">D-024 · Accepted 2026-05-18 ★ NEW</span><div class="adr-title">Front-End Production Standard — every screen meets 10 standards + 12-point DoD</div><div class="adr-desc">"We are not building a demo." 10 standards (responsive · loading · error · empty · success · a11y · error boundaries · state discipline · performance · defensive UI) + 12-point Definition of Done (loading / empty / error / retry / success / mobile / keyboard / screen reader / partial data / slow connection / user-leaving-mid-request / malformed-response). Tooling locks: <span class="mono">sonner</span> + <span class="mono">eslint-plugin-jsx-a11y</span>. Shared <span class="mono">components/ui/*</span> primitives. Apply-on-touch policy. Full doctrine at <span class="mono">docs/context/ENGINEERING_DOCTRINE.md</span> §"Front-end production standard."</div></div>
   </div>
   <p class="muted small" style="margin-top:12px;">All decisions at <span class="mono">docs/context/DECISION_LOG.md</span>. D-007/D-009/D-010/D-012/D-016/D-019/D-020 are family-architectural but not AS-touching (DOT Intel rebuild, TIQ name, Growtheon delivery, directory build host, brand split, superseded TIQ tiers, superseded TIQ positioning).</p>
 </section>
@@ -483,21 +488,22 @@
 <section>
   <div class="section-bar"><h2>Next session targets</h2></div>
   <div class="card">
-    <h3>AS-side options (priority order per D-023 architect review)</h3>
+    <h3>AS-side options (priority order — see SESSION_26_PROMPT.md)</h3>
     <ol style="padding-left:20px; font-size:13px;">
-      <li><strong>Saved-lists update-detection backend</strong> (~4–5 hrs). Migration 0091_saved_list_snapshots.sql + Vercel-Cron + Edge Function + delta-export button. <strong>BACKLOG #1 + D-023 Pillar 5 + architect Priority 3.</strong> "A static export is a list vendor. A refreshed saved list is SaaS." This is the highest-leverage move per D-023 thesis. The architect's proposed <span class="mono">saved_list_snapshots</span> + <span class="mono">saved_list_changes</span> tables would land here.</li>
-      <li><strong>AS Session 5 Option A — SWR client-cache</strong> (~2–2.5 hrs · 4 files). Smaller perf win on /build-list + /saved-lists. Closes the perf story from AS Session 3. Listed as in-progress Active arc in BACKLOG.</li>
-      <li><strong>Stripe catalog migration (D-021 · 6 surfaces)</strong> (~1 full session · 5–8 files). Universal credits · DOT Alerts · directory listings · lead downloads · Learning Center · Charter Member flag. Plus archive 5 obsolete sandbox products. Unblocks Charter Member outreach revenue capture per FAMILY_HEALTH dependency map. Important but not Pillar-1 thesis-critical.</li>
-      <li><strong>STATE.md refresh pass</strong> (~30 min). Reconcile §3 row counts + §6 admin module count + migration list against live DB. Doc-trust win — architect Priority 1.</li>
-      <li><strong>Distribution Expander UX thesis spec</strong> (~half session). The Pillar 6 enterprise workflow: state → vertical → target agency profile → carrier-appointment filter → recommended agency list → export. Spec the screen flow before building — architect Priority 2.</li>
-      <li><strong>Verified / claimed profile flow scoping</strong> (~30 min). Pillar 7 trust feature; new per D-023. <span class="mono">agency_profiles</span> extension (verified · claimed_by · public_slug · last_verified_at columns on existing <span class="mono">agencies</span>) + claim flow UX. Scope only this session; build later — architect Priority 4.</li>
+      <li><strong>Path A — D-024 Front-End Production Standard implementation</strong> (~3–4 hrs, ~8–10 files). Build shared <span class="mono">components/ui/{LoadingState,EmptyState,ErrorState,SuccessToast,ErrorBoundary,StatusPill}.tsx</span> primitives + install <span class="mono">sonner</span> + <span class="mono">eslint-plugin-jsx-a11y</span> + harden Pillar 6 UI as first compliance pass (replace <span class="mono">alert()</span> calls with toast, add visible loading spinner, add success confirmation, add error boundary, replace <span class="mono">title=</span> with <span class="mono">aria-label</span>). <strong>CTO-recommended.</strong></li>
+      <li><strong>Path B — Pillar 7 entitlements schema</strong> (~30–45 min). <span class="mono">customer_entitlements</span> + <span class="mono">appointment_attributions</span> in <span class="mono">soqqmkfasufusoxxoqzx</span> per D-015 §7 / BACKLOG #5. Pair with BACKLOG #6 <span class="mono">credit_consumption_rates</span> in AS satellite (+10 min). Unblocks Enterprise+ state RLS + outcome SKU + cross-product credit flow.</li>
+      <li><strong>Path C — AS Session 5 Option A SWR client-cache</strong> (~2–2.5 hrs · 4 files). Smaller perf win on /build-list + /saved-lists. Closes the perf story from AS Session 3.</li>
+      <li><strong>Path D — Distribution Expander UX thesis spec</strong> (~half session). Spec the Pillar 7 enterprise workflow: state → vertical → target profile → appointment filter → list → export. Spec before building.</li>
+      <li><strong>Path E — STATE.md refresh sweep</strong> (~30 min). Reconcile §3 row counts + §6 admin module count + migration list against live DB. Pair with any path as session tail-end.</li>
+      <li><strong>Path F — Verified / claimed profile flow scoping</strong> (~30 min). Pillar 8 trust feature; <span class="mono">agency_profiles</span> + <span class="mono">producer_profiles</span> columns landed in mig 0091; flow UX needs design.</li>
     </ol>
   </div>
-  <h3 style="margin-top:18px;">Master-O tasks (not Claude work)</h3>
+  <h3 style="margin-top:18px;">Master-O tasks (dashboard actions, ~5 min each)</h3>
   <ul class="small muted">
-    <li><strong>Archive obsolete Stripe products</strong> — 5 of 7 sandbox products are stale per D-022. Stripe MCP can flag <span class="mono">active:false</span> programmatically once approved.</li>
-    <li><strong>Stripe webhook endpoint events</strong> — must be registered via dashboard (Stripe MCP can't): <span class="mono">checkout.session.completed</span> · <span class="mono">customer.subscription.updated</span> · <span class="mono">customer.subscription.deleted</span> · <span class="mono">invoice.paid</span>.</li>
-    <li><strong>Supabase Auth dashboard</strong> — leaked-password protection (HaveIBeenPwned check). 1-click in dashboard if not yet enabled.</li>
+    <li><strong>🔴 Set <span class="mono">CRON_SECRET</span> in Vercel production env</strong> — Pillar 6 daily cron returns 500 without it. <span class="mono">openssl rand -base64 32</span> → Vercel dashboard → Settings → Env Variables → Add new (Sensitive · Production).</li>
+    <li><strong>🔴 Register Stripe webhook endpoint</strong> at <span class="mono">https://directory.seven16group.com/api/stripe/webhook</span>. 6 events: <span class="mono">checkout.session.completed</span> · <span class="mono">customer.subscription.created/updated/deleted</span> · <span class="mono">invoice.paid</span> · <span class="mono">invoice.payment_failed</span>. Dashboard-only per <span class="mono">feedback_stripe_mcp_webhook_dashboard_only.md</span>.</li>
+    <li><strong>🟡 Rotate Sentry org token</strong> — every deploy logs "Invalid org token (401)" on @sentry/nextjs After Production Compile. Non-fatal but log spam. Sentry dashboard → rotate org token → set <span class="mono">SENTRY_AUTH_TOKEN</span> in Vercel (Sensitive · Production).</li>
+    <li><strong>Supabase Auth dashboard</strong> — leaked-password protection (HaveIBeenPwned check). 1-click if not yet enabled.</li>
     <li><strong>Domain cutover decision</strong> — agencysignal.co reserved; trigger is a quiet DNS week.</li>
     <li><strong>Hygiene Credit mechanism</strong> — pick Stripe Subscription Schedule (phased) vs. programmatic coupon at month 6+12.</li>
     <li><strong>Trust copy live-ship decision</strong> — when does data inventory catch up to "100k producers" and "70% email density"?</li>
@@ -506,7 +512,7 @@
 </section>
 
 <footer>
-  Agency Signal project status · D-023 architect review · 2026-05-18
+  Agency Signal project status · SESSION_25 close · 2026-05-18 · D-023 + D-024 locked · Pillar 6 backend shipped · Stripe catalog (sandbox) shipped
   <br/>
   Status file at <span class="mono">docs/agency-signal-status.html</span> — re-open anytime for at-a-glance view. Update at the close of any AS-touching session.
 </footer>
