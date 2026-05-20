@@ -33,10 +33,23 @@ export function CarrierManager({
 
   const mappedIds = useMemo(() => new Set(mapped.map((m) => m.carrier_id)), [mapped]);
 
-  // Debounced search against carriers
-  useEffect(() => {
+  // Render-time filter — drop carriers already mapped to this vertical from
+  // the dropdown. Moved out of the fetch (was filtered inside the useEffect
+  // before) so add/remove operations update the dropdown immediately without
+  // a refetch round-trip.
+  const filteredResults = useMemo(
+    () => results.filter((c) => !mappedIds.has(c.id)),
+    [results, mappedIds],
+  );
+
+  // Debounced carrier search. Lives in the input's `onChange` handler (per
+  // react.dev/learn/you-might-not-need-an-effect) rather than a useEffect,
+  // so setState calls fire from an event handler — eliminates the
+  // react-hooks/set-state-in-effect anti-pattern flagged Session D.
+  function handleSearchChange(value: string) {
+    setSearch(value);
     if (debounceRef.current) window.clearTimeout(debounceRef.current);
-    if (search.trim().length < 2) {
+    if (value.trim().length < 2) {
       setResults([]);
       return;
     }
@@ -46,16 +59,19 @@ export function CarrierManager({
       const { data } = await supabase
         .from("carriers")
         .select("id,name,group_name")
-        .ilike("name", `%${search}%`)
+        .ilike("name", `%${value}%`)
         .order("name")
         .limit(25);
-      setResults(((data ?? []) as CarrierOpt[]).filter((c) => !mappedIds.has(c.id)));
+      setResults((data ?? []) as CarrierOpt[]);
       setSearching(false);
     }, 250);
-    return () => {
-      if (debounceRef.current) window.clearTimeout(debounceRef.current);
-    };
-  }, [search, mappedIds]);
+  }
+
+  // Cleanup-only effect: drop any pending debounce timer on unmount. Body
+  // is empty (no setState inside); cleanup runs once on unmount.
+  useEffect(() => () => {
+    if (debounceRef.current) window.clearTimeout(debounceRef.current);
+  }, []);
 
   function showToast(kind: "ok" | "err", msg: string) {
     setToast({ kind, msg });
@@ -82,7 +98,8 @@ export function CarrierManager({
         carriers: { id: c.id, name: c.name, group_name: c.group_name },
       },
     ]);
-    setResults((r) => r.filter((x) => x.id !== c.id));
+    // No setResults filter needed — the filteredResults useMemo above drops
+    // newly-mapped carriers from the dropdown at render time.
     showToast("ok", `Added ${c.name}`);
   }
 
@@ -149,7 +166,7 @@ export function CarrierManager({
           <input
             type="search"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             placeholder="Search carriers — name or group"
             className="w-full rounded-md border border-admin-border bg-admin-surface-2 pl-9 pr-3 py-2 text-sm text-admin-text placeholder-admin-text-dim outline-none focus:border-admin-accent"
           />
@@ -159,13 +176,13 @@ export function CarrierManager({
           <div className="mt-3 max-h-64 overflow-auto rounded-md border border-admin-border-2">
             {searching ? (
               <div className="px-4 py-3 text-sm text-admin-text-mute">Searching…</div>
-            ) : results.length === 0 ? (
+            ) : filteredResults.length === 0 ? (
               <div className="px-4 py-3 text-sm text-admin-text-mute">
                 No matches (or all matches already mapped).
               </div>
             ) : (
               <ul className="divide-y divide-admin-border-2">
-                {results.map((c) => (
+                {filteredResults.map((c) => (
                   <li key={c.id} className="flex items-center justify-between px-4 py-2.5 hover:bg-admin-surface-2/60">
                     <div className="min-w-0">
                       <div className="text-sm font-medium text-admin-text truncate">{c.name}</div>
