@@ -50,6 +50,14 @@ When the hub and a memory note disagree, the hub wins. Update the memory; don't 
 
 ---
 
+## Seven16 Group Support — Stage-1 readiness shipped (Session C, 2026-05-19)
+
+A new family product `seven16groupsupport.com` (centralized AI sales/support/onboarding/account-management/affiliate-vetting SaaS) will plug into all Seven16 products. This repo has lightweight integration scaffolding only — `.env.local.example` SUPPORT_* vars, `components/support/Seven16SupportWidget.tsx` (null-render placeholder), `lib/support/{context,events}.ts` helpers, 4× `app/api/internal/support/*/route.ts` stubs (health=200, others=501).
+
+**Architecture rule (LOCKED):** Agency Signal is **support-integratable**, not **support-dependent**. Do not mount the widget globally, hard-code AI prompts, store conversation tables, or write any code path that breaks AS when `seven16groupsupport.com` is offline. Full spec at [docs/support-integration-readiness.md](docs/support-integration-readiness.md).
+
+---
+
 ## Working clone — this is the canonical copy
 
 **Canonical:** `C:\Users\GTMin\Projects\saas-agency-database\` (this folder). Native git, normal workflow.
