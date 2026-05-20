@@ -1,4 +1,6 @@
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { createClient } from "@/lib/supabase/server";
 import { RecordsCounter } from "@/components/build-list/records-counter";
 import { QuickSearchForm } from "./form";
@@ -17,8 +19,17 @@ export default async function QuickSearchPage() {
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "Agency Search" },
+        ]}
+      />
+      <PageHeader
+        title="Agency Search"
+        subtitle="Look up specific agencies by contact email, phone, name, domain, department, or title. Contact-record search will activate once the contact data set is fully loaded."
+      />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Quick Search</h1>
         <RecordsCounter
           accounts={accountsRes.count ?? 0}
           contacts={contactsRes.count ?? 0}

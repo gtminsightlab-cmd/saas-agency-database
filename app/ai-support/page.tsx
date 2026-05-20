@@ -6,11 +6,12 @@ import {
   Briefcase,
   Layers,
   Code,
-  Sparkles,
   ArrowRight,
   Clock,
 } from "lucide-react";
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { createClient } from "@/lib/supabase/server";
 import { loadAiSearchDictionary } from "@/lib/ai-search/dictionary";
 import { parseAiQuery } from "@/lib/ai-search/parse";
@@ -103,27 +104,26 @@ export default async function AiSupportPage({
 
   return (
     <AppShell>
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
-        <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 inline-flex items-center gap-2">
-              <Sparkles className="h-6 w-6 text-brand-600" />
-              AI Support
-            </h1>
-            <p className="mt-1.5 text-sm text-gray-600 max-w-2xl">
-              Ask in plain language &mdash; the parser turns it into a Build List filter set.
-              Pick from a category below if you need ideas, or write your own.
-            </p>
-          </div>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "AI Research Assistant" },
+        ]}
+      />
+      <PageHeader
+        title="AI Research Assistant"
+        subtitle="Ask in plain language — the parser turns it into a Build List filter set. Pick from a category below if you need ideas, or write your own."
+        actions={
           <Link
             href="/build-list"
-            className="text-xs font-semibold text-brand-700 hover:text-brand-800 inline-flex items-center gap-1"
+            className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
           >
-            Use the classic Build List instead
-            <ArrowRight className="h-3 w-3" />
+            Use classic Build List
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
-        </div>
-
+        }
+      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
           <KpiCard label="Agencies"     value={agenciesCount ?? 0}   Icon={Building2} />
           <KpiCard label="Contacts"     value={contactsCount ?? 0}   Icon={Users} />

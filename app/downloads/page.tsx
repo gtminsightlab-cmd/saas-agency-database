@@ -1,9 +1,23 @@
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
+import { DataTable } from "@/components/app/data-table";
 import { createClient } from "@/lib/supabase/server";
 import { Download } from "lucide-react";
 import clsx from "clsx";
 
 export const dynamic = "force-dynamic";
+
+type DownloadRow = {
+  id: string;
+  type: string | null;
+  status: string | null;
+  records_count: number | null;
+  file_url: string | null;
+  created_at: string;
+  completed_at: string | null;
+  saved_list_id: string | null;
+};
 
 export default async function DownloadsPage() {
   const supabase = await createClient();
@@ -13,39 +27,50 @@ export default async function DownloadsPage() {
     .order("created_at", { ascending: false })
     .limit(200);
 
+  const rows = (data ?? []) as DownloadRow[];
+
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "Exports" },
+        ]}
+      />
+      <PageHeader
+        title="Exports"
+        subtitle="Your CSV export history. Large exports (over 10,000 rows) complete asynchronously and appear here when ready."
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-4xl font-bold text-gray-900">Downloads</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Your CSV export history. Large exports ({">"} 10,000 rows) complete asynchronously and appear here when ready.
-        </p>
-
-        <div className="mt-8 overflow-x-auto rounded-lg border border-gray-200 bg-white">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
-              <tr>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Type</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Records</th>
-                <th className="px-4 py-3">File</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {(data ?? []).length === 0 ? (
+        {rows.length === 0 ? (
+          <DataTable
+            state="empty"
+            emptyHeading="No exports yet"
+            emptyBody="Build a list and download it from the list's detail page to start an export."
+          >
+            <></>
+          </DataTable>
+        ) : (
+          <DataTable>
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-50 text-left text-xs uppercase tracking-wide text-gray-600">
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-sm text-gray-500">
-                    No exports yet. Build a list and download it from the list&apos;s detail page.
-                  </td>
+                  <th scope="col" className="px-4 py-3">Date</th>
+                  <th scope="col" className="px-4 py-3">Type</th>
+                  <th scope="col" className="px-4 py-3">Status</th>
+                  <th scope="col" className="px-4 py-3 text-right">Records</th>
+                  <th scope="col" className="px-4 py-3">File</th>
                 </tr>
-              ) : (
-                data!.map((d: any) => (
-                  <tr key={d.id}>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {rows.map((d) => (
+                  <tr key={d.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-gray-700">
                       {new Date(d.created_at).toLocaleString()}
                     </td>
-                    <td className="px-4 py-3 text-gray-700 capitalize">{(d.type ?? "").replace("_", " ")}</td>
+                    <td className="px-4 py-3 text-gray-700 capitalize">
+                      {(d.type ?? "").replace("_", " ")}
+                    </td>
                     <td className="px-4 py-3">
                       <span
                         className={clsx(
@@ -60,26 +85,26 @@ export default async function DownloadsPage() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right tabular-nums text-gray-700">
-                      {d.records_count?.toLocaleString?.() ?? "—"}
+                      {d.records_count?.toLocaleString() ?? "—"}
                     </td>
                     <td className="px-4 py-3">
                       {d.file_url ? (
                         <a
                           href={d.file_url}
-                          className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 text-sm font-medium"
+                          className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 rounded"
                         >
-                          <Download className="h-4 w-4" /> Download
+                          <Download className="h-4 w-4" aria-hidden="true" /> Download
                         </a>
                       ) : (
                         <span className="text-gray-400 text-sm">—</span>
                       )}
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </DataTable>
+        )}
       </div>
     </AppShell>
   );
