@@ -18,6 +18,7 @@ export function SignUpForm() {
 
   // If the user navigates here with a different email param later, sync it once.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional one-shot sync from URL param to local state on prefillEmail change. Refactor candidate (lift to a controlled component) tracked outside Session D scope.
     if (prefillEmail && prefillEmail !== email) setEmail(prefillEmail);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefillEmail]);
@@ -125,8 +126,8 @@ export function SignUpForm() {
       </button>
       <p className="text-center text-xs text-gray-500">
         By creating an account you agree to our{" "}
-        <a href="#" className="underline">terms</a> and{" "}
-        <a href="#" className="underline">privacy policy</a>.
+        <span className="underline">terms</span> and{" "}
+        <span className="underline">privacy policy</span>.
       </p>
     </form>
   );

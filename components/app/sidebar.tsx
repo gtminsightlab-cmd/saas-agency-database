@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Home,
   Users,
   LayoutList,
   BookmarkCheck,
@@ -25,6 +26,7 @@ type NavItem = { href: string; label: string; icon: React.ComponentType<{ classN
 // webhook URLs untouched. Pillar 6 Edge Function URLs untouched.
 
 const intelligenceLinks: NavItem[] = [
+  { href: "/home",               label: "Home",                  icon: Home },
   { href: "/verticals",          label: "Vertical Intelligence", icon: Layers },
   { href: "/analytics/carriers", label: "Carrier Map",           icon: PieChart },
   { href: "/quick-search",       label: "Agency Search",         icon: Search },
@@ -66,7 +68,7 @@ export function Sidebar({
     >
       {/* Brand */}
       <div className="px-5 pt-5 pb-4 border-b border-gray-100">
-        <Link href="/build-list" className="block">
+        <Link href="/home" className="block">
           <div className="text-lg font-bold tracking-tight text-gray-900">
             Agency Signal
           </div>

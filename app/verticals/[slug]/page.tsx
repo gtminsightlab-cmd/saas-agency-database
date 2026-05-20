@@ -1,11 +1,32 @@
 import Link from "next/link";
-import { ArrowRight, ExternalLink, Truck, Crosshair } from "lucide-react";
+import {
+  ArrowRight,
+  ExternalLink,
+  Truck,
+  Crosshair,
+  Building2,
+  Users,
+  Layers,
+  ShieldCheck,
+} from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MarketingNav } from "@/components/marketing/nav";
-import { Sidebar } from "@/components/app/sidebar";
+import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
+import { MetricCard } from "@/components/app/metric-card";
+import { DataTable } from "@/components/app/data-table";
 import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
+
+type VerticalSummary = {
+  agency_count: number;
+  contact_count: number;
+  contacts_with_email: number;
+  mapped_carrier_count: number;
+  agencies_specialist: number;
+};
 
 type CarrierSegmentRow = {
   carrier_id: string;
@@ -56,6 +77,19 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
   if (!verticalRow) notFound();
   const vertical = verticalRow as Vertical;
 
+  // Vertical-level aggregates from the materialized view (canonical source
+  // for /home + /verticals); used to drive the authed MetricCard row so the
+  // numbers match what users see elsewhere. Null-safe for verticals not yet
+  // covered by the MV.
+  const { data: summaryRow } = await supabase
+    .from("mv_vertical_summary")
+    .select(
+      "agency_count,contact_count,contacts_with_email,mapped_carrier_count,agencies_specialist",
+    )
+    .eq("slug", params.slug)
+    .maybeSingle();
+  const summary = (summaryRow ?? null) as VerticalSummary | null;
+
   const { data: rpcRows } = await supabase.rpc("get_vertical_carriers_with_segments", {
     p_slug: params.slug,
   });
@@ -84,22 +118,6 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
   const isTrucking = params.slug === "transportation";
   const segmentedCount = carriers.filter((c) => c.segment !== "unknown").length;
 
-  let sidebarProps:
-    | { email: string; fullName: string | null; isSuperAdmin: boolean }
-    | null = null;
-  if (user) {
-    const { data: appUser } = await supabase
-      .from("app_users")
-      .select("email, full_name, role")
-      .eq("user_id", user.id)
-      .maybeSingle();
-    sidebarProps = {
-      email: appUser?.email ?? user.email ?? "",
-      fullName: appUser?.full_name ?? null,
-      isSuperAdmin: appUser?.role === "super_admin",
-    };
-  }
-
   const allCarriersHref = hasActivePlan
     ? `/build-list/review?cr=${carriers.map((c) => c.carrier_id).join(",")}&cr_c=or&c=US`
     : user
@@ -111,6 +129,205 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
     if (user) return `/#pricing`;
     return `/sign-up?carrier=${carrierId}`;
   };
+
+  // Segment-groups grid — extracted so the authed AppShell view can reuse it
+  // without copying the carrier-tile markup. Renders nothing-state via the
+  // surrounding DataTable wrapper in the authed branch; the anonymous body
+  // keeps its inline empty fallback for SEO continuity.
+  const segmentGroupsContent = (
+    <div className="space-y-10">
+      {segmentOrder.map((segKey) => {
+        const meta = SEGMENT_META[segKey] ?? SEGMENT_META.unknown;
+        const items = bySegment[segKey];
+        return (
+          <div key={segKey}>
+            <div className="mb-4 flex items-baseline justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className={`inline-flex items-center gap-1.5 rounded-full border ${meta.border} ${meta.bg} ${meta.color} px-3 py-1 text-xs font-semibold`}>
+                  {isTrucking && <Truck className="h-3 w-3" aria-hidden="true" />}
+                  {meta.label}
+                </span>
+                <span className="text-sm text-gray-500">
+                  {items.length} carrier{items.length === 1 ? "" : "s"}
+                </span>
+              </div>
+              {segKey === "unknown" && isTrucking && (
+                <span className="text-xs text-gray-500 italic">
+                  needs trucking-specific evidence
+                </span>
+              )}
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {items.map((c) => (
+                <Link
+                  key={c.carrier_id}
+                  href={tileHref(c.carrier_id)}
+                  className="group flex h-full flex-col rounded-md border border-gray-200 bg-white p-4 transition hover:border-brand-300 hover:bg-brand-50/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold leading-tight text-navy-800 group-hover:text-brand-800">
+                        {c.carrier_name}
+                      </p>
+                      {c.group_name && c.group_name !== c.carrier_name && (
+                        <p className="mt-0.5 text-[11px] text-gray-500">{c.group_name}</p>
+                      )}
+                    </div>
+                    <span className="shrink-0 text-base font-semibold tabular-nums text-navy-800">
+                      {c.agency_count.toLocaleString()}
+                    </span>
+                  </div>
+                  {c.rationale && (
+                    <p className="mt-2 line-clamp-2 text-[11px] leading-4 text-gray-500 italic">
+                      {c.rationale}
+                    </p>
+                  )}
+                  <div className="mt-2 flex items-center justify-between text-[10px] text-gray-500">
+                    <span>agencies appointed</span>
+                    <span className="inline-flex items-center gap-1 text-brand-700 font-semibold group-hover:text-brand-800">
+                      Build list
+                      <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  const sisterProductCallout = isTrucking ? (
+    <a
+      href="https://www.dotintel.io/solutions"
+      target="_blank"
+      rel="noopener"
+      className="group flex flex-col gap-4 rounded-lg border border-navy-200 bg-gradient-to-r from-navy-50 to-white px-6 py-5 transition hover:border-navy-300 hover:bg-navy-50 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div className="flex items-start gap-4">
+        <span className="mt-0.5 inline-flex h-10 w-10 flex-none items-center justify-center rounded-full bg-navy-100 text-navy-700">
+          <Truck className="h-5 w-5" aria-hidden="true" />
+        </span>
+        <div>
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-navy-600">
+            <span>Sister product · Seven16 Group</span>
+          </div>
+          <p className="mt-1 text-base font-semibold text-navy-800">
+            Need fleet &amp; non-fleet carrier-side data?
+          </p>
+          <p className="mt-1 text-sm text-gray-600">
+            DOT Intel covers the carrier side: FMCSA filings, power-units, operating authority, coverage limits, and active insurer per DOT — for fleet and non-fleet trucking. Agency Signal (here) covers the distribution side.
+          </p>
+        </div>
+      </div>
+      <span className="inline-flex flex-none items-center gap-2 rounded-md border border-navy-200 bg-white px-4 py-2 text-sm font-semibold text-navy-700 group-hover:border-navy-300 group-hover:bg-navy-50">
+        Open DOT Intel
+        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+      </span>
+    </a>
+  ) : null;
+
+  // Authed view — AppShell + Breadcrumbs + PageHeader (replaces marketing hero)
+  // + MetricCard row (live from mv_vertical_summary) + sister-product callout
+  // + segment groups. Drops the marketing dark CTA section since the
+  // PageHeader actions already surface the primary build-list jump.
+  if (user) {
+    return (
+      <AppShell>
+        <Breadcrumbs
+          items={[
+            { href: "/home", label: "Home" },
+            { href: "/verticals", label: "Vertical Intelligence" },
+            { label: vertical.name },
+          ]}
+        />
+        <PageHeader
+          title={`${vertical.name} carriers & segments`}
+          subtitle={
+            vertical.description ??
+            `${carriers.length} carrier${carriers.length === 1 ? "" : "s"} mapped to this vertical${
+              isTrucking ? ` — ${segmentedCount} classified by appointment behavior` : ""
+            }.`
+          }
+          actions={
+            <>
+              <Link
+                href={allCarriersHref}
+                className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-2 text-sm font-semibold text-white hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+              >
+                {hasActivePlan ? "Build list — all carriers" : "See pricing"}
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/verticals"
+                className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+              >
+                Back to verticals
+              </Link>
+            </>
+          }
+        />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+          {summary && (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <MetricCard
+                title="Agencies"
+                value={summary.agency_count}
+                subtitle="With appointment to mapped carriers"
+                icon={Building2}
+              />
+              <MetricCard
+                title="Contacts"
+                value={summary.contact_count}
+                subtitle={
+                  summary.contact_count > 0
+                    ? `${Math.round((summary.contacts_with_email / summary.contact_count) * 100)}% with email`
+                    : "Producers, decision-makers"
+                }
+                icon={Users}
+              />
+              <MetricCard
+                title="Carriers mapped"
+                value={summary.mapped_carrier_count}
+                subtitle="Specialty writing companies"
+                icon={Layers}
+              />
+              <MetricCard
+                title="Specialists"
+                value={summary.agencies_specialist}
+                subtitle="Agencies holding 5+ vertical carriers"
+                icon={ShieldCheck}
+              />
+            </div>
+          )}
+
+          {sisterProductCallout}
+
+          {carriers.length === 0 ? (
+            <DataTable
+              state="empty"
+              emptyHeading="No carriers mapped yet"
+              emptyBody="This vertical's carrier roster is still being built. Check back as we add specialty writing companies."
+              emptyAction={
+                <Link
+                  href="/verticals"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-brand-600 px-3 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+                >
+                  Browse other verticals
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              }
+            >
+              <></>
+            </DataTable>
+          ) : (
+            segmentGroupsContent
+          )}
+        </div>
+      </AppShell>
+    );
+  }
 
   const body = (
     <div className="bg-white">
@@ -297,13 +514,6 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
     </div>
   );
 
-  if (sidebarProps) {
-    return (
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar {...sidebarProps} />
-        <div className="flex-1 min-w-0 overflow-x-hidden">{body}</div>
-      </div>
-    );
-  }
+  // Anonymous visitors only — authed users returned from the AppShell branch above.
   return body;
 }
