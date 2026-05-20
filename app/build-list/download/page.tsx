@@ -1,11 +1,28 @@
 import Link from "next/link";
-import { FileSpreadsheet, FileText, Printer, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { SortableThLink, type SortDir } from "@/components/sortable-th";
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+// RPC response shape — Postgres RPC returns jsonb surfaced as `unknown` by
+// the supabase-js client without generated Database types. Declared locally
+// to avoid `as any` casts (Session 29 lint sweep).
+type AgencyRpcRow = {
+  id: string;
+  name: string;
+  city: string | null;
+  state: string | null;
+  revenue: number | null;
+  employees: number | null;
+  account_type_label: string | null;
+  location_type_name: string | null;
+  total_count: number;
+};
 
 const COUNTRY_MAP: Record<string, string> = { US: "USA", CA: "CAN" };
 
@@ -92,7 +109,7 @@ export default async function DownloadPage({
       .from("states")
       .select("code")
       .in("id", stateIds);
-    stateCodes = (states ?? []).map((s: any) => s.code).filter(Boolean);
+    stateCodes = (states ?? []).map((s: { code: string }) => s.code).filter(Boolean);
   }
 
   // All filters resolved server-side via RPC. Replaces the broken JS pattern
@@ -131,13 +148,11 @@ export default async function DownloadPage({
   ]);
 
   const previewErr = previewRes.error;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const previewRpcRows = (previewRes.data ?? []) as any[];
+  const previewRpcRows = (previewRes.data ?? []) as AgencyRpcRow[];
   const accountsCount: number = previewRpcRows.length > 0
     ? Number(previewRpcRows[0].total_count ?? 0)
     : 0;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const previewRows = previewRpcRows.map((r: any) => ({
+  const previewRows = previewRpcRows.map((r) => ({
     id: r.id,
     name: r.name,
     city: r.city,
@@ -170,39 +185,26 @@ export default async function DownloadPage({
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { href: "/saved-lists", label: "Recruit Lists" },
+          { label: savedList?.name ?? listName },
+        ]}
+      />
+      <PageHeader
+        title={savedList?.name ?? listName}
+        subtitle="Preview your list below. If it contains more than 10,000 Account or Contact records, the export will be saved in the Downloads section after running."
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <ProgressStepper current="download" />
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900">{savedList?.name ?? listName}</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Review your list below. Download and Export if satisfied, or Edit if more refinement is
-          needed.
-        </p>
-        <p className="mt-1 text-xs text-gray-500 italic">
-          If your AD List contains more than 10,000 Account or Contact records, it will be saved in
-          the Downloads section of the application.
-        </p>
-
-        <div className="mt-6 rounded-lg bg-brand-600 text-white px-5 py-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-sm">
-            <TabBadge label="Accounts" count={accountsCount} active />
-            <TabBadge label="Contacts" count={contactsCount} />
-            <TabBadge label="Map" count={null} />
-          </div>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="text-white/80">Search Summary:</span>
-            <button type="button" className="h-8 w-8 rounded-md bg-white/20 hover:bg-white/30 inline-flex items-center justify-center" aria-label="Excel">
-              <FileSpreadsheet className="h-4 w-4" />
-            </button>
-            <button type="button" className="h-8 w-8 rounded-md bg-white/20 hover:bg-white/30 inline-flex items-center justify-center" aria-label="PDF">
-              <FileText className="h-4 w-4" />
-            </button>
-            <button type="button" className="h-8 w-8 rounded-md bg-white/20 hover:bg-white/30 inline-flex items-center justify-center" aria-label="Print">
-              <Printer className="h-4 w-4" />
-            </button>
-          </div>
+        <div className="rounded-lg bg-brand-600 text-white px-5 py-4 flex flex-wrap items-center gap-2 text-sm">
+          <TabBadge label="Accounts" count={accountsCount} active />
+          <TabBadge label="Contacts" count={contactsCount} />
+          <TabBadge label="Map" count={null} />
         </div>
 
         {previewErr && (
@@ -231,7 +233,7 @@ export default async function DownloadPage({
                   </td>
                 </tr>
               ) : (
-                (previewRows ?? []).map((r: any) => {
+                (previewRows ?? []).map((r) => {
                   const at = Array.isArray(r.account_types)
                     ? r.account_types[0]?.label
                     : r.account_types?.label;

@@ -1,4 +1,6 @@
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { createClient } from "@/lib/supabase/server";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { RecordsCounter } from "@/components/build-list/records-counter";
@@ -18,7 +20,12 @@ function parseInitialFromSearchParams(qs: Record<string, string | string[] | und
   };
   const initial: InitialFilters = {};
   if (get("at"))    initial.accountType = csv(get("at"));
-  if (get("at_m") === "contains" || get("at_m") === "starts_with") initial.accountTypeMode = get("at_m") as any;
+  {
+    const at_m = get("at_m");
+    if (at_m === "contains" || at_m === "starts_with") {
+      initial.accountTypeMode = at_m;
+    }
+  }
   if (get("lt"))    initial.locationType = csv(get("lt"));
   if (get("ams"))   initial.ams = csv(get("ams"));
   if (get("ams_m") === "exclude") initial.amsMode = "exclude";
@@ -89,16 +96,19 @@ export default async function BuildListPage({
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "Build Recruit List" },
+        ]}
+      />
+      <PageHeader
+        title="Build a List"
+        subtitle="Refine your search below — record counts at the top update as you go. Save when satisfied."
+      />
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <ProgressStepper current="build" />
-        </div>
-
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">Build a List</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Build your list by refining your search below. Real-time record counts will be displayed at the top as you search.
-          </p>
         </div>
 
         <div className="sticky top-0 z-10 pb-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 pt-2 bg-gray-50">

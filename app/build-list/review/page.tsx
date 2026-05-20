@@ -1,13 +1,48 @@
 import Link from "next/link";
-import { Pencil, FileSpreadsheet, FileText, Printer } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { SortableThLink, type SortDir } from "@/components/sortable-th";
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { ProgressStepper } from "@/components/build-list/progress-stepper";
 import { createClient } from "@/lib/supabase/server";
 import { enforceUsageOrRedirect } from "@/lib/usage/enforce";
 import { SaveListButton } from "./save-button";
 
 export const dynamic = "force-dynamic";
+
+// ---- RPC response shapes ---------------------------------------------------
+// Postgres RPCs return jsonb that the supabase-js client surfaces as `unknown`
+// without a generated Database type. Declaring the row shape locally beats
+// scattering `as any` casts (which trip the @typescript-eslint/no-explicit-any
+// directive Session D's lint pass surfaced).
+type AgencyRpcRow = {
+  id: string;
+  name: string;
+  city: string | null;
+  state: string | null;
+  revenue: number | null;
+  employees: number | null;
+  account_type_label: string | null;
+  location_type_name: string | null;
+  total_count: number;
+};
+
+type ContactRpcRow = {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  title: string | null;
+  email_primary: string | null;
+  mobile_phone: string | null;
+  city: string | null;
+  state: string | null;
+  address_1: string | null;
+  agency_id: string;
+  agency_name: string | null;
+  account_type_id: string | null;
+  account_type_label: string | null;
+};
 
 function csv(v: string | undefined) {
   return v ? v.split(",").filter(Boolean) : [];
@@ -169,8 +204,7 @@ export default async function ReviewPage({
     supabase.rpc("count_contacts_for_filters", rpcFilters),
   ]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const previewRpcRows = (previewRes.data ?? []) as any[];
+  const previewRpcRows = (previewRes.data ?? []) as AgencyRpcRow[];
   const accountsCount: number = previewRpcRows.length > 0
     ? Number(previewRpcRows[0].total_count ?? 0)
     : 0;
@@ -191,8 +225,7 @@ export default async function ReviewPage({
   // Map RPC flat columns -> the nested {account_types, location_types} shape
   // the JSX downstream already knows how to render. Lets us avoid touching
   // the rendering code.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const previewRows = previewRpcRows.map((r: any) => ({
+  const previewRows = previewRpcRows.map((r) => ({
     id:        r.id,
     name:      r.name,
     city:      r.city,
@@ -214,14 +247,14 @@ export default async function ReviewPage({
 
   // Edit Filters URL strips sort/dir/tab so reopening Build List doesn't carry table state.
   const editFiltersQs = (() => {
-    const sp = new URLSearchParams(searchParams as any);
+    const sp = new URLSearchParams(searchParams);
     sp.delete("sort"); sp.delete("dir"); sp.delete("tab");
     return sp.toString();
   })();
 
   // Tab href preserves filters but resets sort to default (each tab has its own sort namespace).
   const tabHref = (next: "accounts" | "contacts" | "map") => {
-    const sp = new URLSearchParams(searchParams as any);
+    const sp = new URLSearchParams(searchParams);
     sp.delete("sort"); sp.delete("dir");
     if (next === "accounts") sp.delete("tab");
     else sp.set("tab", next);
@@ -231,7 +264,7 @@ export default async function ReviewPage({
 
   // Sort header href — preserves everything (filters + tab), toggles sort+dir.
   const sortHref = (key: string) => {
-    const sp = new URLSearchParams(searchParams as any);
+    const sp = new URLSearchParams(searchParams);
     if (sp.get("sort") === key) {
       sp.set("sort", key);
       sp.set("dir", dir === "asc" ? "desc" : "asc");
@@ -265,8 +298,7 @@ export default async function ReviewPage({
       p_limit:  50,
     });
     // Reshape RPC output into the existing ContactRow shape used by the JSX.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    contactRows = ((cRpcRows ?? []) as any[]).map((r) => ({
+    contactRows = ((cRpcRows ?? []) as ContactRpcRow[]).map((r) => ({
       id:            r.id,
       first_name:    r.first_name,
       last_name:     r.last_name,
@@ -290,6 +322,28 @@ export default async function ReviewPage({
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { href: `/build-list?${editFiltersQs}`, label: "Build Recruit List" },
+          { label: "Review" },
+        ]}
+      />
+      <PageHeader
+        title="Review"
+        subtitle="Review your list below. Save and continue to download when satisfied, or edit filters to refine."
+        actions={
+          <>
+            <Link
+              href={`/build-list?${editFiltersQs}`}
+              className="inline-flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2"
+            >
+              <Pencil className="h-3.5 w-3.5" aria-hidden="true" /> Edit Filters
+            </Link>
+            <SaveListButton filterQs={editFiltersQs} />
+          </>
+        }
+      />
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <ProgressStepper current="review" />
@@ -303,13 +357,8 @@ export default async function ReviewPage({
           </div>
         )}
 
-        <h1 className="text-3xl font-bold text-gray-900">Review</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Review your list below. Download and Export if satisfied, or Edit if more refinement is needed.
-        </p>
-
         {chips.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center gap-2 text-sm">
+          <div className="mb-6 flex flex-wrap items-center gap-2 text-sm">
             <span className="text-xs uppercase tracking-wide text-gray-500 font-semibold">
               Filters applied:
             </span>
@@ -322,30 +371,13 @@ export default async function ReviewPage({
                 <span className="text-gray-600">{c.value}</span>
               </span>
             ))}
-            <Link href={`/build-list?${editFiltersQs}`} className="inline-flex items-center gap-1 text-brand-600 hover:text-brand-700 font-semibold">
-              <Pencil className="h-3.5 w-3.5" /> Edit Filters
-            </Link>
           </div>
         )}
 
-        <div className="mt-6 rounded-lg bg-brand-600 text-white px-5 py-4 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-sm">
-            <TabBadge label="Accounts" count={accountsCount} active={tab === "accounts"} href={tabHref("accounts")} />
-            <TabBadge label="Contacts" count={contactsCount} active={tab === "contacts"} href={tabHref("contacts")} />
-            <TabBadge label="Map" count={null} active={tab === "map"} href={tabHref("map")} />
-          </div>
-          <div className="flex items-center gap-3 text-sm">
-            <span className="text-white/80">Search Summary:</span>
-            <button className="h-8 w-8 rounded-md bg-white/20 hover:bg-white/30 inline-flex items-center justify-center" title="Export to Excel">
-              <FileSpreadsheet className="h-4 w-4" />
-            </button>
-            <button className="h-8 w-8 rounded-md bg-white/20 hover:bg-white/30 inline-flex items-center justify-center" title="Export to PDF">
-              <FileText className="h-4 w-4" />
-            </button>
-            <button className="h-8 w-8 rounded-md bg-white/20 hover:bg-white/30 inline-flex items-center justify-center" title="Print">
-              <Printer className="h-4 w-4" />
-            </button>
-          </div>
+        <div className="rounded-lg bg-brand-600 text-white px-5 py-4 flex flex-wrap items-center gap-2 text-sm">
+          <TabBadge label="Accounts" count={accountsCount} active={tab === "accounts"} href={tabHref("accounts")} />
+          <TabBadge label="Contacts" count={contactsCount} active={tab === "contacts"} href={tabHref("contacts")} />
+          <TabBadge label="Map" count={null} active={tab === "map"} href={tabHref("map")} />
         </div>
 
         {tab === "accounts" && (
@@ -470,9 +502,6 @@ export default async function ReviewPage({
           </div>
         )}
 
-        <div className="mt-6 flex items-center justify-end gap-3">
-          <SaveListButton filterQs={editFiltersQs} />
-        </div>
       </div>
     </AppShell>
   );

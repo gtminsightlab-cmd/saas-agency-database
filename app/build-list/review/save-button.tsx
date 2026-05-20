@@ -169,8 +169,7 @@ async function computeCountsForFilter(
     let stateCodes: string[] = [];
     if (stateIds.length) {
       const { data: states } = await supabase.from("states").select("code").in("id", stateIds);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      stateCodes = (states ?? []).map((s: any) => s.code).filter(Boolean);
+      stateCodes = (states ?? []).map((s: { code: string }) => s.code).filter(Boolean);
     }
 
     // Single server-side RPC replaces the broken JS materialization that blew

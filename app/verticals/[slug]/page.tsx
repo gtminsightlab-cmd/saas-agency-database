@@ -90,12 +90,20 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
     .maybeSingle();
   const summary = (summaryRow ?? null) as VerticalSummary | null;
 
+  type CarrierRpcRow = {
+    carrier_id: string;
+    carrier_name: string;
+    group_name: string | null;
+    segment: string;
+    rationale: string | null;
+    agency_count: number | string | null;
+  };
+
   const { data: rpcRows } = await supabase.rpc("get_vertical_carriers_with_segments", {
     p_slug: params.slug,
   });
   const carriers: CarrierSegmentRow[] = Array.isArray(rpcRows)
-    ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (rpcRows as any[]).map((r) => ({
+    ? (rpcRows as CarrierRpcRow[]).map((r) => ({
         carrier_id:   r.carrier_id,
         carrier_name: r.carrier_name,
         group_name:   r.group_name,

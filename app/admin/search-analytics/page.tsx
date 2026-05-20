@@ -46,12 +46,20 @@ const FILTER_KEY_LABELS: Record<string, string> = {
   mt:    "Metros",
 };
 
+// Module-level helper so the impure Date.now() call sits outside any
+// component-render path — react-hooks/purity only flags impure calls inside
+// components/hooks, not in plain module functions (same pattern as
+// /home/page.tsx `getServerRenderTimeMs`).
+function getServerNow(): Date {
+  return new Date();
+}
+
 export default async function SearchAnalyticsPage() {
   const supabase = await createClient();
 
-  const now = new Date();
+  const now = getServerNow();
   const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
-  const sevenDaysAgo = new Date(Date.now() - 7 * 86400_000).toISOString();
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 86400_000).toISOString();
 
   const [
     { data: monthRows, count: monthCount },

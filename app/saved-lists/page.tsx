@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BookmarkCheck, Users, DownloadCloud, Clock, Mail } from "lucide-react";
 import { SortableThLink, type SortDir } from "@/components/sortable-th";
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
 import { PageHeader } from "@/components/app/page-header";
 import { MetricCard } from "@/components/app/metric-card";
 import { DataTable } from "@/components/app/data-table";
@@ -105,6 +106,12 @@ export default async function SavedListsPage({
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "Recruit Lists" },
+        ]}
+      />
       <PageHeader
         title="Recruit Lists"
         subtitle="Saved targeting lists you can refresh, share, and export. Rows tinted teal have new data ready for delta export."
