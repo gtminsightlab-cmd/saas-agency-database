@@ -1,6 +1,8 @@
 import Link from "next/link";
-import { Users2, Crown, Mail, ArrowLeft, Lock } from "lucide-react";
+import { Users2, Crown, Mail, Lock } from "lucide-react";
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { createClient } from "@/lib/supabase/server";
 import InviteForm from "./invite-form";
 import TeamRowActions from "./row-actions";
@@ -42,29 +44,23 @@ export default async function TeamPage() {
   const rows: TeamRow[] = (teamRows ?? []) as TeamRow[];
 
   const remaining = Math.max(0, seat.cap - seat.used);
-  const owner = rows.find((r) => r.invited_at === null);
+
+  const seatChipText = `${seat.used} of ${seat.cap} seat${seat.cap === 1 ? "" : "s"} used`;
+  const seatSubtitle =
+    `${seatChipText}${seat.plan_name ? ` · ${seat.plan_name} plan` : ""}. ` +
+    `Paid plans include the account owner plus up to 2 invited team members. ` +
+    `Invitees sign in with their own login and inherit the same plan + tenant data.`;
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "Team" },
+        ]}
+      />
+      <PageHeader title="Team" subtitle={seatSubtitle} />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
-        <Link
-          href="/build-list"
-          className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-gray-900"
-        >
-          <ArrowLeft className="h-3 w-3" /> Back
-        </Link>
-        <div className="mt-2 flex flex-wrap items-baseline gap-3">
-          <h1 className="text-3xl font-bold text-gray-900">Team</h1>
-          <span className="text-sm text-gray-500">
-            {seat.used} of {seat.cap} seat{seat.cap === 1 ? "" : "s"} used
-            {seat.plan_name ? <> &middot; <span className="font-medium text-gray-700">{seat.plan_name}</span> plan</> : null}
-          </span>
-        </div>
-        <p className="mt-2 text-sm text-gray-600 max-w-2xl">
-          Paid plans include the account owner plus up to 2 invited team members.
-          Invitees sign in with their own login and inherit the same plan + tenant data.
-        </p>
-
         {/* KPI strip */}
         <div className="mt-6 grid gap-3 md:grid-cols-3">
           <Stat label="Active members" value={rows.filter((r) => r.invite_status === "active").length} Icon={Users2} />
