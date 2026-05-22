@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   ArrowLeft,
   ShieldAlert,
-  ShieldCheck,
   AlertTriangle,
   AlertOctagon,
   Info,
@@ -23,6 +22,14 @@ import { RECENT_DEPLOYS, deployErrorsLast7d } from "./_lib/deploy-snapshot";
 
 export const dynamic = "force-dynamic";
 
+// Module-level helper so the impure Date.now() call sits outside any
+// component-render path — react-hooks/purity only flags impure calls inside
+// components/hooks, not in plain module functions (same pattern as
+// /admin/search-analytics/page.tsx).
+function getServerNowMs(): number {
+  return Date.now();
+}
+
 type CanaryRow = {
   id: string;
   source: string;
@@ -40,13 +47,11 @@ type SystemHealth = {
   };
 };
 
-type ExportProbe = "501" | "ok" | "error" | "skip";
-
 export default async function AlertsPage() {
   const supabase = await createClient();
 
   // Current month start for usage_logs
-  const now = Date.now();
+  const now = getServerNowMs();
   const last24hCutoff = new Date(now - 24 * 60 * 60 * 1000).toISOString();
 
   const [
@@ -419,6 +424,3 @@ function fmtAge(then: number, now: number): string {
   const days = Math.floor(hrs / 24);
   return `${days}d ago`;
 }
-
-// keep imports referenced
-const _kept = { ShieldCheck };

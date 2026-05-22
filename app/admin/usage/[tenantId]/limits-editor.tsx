@@ -327,10 +327,11 @@ export function LimitsEditor({
 
               {/* Note */}
               <div className="mt-3">
-                <label className="block text-[10px] uppercase tracking-wide text-admin-text-dim mb-1">
+                <label htmlFor={`${r.metric}-note`} className="block text-[10px] uppercase tracking-wide text-admin-text-dim mb-1">
                   Override note (optional)
                 </label>
                 <input
+                  id={`${r.metric}-note`}
                   type="text"
                   value={d.note}
                   onChange={(e) => setDraft(r.metric, { note: e.target.value })}

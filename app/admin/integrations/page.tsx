@@ -3,16 +3,13 @@ import {
   ArrowLeft,
   ExternalLink,
   Plug,
-  Workflow,
   CreditCard,
-  Building2,
   ShieldCheck,
   AlertTriangle,
   XCircle,
   CircleSlash,
   Webhook,
   Lock,
-  Server,
   Clock,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
@@ -529,5 +526,3 @@ function ProviderCard({
   );
 }
 
-// keep imports referenced
-const _kept = { Workflow, Building2, Server };
