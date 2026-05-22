@@ -31,6 +31,13 @@ type Kpis = {
   agencies_covered: number;
 };
 
+type CarrierAnalyticsRpcRow = {
+  id: string;
+  name: string;
+  group_name: string | null;
+  agency_count: number | string | null;
+};
+
 const MIN_AGENCY_THRESHOLD = 150;
 
 export default async function AnalyticsCarriersPage() {
@@ -55,9 +62,8 @@ export default async function AnalyticsCarriersPage() {
     supabase.rpc("get_carrier_analytics_kpis"),
   ]);
 
-  const allCarriers: CarrierRow[] = (Array.isArray(topRes.data) ? topRes.data : []).map(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (r: any) => ({
+  const allCarriers: CarrierRow[] = (Array.isArray(topRes.data) ? (topRes.data as CarrierAnalyticsRpcRow[]) : []).map(
+    (r) => ({
       id: r.id,
       name: r.name,
       group_name: r.group_name,
