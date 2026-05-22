@@ -1,4 +1,6 @@
 import { AppShell } from "@/components/app/shell";
+import { Breadcrumbs } from "@/components/app/breadcrumbs";
+import { PageHeader } from "@/components/app/page-header";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -33,10 +35,18 @@ export default async function DataStatsPage() {
 
   return (
     <AppShell>
+      <Breadcrumbs
+        items={[
+          { href: "/home", label: "Home" },
+          { label: "Data Coverage" },
+        ]}
+      />
+      <PageHeader
+        title="Data Coverage"
+        subtitle="Row counts across every catalog and data table. Refreshed live from the directory."
+      />
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-3xl font-bold text-gray-900">Data and Stats</h1>
-        <p className="mt-2 text-sm text-gray-600">Row counts across every catalog and data table.</p>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stats.map((s) => (
             <div key={s.label} className="rounded-lg border border-gray-200 bg-white p-5">
               <div className="text-xs uppercase tracking-wide text-gray-500">{s.label}</div>
