@@ -8,7 +8,6 @@ import {
   AlertTriangle,
   ExternalLink,
   Wallet,
-  Crown,
   Calendar,
   CheckCircle,
   XCircle,
@@ -621,14 +620,6 @@ function CreditLedgerTable({
       </div>
     );
   }
-  // Map wallet_id back to app_user (best-effort) by walking walletsByUser values
-  const userByWallet = new Map<string, AppUser>();
-  for (const [appUserId, _w] of walletsByUser.entries()) {
-    const user = usersById.get(appUserId);
-    if (!user) continue;
-    // wallet_id isn't in walletsByUser values — but ledger.wallet_id matches credit_wallets.id.
-    // We don't fetch credit_wallets.id here; for v1 we display the wallet_id as-is.
-  }
   return (
     <table className="mt-3 w-full text-sm">
       <thead className="bg-admin-surface-2">
@@ -690,5 +681,3 @@ function InvoiceStatus({ status }: { status: string }) {
   );
 }
 
-// keep imports referenced
-const _kept = { Crown };

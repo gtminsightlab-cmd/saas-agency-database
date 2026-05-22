@@ -1,7 +1,6 @@
 import Link from "next/link";
 import {
   Database,
-  Mail,
   CreditCard,
   Activity,
   ArrowRight,
@@ -13,6 +12,13 @@ import {
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
+
+type VerticalSummaryRow = {
+  slug: string;
+  name: string;
+  mapped_carrier_count: number | null;
+  agencies_with_exposure: number | null;
+};
 
 export default async function AdminOverview() {
   const supabase = await createClient();
@@ -128,7 +134,7 @@ export default async function AdminOverview() {
             </tr>
           </thead>
           <tbody className="divide-y divide-admin-border-2">
-            {(verticals ?? []).map((v: any) => (
+            {((verticals ?? []) as VerticalSummaryRow[]).map((v) => (
               <tr key={v.slug}>
                 <td className="py-3 pr-4 text-admin-text font-medium inline-flex items-center gap-2">
                   <Layers className="h-3.5 w-3.5 text-admin-accent" />
@@ -185,11 +191,13 @@ export default async function AdminOverview() {
       {/* Footer next-steps strip */}
       <div className="rounded-lg border border-admin-border-2 bg-admin-surface px-5 py-4 text-xs text-admin-text-mute">
         <span className="text-admin-text font-semibold">Next up:</span>{" "}
-        Catalog editor for the 8 reference tables —{" "}
-        <Link href="/admin/catalog" className="text-admin-accent hover:underline font-semibold">
-          open it
-        </Link>
-        . Hygiene/Refresh and System Health modules ship after this.
+        Hygiene Credit Stripe wiring (Subscription Schedule phased pricing) + first
+        paying-customer cutover from sandbox to live. Outbound webhook publisher comes
+        after the first CRM integration ships —{" "}
+        <Link href="/admin/integrations" className="text-admin-accent hover:underline font-semibold">
+          see Integrations
+        </Link>{" "}
+        for the full provider state matrix.
       </div>
     </div>
   );
@@ -303,6 +311,3 @@ function ActivityRow({ label, detail, when }: { label: string; detail: string; w
     </li>
   );
 }
-
-// Avoid unused imports
-const _kept = { Mail };

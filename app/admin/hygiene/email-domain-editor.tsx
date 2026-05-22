@@ -157,15 +157,15 @@ export function EmailDomainEditor({ initialRows }: { initialRows: DomainRow[] })
           </div>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="space-y-1">
-              <label className="block text-[10px] uppercase tracking-wide text-admin-text-dim">
+              <label htmlFor="email-domain-new" className="block text-[10px] uppercase tracking-wide text-admin-text-dim">
                 Domain <span className="text-admin-danger">*</span>
               </label>
               <input
+                id="email-domain-new"
                 type="text"
                 value={newDomain}
                 onChange={(e) => setNewDomain(e.target.value)}
                 placeholder="e.g. fastmail.fm"
-                autoFocus
                 onKeyDown={(e) => {
                   if (e.key === "Enter") addDomain();
                 }}
@@ -173,8 +173,9 @@ export function EmailDomainEditor({ initialRows }: { initialRows: DomainRow[] })
               />
             </div>
             <div className="space-y-1">
-              <label className="block text-[10px] uppercase tracking-wide text-admin-text-dim">Reason</label>
+              <label htmlFor="email-domain-reason" className="block text-[10px] uppercase tracking-wide text-admin-text-dim">Reason</label>
               <select
+                id="email-domain-reason"
                 value={newReason}
                 onChange={(e) => setNewReason(e.target.value)}
                 className="w-full rounded-md border border-admin-border bg-admin-surface-2 px-2.5 py-1.5 text-sm text-admin-text outline-none focus:border-admin-accent"
