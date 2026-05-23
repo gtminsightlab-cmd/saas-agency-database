@@ -8,6 +8,7 @@ import { HowItWorksSection } from "@/components/marketing/HowItWorksSection";
 import { VerticalCardsSection, type VerticalCard } from "@/components/marketing/VerticalCardsSection";
 import { RecruitPlaysSection } from "@/components/marketing/RecruitPlaysSection";
 import { MethodologySection } from "@/components/marketing/MethodologySection";
+import { ManifestoSection } from "@/components/marketing/ManifestoSection";
 import { DataTrustSection } from "@/components/marketing/DataTrustSection";
 import { PricingPreview } from "@/components/marketing/PricingPreview";
 import { FinalCTA } from "@/components/marketing/FinalCTA";
@@ -78,6 +79,7 @@ export default async function MarketingHome() {
         <VerticalCardsSection verticals={verticals} />
         <RecruitPlaysSection />
         <MethodologySection />
+        <ManifestoSection />
         <DataTrustSection />
         <PricingPreview />
         <FinalCTA isAuthed={!!user} />

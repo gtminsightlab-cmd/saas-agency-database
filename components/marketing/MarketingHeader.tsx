@@ -11,7 +11,7 @@ type MarketingHeaderProps = {
 
 const NAV_LINKS = [
   { href: "/verticals", label: "Verticals" },
-  { href: "/analytics/carriers", label: "Analytics" },
+  { href: "/use-cases", label: "Use cases" },
   { href: "/methodology", label: "Methodology" },
   { href: "/resources", label: "Resources" },
   { href: "/#pricing", label: "Pricing" },

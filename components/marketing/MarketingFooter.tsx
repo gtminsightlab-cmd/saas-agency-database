@@ -5,6 +5,7 @@ const FOOTER_LINKS: Array<{ heading: string; links: Array<{ label: string; href:
     heading: "Product",
     links: [
       { label: "Verticals", href: "/verticals" },
+      { label: "Use cases", href: "/use-cases" },
       { label: "Analytics", href: "/analytics/carriers" },
       { label: "Methodology", href: "/methodology" },
       { label: "Resources", href: "/resources" },
@@ -21,7 +22,8 @@ const FOOTER_LINKS: Array<{ heading: string; links: Array<{ label: string; href:
   {
     heading: "Company",
     links: [
-      { label: "About Seven16 Group", href: "/about" },
+      { label: "About", href: "/about" },
+      { label: "FAQ", href: "/faq" },
       { label: "Contact", href: "/contact" },
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },
