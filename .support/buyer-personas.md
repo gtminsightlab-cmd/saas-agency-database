@@ -85,6 +85,7 @@ D-015 lock. State-based slider + Distribution+ outcome SKU. $12,500 all-50-state
 | "Trucking" / "DOT data" | Anti-persona | Route to DOT Intel (`dotintel.io`). |
 | "I need an AMS" / "CRM" | Anti-persona | "Out of family. Agency Signal is distribution intelligence, not workflow management." |
 | "I want raw data lists" | Anti-persona | "We're intelligence layer, not list-broker — the list-broker / telemarketing-list category is a different product type. Our value is appointment-aware targeting, not row count." |
+| "Threshold IQ" / "TIQ" | Anti-persona | "Threshold IQ was spun out per family doctrine D-022. Separate project outside Seven16 Group's operating scope today." |
 
 ## Charter Member program (cross-persona)
 

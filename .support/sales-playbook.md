@@ -38,7 +38,7 @@ NOT acceptable:
 2. "Commercial focus? Vertical specialization across the agency?"
 3. "How are your producers prospecting today — solo, team-coordinated, none?"
 4. "Renewal-watch motion — do you actively monitor your book for change signals, or react when something happens?"
-5. "Have you outgrown spreadsheets but not ready for full Vertafore?"
+5. "Have you outgrown spreadsheets but not ready for a full enterprise AMS platform?"
 
 ### Persona 3 — MGA / MGU / Wholesaler
 
@@ -100,7 +100,7 @@ NO. Threshold IQ spun out per D-022 (2026-05-15). Use prohibited-claims P8 guida
 
 ### "Can I export data to my CRM?"
 
-Pillar 5 (Build Lists) supports export-ready CSV / JSON datasets. CRM-specific integrations (push to Salesforce / HubSpot / GHL) are NOT v1 scope; you'd export and import manually. Direct API integrations are queued, not active.
+Pillar 5 (Build Lists) supports export-ready CSV / JSON datasets. CRM-specific direct integrations (one-click push into the major CRM / marketing automation / sales pipeline platforms) are NOT v1 scope; you'd export and import manually, or use the Zapier / Make fan-out path. Direct API integrations are queued, not active.
 
 ### "What if my use case spans Agency Signal + DOT Intel + Bindlab?"
 
@@ -120,6 +120,9 @@ D-021 architecture: Universal credit currency at $0.15/credit base + à la carte
 
 **Trucking-specific close (route to DOT Intel):**
 > "Trucking-carrier intelligence is DOT Intel's lane — they cover commercial trucking distribution specifically. Agency Signal covers the agency-distribution side broadly. For trucking carrier risk + appointment data: dotintel.io. If you need both: the Seven16 partner program covers both with one application."
+
+**Wholesale / MGA-operations close (cross-pitch Bindlab):**
+> "Agency Signal answers the prospecting-side question — which agencies to reach. The submission-management side (orchestration, indications, broker-fee accounting, bound-policy data) is Bindlab's lane in the family — also wholesale / MGA focused. If the operating-software piece matters to you alongside the distribution intelligence, the Seven16 partner program covers both products with one application at partners.seven16group.com/apply."
 
 **Out-of-family close:**
 > "AMS / CRM / quote-bind / claims workflows are out of family per our scope lock. Agency Signal answers 'which agencies should I prospect.' AMS answers 'how do I manage the relationships I have.' Different categories. Worth talking to AMS vendors directly for that scope."

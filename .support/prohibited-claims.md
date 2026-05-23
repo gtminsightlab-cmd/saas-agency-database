@@ -9,7 +9,7 @@ priority: HIGHEST — agent must check this file before every response touching 
 
 # Agency Signal — Prohibited claims (locked operating doctrine)
 
-Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16group-prohibited-claims.md` (P1-P11). The list below ADDS Agency-Signal-specific constraints. Both files apply.
+Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16group-prohibited-claims.md` (P1-P12, including the family-wide P12 no-third-party-vendor-naming + founder-bio-generality rule added 2026-05-23 per Master O directive). The list below ADDS Agency-Signal-specific constraints. Both files apply.
 
 ## P1 — NO list-broker / lead-list / telemarketing positioning
 
@@ -194,4 +194,4 @@ Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16grou
 
 **If the agent is uncertain:** route to Master O. Conservative > clever.
 
-**Also inherits:** all of `seven16group-prohibited-claims.md` (P1-P11). Both files apply.
+**Also inherits:** all of `seven16group-prohibited-claims.md` (P1-P12 — note P12 family-wide no-third-party-vendor-naming + founder-bio-generality, Master O directive 2026-05-23). Both files apply.
