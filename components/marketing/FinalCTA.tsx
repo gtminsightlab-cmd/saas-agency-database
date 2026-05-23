@@ -17,11 +17,12 @@ export function FinalCTA({ isAuthed }: FinalCTAProps) {
       />
       <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
         <h2 id="final-cta-heading" className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Stop guessing who writes your business.
+          Distribution is not a spreadsheet problem. It&rsquo;s a judgment problem.
         </h2>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-300">
-          Browse the directory free, filter by carrier appointment, and build a recruit list based on
-          verified market access — not job titles or self-reported industry tags.
+          Who can actually write this business? Who already understands the risk? Who&rsquo;s worth a BDM&rsquo;s
+          time? Browse the directory free, filter by carrier appointment, and build a recruit list grounded in
+          verified market access — not job titles or self-reported tags.
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link

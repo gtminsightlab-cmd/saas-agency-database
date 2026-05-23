@@ -31,14 +31,16 @@ export function HeroSection({ isAuthed, stats, mockupSlot }: HeroSectionProps) {
             </div>
 
             <h1 className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
-              Stop targeting agency titles.{" "}
-              <span className="text-cyan-300">Start targeting verified carrier appointments.</span>
+              Stop buying agency lists.{" "}
+              <span className="text-cyan-300">Start reading the paper trail.</span>
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300 sm:text-lg sm:leading-8">
-              Agency Signal maps the writing-company paper trail behind every U.S. commercial insurance agency
-              &mdash; refreshed monthly against state filings &mdash; so carriers, MGAs, wholesalers, and program
-              teams can find agencies already appointed with the markets they compete with.
+              Most prospecting starts with a name, a title, and a guess. That&rsquo;s not how
+              commercial-insurance distribution works. Agency Signal maps the writing-company paper trail
+              behind every U.S. commercial-insurance agency &mdash; refreshed monthly against state
+              filings &mdash; so carriers, MGAs, wholesalers, and program teams can find the agencies
+              already appointed with the markets they compete with.
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
