@@ -52,7 +52,7 @@ Agency Signal serves two distinct ICPs with different pricing models:
 
 **ICP 1 — Consumer / Producer Tier:** working producers, small retail agencies, small wholesalers, commercial insurance operators. Free / Producer / Growth / Enterprise pricing tiers (all under $500 P-card per D-002). Self-serve.
 
-**ICP 2 — Enterprise+ Distribution Expander:** MGA distribution leaders, carrier distribution leaders, wholesaler growth teams, program administrators, insurtechs. D-015 state-based slider + Distribution+ outcome SKU. Pricing anchor: 50% undercut vs Neilson Marketing ($12,500 vs $25,000 all-50-states). Conversation-driven sales.
+**ICP 2 — Enterprise+ Distribution Expander:** MGA distribution leaders, carrier distribution leaders, wholesaler growth teams, program administrators, insurtechs. D-015 state-based slider + Distribution+ outcome SKU. Conversation-driven sales.
 
 ## Four personas
 
@@ -94,20 +94,19 @@ Hard scope boundaries. Locked. The agent must redirect to the in-family or out-o
 
 If a visitor asks Agency Signal for any of these, the agent routes them — does not invent capability.
 
-## Competitive references
+## Category context (no named competitors)
 
-Two adjacent competitive references — used for positioning context, NOT for disparagement.
+Agency Signal positions explicitly AGAINST two adjacent product categories. Names of specific vendors in either category are NOT to be used by the support agent (see `prohibited-claims.md` P4).
 
-**Neilson Marketing:**
-- Enterprise+ pricing anchor (50% undercut per D-015 at $12,500 vs $25,000 all-50)
-- **Borrow:** state/vertical segmentation, verified contact emphasis, distribution-growth framing
-- **Avoid:** list-broker / telemarketing positioning (Agency Signal is intelligence, not list-broker)
-- **Per family memory `feedback_neilson_is_competitor_not_vendor`:** Neilson is a COMPETITOR we benchmark against, NOT a data vendor we license from.
+**Category 1 — list-broker / telemarketing-list tools:**
+- Pattern: sell agency / producer contact rows; positioning anchors on row count, verified-contact emphasis, state segmentation
+- Agency Signal differs: intelligence layer with appointment-aware targeting + vertical specialization + data hygiene. NOT a list-broker, NOT a telemarketing-list reseller.
 
-**ProgramBusiness:**
-- Pillar 9 long-term anchor (when Pillar 9 unparks)
-- **Borrow:** searchable profile UX, storefront/listing model, featured markets, market alerts
-- **Avoid:** broad quote marketplace, submission marketplace, insurance-news sprawl
+**Category 2 — marketplace / quote-marketplace / submission-marketplace tools:**
+- Pattern: searchable storefront / listing model + marketplace functionality + broad insurance-industry content
+- Agency Signal differs: today we are NOT a marketplace. Pillar 9 (Future Market Discovery) is PARKED with a 3-condition trigger; even when unparked it would borrow searchable-profile UX without taking on broad quote-marketplace or submission-marketplace scope.
+
+The agent describes these categories generically when context demands ("a category of vendor that does X"). The agent does NOT name specific competing products.
 
 ## Stage and credibility
 
@@ -122,7 +121,7 @@ Two adjacent competitive references — used for positioning context, NOT for di
 Use this file when answering:
 - "What is Agency Signal?"
 - "Is this a lead list?" (NO — intelligence layer)
-- "What's the difference between Agency Signal and Neilson?"
+- "How do you compare to [specific list-broker / marketplace vendor]?" (category framing, no vendor names)
 - "Who is Agency Signal for?"
 - "What pillars are shipped vs queued?"
 - "What does Agency Signal NOT do?"
@@ -131,5 +130,6 @@ Use this file when answering:
 Do NOT use this file as the source of truth for:
 - DOT / trucking questions → route to DOT Intel
 - Wholesale / MGA operating-software questions → route to Bindlab
-- AMS / CRM / quote-bind / claims questions → out of family; suggest external category
+- AMS / CRM / quote-bind / claims questions → out of family; suggest external category generically (no vendor names)
 - Underwriting / coverage / binding decisions — those NEVER come from the agent (see `prohibited-claims.md`)
+- Competitor vendor names — Agency Signal does NOT name specific competing vendors (see `prohibited-claims.md` P4)

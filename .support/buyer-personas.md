@@ -40,7 +40,7 @@ Self-serve. Free / Producer / Growth / Enterprise pricing all under $500 P-card 
 
 ## ICP 2 — Enterprise+ Distribution Expander
 
-D-015 lock. State-based slider + Distribution+ outcome SKU. Pricing anchored to 50% undercut vs Neilson ($12,500 vs $25,000 all-50-states). Conversation-driven sales, not self-serve.
+D-015 lock. State-based slider + Distribution+ outcome SKU. $12,500 all-50-states anchor. Conversation-driven sales, not self-serve.
 
 ### Persona 3 — MGA / MGU / Wholesaler
 
@@ -51,7 +51,7 @@ D-015 lock. State-based slider + Distribution+ outcome SKU. Pricing anchored to 
   - State / vertical / carrier filtering at scale
   - Carrier appointment intelligence to identify which agencies are appointed where
   - Export-ready datasets at Enterprise+ scale
-- **Pricing tolerance:** $12,500-class engagement (50% undercut vs Neilson per D-015). State slider scales with footprint.
+- **Pricing tolerance:** $12,500-class engagement (D-015 all-50-states anchor). State slider scales with footprint.
 - **Qualification signals:** "Distribution growth," "agency recruitment," "appoint more agencies," "expand into [states]," "competitive intel on which agencies are with our competitors"
 
 ### Persona 4 — Carrier / Program Administrator
@@ -70,7 +70,7 @@ D-015 lock. State-based slider + Distribution+ outcome SKU. Pricing anchored to 
 - **DOT-only / trucking-only buyers** — route to DOT Intel (D-007 lane)
 - **Wholesale operators looking for an AMS / submission management** — route to Bindlab (different scope per D-022)
 - **Carriers seeking underwriting decisions on specific risks** — Agency Signal surfaces distribution data, not underwriting decisions
-- **List-broker / cold-data resellers** — Agency Signal is intelligence layer, NOT a list-broker (the explicit Neilson-avoidance per D-023)
+- **List-broker / cold-data resellers** — Agency Signal is intelligence layer, NOT a list-broker (the explicit list-broker-category avoidance per D-023)
 - **General-purpose SaaS shoppers** without insurance-distribution context — they won't understand the positioning; route to documentation
 
 ## How the support agent should route
@@ -84,7 +84,7 @@ D-015 lock. State-based slider + Distribution+ outcome SKU. Pricing anchored to 
 | "Personal lines" | Anti-persona | "Agency Signal is commercial-focused per our positioning. Personal lines is outside scope." |
 | "Trucking" / "DOT data" | Anti-persona | Route to DOT Intel (`dotintel.io`). |
 | "I need an AMS" / "CRM" | Anti-persona | "Out of family. Agency Signal is distribution intelligence, not workflow management." |
-| "I want raw data lists" | Anti-persona | "We're intelligence layer, not list-broker — see Neilson if you want list-broker positioning. Our value is appointment-aware targeting, not row count." |
+| "I want raw data lists" | Anti-persona | "We're intelligence layer, not list-broker — the list-broker / telemarketing-list category is a different product type. Our value is appointment-aware targeting, not row count." |
 
 ## Charter Member program (cross-persona)
 

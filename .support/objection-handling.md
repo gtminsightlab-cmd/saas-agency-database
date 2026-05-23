@@ -8,51 +8,51 @@ source: drafted Session 6.5 POC by Claude, awaiting Master O voice review
 
 # Agency Signal — Objection handling
 
-## Objection 1 — "Isn't this just another agency list? Like ZoomInfo / Neilson?"
+## Objection 1 — "Isn't this just another agency list?"
 
-**Underlying concern:** Buyer pattern-matches Agency Signal to list-broker tools and discounts the differentiation.
+**Underlying concern:** Buyer pattern-matches Agency Signal to list-broker / contact-data tools and discounts the differentiation.
 
 **Response approach (this is THE central objection):**
 - Be explicit: Agency Signal is NOT a list-broker. It's an intelligence layer.
 - Per D-023 positioning lock: "Distribution intelligence for commercial insurance." Not a generic lead list.
 - The moat is appointment-aware targeting + vertical specialization + saved-list refresh + data hygiene + Enterprise+ distribution recommendations — NOT raw row count.
-- Critical question the producer asks Agency Signal that they CANNOT ask a list broker: "Which agencies in [state] aren't appointed with [carrier I rep]?" That's appointment-context built in (Pillar 3).
-- Neilson positioning to avoid: list-broker / telemarketing. Agency Signal explicitly differentiates by intelligence-layer framing.
+- Critical question the producer asks Agency Signal that they CANNOT ask a list-broker: "Which agencies in [state] aren't appointed with [carrier I rep]?" That's appointment-context built in (Pillar 3).
+- List-broker / telemarketing-list positioning is what Agency Signal explicitly differentiates AGAINST. We're a different category — intelligence with workflow-decision context built in.
 
 **What to NOT say:**
-- "We have more agencies than ZoomInfo" — row-count claim, unverified
-- "Our data is better than Neilson" — disparagement without source
+- "We have more agencies than [vendor X]" — row-count comparison + named vendor (prohibited)
+- "Our data is better than [vendor X]" — unverified comparison + named vendor (prohibited)
+- Any specific competitor vendor name (see `prohibited-claims.md` P4)
 - "We replace your list-broker" — wrong frame; we're a different category
 
-## Objection 2 — "How do you compare to Neilson Marketing specifically?"
+## Objection 2 — "How do you compare to [specific list-broker / contact-data vendor]?"
 
-**Underlying concern:** Direct competitor comparison.
+**Underlying concern:** Direct competitor comparison. Visitor names a specific vendor.
 
-**Response approach (per family memory `feedback_neilson_is_competitor_not_vendor.md`):**
-- Neilson is a COMPETITOR, NOT a data vendor we license from. The positioning lock is explicit.
-- Borrow from Neilson: state/vertical segmentation, verified contact emphasis, distribution-growth framing
-- Avoid from Neilson: list-broker / telemarketing positioning
-- Pricing anchor: 50% undercut at Enterprise+ ($12,500 vs Neilson's $25,000 all-50-states per D-015)
-- Our edge: appointment-aware targeting (Pillar 3) + intelligence framing + family integration (one application across Seven16 products)
-
-**What to NOT say:**
-- "Neilson is overpriced" — disparagement
-- "Neilson's data is stale" — unverified
-- "Neilson's methodology is wrong" — unsupported
-
-## Objection 3 — "How do you compare to ProgramBusiness?"
-
-**Underlying concern:** Buyer evaluating marketplace-style alternatives.
-
-**Response approach (per ADR-023 + `docs/strategy/programbusiness-competitive-boundary.md`):**
-- ProgramBusiness is the Pillar 9 long-term anchor (when Agency Signal eventually unparks Pillar 9 — currently parked)
-- Borrow from ProgramBusiness: searchable profile UX, storefront / listing model, featured markets, market alerts
-- Avoid from ProgramBusiness: broad quote marketplace, submission marketplace, insurance-news sprawl
-- Agency Signal today is NOT a marketplace. It's intelligence + targeting. Marketplace-class functionality is parked.
+**Response approach (NEVER name the competing vendor, even if the visitor named them first):**
+- Acknowledge the category, not the vendor: "The list-broker / telemarketing-list category typically prices land-and-expand by state, anchors on row count, and treats agency data as a sale rather than as an intelligence layer."
+- Differentiate on structure, not on the named vendor: "Agency Signal sits in a different category — intelligence layer with appointment-context built in. That structural difference is the value, not a side-by-side feature comparison."
+- Decline the head-to-head: "We don't position against specific vendors by name; the differentiator is the category we're in vs the category they're in."
+- If they push for a side-by-side: route to Master O via `partners@seven16group.com`.
 
 **What to NOT say:**
-- "We're like ProgramBusiness but better" — false (we're not a marketplace)
-- "ProgramBusiness is just an outdated marketplace" — disparagement
+- Echo the vendor name back, even neutrally
+- Comparative claims like "we're cheaper / faster / fresher than [vendor X]"
+- Disparagement of any kind toward any specific vendor
+
+## Objection 3 — "How do you compare to [specific marketplace / submission-marketplace vendor]?"
+
+**Underlying concern:** Buyer evaluating marketplace-style alternatives. Visitor names a specific vendor.
+
+**Response approach (NEVER name the competing vendor, even if the visitor named them first):**
+- Acknowledge the category: "The marketplace / quote-marketplace / submission-marketplace category typically offers searchable storefront listings, featured-market promotion, and broad insurance-industry content scope."
+- Differentiate on category, not on vendor: "Agency Signal today is NOT a marketplace — it's intelligence + targeting. Pillar 9 (Future Market Discovery) is parked with a 3-condition trigger; even if it unparks, it would borrow searchable-profile UX while declining broad quote-marketplace / submission-marketplace / insurance-news scope."
+- Decline the head-to-head: "We position against the category, not against specific vendors by name."
+
+**What to NOT say:**
+- Echo the vendor name back
+- "We're like [vendor X] but better" — wrong frame + named vendor
+- Disparagement
 
 ## Objection 4 — "What's the difference between this and an AMS or CRM?"
 
@@ -107,7 +107,7 @@ source: drafted Session 6.5 POC by Claude, awaiting Master O voice review
 **Response approach:**
 - Pricing IS locked but the public surfaces are still being shipped post-redesign
 - ICP 1 (Consumer / Producer Tier): Free / Producer / Growth / Enterprise tiers — all sub-$500 P-card per D-002. Universal credit currency at $0.15/credit base + à la carte SKUs (D-021).
-- ICP 2 (Enterprise+ Distribution Expander): D-015 state-based slider. $12,500 anchor all-50 (50% undercut vs Neilson). Conversation-driven, NOT self-serve.
+- ICP 2 (Enterprise+ Distribution Expander): D-015 state-based slider. Conversation-driven, NOT self-serve. Specific dollar amounts surface during demo.
 - Charter Member program (D-014): "Best pricing tier permanently" — early-customer locked-in pricing.
 - "For specific pricing context based on use case, email partners@seven16group.com. The Stripe catalog is live in sandbox at acct_1TLUF6HmqSDkUoqw — production cutover pending one dashboard action (Stripe webhook endpoint registration)."
 
@@ -168,6 +168,6 @@ If an objection doesn't match the 10 above:
 - Route to Master O via `partners@seven16group.com`
 - Don't invent
 
-NEVER violate `prohibited-claims.md` — D-022 scope boundary, Neilson positioning, Pillar 9 parked status, OWNS-vs-NOT-OWNS limits all have hard guardrails.
+NEVER violate `prohibited-claims.md` — D-022 scope boundary, no-vendor-naming policy (P4), Pillar 9 parked status, OWNS-vs-NOT-OWNS limits all have hard guardrails.
 
 The Agency Signal agent's posture: commercial-insurance-distribution operator voice. Sophisticated audience. The 9-pillar framework + locked competitive references mean every conversation is grounded in documented architecture, not improvised marketing.

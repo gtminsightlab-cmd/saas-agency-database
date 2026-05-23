@@ -111,7 +111,7 @@ Track changes in a saved list over time. Renewal-watch / change-detection / new-
 Enterprise+ ICP 2 — distribution growth tooling for MGAs / wholesalers / carriers.
 
 **D-015 lock includes:**
-- State-based slider pricing ($12,500 anchor at all-50 vs Neilson's $25,000 — 50% undercut)
+- State-based slider pricing ($12,500 anchor at all-50)
 - Distribution+ outcome SKU
 - Enterprise+ contract motion (NOT self-serve)
 
@@ -148,7 +148,7 @@ Confidence scoring + verification + stale-alert engine.
 2. Data trust signals visible in UI (Pillar 8 surfaces — verified badges, confidence scores, stale alerts)
 3. Enterprise+ demos (5-8) validate genuine market-side demand
 
-When unparked, Pillar 9 borrows from ProgramBusiness (searchable profile UX, storefront / listing model, featured markets, market alerts) WITHOUT taking ProgramBusiness's broad-quote-marketplace / submission-marketplace / insurance-news-sprawl scope.
+When unparked, Pillar 9 borrows from the marketplace / submission-marketplace category (searchable profile UX, storefront / listing model, featured markets, market alerts) WITHOUT taking on that category's broad-quote-marketplace / submission-marketplace / insurance-news-sprawl scope.
 
 **The agent must NEVER pitch Pillar 9 as if it's coming soon.** It's parked until the 3-condition trigger fires.
 
@@ -171,7 +171,7 @@ Cross-sell discounts via volume bonus bands.
 
 **Enterprise+ pricing (D-015):**
 - State-based slider for Distribution Expander
-- $12,500 all-50-states anchor (50% undercut vs Neilson)
+- $12,500 all-50-states anchor
 - Distribution+ outcome SKU
 
 ## What Agency Signal does NOT do (intentional, will not change)

@@ -12,7 +12,7 @@ Distribution-intelligence-specific pains. Holdco-level pains live in `seven16gro
 
 ## Problem 1 — Cold lists are dead-on-arrival
 
-**The pain:** Producers and growth teams buy or build agency / producer prospect lists from list-broker sources (Neilson-class telemarketing lists, ZoomInfo for commercial, LinkedIn Sales Nav scrapes). Conversion is brutal because the lists carry no appointment context — the producer doesn't know which agencies are ALREADY appointed with their carriers vs which are gap targets.
+**The pain:** Producers and growth teams buy or build agency / producer prospect lists from generic list-broker / telemarketing-list / B2B-contact-data sources. Conversion is brutal because the lists carry no appointment context — the producer doesn't know which agencies are ALREADY appointed with their carriers vs which are gap targets.
 
 **Who feels it:** Persona 1 (working producer), Persona 2 (small agency), Persona 3 (MGA/wholesaler), Persona 4 (carrier). Universal across the four personas.
 
@@ -26,7 +26,7 @@ Distribution-intelligence-specific pains. Holdco-level pains live in `seven16gro
 - Schema includes `agencies`, `agency_carriers` (appointment data), `agency_carriers.appointment_active_date` (per D-025 Texas DOI ingest)
 - Live appointment data ingested from state DOI sources (Texas DOI: 367k appointment rows + 16,785 new TX agencies + 638 new carriers, loaded Session B 2026-05-19)
 
-**Key differentiator vs Neilson / ZoomInfo / cold lists:** Agency Signal is NOT a list-broker. It's intelligence with appointment-context built in. The producer asks "which agencies in X aren't appointed with my carrier" and gets a structured answer; cold lists can only answer "which agencies exist in X."
+**Key differentiator vs list-broker / contact-data category:** Agency Signal is NOT a list-broker. It's intelligence with appointment-context built in. The producer asks "which agencies in X aren't appointed with my carrier" and gets a structured answer; list-broker tools can only answer "which agencies exist in X."
 
 ## Problem 2 — Vertical / niche prospecting at scale is manual
 
@@ -58,20 +58,19 @@ Distribution-intelligence-specific pains. Holdco-level pains live in `seven16gro
 
 ## Problem 4 — Enterprise distribution-growth tooling is gatekept by enterprise pricing
 
-**The pain:** Best-in-class agency-distribution data is enterprise-priced. Neilson Marketing's land-and-expand state pricing: $10k entry (5 + 2 free states), $1,500/state add-on, $25k all-50-states ceiling. MGAs / wholesalers / carriers who want sub-enterprise distribution intelligence get priced out. Mid-market operators can't afford the entry.
+**The pain:** Best-in-class agency-distribution data is enterprise-priced. Incumbent state-based pricing in this category is structured as land-and-expand (initial entry + per-state add-ons + all-states ceiling). MGAs / wholesalers / carriers who want sub-enterprise distribution intelligence get priced out at the entry tier. Mid-market operators can't afford the on-ramp.
 
 **Who feels it:** Persona 3 (MGA/wholesaler), Persona 4 (carrier/program admin) — specifically the mid-market operators within those personas.
 
 **How Agency Signal addresses it:**
 - Pillar 7 (Distribution Expander) — D-015 locked. Enterprise+ state-based slider + Distribution+ outcome SKU.
-- **50% undercut anchor** vs Neilson: $12,500 all-50-states vs Neilson's $25,000
 - State slider scales pricing with footprint — buyer pays for the states they want
-- Pricing transparency unlike list-broker incumbents
+- Pricing transparency relative to category incumbents
+- Mid-market-accessible entry tier rather than enterprise-only land-and-expand
 
 **Verifiable evidence:**
 - D-015 brief locked in `docs/context/PRICING_ENTERPRISE_LAYER.md`
 - Stripe catalog shipped to sandbox (`acct_1TLUF6HmqSDkUoqw`)
-- Pricing anchor publicly documented per `feedback_neilson_is_competitor_not_vendor.md`
 
 **Honest caveat:** GTM motion is queued, not active. Distribution Expander conversations happen 1:1 with Master O until first 5-8 Enterprise+ demos validate market demand (ADR-023 revisit trigger). No public Distribution+ self-serve flow yet.
 
@@ -90,20 +89,18 @@ Distribution-intelligence-specific pains. Holdco-level pains live in `seven16gro
 
 ## Problem 6 — Knowing which agency-data product fits which use case
 
-**The pain:** A buyer evaluating distribution-data tools faces a confusing landscape — Neilson (telemarketing lists), ZoomInfo (B2B contact data), LinkedIn Sales Nav (general B2B), ProgramBusiness (marketplace), Agency Signal (intelligence layer). Each has different framing; "agency directory" sounds the same across products.
+**The pain:** A buyer evaluating distribution-data tools faces a confusing landscape — list-broker tools, general B2B contact data, professional-network platforms, marketplace tools, and intelligence layers (like Agency Signal). Each has different framing; "agency directory" sounds the same across products.
 
 **Who feels it:** First-time evaluators across all four personas.
 
 **How Agency Signal addresses it:**
 - Clear positioning: "Distribution intelligence for commercial insurance" — NOT a list, NOT a marketplace, NOT a general B2B tool
 - Explicit OWNS vs does-NOT-OWN scope (in `product-identity.md`)
-- Competitive frame in `objection-handling.md` Objection 4
+- Category-based positioning in `objection-handling.md` (no vendor names per `prohibited-claims.md` P4)
 
 **Verifiable evidence:**
 - D-023 positioning lock + ADR-023 documents
 - Family memory `project_agency_signal_positioning.md` enumerates the scope
-- Neilson competitive-boundary doc at `docs/strategy/neilson-competitive-boundary.md`
-- ProgramBusiness competitive-boundary doc at `docs/strategy/programbusiness-competitive-boundary.md`
 
 ## How the support agent should use this file
 
@@ -112,6 +109,6 @@ When a visitor describes a pain:
 2. Cite the verifiable evidence (D-numbers, family memory references, schema state) rather than making marketing claims
 3. Be HONEST about partial coverage (Pillars 6 + 8 backends shipped, UI light; Pillar 7 GTM queued; Pillar 4 has empty verticals; Pillar 9 parked)
 4. If the pain doesn't match the six, surface to Master O via the partner channel rather than invent
-5. NEVER violate `prohibited-claims.md` — pricing, OWNS-vs-NOT-OWNS scope, Neilson positioning all have hard guardrails
+5. NEVER violate `prohibited-claims.md` — pricing, OWNS-vs-NOT-OWNS scope, no-vendor-naming policy (P4) all have hard guardrails
 
 The Agency Signal agent's posture: commercial-insurance-distribution operator voice. The audience runs producers, agencies, MGAs, programs — they know the difference between an appointment and a license. Speak to them like that.

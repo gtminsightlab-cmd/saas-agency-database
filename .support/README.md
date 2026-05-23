@@ -8,13 +8,13 @@ Source-of-truth files for the AI support agents at `seven16groupsupport.com` tha
 
 | File | Component | Coverage |
 |---|---|---|
-| `product-identity.md` | product-identity | D-023 positioning lock, 9 product pillars with status, 4 personas, 2 ICPs, OWNS / does-NOT-OWN explicit scope, Neilson + ProgramBusiness competitive references, stage + credibility framing |
+| `product-identity.md` | product-identity | D-023 positioning lock, 9 product pillars with status, 4 personas, 2 ICPs, OWNS / does-NOT-OWN explicit scope, category-level competitive context (no vendor names per P4), stage + credibility framing |
 | `buyer-personas.md` | buyer-personas | 4 personas across 2 ICPs: Working Producer / Small Retail Agency (ICP 1 self-serve) + MGA-MGU-Wholesaler / Carrier-Program-Administrator (ICP 2 Enterprise+). Anti-personas + routing matrix. Charter Member program note. |
 | `problem-library.md` | problem-library | 6 distribution-intelligence pains with honest pillar-status caveats: cold lists / vertical prospecting / renewal-watch (CRON_SECRET blocker) / Enterprise pricing gatekeeping / data quality invisibility / which-product-fits-which-use-case |
 | `capability-library.md` | capability-library | All 9 pillars with explicit status (Shipped / Schema-in-UI-light / Engine-in-UI-light / Refresh-queued / GTM-queued / PARKED). Pricing architecture stack (D-014 + D-015 + D-021). Explicit "does NOT do" boundary list. |
-| `objection-handling.md` | objection-handling | 10 concerns: list-broker confusion / Neilson + ProgramBusiness comparisons / AMS-CRM-PAS scope clarity / empty verticals / CRON_SECRET blocker honesty / pricing transparency / trucking handoff to DOT Intel / personal lines out-of-scope / Pillar 9 parked status risk |
+| `objection-handling.md` | objection-handling | 10 concerns: list-broker confusion / list-broker + marketplace category comparisons (no vendor names) / AMS-CRM-PAS scope clarity / empty verticals / CRON_SECRET blocker honesty / pricing transparency / trucking handoff to DOT Intel / personal lines out-of-scope / Pillar 9 parked status risk |
 | `sales-playbook.md` | sales-playbook | 9-pillar framework as conversation backbone. Persona-specific discovery (5-6 questions each). Demo flow grounded in Pillar 3 (carrier appointment intelligence — the core differentiator). Common asks + escalation rules. |
-| `prohibited-claims.md` | prohibited-claims | **HARD GUARDRAIL** — 10 Agency-Signal-specific anti-claims INHERITS Seven16 Group P1-P11: P1 NO list-broker positioning / P2 NO appointment-binding decisions / P3 NO parked-or-queued-as-live / P4 NO Neilson disparagement / P5 NO ProgramBusiness disparagement / P6 NO out-of-D-023-scope claims / P7 NO specific pricing dollar amounts / P8 NO Threshold IQ as family product / P9 NO internal architecture details / P10 NO universal appointment-data freshness claims |
+| `prohibited-claims.md` | prohibited-claims | **HARD GUARDRAIL** — Agency-Signal-specific anti-claims INHERITS Seven16 Group P1-P11: P1 NO list-broker positioning / P2 NO appointment-binding decisions / P3 NO parked-or-queued-as-live / P4 NO naming of specific competing vendors (use category framing only) / P6 NO out-of-D-023-scope claims / P7 NO specific pricing dollar amounts / P8 NO Threshold IQ as family product / P9 NO internal architecture details / P10 NO universal appointment-data freshness claims |
 
 ## Voice
 
@@ -27,7 +27,7 @@ Commercial-insurance-distribution operator. Sophisticated audience that knows th
 3. **Texas DOI inaugural** load complete (367k appointment rows, 938 carriers, 16,785 new TX agencies). 49 other states queued.
 4. **Vertical coverage:** 12 shipped / 8 empty.
 5. **D-023 positioning lock:** "Distribution intelligence for commercial insurance" — NOT a lead list, NOT a marketplace, NOT an AMS.
-6. **Neilson + ProgramBusiness:** competitive references with explicit borrow / avoid guidance. NO disparagement.
+6. **No vendor naming (P4):** competitive context spoken in CATEGORIES, never named vendors. Per Master O directive 2026-05-23.
 7. **Charter Member program (D-014):** "Best pricing tier permanently." Active acquisition motion.
 8. **Sessions 27-32 epic CLOSED 2026-05-22** — internal-app foundation rebuild + design system shipped.
 9. **BACKLOG #1 (/home v1) SHIPPED** with smart-degradation pending CRON_SECRET activation.

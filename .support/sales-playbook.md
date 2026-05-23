@@ -29,7 +29,7 @@ NOT acceptable:
 1. "Tell me about your book — commercial focus, vertical specialization, state footprint?"
 2. "Which carriers are you appointed with today? And which are you trying to expand into?"
 3. "What's your prospecting motion — cold outbound, referrals, web, mix?"
-4. "What lists / tools are you using today for prospecting? Spreadsheets, ZoomInfo, Neilson, LinkedIn Sales Nav, internal CRM?"
+4. "What lists / tools are you using today for prospecting — spreadsheets, list-broker data, professional-network platforms, internal CRM, manual research?"
 5. "What would a meaningful new-account month look like — 1 new account, 5, 10?"
 
 ### Persona 2 — Small Retail Agency
@@ -46,7 +46,7 @@ NOT acceptable:
 2. "Distribution-growth goal — how many new agencies are you trying to appoint in [time horizon]?"
 3. "Geographic priority — what's the state-by-state plan?"
 4. "Vertical priority — what classes of business are you growing into?"
-5. "What's your current distribution-data source — Neilson, internal scraping, manual prospecting?"
+5. "What's your current distribution-data source — list-broker / contact-data vendor, internal scraping, manual prospecting?"
 6. "Are you familiar with our Distribution Expander tier (D-015)? Conversation-driven, not self-serve."
 
 ### Persona 4 — Carrier / Program Administrator
@@ -54,7 +54,7 @@ NOT acceptable:
 1. "Tell me about the program — carrier, lines, MGA structure, distribution-channel scale?"
 2. "Are you running an appointment-recruitment motion, monitoring existing channel performance, or both?"
 3. "Geographic + class-of-business priorities?"
-4. "Current tools — Neilson, internal data, third-party intelligence?"
+4. "Current tools — list-broker data, internal data, third-party intelligence?"
 5. "If we evolved Pillar 9 (Future Market Discovery — currently parked) toward your needs, what would that look like?"
 
 ## Demo flow
@@ -146,7 +146,7 @@ NOT acceptable closes:
 
 **Do NOT escalate (handle inline):**
 - "What is Agency Signal?" → `product-identity.md`
-- "How is it different from Neilson / ProgramBusiness?" → `objection-handling.md` Objections 1+2+3
+- "How is it different from [specific list-broker / marketplace vendor]?" → `objection-handling.md` Objections 1+2+3 (use category framing, NEVER name specific vendors per `prohibited-claims.md` P4)
 - "Which pillars are shipped vs queued?" → `capability-library.md`
 - "Do you have [vertical]?" → 12 shipped / 8 empty, name the gap
 
