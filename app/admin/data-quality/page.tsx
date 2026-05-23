@@ -143,7 +143,7 @@ export default async function DataQualityPage() {
               Canary watermark scan
             </h2>
             <p className="mt-0.5 text-xs text-admin-text-mute">
-              Live count per active denylist entry. Any non-zero number means a Neilson-style canary has leaked into <code className="text-admin-text">agencies</code> or <code className="text-admin-text">contacts</code> and must be scrubbed before customer queries.
+              Live count per active denylist entry. Any non-zero number means a third-party-source canary has leaked into <code className="text-admin-text">agencies</code> or <code className="text-admin-text">contacts</code> and must be scrubbed before customer queries.
             </p>
           </div>
           <Link href="/admin/hygiene" className="text-xs font-semibold text-admin-accent hover:underline">

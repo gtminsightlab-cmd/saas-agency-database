@@ -415,7 +415,7 @@ function CanaryFields({ value, onChange }: { value: Draft; onChange: (patch: Par
           type="text"
           value={value.source}
           onChange={(e) => onChange({ source: e.target.value })}
-          placeholder='e.g. "Neilson seed #5"'
+          placeholder='e.g. "Third-party seed #5"'
           className="w-full rounded-md border border-admin-border bg-admin-surface-2 px-2.5 py-1.5 text-sm text-admin-text placeholder-admin-text-dim outline-none focus:border-admin-accent"
         />
       </Field>

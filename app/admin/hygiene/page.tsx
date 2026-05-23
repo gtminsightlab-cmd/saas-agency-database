@@ -69,7 +69,7 @@ export default async function HygienePage() {
         <div className="mt-2 text-xs uppercase tracking-wider text-admin-text-dim">Hygiene</div>
         <h1 className="mt-1 text-2xl font-semibold text-admin-text">Hygiene &amp; Refresh</h1>
         <p className="mt-1 text-sm text-admin-text-mute max-w-3xl">
-          Watermark canaries (Neilson denylist), consumer-email domain blocks, and freshness
+          Watermark canaries (third-party-source denylist), consumer-email domain blocks, and freshness
           tracking. Every AdList ingestion runs against this list before rows land in the live
           dataset — adding a new canary protects future loads.
         </p>

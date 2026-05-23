@@ -187,8 +187,8 @@ async function UserHeroSection() {
 
 /**
  * First-time onboarding card — replaces UserHeroSection's KPI strip for users
- * with zero saved lists. Three-step checklist; Apollo's credit-grant onboarding
- * pattern (per BACKLOG #1 competitive research).
+ * with zero saved lists. Three-step checklist; canonical credit-grant
+ * onboarding pattern (per BACKLOG #1 competitive research).
  */
 function OnboardingChecklist() {
   const steps: Array<{ title: string; body: string; href?: string; cta?: string; done: boolean }> = [

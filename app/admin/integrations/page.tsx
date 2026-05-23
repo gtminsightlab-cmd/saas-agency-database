@@ -236,8 +236,9 @@ export default async function IntegrationsPage() {
                   /integrations page
                   <ExternalLink className="h-2.5 w-2.5" />
                 </a>{" "}
-                tells customers HubSpot, Salesforce, Mailchimp, and Pipedrive are &ldquo;Coming soon&rdquo;
-                with disabled Connect buttons — that&rsquo;s honest framing. Zapier/Make is shown as
+                no longer names specific OAuth providers (post Master O directive 2026-05-23: no
+                vendor names in customer-facing content) — the &ldquo;Native connectors&rdquo; section
+                describes the roadmap in category language only. Zapier/Make is shown as
                 &ldquo;Available now&rdquo; but depends on /api/export which is currently a 501 stub. Either
                 ship the export route or soften the Zapier copy until it&rsquo;s real.
               </p>

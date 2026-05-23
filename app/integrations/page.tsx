@@ -1,23 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Workflow, Lock, ArrowRight } from "lucide-react";
+import { Workflow } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-
-const PROVIDERS = [
-  { slug: "hubspot",    name: "HubSpot",    blurb: "Push contacts to a HubSpot list. Two-way sync coming soon.", color: "brand" },
-  { slug: "salesforce", name: "Salesforce", blurb: "Create Leads or Contacts in your Salesforce org.",            color: "navy"  },
-  { slug: "mailchimp",  name: "Mailchimp",  blurb: "Drop contacts into a Mailchimp audience as subscribed.",      color: "gold"  },
-  { slug: "pipedrive",  name: "Pipedrive",  blurb: "Add contacts as People + Deals in your Pipedrive pipeline.",  color: "success" },
-];
-
-const COLOR: Record<string, { bg: string; text: string; border: string }> = {
-  brand:   { bg: "bg-brand-50",   text: "text-brand-700",   border: "border-brand-100"   },
-  navy:    { bg: "bg-navy-50",    text: "text-navy-800",    border: "border-navy-100"    },
-  gold:    { bg: "bg-gold-50",    text: "text-gold-800",    border: "border-gold-100"    },
-  success: { bg: "bg-success-50", text: "text-success-700", border: "border-success-100" },
-};
 
 export default async function IntegrationsPage() {
   const supabase = await createClient();
@@ -50,9 +36,9 @@ export default async function IntegrationsPage() {
                 Connect via Zapier or Make <span className="ml-2 inline-flex items-center rounded-full bg-success-100 px-2 py-0.5 text-xs font-semibold text-success-700">Available now</span>
               </h2>
               <p className="mt-1 text-sm text-gray-600">
-                Use our CSV export endpoint as a Zapier or Make trigger to fan out into HubSpot,
-                Salesforce, Mailchimp, Pipedrive, or 1,000+ other apps. No OAuth juggling — your
-                personal export key handles auth.
+                Use our CSV export endpoint as a Zapier or Make trigger to fan out into the major
+                CRM, marketing automation, sales pipeline, and spreadsheet platforms — 1,000+ apps
+                in total. No OAuth juggling — your personal export key handles auth.
               </p>
               <ol className="mt-4 list-decimal pl-5 text-sm text-gray-700 space-y-2">
                 <li>Copy a saved list&rsquo;s export URL from <Link href="/saved-lists" className="font-semibold text-brand-700 hover:underline">Saved Lists</Link>.</li>
@@ -67,36 +53,14 @@ export default async function IntegrationsPage() {
           </div>
         </section>
 
-        {/* Native OAuth providers — coming soon */}
+        {/* Native OAuth connectors — placeholder; rolling out post-launch */}
         <section className="mt-8">
           <h2 className="text-base font-semibold text-navy-800">Native connectors</h2>
-          <p className="mt-1 text-xs text-gray-500">One-click OAuth, no Zapier required. Rolling out one provider at a time.</p>
-          <div className="mt-4 grid gap-4 md:grid-cols-2">
-            {PROVIDERS.map((p) => {
-              const c = COLOR[p.color] ?? COLOR.brand;
-              return (
-                <div key={p.slug} className={`rounded-xl border ${c.border} bg-white p-5`}>
-                  <div className="flex items-start justify-between">
-                    <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${c.bg}`}>
-                      <span className={`text-sm font-bold ${c.text}`}>{p.name[0]}</span>
-                    </div>
-                    <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
-                      <Lock className="h-3 w-3" /> Coming soon
-                    </span>
-                  </div>
-                  <h3 className="mt-4 text-base font-semibold text-navy-800">{p.name}</h3>
-                  <p className="mt-1 text-sm text-gray-600">{p.blurb}</p>
-                  <button
-                    type="button"
-                    disabled
-                    className="mt-4 inline-flex items-center gap-1 rounded-md bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-500 cursor-not-allowed"
-                  >
-                    Connect {p.name} <ArrowRight className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              );
-            })}
-          </div>
+          <p className="mt-2 text-sm text-gray-600 max-w-2xl">
+            One-click OAuth connectors for the major CRM, marketing automation, and sales
+            pipeline platforms are on the post-launch roadmap. Until they ship, the Zapier /
+            Make path above is the supported route.
+          </p>
         </section>
       </div>
     </div>

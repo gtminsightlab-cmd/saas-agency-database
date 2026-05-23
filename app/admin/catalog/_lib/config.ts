@@ -88,7 +88,7 @@ export const CATALOG_TABLES: CatalogTableConfig[] = [
     table: "agency_management_systems",
     name: "Agency Management Systems (AMS)",
     description:
-      "AMS vendors used by agencies — Applied Epic, Vertafore AMS360, etc. " +
+      "AMS vendors used by agencies. " +
       "is_defunct flags retired systems (kept for historical mapping).",
     primaryColumn: "label",
     columns: [

@@ -83,27 +83,30 @@ Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16grou
 
 **Why locked:** Reputational + legal exposure from named-competitor framing. Plus the structural differentiation (intelligence layer vs list-broker / marketplace) is stronger than any feature-by-feature comparison. The category-level framing makes Agency Signal positioning durable as competitor lineups shift.
 
-## P5 — NO naming of specific insurance companies, carriers, or agencies in content
+## P5 — NO naming of specific third-party companies (insurance, agency, vendor, software, or data) in content
 
-**Source:** Master O directive 2026-05-23.
+**Source:** Master O directive 2026-05-23 (broadened from initial Neilson/ProgramBusiness directive to all third-party company names site-wide).
 
 **Prohibited:**
-- Naming specific insurance companies, carriers, writing companies, or parent insurance groups in any customer-facing content (homepage, methodology, verticals, sign-up, enterprise, resources, hero mockups)
+- Naming specific insurance companies, carriers, writing companies, or parent insurance groups in any customer-facing content
 - Naming specific agencies (national brokers, wholesalers, retail agencies, MGAs) in customer-facing content
-- Using a specific insurance company or agency name as a positive illustrative example
-- Using a specific insurance company or agency name in a parent-child tree, comparison chart, or feature mockup
+- Naming specific software / data / B2B contact vendors (CRM platforms, AMS platforms, contact-data vendors, carrier financial-data vendors, marketing automation tools, etc.) as illustrative examples or "vs." comparisons
+- Using a specific company name as a positive illustrative example, a negative example, or in a parent-child tree, comparison chart, or feature mockup
+- Listing specific vendor names for integration "coming soon" cards on customer-facing pages
 
 **What to say instead:**
-- Speak in CATEGORIES: "a specialty E&S carrier", "a regional standard-market workers' comp carrier", "a captive carrier", "a syndicate carrier", "a national consolidator agency", "a wholesale program", "a specialty MGA"
-- Use abstract placeholders for illustrations: "Parent Group A", "Specialty Carrier 01", "Example Agency A/B/C"
+- Speak in CATEGORIES: "a specialty E&S carrier", "a regional standard-market WC carrier", "a captive carrier", "a national consolidator agency", "a wholesale program", "a specialty MGA", "a B2B contact-data vendor", "a carrier financial-data vendor", "a major CRM platform", "a marketing automation tool"
+- Use abstract placeholders for illustrations: "Parent Group A", "Specialty Carrier 01", "Example Agency A/B/C", "CRM 01"
 - Reference our customer base in CATEGORY language only: "We work with carriers, MGAs, wholesalers, agencies, and program administrators." / "Our customers include distribution operators across commercial-insurance verticals."
 
 **Exceptions (NOT covered by this rule):**
-- Internal admin tooling (watermark canaries, internal data catalog descriptions, denylists) — never customer-facing
-- Integration target listings (e.g., on `/integrations`) where the named vendor is an integration partner we push data TO, not a subject of marketing content
-- The product's own search interfaces, where customers query the underlying data and the platform naturally surfaces real carrier names from the database (product functionality, not "content")
+- Internal admin tooling that ONLY Master O sees (operational dashboards mapping integration env vars to vendor slugs, watermark canaries, internal data catalog descriptions, denylists)
+- Slug-based code identifiers (e.g., `hubspot` slug → `HUBSPOT_CLIENT_ID` env var mapping) — these are technical identifiers, not content
+- Brand-of-record / parent entity self-references (Seven16 Group, Agency Signal, DOT Intel, Bindlab) — these are us, not third parties
 
-**Why locked:** Naming specific insurance companies, carriers, or agencies in customer-facing content creates legal exposure (read as endorsement or disparagement), conflicts with the category-level positioning the platform is built around, and risks brand harm to entities outside our control. The category-level framing is also more durable as the carrier and agency lineup shifts over time.
+**Founder / operator bio guidance:** When describing the team behind Agency Signal in any customer-facing surface (about page, founder note, bylined article, demo opener), use GENERAL operator language that does not point directly at Master O. AVOID specifics like exact tenure years, premium-dollar totals, count of prior distribution builds, named Fortune 500 employers, named MGA / MGU / startup employer history. Instead: "built by an operator with deep experience in commercial-insurance distribution — recruiting agencies, launching programs, managing carrier relationships, building territories."
+
+**Why locked:** Naming specific third-party companies in customer-facing content creates legal exposure (read as endorsement or disparagement), conflicts with the category-level positioning the platform is built around, and risks brand harm to entities outside our control. The category-level framing is also more durable as the vendor lineup shifts over time. Founder-bio specificity that points directly at Master O personally is intentionally avoided per his directive.
 
 ## P6 — NO claims about scope outside D-023 OWNS list
 

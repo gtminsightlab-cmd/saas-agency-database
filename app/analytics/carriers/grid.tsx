@@ -116,7 +116,7 @@ export function CarriersGrid({
               type="text"
               value={query}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder="Search carriers (e.g. Berkley, Travelers, Sentry)…"
+              placeholder="Search carriers by name…"
               className="w-full rounded-md border border-gray-200 bg-white pl-9 pr-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
@@ -212,8 +212,7 @@ export function CarriersGrid({
       {/* No results in search */}
       {!isAnon && filteredCount === 0 && (
         <div className="mt-6 rounded-md border border-gray-200 bg-gray-50 p-8 text-center text-sm text-gray-600">
-          No carriers match &ldquo;{query}&rdquo;. Try a partial name, e.g. &ldquo;Berkley&rdquo;
-          or &ldquo;Mutual&rdquo;.
+          No carriers match &ldquo;{query}&rdquo;. Try a partial name.
         </div>
       )}
 
