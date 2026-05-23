@@ -189,8 +189,8 @@ export default async function CharterPage() {
             </p>
             <p className="mt-4 text-gray-600 leading-7">
               If you have to forward this to someone&rsquo;s buying committee to get approved, you&rsquo;re
-              probably not the buyer this offer was designed for. The published consumer tiers ($19 Producer,
-              $99 Growth) and the <Link href="/enterprise" className="text-brand-700 underline">Enterprise+
+              probably not the buyer this offer was designed for. The published consumer tiers (Producer /
+              Growth) and the <Link href="/enterprise" className="text-brand-700 underline">Enterprise+
               annual contract</Link> are still here. Charter is the third path.
             </p>
           </div>

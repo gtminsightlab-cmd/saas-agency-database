@@ -16,7 +16,7 @@ type Tier = {
 const TIERS: Tier[] = [
   {
     name: "Free Browse",
-    price: "$0",
+    price: "Free",
     cadence: "Unlimited",
     tagline: "Unlimited search. No exports.",
     features: ["Unlimited search across 41,700+ agencies", "Filter by carrier, vertical, state", "1 seat", "Best for market mapping"],
@@ -25,20 +25,20 @@ const TIERS: Tier[] = [
   },
   {
     name: "Growth Member",
-    price: "$99",
-    cadence: "/month",
+    price: "—",
+    cadence: "see at sign-up",
     tagline: "Active distribution teams.",
-    features: ["250 export credits / month", "3 seats", "Monthly saved-list refresh", "Email + onboarding call"],
+    features: ["Monthly export credits", "Multi-seat access", "Saved-list refresh", "Email + onboarding call"],
     ctaLabel: "Start Growth Member",
     ctaHref: "/sign-up?plan=growth_member",
     emphasized: true,
   },
   {
     name: "Snapshot",
-    price: "$125",
-    cadence: "one-time",
+    price: "—",
+    cadence: "see at sign-up",
     tagline: "Market entry & diligence.",
-    features: ["250 export credits", "Single export window", "Best for M&A diligence", "Best for special projects"],
+    features: ["One-time export credit pack", "Single export window", "Best for M&A diligence", "Best for special projects"],
     ctaLabel: "Buy Snapshot",
     ctaHref: "/sign-up?plan=snapshot",
   },
@@ -53,8 +53,8 @@ export function PricingPreview() {
             Browse free. Pay when you need exports.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600">
-            Three starting points. Top-up credits, volume bonuses, and Charter Member pricing live on the
-            full pricing page.
+            Three starting points. Current rates surface at sign-up. Charter Member pricing locks in
+            permanently per D-014 — see the Charter page for early-customer terms.
           </p>
         </div>
 

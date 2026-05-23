@@ -56,14 +56,14 @@ export default async function EnterprisePage() {
               Built for the team that grows distribution.
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-200">
-              The $19 Producer tier and the $99 Growth tier are how individual agents bind more accounts.
-              Enterprise+ is the other thing &mdash; the annual contract that gives a VP of Distribution,
-              an MGA, a wholesaler, or a carrier the full agency footprint of every state they operate in,
-              at half the price of the legacy competitor.
+              The Producer and Growth tiers are how individual agents bind more accounts &mdash; sub-$500 P-card
+              self-serve, current rates surfaced at sign-up. Enterprise+ is a different category entirely &mdash;
+              the annual contract that gives a VP of Distribution, an MGA, a wholesaler, or a carrier the full
+              agency footprint of every state they operate in.
             </p>
             <p className="mt-4 text-base leading-7 text-gray-300">
               Demo-led. Annual contract. Per-state pricing, all-states ceiling, all 50 jurisdictions for{" "}
-              <span className="font-semibold text-gold-300">$12,500/year</span>.
+              <span className="font-semibold text-gold-300">$12,500/year</span> (D-015 locked anchor).
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-4">
               <a
@@ -118,7 +118,7 @@ export default async function EnterprisePage() {
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 mt-0.5 text-gray-400 shrink-0" />
-                  <span>$19/mo Producer, $99/mo Growth, $399+ self-serve Enterprise</span>
+                  <span>Producer / Growth / self-serve Enterprise tiers (D-002) — current rates at sign-up</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="h-4 w-4 mt-0.5 text-gray-400 shrink-0" />
@@ -429,23 +429,23 @@ export default async function EnterprisePage() {
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             <VolumePackCard
               name="Enterprise Volume &mdash; Starter"
-              price="$499/mo"
-              annual="$5,988/yr"
+              price="Quote"
+              annual="Annual contract"
               features={[
-                "2,500 credits / month",
-                "API access &middot; 5 calls/sec",
+                "Monthly credit pack at the entry tier",
+                "API access at entry-tier rate limit",
                 "SSO via SAML / OIDC",
                 "Email support, business hours",
               ]}
             />
             <VolumePackCard
               name="Enterprise Volume &mdash; Pro"
-              price="$1,499/mo"
-              annual="$17,988/yr"
+              price="Quote"
+              annual="Annual contract"
               emphasis
               features={[
-                "10,000 credits / month",
-                "API access &middot; 20 calls/sec",
+                "Monthly credit pack at the pro tier",
+                "API access at pro-tier rate limit",
                 "Priority support, named contact",
                 "Custom BDM brief templates",
               ]}
@@ -464,9 +464,9 @@ export default async function EnterprisePage() {
           </div>
 
           <p className="mt-8 max-w-3xl mx-auto text-sm text-gray-600">
-            The $499/mo Starter is the published packaging of the &ldquo;$499+ Enterprise&rdquo; floor in the DOT Intel pricing
-            grid &mdash; same tier, named SKU. Credit overage on any Enterprise plan uses the slider, starting at the
-            +30% bonus rate.
+            Starter is the published packaging of the Enterprise floor in the DOT Intel pricing grid &mdash;
+            same tier, named SKU. Specific rates surface during the demo. Credit overage on any Enterprise plan
+            uses the slider, starting at the +30% bonus rate.
           </p>
         </div>
       </section>
