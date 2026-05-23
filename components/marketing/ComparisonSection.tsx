@@ -19,8 +19,8 @@ export function ComparisonSection() {
             Appointment intelligence beats contact data.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600">
-            ZoomInfo and AM Best answer different questions. Neither tells you which agencies actually hold
-            the carrier paper your program competes with this quarter.
+            Generic B2B contact databases answer one question. Carrier financial-data vendors answer another. Neither
+            tells you which agencies actually hold the carrier paper your program competes with this quarter.
           </p>
         </div>
 

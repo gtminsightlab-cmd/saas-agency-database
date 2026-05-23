@@ -287,12 +287,12 @@ export default async function VerticalsPage() {
               icon={Search}
               title="The Smoking Gun"
               subtitle="Reverse-engineered intelligence from the writing-company paper trail."
-              body="The Paper is the truth. When an agent writes on Admiral Insurance, Ironshore Specialty, or Lloyd&rsquo;s syndicate paper, you&rsquo;ve found a high-hazard E&S expert managing high-premium accounts. When they write on Society Insurance, they own a Midwest restaurant book. We map thousands of child writing companies back to their parent groups so the appointment list reads like a book-of-business inventory &mdash; not a guess."
+              body="The Paper is the truth. When an agent writes on E&amp;S specialty paper, syndicate paper, or high-hazard property carriers, you&rsquo;ve found a high-hazard expert managing high-premium accounts. When they write on regional standard-market workers&rsquo; comp paper, they own a regional restaurant or hospitality book. We map thousands of child writing companies back to their parent groups so the appointment list reads like a book-of-business inventory &mdash; not a guess."
               proof={[
-                { label: "National Indemnity", group: "Berkshire Hathaway" },
-                { label: "Carolina Casualty", group: "W. R. Berkley" },
-                { label: "Continental Casualty", group: "CNA Insurance Group" },
-                { label: "Fireman's Fund", group: "Allianz US P&C" },
+                { label: "Specialty Carrier 01", group: "Parent Group A" },
+                { label: "Specialty Carrier 02", group: "Parent Group A" },
+                { label: "Excess &amp; Surplus Carrier", group: "Parent Group B" },
+                { label: "Regional Standard Carrier", group: "Parent Group C" },
               ]}
             />
             <Pillar
@@ -300,14 +300,14 @@ export default async function VerticalsPage() {
               icon={Crosshair}
               title="Precision Over Spray"
               subtitle="Target by appetite, not by industry."
-              body="If you write specialized trucking, you don&rsquo;t want every commercial agent. You want the agents holding Progressive Smart Haul, Carolina Casualty, Great West, or Sentry. Filter by writing company &mdash; not a self-reported tag. Every appointment is verified against the underlying carrier roster, which means your outreach lands on agencies with proven authority to bind your line of business today."
+              body="If you write specialized trucking, you don&rsquo;t want every commercial agent. You want the agents holding the specialty trucking writing companies your program competes with. Filter by writing company &mdash; not a self-reported tag. Every appointment is verified against the underlying carrier roster, which means your outreach lands on agencies with proven authority to bind your line of business today."
             />
             <Pillar
               num="03"
               icon={Handshake}
               title="Strategic Reciprocity"
               subtitle="Know what they&rsquo;re stuck with before the first call."
-              body="When an agent&rsquo;s current carrier restricts appetite or raises rates on a specific writing company, you have the opening: &ldquo;I see you&rsquo;re on [Child Carrier] paper &mdash; our program writes that risk with broader coverage and better commission.&rdquo; Win appointments by walking into the conversation already knowing the problem you&rsquo;re solving. The competitive intelligence is in the appointment list."
+              body="When an agent&rsquo;s current carrier restricts appetite or raises rates on a specific writing company, you have the opening: &ldquo;I see you&rsquo;re on a writing company that restricts the risk you write &mdash; our program writes that risk with broader coverage and better commission.&rdquo; Win appointments by walking into the conversation already knowing the problem you&rsquo;re solving. The competitive intelligence is in the appointment list."
             />
             <Pillar
               num="04"
@@ -330,38 +330,38 @@ export default async function VerticalsPage() {
             </div>
             <div className="grid gap-6 md:grid-cols-3">
               <ParentTree
-                parent="W. R. Berkley Corporation"
+                parent="Parent Group A — Diversified WC + E&S"
                 children={[
-                  "Acadia Insurance Company",
-                  "Berkley Insurance Company",
-                  "Carolina Casualty Insurance",
-                  "Continental Western Insurance",
-                  "Nautilus Insurance Company",
-                  "Berkley Luxury Group",
+                  "Specialty Carrier 01",
+                  "Specialty Carrier 02",
+                  "Specialty Carrier 03",
+                  "Specialty Carrier 04",
+                  "Specialty Carrier 05",
+                  "Specialty Carrier 06",
                 ]}
                 tag="15 writing companies"
               />
               <ParentTree
-                parent="Berkshire Hathaway Insurance Group"
+                parent="Parent Group B — Standard Market + Specialty"
                 children={[
-                  "National Indemnity Company",
-                  "Medical Protective",
-                  "GUARD Insurance Group",
-                  "biBERK Insurance Services",
-                  "Princeton Insurance",
-                  "GEICO (auto)",
+                  "Standard Market Carrier 01",
+                  "Standard Market Carrier 02",
+                  "Specialty Casualty Carrier",
+                  "Niche Vertical Carrier",
+                  "Senior Care Specialty Carrier",
+                  "Auto Specialty Carrier",
                 ]}
                 tag="14 writing companies"
               />
               <ParentTree
-                parent="AIG / American International Group"
+                parent="Parent Group C — Excess + Surplus"
                 children={[
-                  "Lexington Insurance Company",
-                  "National Union Fire (Pittsburgh)",
-                  "Illinois National Insurance",
-                  "American Home Assurance",
-                  "New Hampshire Insurance",
-                  "Validus Specialty",
+                  "E&S Specialty Carrier 01",
+                  "E&S Specialty Carrier 02",
+                  "Excess Liability Carrier",
+                  "Home Office Assurance Co.",
+                  "Regional Specialty Carrier",
+                  "Specialty Wholesale Carrier",
                 ]}
                 tag="9 writing companies"
               />
@@ -380,32 +380,32 @@ export default async function VerticalsPage() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-navy-200 bg-navy-50 px-3 py-1 text-xs font-medium text-navy-700">
               <Target className="h-3.5 w-3.5" />
-              Why not just use ZoomInfo or AM Best?
+              Why generic data tools fall short
             </div>
             <h2 className="mt-5 text-3xl font-bold tracking-tight text-navy-800 sm:text-4xl">
               What you can&rsquo;t get anywhere else.
             </h2>
             <p className="mt-4 text-base leading-7 text-gray-600">
-              Three categories of vendors live in this space &mdash; none of them answer the question that
+              Three categories of data tools live in this space &mdash; none of them answer the question that
               actually drives appointment wins.
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             <CompareCard
-              vsLabel="vs. ZoomInfo / Apollo / D&amp;B Hoovers"
+              vsLabel="vs. B2B contact-data category"
               title="They sell company contact data."
-              body="Names, emails, titles, employee counts. They don&rsquo;t tell you which agencies hold which carriers. You can find an agent at &lsquo;Marsh McLennan&rsquo; &mdash; you can&rsquo;t find the 12 Marsh agents who specifically have Berkley Specialty appointments. Seven16 is purpose-built for that question."
+              body="Names, emails, titles, employee counts. They don&rsquo;t tell you which agencies hold which carriers. You can find an agent at a large national broker &mdash; you can&rsquo;t find the dozen agents at that broker who specifically have a target carrier&rsquo;s specialty paper. Agency Signal is purpose-built for that question."
             />
             <CompareCard
-              vsLabel="vs. AM Best / S&amp;P Global"
+              vsLabel="vs. carrier financial-data category"
               title="They sell carrier financial data."
-              body="A.M. Best Rating, surplus, premium volume, loss ratios. They don&rsquo;t tell you which agents bind which carriers. You can look up National Indemnity &mdash; you can&rsquo;t look up the 1,200 agents in Iowa who hold National Indemnity appointments. Seven16 is the missing distribution layer."
+              body="Carrier ratings, surplus, premium volume, loss ratios. They don&rsquo;t tell you which agents bind which carriers. You can look up a carrier&rsquo;s financial position &mdash; you can&rsquo;t look up the 1,200 agents in Iowa who hold that carrier&rsquo;s appointments. Agency Signal is the missing distribution layer."
             />
             <CompareCard
               vsLabel="vs. building it in-house"
               title="A 6-person full-time job."
-              body="Every carrier publishes its appointment list separately &mdash; some on the carrier site, some on state DOI portals, some only in PDFs. Reconciling 400+ writing companies to 60 parent groups, deduplicating 36,000 agencies, and refreshing it monthly is roughly a 6-person team's full-time job. Most distribution organizations don&rsquo;t have that team. We do."
+              body="Every carrier publishes its appointment list separately &mdash; some on the carrier site, some on state DOI portals, some only in PDFs. Reconciling 400+ writing companies to 60 parent groups, deduplicating 36,000 agencies, and refreshing it monthly is roughly a 6-person team&rsquo;s full-time job. Most distribution organizations don&rsquo;t have that team. We do."
             />
           </div>
         </div>

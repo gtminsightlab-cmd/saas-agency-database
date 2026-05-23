@@ -172,11 +172,11 @@ export default async function MethodologyPage() {
             </div>
             <div className="mt-5 space-y-4 text-sm leading-7 text-gray-700 max-w-3xl">
               <p>
-                Every other agency directory ranks by raw policy count. That gets you the seven
-                names you already know &mdash; the Acrisures, the USIs, the HUBs, the Marsh
-                McLennan Agencies. They write 1,000+ workers&rsquo; comp policies across 40+
-                states. Everyone is recruiting them. They have entire teams whose job is to
-                evaluate (and slow-walk) carrier appointments.
+                Every other agency directory ranks by raw policy count. That gets you the same
+                handful of national consolidators everyone already knows. They write 1,000+
+                workers&rsquo; comp policies across 40+ states. Everyone is recruiting them.
+                They have entire teams whose job is to evaluate (and slow-walk) carrier
+                appointments.
               </p>
               <p>
                 Volume tells you whether the agency exists at scale &mdash; a useful filter,
@@ -216,19 +216,18 @@ export default async function MethodologyPage() {
               <ul className="ml-5 list-disc space-y-1.5">
                 <li>
                   <strong className="text-navy-800">Construction specialty carriers:</strong>{" "}
-                  Builders Mutual, AmeriSafe, ACIG, FRSA Self Insurers Fund, Frank Winston Crum,
-                  Builders Insurance Captive, Lion, FCBI.
+                  8 carriers identified across captive workers&rsquo; comp writers, contractor
+                  specialty mutuals, and roofing / framing program writers.
                 </li>
                 <li>
                   <strong className="text-navy-800">Transportation specialty carriers:</strong>{" "}
-                  Old Republic, Arch, Berkshire Hathaway, AmeriSafe, ICW, Acuity, Argo,
-                  Protective Insurance, Safety National, SiriusPoint, Starr, Great American &mdash;
-                  19 in total.
+                  19 carriers identified across trucking specialty E&amp;S, occupational accident,
+                  long-haul WC, and large-fleet program writers.
                 </li>
                 <li>
                   <strong className="text-navy-800">Healthcare specialty carriers:</strong>{" "}
-                  MAG Mutual, Church Mutual, Selective, The Hanover, The Hartford, Dakota Truck,
-                  AIM Mutual, SFM Mutual, United Wisconsin, Ascendant.
+                  10 carriers identified across med-mal mutuals, allied-health specialty writers,
+                  and senior-care program writers.
                 </li>
               </ul>
               <p>
@@ -350,29 +349,29 @@ export default async function MethodologyPage() {
                 <li className="flex items-baseline gap-2">
                   <AlertTriangle className="h-3.5 w-3.5 text-gold-700 shrink-0 self-center" />
                   <span>
-                    <strong className="text-navy-800">MAG Mutual Insurance Company</strong>{" "}
-                    appears as a &ldquo;Medium&rdquo; agency by volume &mdash; until Diversity
+                    <strong className="text-navy-800">A captive agency</strong>{" "}
+                    can appear as a &ldquo;Medium&rdquo; agency by volume &mdash; until Diversity
                     Class shows{" "}
-                    <strong className="text-navy-800">98.6% of its book on MAG Mutual carrier
-                    itself</strong>. It&rsquo;s a captive.
+                    <strong className="text-navy-800">98.6% of its book on a single
+                    carrier</strong>. Captive, not recruitable.
                   </span>
                 </li>
                 <li className="flex items-baseline gap-2">
                   <AlertTriangle className="h-3.5 w-3.5 text-gold-700 shrink-0 self-center" />
                   <span>
-                    <strong className="text-navy-800">RSG Specialty LLC</strong> has 13 carrier
-                    appointments and looks diversified &mdash; until you see{" "}
-                    <strong className="text-navy-800">91% sits with Everest Re</strong>. It&rsquo;s an MGA
-                    program, not a BOR.
+                    <strong className="text-navy-800">A wholesale MGA program</strong> can show
+                    13 carrier appointments and look diversified &mdash; until you see{" "}
+                    <strong className="text-navy-800">91% sits with a single reinsurer</strong>.
+                    It&rsquo;s an MGA program, not a BOR.
                   </span>
                 </li>
                 <li className="flex items-baseline gap-2">
                   <AlertTriangle className="h-3.5 w-3.5 text-gold-700 shrink-0 self-center" />
                   <span>
-                    <strong className="text-navy-800">Trident Insurance Services LLC</strong> is
+                    <strong className="text-navy-800">A program agency</strong> can read as
                     &ldquo;Large&rdquo; by volume (403 policies, 24 carriers) &mdash; but{" "}
-                    <strong className="text-navy-800">73% lives on Argo Group</strong>. It&rsquo;s an
-                    Argo program agency.
+                    <strong className="text-navy-800">73% of the book lives on a single parent
+                    group</strong>. Program agency, not a generalist BOR.
                   </span>
                 </li>
               </ul>
@@ -478,10 +477,10 @@ export default async function MethodologyPage() {
                 <>
                   <p>
                     Two reasons. First, fewer than 20% of accounts in any agency-intelligence
-                    database have reliable estimated premium &mdash; ours, AM Best&rsquo;s,
-                    S&amp;P&rsquo;s, every wholesaler&rsquo;s internal book. Premium is the most
-                    under-reported field in commercial lines. Ranking by premium would mean
-                    ranking on a 20% sample dressed up as a 100% measure.
+                    database have reliable estimated premium &mdash; ours, any carrier
+                    financial-data vendor&rsquo;s, every wholesaler&rsquo;s internal book.
+                    Premium is the most under-reported field in commercial lines. Ranking by
+                    premium would mean ranking on a 20% sample dressed up as a 100% measure.
                   </p>
                   <p className="mt-3">
                     Second, premium correlates with vertical, not with recruiting fit. A trucking
@@ -495,22 +494,23 @@ export default async function MethodologyPage() {
               }
             />
             <TransparencyBlock
-              title='Why "Acadia" and "Continental Western" are both Berkley'
+              title="Why writing-company rollup matters"
               body={
                 <>
                   <p>
-                    A persistent problem in agency intelligence: the same parent group writes
-                    business under 8 different brand names.
+                    A persistent problem in agency intelligence: the same parent insurance
+                    group writes business under 8 or 9 different brand names &mdash; WC,
+                    E&amp;S, specialty, and standard-market subsidiaries.
                   </p>
                   <p className="mt-3">
-                    W. R. Berkley alone writes under Acadia, Berkley Insurance Co., Continental
-                    Western, Nautilus, Carolina Casualty, Union Standard, Midwest Employers,
-                    Preferred Employers, Admiral Insurance &mdash; and that&rsquo;s only the WC/E&amp;S
-                    half of their portfolio. If you rank carriers by writing-company name alone,
-                    Berkley appears nine times in your Top 100 and never once in your Top 10.
+                    A single parent group can write under 9 different subsidiary names across
+                    workers&rsquo; comp, excess and surplus lines, regional standard market, and
+                    program-specific entities. If you rank carriers by writing-company name
+                    alone, that parent appears nine times in your Top 100 and never once in
+                    your Top 10.
                   </p>
                   <p className="mt-3">
-                    Seven16 maps every writing company to its parent group. 400+ writing
+                    Agency Signal maps every writing company to its parent group. 400+ writing
                     companies, 60 parent groups. The full mapping is published.
                   </p>
                 </>
@@ -523,7 +523,7 @@ export default async function MethodologyPage() {
                   <p>
                     The directory refreshes every 30 days from state DOI filings, carrier-published
                     agency lists, and current commercial lines BOR data. When a carrier launches a
-                    new program agency, a wholesaler picks up a new appointment, or a Berkley
+                    new program agency, a wholesaler picks up a new appointment, or a parent-group
                     sub-brand is reorganized &mdash; the changes flow through the next refresh.
                   </p>
                   <p className="mt-3">

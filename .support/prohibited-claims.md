@@ -83,6 +83,28 @@ Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16grou
 
 **Why locked:** Reputational + legal exposure from named-competitor framing. Plus the structural differentiation (intelligence layer vs list-broker / marketplace) is stronger than any feature-by-feature comparison. The category-level framing makes Agency Signal positioning durable as competitor lineups shift.
 
+## P5 — NO naming of specific insurance companies, carriers, or agencies in content
+
+**Source:** Master O directive 2026-05-23.
+
+**Prohibited:**
+- Naming specific insurance companies, carriers, writing companies, or parent insurance groups in any customer-facing content (homepage, methodology, verticals, sign-up, enterprise, resources, hero mockups)
+- Naming specific agencies (national brokers, wholesalers, retail agencies, MGAs) in customer-facing content
+- Using a specific insurance company or agency name as a positive illustrative example
+- Using a specific insurance company or agency name in a parent-child tree, comparison chart, or feature mockup
+
+**What to say instead:**
+- Speak in CATEGORIES: "a specialty E&S carrier", "a regional standard-market workers' comp carrier", "a captive carrier", "a syndicate carrier", "a national consolidator agency", "a wholesale program", "a specialty MGA"
+- Use abstract placeholders for illustrations: "Parent Group A", "Specialty Carrier 01", "Example Agency A/B/C"
+- Reference our customer base in CATEGORY language only: "We work with carriers, MGAs, wholesalers, agencies, and program administrators." / "Our customers include distribution operators across commercial-insurance verticals."
+
+**Exceptions (NOT covered by this rule):**
+- Internal admin tooling (watermark canaries, internal data catalog descriptions, denylists) — never customer-facing
+- Integration target listings (e.g., on `/integrations`) where the named vendor is an integration partner we push data TO, not a subject of marketing content
+- The product's own search interfaces, where customers query the underlying data and the platform naturally surfaces real carrier names from the database (product functionality, not "content")
+
+**Why locked:** Naming specific insurance companies, carriers, or agencies in customer-facing content creates legal exposure (read as endorsement or disparagement), conflicts with the category-level positioning the platform is built around, and risks brand harm to entities outside our control. The category-level framing is also more durable as the carrier and agency lineup shifts over time.
+
 ## P6 — NO claims about scope outside D-023 OWNS list
 
 **Source:** D-023 lock + `docs/strategy/agency-signal-product-boundaries.md`.
@@ -97,7 +119,7 @@ Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16grou
 **What to say instead:** For each out-of-scope ask, route to the correct alternative:
 - DOT / trucking → DOT Intel (`dotintel.io`)
 - Wholesale / MGA operating software → Bindlab (`bindlab.io`)
-- AMS / CRM workflow → out of family; suggest external category (Applied Epic, Vertafore, HubSpot, etc.) without endorsing
+- AMS / CRM workflow → out of family; suggest external CATEGORY (commercial AMS platforms, commercial CRM platforms) without naming specific vendors
 - GoHighLevel → Growtheon (D-010 reseller relationship)
 
 **Why locked:** Scope creep undermines the focused-product positioning. The D-023 OWNS / does-NOT-OWN list IS the operating contract.

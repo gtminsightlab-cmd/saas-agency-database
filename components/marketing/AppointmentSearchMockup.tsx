@@ -12,8 +12,8 @@ type ResultRow = {
 };
 
 const FILTERS: Array<{ label: string; value: string; icon: typeof Building2 }> = [
-  { label: "Writing company", value: "Carolina Casualty", icon: Building2 },
-  { label: "Parent group", value: "W.R. Berkley", icon: Network },
+  { label: "Writing company", value: "Specialty Trucking Carrier", icon: Building2 },
+  { label: "Parent group", value: "National Carrier Group", icon: Network },
   { label: "Vertical", value: "Transportation", icon: Filter },
   { label: "States", value: "TX · OK · AR", icon: Filter },
   { label: "Specialization", value: "Specialist", icon: ShieldCheck },
@@ -21,9 +21,9 @@ const FILTERS: Array<{ label: string; value: string; icon: typeof Building2 }> =
 ];
 
 const RESULTS: ResultRow[] = [
-  { agency: "Summit Risk Partners", state: "TX", specialization: "Specialist", appointments: 7, diversity: "Medium", contacts: 4, verified: "May 2026" },
-  { agency: "Lone Star Commercial",  state: "OK", specialization: "Exposure",   appointments: 3, diversity: "Low",    contacts: 2, verified: "May 2026" },
-  { agency: "Metro Risk Group",      state: "AR", specialization: "Specialist", appointments: 5, diversity: "Medium", contacts: 3, verified: "May 2026" },
+  { agency: "Example Agency A", state: "TX", specialization: "Specialist", appointments: 7, diversity: "Medium", contacts: 4, verified: "May 2026" },
+  { agency: "Example Agency B", state: "OK", specialization: "Exposure",   appointments: 3, diversity: "Low",    contacts: 2, verified: "May 2026" },
+  { agency: "Example Agency C", state: "AR", specialization: "Specialist", appointments: 5, diversity: "Medium", contacts: 3, verified: "May 2026" },
 ];
 
 function specializationTone(s: ResultRow["specialization"]) {
@@ -38,7 +38,7 @@ export function AppointmentSearchMockup() {
   return (
     <figure
       role="img"
-      aria-label="Example Agency Signal search: 3 commercial agencies appointed with Carolina Casualty in TX, OK, AR — refreshed May 2026"
+      aria-label="Example Agency Signal search: 3 commercial agencies appointed with a specialty trucking carrier in TX, OK, AR — refreshed May 2026"
       className="relative rounded-2xl border border-slate-700/70 bg-slate-900/80 p-1 shadow-2xl shadow-blue-900/20 backdrop-blur"
     >
       <div className="rounded-[14px] bg-slate-900 ring-1 ring-inset ring-slate-700/50">
@@ -74,7 +74,7 @@ export function AppointmentSearchMockup() {
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-800 text-left text-sm">
-            <caption className="sr-only">Example agencies appointed with Carolina Casualty.</caption>
+            <caption className="sr-only">Example agencies appointed with a specialty trucking carrier.</caption>
             <thead className="bg-slate-900/40 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
               <tr>
                 <th scope="col" className="px-4 py-2.5">Agency</th>

@@ -45,9 +45,9 @@ const ARTICLES: Article[] = [
     slug: "vs-zoominfo",
     href: "#",
     category: "Comparison",
-    title: "Seven16 vs. ZoomInfo, AM Best, and building it in-house",
+    title: "Why generic data tools fall short for distribution recruiting",
     blurb:
-      "Three categories of vendors live in this space — none of them answer the question that actually drives appointment wins. A side-by-side comparison of what each is good for and what each gets wrong.",
+      "Three categories of data tools live in this space — B2B contact data, carrier financial data, and building it in-house. None of them answer the question that actually drives appointment wins. A side-by-side comparison of what each category is good for and what each gets wrong.",
     readTime: "6 min read",
     status: "coming",
     icon: Layers,

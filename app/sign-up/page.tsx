@@ -15,18 +15,18 @@ const VERTICAL_LEFT_RAIL: Record<string, {
   topCarriers: string;
   contactCount: number;
 }> = {
-  transportation:                { name: "Transportation",                  agencyCount: 358,   carrierCount: 12, topCarriers: "Progressive Smart Haul, Carolina Casualty, Great West, Sentry",                contactCount: 4002  },
-  "healthcare-human-services":   { name: "Healthcare & Human Services",     agencyCount: 263,   carrierCount: 21, topCarriers: "Medical Protective, Coverys, NORCAL, ProAssurance",                            contactCount: 2236  },
-  construction:                  { name: "Construction",                    agencyCount: 679,   carrierCount: 20, topCarriers: "Acuity, Federated, Western National, Berkley One, Cincinnati Specialty",      contactCount: 6633  },
-  agriculture:                   { name: "Agriculture",                     agencyCount: 5189,  carrierCount: 18, topCarriers: "Nationwide Agribusiness, Farm Bureau, Westfield, Acuity Ag",                   contactCount: 34606 },
-  "public-entity":               { name: "Public Entity",                   agencyCount: 0,     carrierCount: 0,  topCarriers: "Travelers Public Sector, Munich Re, AGRIP carriers",                          contactCount: 0     },
-  "real-estate":                 { name: "Real Estate",                     agencyCount: 0,     carrierCount: 0,  topCarriers: "Liberty Mutual, AmRisc, RPS, Burns & Wilcox",                                 contactCount: 0     },
-  hospitality:                   { name: "Hospitality",                     agencyCount: 0,     carrierCount: 0,  topCarriers: "Society Insurance, Distinguished, RPS Hospitality",                          contactCount: 0     },
-  manufacturing:                 { name: "Manufacturing",                   agencyCount: 0,     carrierCount: 0,  topCarriers: "Liberty Mutual Manufacturer, EMC, Federated, Cincinnati",                    contactCount: 0     },
-  "tech-cyber":                  { name: "Technology & Cyber",              agencyCount: 0,     carrierCount: 0,  topCarriers: "Beazley, Coalition, At-Bay, Tokio Marine HCC",                               contactCount: 0     },
-  energy:                        { name: "Energy",                          agencyCount: 0,     carrierCount: 0,  topCarriers: "AEGIS, Liberty Mutual Energy, Endurance, Liberty Specialty",               contactCount: 0     },
-  retail:                        { name: "Retail",                          agencyCount: 0,     carrierCount: 0,  topCarriers: "Liberty Mutual Retail, Travelers, Hartford, Cincinnati",                     contactCount: 0     },
-  "professional-services":       { name: "Professional Services",           agencyCount: 0,     carrierCount: 0,  topCarriers: "Beazley, CNA, Hiscox, Hartford E&O",                                          contactCount: 0     },
+  transportation:                { name: "Transportation",                  agencyCount: 358,   carrierCount: 12, topCarriers: "Specialty trucking E&S + occupational accident + long-haul WC writers",      contactCount: 4002  },
+  "healthcare-human-services":   { name: "Healthcare & Human Services",     agencyCount: 263,   carrierCount: 21, topCarriers: "Med-mal mutuals + allied-health specialty + senior-care program writers",     contactCount: 2236  },
+  construction:                  { name: "Construction",                    agencyCount: 679,   carrierCount: 20, topCarriers: "Contractor-specialty WC + builders captives + roofing/framing program writers", contactCount: 6633  },
+  agriculture:                   { name: "Agriculture",                     agencyCount: 5189,  carrierCount: 18, topCarriers: "Ag-specialty mutuals + farm bureau cooperatives + agri-specialty WC writers",  contactCount: 34606 },
+  "public-entity":               { name: "Public Entity",                   agencyCount: 0,     carrierCount: 0,  topCarriers: "Public-sector specialty carriers + risk pool program writers",               contactCount: 0     },
+  "real-estate":                 { name: "Real Estate",                     agencyCount: 0,     carrierCount: 0,  topCarriers: "Habitational property specialty + wind-exposed E&S writers",                 contactCount: 0     },
+  hospitality:                   { name: "Hospitality",                     agencyCount: 0,     carrierCount: 0,  topCarriers: "Restaurant + lodging specialty WC + hospitality program writers",            contactCount: 0     },
+  manufacturing:                 { name: "Manufacturing",                   agencyCount: 0,     carrierCount: 0,  topCarriers: "Manufacturer-specialty WC + product-liability E&S + regional standard writers", contactCount: 0     },
+  "tech-cyber":                  { name: "Technology & Cyber",              agencyCount: 0,     carrierCount: 0,  topCarriers: "Cyber specialty + tech E&O + emerging-cyber program writers",                contactCount: 0     },
+  energy:                        { name: "Energy",                          agencyCount: 0,     carrierCount: 0,  topCarriers: "Energy mutuals + oilfield E&S + utility specialty writers",                  contactCount: 0     },
+  retail:                        { name: "Retail",                          agencyCount: 0,     carrierCount: 0,  topCarriers: "Retail specialty + main-street WC + regional standard writers",              contactCount: 0     },
+  "professional-services":       { name: "Professional Services",           agencyCount: 0,     carrierCount: 0,  topCarriers: "Professional liability specialty + lawyer/accountant E&O writers",          contactCount: 0     },
 };
 
 type LeftRailMode = "invite" | "vertical" | "default";

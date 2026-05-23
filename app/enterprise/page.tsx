@@ -321,24 +321,24 @@ export default async function EnterprisePage() {
         </div>
       </section>
 
-      {/* THE NEILSON COMPARISON */}
+      {/* PRICING ANCHOR */}
       <section className="py-20 bg-navy-900 text-white">
         <div className="mx-auto max-w-7xl px-4">
           <div className="max-w-3xl mx-auto">
             <div className="text-xs font-semibold uppercase tracking-wider text-gold-300">
-              The Neilson comparison
+              Pricing transparency
             </div>
             <h2 className="mt-2 text-3xl font-bold tracking-tight text-white">
-              The legacy national directory costs ~$25,000/year. We deliver the same all-state footprint for $12,500.
+              All-50-states distribution intelligence for $12,500 &mdash; flat ceiling, no per-state add-ons.
             </h2>
             <p className="mt-4 text-gray-300 leading-7">
-              Neilson trained the Distribution Expander market on per-state pricing: ~$10,000 entry for 5+2 states,
-              $1,500/state add-on, and a ~$25,000 ceiling for the full country at renewal. We respect that math &mdash;
-              and undercut the ceiling by 50%.
+              The legacy national-directory category trained the Distribution Expander market on per-state
+              pricing &mdash; entry tier, per-state add-ons, and a renewal ceiling that compounds with footprint.
+              Agency Signal collapses that into a flat all-50-states anchor.
             </p>
           </div>
 
-          <div className="mt-12 max-w-4xl mx-auto grid gap-4 md:grid-cols-3">
+          <div className="mt-12 max-w-4xl mx-auto grid gap-4 md:grid-cols-2">
             <ComparisonStat
               label="À la carte all-50 (Agency Signal)"
               value={`$${ALA_CARTE_TOTAL.toLocaleString()}`}
@@ -350,19 +350,12 @@ export default async function EnterprisePage() {
               sub="All 50 states + AK/DC/HI &middot; flat ceiling"
               emphasis
             />
-            <ComparisonStat
-              label="Legacy national directory"
-              value="~$25,000"
-              sub="Anchor price for full coverage at renewal"
-              muted
-            />
           </div>
 
           <div className="mt-10 max-w-3xl mx-auto text-center">
             <p className="text-sm text-gray-300">
-              That&rsquo;s an <span className="font-semibold text-gold-300">81% effective discount</span> off our own à la carte rack,
-              and a <span className="font-semibold text-gold-300">50% undercut</span> of the legacy ceiling &mdash; for a 41,705-agency
-              directory refreshed monthly with state-DOI-cross-checked appointment data.
+              That&rsquo;s an <span className="font-semibold text-gold-300">81% effective discount</span> off our own à la carte rack
+              &mdash; for a 41,705-agency directory refreshed monthly with state-DOI-cross-checked appointment data.
             </p>
           </div>
         </div>
