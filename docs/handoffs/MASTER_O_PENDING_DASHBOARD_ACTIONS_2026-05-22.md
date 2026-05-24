@@ -1,6 +1,18 @@
-# Master O — Pending Dashboard Actions (2026-05-22)
+# Master O — Pending Dashboard Actions (2026-05-22) — SUPERSEDED 2026-05-23
 
-**Status:** Code side is DONE. 3 dashboard actions remain (~10 min total at laptop).
+> ## ⚠️ SUPERSEDED — see [`SESSION_33_HANDOFF.md`](SESSION_33_HANDOFF.md)
+>
+> This checklist was executed on **2026-05-23** in Session 33. Status:
+>
+> - **Action 1 (CRON_SECRET)** — ✅ DONE. PowerShell command in this doc **failed on Windows PowerShell 5.1** (`[RandomNumberGenerator]::Fill()` is .NET 6+; the legacy `System.Security.Cryptography` namespace in .NET Framework 4.x doesn't expose it). Browser DevTools console fallback was used instead — see Session 33 handoff for the clean cross-platform one-liner.
+> - **Action 2 (Stripe webhook)** — ✅ NO ACTION NEEDED. Was already wired (BACKLOG/this-doc was stale). Pre-flight discovery in Session 33 caught this before duplicate creation.
+> - **Action 3 (Sentry token rotation)** — ⚠️ DEFERRED. Token minted + Vercel env var set 3× but production build still shows "No auth token provided" warning. Non-blocking. ~5-min fresh-eyes pickup task documented at SESSION_33_HANDOFF.md "Pickup task for next session" section.
+>
+> **DO NOT execute this doc literally** — the PowerShell command will fail on your machine, and Actions 1+2 are no longer needed. Read this only as historical context. The Session 33 handoff is the authoritative pickup point.
+
+---
+
+**Status (as of 2026-05-22):** Code side is DONE. 3 dashboard actions remain (~10 min total at laptop).
 
 This doc survives across sessions. Open it whenever you're back at laptop. Cross each item off as you complete it; ping Claude to verify after the last one.
 
