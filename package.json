@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "load-adlist": "tsx scripts/load-adlist.ts",
-    "export-tier1": "tsx scripts/data-safety/export-tier1.ts"
+    "export-tier1": "tsx scripts/data-safety/export-tier1.ts",
+    "smoke": "tsx scripts/reliability/smoke-test.ts"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.2",
