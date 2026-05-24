@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import {
+  checkRateLimit,
+  ipFromHeaders,
+  rateLimitErrorResponse,
+} from "@/lib/security/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +26,24 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+  }
+
+  // Session D — rate-limit invites at 10 / hour per user. Stops invite-spam
+  // floods that would (a) exhaust the tenant's seat limit prematurely,
+  // (b) burn Supabase Auth email quota, and (c) generate inbox spam at the
+  // invited addresses. Graceful no-op when Upstash env vars are unset.
+  const inviteId = `invite:${user.id}`;
+  const rl = await checkRateLimit("invite", inviteId);
+  if (!rl.success) {
+    const { body, init } = rateLimitErrorResponse(rl);
+    return NextResponse.json(body, init);
+  }
+  // Per-IP fallback to catch the case where one user controls many IPs via
+  // a bot farm; cheaper than per-user when the limiter is doing its job.
+  const ipRl = await checkRateLimit("publicWrite", `invite-ip:${ipFromHeaders(req.headers)}`);
+  if (!ipRl.success) {
+    const { body, init } = rateLimitErrorResponse(ipRl);
+    return NextResponse.json(body, init);
   }
 
   const { data, error } = await supabase.rpc("invite_team_member", {

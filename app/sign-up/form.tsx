@@ -1,8 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { createClient } from "@/lib/supabase/client";
+
+// Cloudflare Turnstile site key. When unset (local dev, env not configured),
+// the widget does not render and the captchaToken is omitted from the signup
+// payload — Supabase Auth ignores the missing token unless CAPTCHA is
+// enabled in the Supabase dashboard. Master O dashboard action: paste the
+// Turnstile secret into Supabase Auth + flip the toggle.
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
 
 export function SignUpForm() {
   const router = useRouter();
@@ -12,6 +20,8 @@ export function SignUpForm() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState(prefillEmail);
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const turnstileRef = useRef<TurnstileInstance | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,6 +37,15 @@ export function SignUpForm() {
     e.preventDefault();
     setError(null);
     setInfo(null);
+
+    // If Turnstile is configured but the user hasn't completed the challenge,
+    // block submission rather than letting Supabase reject with a generic
+    // captcha-required error.
+    if (TURNSTILE_SITE_KEY && !captchaToken) {
+      setError("Please complete the bot-check challenge below the password field.");
+      return;
+    }
+
     setLoading(true);
     const supabase = createClient();
     const { data, error } = await supabase.auth.signUp({
@@ -34,6 +53,10 @@ export function SignUpForm() {
       password,
       options: {
         data: { full_name: fullName },
+        // Supabase Auth validates this against the Turnstile secret set in
+        // Supabase dashboard. If CAPTCHA is disabled in Supabase, the token
+        // is ignored.
+        captchaToken: captchaToken ?? undefined,
         emailRedirectTo:
           typeof window !== "undefined"
             ? `${window.location.origin}/auth/callback`
@@ -43,6 +66,12 @@ export function SignUpForm() {
     if (error) {
       setError(friendlyAuthError(error.message));
       setLoading(false);
+      // Reset Turnstile so the user gets a fresh challenge on retry — tokens
+      // are single-use; reusing a token will fail.
+      if (TURNSTILE_SITE_KEY) {
+        turnstileRef.current?.reset();
+        setCaptchaToken(null);
+      }
       return;
     }
     if (data.user && !data.session) {
@@ -110,6 +139,19 @@ export function SignUpForm() {
         <p className="mt-1 text-xs text-gray-500">At least 8 characters.</p>
       </div>
 
+      {TURNSTILE_SITE_KEY && (
+        <div className="flex justify-center pt-1">
+          <Turnstile
+            ref={turnstileRef}
+            siteKey={TURNSTILE_SITE_KEY}
+            onSuccess={(token) => setCaptchaToken(token)}
+            onError={() => setCaptchaToken(null)}
+            onExpire={() => setCaptchaToken(null)}
+            options={{ theme: "light", size: "normal" }}
+          />
+        </div>
+      )}
+
       {error && (
         <div className="rounded-md bg-red-50 p-3 text-sm text-red-800">{error}</div>
       )}
@@ -119,7 +161,7 @@ export function SignUpForm() {
 
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || (TURNSTILE_SITE_KEY ? !captchaToken : false)}
         className="w-full rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:opacity-60"
       >
         {loading ? "Reserving your seat…" : "Get instant access"}

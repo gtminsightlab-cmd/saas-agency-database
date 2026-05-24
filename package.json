@@ -10,9 +10,12 @@
     "load-adlist": "tsx scripts/load-adlist.ts"
   },
   "dependencies": {
+    "@marsidev/react-turnstile": "^1.5.2",
     "@sentry/nextjs": "^10.53.1",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.45.4",
+    "@upstash/ratelimit": "^2.0.8",
+    "@upstash/redis": "^1.38.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "clsx": "^2.1.1",

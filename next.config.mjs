@@ -1,5 +1,35 @@
 import { withSentryConfig } from "@sentry/nextjs";
 
+// Content-Security-Policy directives. Deployed in REPORT-ONLY mode first
+// (see header key below) so violations surface to Sentry via /api/csp-report
+// without breaking the site. Master O reviews the Sentry CSP-violation
+// stream for a week, tunes any gaps (likely Stripe / Vercel-Analytics /
+// Sentry-tunnel adjustments), then flips the header key from
+// `Content-Security-Policy-Report-Only` -> `Content-Security-Policy` to
+// enforce.
+//
+// `'unsafe-inline'` on script-src + style-src is a known compromise for
+// Next.js 16 + Tailwind without a nonce-injecting middleware. The
+// nonce-based upgrade path is tracked in SECURITY.md as a follow-up.
+const CSP_DIRECTIVES = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://challenges.cloudflare.com https://js.stripe.com https://*.vercel-scripts.com https://*.vercel-insights.com",
+  "script-src-elem 'self' 'unsafe-inline' https://challenges.cloudflare.com https://js.stripe.com https://*.vercel-scripts.com https://*.vercel-insights.com",
+  "style-src 'self' 'unsafe-inline'",
+  "style-src-elem 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https:",
+  "font-src 'self' data:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://*.upstash.io https://api.stripe.com https://*.vercel-insights.com https://*.vercel-scripts.com",
+  "frame-src 'self' https://js.stripe.com https://challenges.cloudflare.com https://hooks.stripe.com",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "upgrade-insecure-requests",
+  "report-uri /api/csp-report",
+].join("; ");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -14,7 +44,9 @@ const nextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
-          { key: "X-DNS-Prefetch-Control", value: "on" }
+          { key: "X-DNS-Prefetch-Control", value: "on" },
+          // REPORT-ONLY for first deploy. Flip to "Content-Security-Policy" to enforce.
+          { key: "Content-Security-Policy-Report-Only", value: CSP_DIRECTIVES }
         ]
       }
     ];
