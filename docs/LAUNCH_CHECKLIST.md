@@ -72,6 +72,18 @@ These are paths the automated smoke can't reasonably cover (email confirmation, 
 | 16 | Complete Turnstile → click Submit | Green confirmation: "Check your inbox…" | ☐ |
 | 17 | Open the confirmation email → click the link | Land on `/build-list` with the test account active | ☐ |
 
+### C1b. Sign-in flow (Turnstile gate — caught during SESSION_35 hotfix)
+
+Added after SESSION_35 discovered Session D shipped Turnstile widget on `/sign-up` only — `/sign-in` and `/auth/forgot-password` were broken when Supabase CAPTCHA was first enabled. Fixed via SESSION_35 hotfix. These rows make sure the gap stays closed.
+
+| # | Step | Expected | Status |
+|---|---|---|---|
+| 17a | Visit `directory.seven16group.com/sign-in` in a fresh incognito | Turnstile widget renders below password field | ☐ |
+| 17b | Fill in email + password (use the test account from C1) → Submit BEFORE completing Turnstile | Submit button disabled; status text "Please complete the bot-check challenge below the password field" | ☐ |
+| 17c | Complete Turnstile → Submit | Lands on `/home` (default post-login per BACKLOG #1) with active session | ☐ |
+| 17d | Visit `directory.seven16group.com/auth/forgot-password` in fresh incognito | Turnstile widget renders below email field | ☐ |
+| 17e | Enter test email → complete Turnstile → Send reset link | Green confirmation "Reset link sent" + email arrives in inbox within ~1 min | ☐ |
+
 ### C2. First-export flow
 | # | Step | Expected | Status |
 |---|---|---|---|
