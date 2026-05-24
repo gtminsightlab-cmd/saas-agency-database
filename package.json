@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "load-adlist": "tsx scripts/load-adlist.ts"
+    "load-adlist": "tsx scripts/load-adlist.ts",
+    "export-tier1": "tsx scripts/data-safety/export-tier1.ts"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.2",
@@ -24,7 +25,8 @@
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "sonner": "^2.0.7",
-    "stripe": "^17.4.0"
+    "stripe": "^17.4.0",
+    "swr": "^2.4.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",

@@ -40,3 +40,6 @@ data/
 .test_*
 .vercel
 tmp/
+
+# Tier-1 data-safety exports (contain customer rows; NEVER commit)
+backups/
