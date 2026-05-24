@@ -5,14 +5,14 @@ import {
   Lock,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { Sidebar } from "@/components/app/sidebar";
 import { CarriersGrid } from "./grid";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Carrier appointments analytics | Seven16 Agency Directory",
+  title: "Carrier appointments analytics | Agency Signal",
   description:
     "Find agencies appointed with any of 1,300+ carriers. All carriers with 150+ appointed agencies, multi-select for batch list-building.",
 };
@@ -100,7 +100,7 @@ export default async function AnalyticsCarriersPage() {
 
   const body = (
     <div className="bg-white">
-      {!user && <MarketingNav isAuthed={false} />}
+      {!user && <MarketingHeader isAuthed={false} />}
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-gray-100">

@@ -12,7 +12,7 @@ export default async function SignInPage({
       {/* Left — marketing rail */}
       <aside className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-brand-700 to-brand-900 p-10 text-white">
         <Link href="/" className="text-xl font-bold tracking-tight">
-          Seven16 <span className="font-light opacity-80">Agency Directory</span>
+          Agency Signal <span className="font-light opacity-80">by Seven16 Group</span>
         </Link>
         <div className="space-y-6 max-w-lg">
           <h1 className="text-4xl font-bold leading-tight">

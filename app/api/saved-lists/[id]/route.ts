@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit, rateLimitErrorResponse } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,6 +34,15 @@ export async function DELETE(
       { error: "unauthenticated", message: "Sign in required." },
       { status: 401 }
     );
+  }
+
+  // Rate-limit per-user (30 / minute via adminWrite key) — prevents
+  // accidental or malicious mass-delete loops from chewing through a tenant's
+  // recruit lists. Defense-in-depth; RLS still scopes the actual delete.
+  const rl = await checkRateLimit("adminWrite", `delete-saved-list:${user.id}`);
+  if (!rl.success) {
+    const { body, init } = rateLimitErrorResponse(rl);
+    return NextResponse.json(body, init);
   }
 
   // First verify the row is visible to the caller (so we can surface a real 404

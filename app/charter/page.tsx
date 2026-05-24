@@ -3,7 +3,7 @@ import {
   ArrowRight, Check, Coins, Layers, ShieldCheck, BadgeCheck,
   Mail, Network, Clock, Lock, Truck, Building2, Megaphone,
 } from "lucide-react";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -124,7 +124,7 @@ export default async function CharterPage() {
 
   return (
     <div className="bg-white">
-      <MarketingNav isAuthed={!!user} />
+      <MarketingHeader isAuthed={!!user} />
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-gray-200">

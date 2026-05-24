@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Check, Map, Layers, Zap, ShieldCheck, TrendingUp, Building2, Users, Mail } from "lucide-react";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +41,7 @@ export default async function EnterprisePage() {
 
   return (
     <div className="bg-white">
-      <MarketingNav isAuthed={!!user} />
+      <MarketingHeader isAuthed={!!user} />
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-gray-200">

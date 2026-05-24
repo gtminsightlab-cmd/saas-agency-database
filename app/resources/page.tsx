@@ -7,7 +7,7 @@ import {
   Layers,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { Sidebar } from "@/components/app/sidebar";
 
 export const dynamic = "force-dynamic";
@@ -96,7 +96,7 @@ export default async function ResourcesPage() {
 
   const body = (
     <div className="bg-white">
-      {!user && <MarketingNav isAuthed={false} />}
+      {!user && <MarketingHeader isAuthed={false} />}
 
       {/* ============== HERO ============== */}
       <section className="relative overflow-hidden border-b border-gray-100">

@@ -10,7 +10,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { AppShell } from "@/components/app/shell";
 import { Breadcrumbs } from "@/components/app/breadcrumbs";
 import { PageHeader } from "@/components/app/page-header";
@@ -339,7 +339,7 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
 
   const body = (
     <div className="bg-white">
-      {!user && <MarketingNav isAuthed={false} />}
+      {!user && <MarketingHeader isAuthed={false} />}
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-gray-100">

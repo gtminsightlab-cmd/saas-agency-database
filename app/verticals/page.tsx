@@ -25,7 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { Sidebar } from "@/components/app/sidebar";
 import { getVerticalsSummary } from "@/lib/cache/build-list-refs";
 
@@ -109,7 +109,7 @@ export default async function VerticalsPage() {
 
   const body = (
     <div className="bg-white">
-      {!user && <MarketingNav isAuthed={false} />}
+      {!user && <MarketingHeader isAuthed={false} />}
 
       {/* ============== HERO ============== */}
       <section className="relative overflow-hidden border-b border-gray-100">
@@ -487,7 +487,7 @@ export default async function VerticalsPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
-                  href="mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Seven16%20Agency%20Directory"
+                  href="mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Agency%20Signal"
                   className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 inline-flex items-center gap-2"
                 >
                   Talk to sales
@@ -503,7 +503,7 @@ export default async function VerticalsPage() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <a
-                  href="mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Seven16%20Agency%20Directory"
+                  href="mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Agency%20Signal"
                   className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 inline-flex items-center gap-2"
                 >
                   Talk to sales

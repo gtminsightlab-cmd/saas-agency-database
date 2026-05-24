@@ -16,13 +16,13 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
-import { MarketingNav } from "@/components/marketing/nav";
+import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { Sidebar } from "@/components/app/sidebar";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "How we score agencies — Methodology | Seven16 Agency Directory",
+  title: "How we score agencies — Methodology | Agency Signal",
   description:
     "Three independent signals — Volume, Specialization Tier, and Carrier Diversity — turn a 36,000-name agency list into a defensible recruit list. Read the full methodology.",
 };
@@ -60,7 +60,7 @@ export default async function MethodologyPage() {
 
   const body = (
     <div className="bg-white">
-      {!user && <MarketingNav isAuthed={false} />}
+      {!user && <MarketingHeader isAuthed={false} />}
 
       {/* ============== HERO ============== */}
       <section className="relative overflow-hidden border-b border-gray-100">

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit, rateLimitErrorResponse } from "@/lib/security/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -43,6 +44,16 @@ export async function POST(request: NextRequest) {
   const { data: isAdmin } = await supabase.rpc("is_super_admin");
   if (!isAdmin) {
     return NextResponse.json({ error: "super_admin_required" }, { status: 403 });
+  }
+
+  // Rate-limit super_admin uploads at adminWrite (30 / minute per user).
+  // Prevents accidental upload-loop thrashing of the data-engine pipeline
+  // and protects database resources during back-to-back large workbook
+  // submissions. Defense-in-depth on top of the super_admin gate.
+  const rl = await checkRateLimit("adminWrite", `admin-upload:${user.id}`);
+  if (!rl.success) {
+    const { body, init } = rateLimitErrorResponse(rl);
+    return NextResponse.json(body, init);
   }
 
   // Parse multipart
