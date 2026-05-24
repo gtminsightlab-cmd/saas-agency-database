@@ -93,9 +93,19 @@ Master O went to laptop to execute the 3 dashboard actions documented in [`MASTE
 
 ---
 
-## Pickup task for next session (~5-10 min, fresh eyes)
+## Pickup tasks for next session
 
-The ONE remaining quirk from this session is the Sentry source-map upload warning. A fresh session should:
+### Quick cleanup (~30 sec, Master O at laptop) — delete 2 stale remote branches
+
+Two stale remote branches from 2026-05-14 survived (`origin/feat/foundations-sprint` + `origin/feat/sentry-install`). Both are verified content-merged into main (Sentry config + security headers are live in `next.config.mjs`; merge commit `899b47d` is in main's history). Git's strict ancestry flags them "unmerged" only because they were squash/merge-combined, not fast-forwarded. **Claude could NOT delete them** — the remote-execution session's git credentials returned HTTP 403 on `git push --delete` (scoped to the work branch only), and the GitHub MCP has no delete-branch tool. Master O deletes them via:
+- **Web UI:** https://github.com/gtminsightlab-cmd/saas-agency-database/branches → trash icon on each → confirm
+- **OR local clone:** `git push origin --delete feat/foundations-sprint feat/sentry-install`
+
+Local folder is already clean (main fast-forwarded to current, no stale local branches, worktrees pruned). Keep `claude/session-30-recovery-D4xSt` until PR #7 merges.
+
+### Sentry source-map upload (~5-10 min, fresh eyes)
+
+The remaining quirk from this session is the Sentry source-map upload warning. A fresh session should:
 
 1. **Open Vercel env vars filtered to Production:**
    - https://vercel.com/gtminsightlab-7170s-projects/saas-agency-database/settings/environment-variables
