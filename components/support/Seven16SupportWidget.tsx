@@ -59,6 +59,23 @@ export function Seven16SupportWidget({
   // react-hooks/set-state-in-effect lint flag.
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
 
+  // SESSION_37 defensive (2026-05-25): force panel closed on every fresh
+  // mount. Reproduced on PR #8 preview: panel rendered open with "Loading…"
+  // placeholder on first paint despite useState(false). Root cause not
+  // pinned (App Router layout state across nav, or hydration drift) — but
+  // an explicit setOpen(false) on mount guarantees the small-pill-only
+  // landing state regardless. Pill renders unconditionally below.
+  useEffect(() => {
+    setOpen(false);
+  }, []);
+
+  // Defensive sync: if `open` ever becomes true while hasBeenOpened is
+  // false (the "Loading… persists" symptom), promote hasBeenOpened so the
+  // iframe mounts and the user never sees the placeholder.
+  useEffect(() => {
+    if (open && !hasBeenOpened) setHasBeenOpened(true);
+  }, [open, hasBeenOpened]);
+
   // Escape key closes the panel from anywhere on the page.
   useEffect(() => {
     if (!open) return;
@@ -84,23 +101,25 @@ export function Seven16SupportWidget({
 
   return (
     <>
-      {/* Floating chat button — hidden when panel is open so the user has a
-          single, unambiguous close affordance (the panel's header X). Two
-          X buttons (header X + this button switching to X icon) confused
-          early testers. */}
-      {!open ? (
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label="Open support chat"
-          aria-expanded={false}
-          aria-controls="seven16-support-panel"
-          className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-        >
-          <MessageCircle className="h-5 w-5" aria-hidden="true" />
-          <span>Chat with us</span>
-        </button>
-      ) : null}
+      {/* Floating chat button — SESSION_37 (2026-05-25): always rendered
+          (previously hidden when panel open via `{!open ? ... : null}` to
+          eliminate "double X" confusion, but deployed behavior was showing
+          the pill alongside an auto-open panel anyway). Always-on pill is
+          more robust to state drift and matches Master O's stated UX
+          preference: "smaller chat with us should be the only thing on
+          landing." Label flips to "Close chat" when panel open so the
+          affordance is unambiguous. */}
+      <button
+        type="button"
+        onClick={toggle}
+        aria-label={open ? "Close support chat" : "Open support chat"}
+        aria-expanded={open}
+        aria-controls="seven16-support-panel"
+        className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+      >
+        <MessageCircle className="h-5 w-5" aria-hidden="true" />
+        <span>{open ? "Close chat" : "Chat with us"}</span>
+      </button>
 
       {/* Expanded panel. Hidden via display when closed so the iframe can
           stay mounted across opens (chat history preserved within session). */}
