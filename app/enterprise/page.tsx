@@ -41,7 +41,7 @@ export default async function EnterprisePage() {
 
   return (
     <div className="bg-white">
-      <MarketingHeader isAuthed={!!user} />
+      <MarketingHeader isAuthed={!!user} theme="dark" />
 
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-gray-200">

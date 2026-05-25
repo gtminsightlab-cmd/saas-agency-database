@@ -66,7 +66,7 @@ export default async function MarketingHome() {
 
   return (
     <div className="bg-white">
-      <MarketingHeader isAuthed={!!user} />
+      <MarketingHeader isAuthed={!!user} theme="dark" />
       <main>
         <HeroSection
           isAuthed={!!user}

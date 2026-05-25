@@ -77,7 +77,7 @@ export default async function UseCasesPage() {
 
   return (
     <div className="bg-white">
-      <MarketingHeader isAuthed={!!user} />
+      <MarketingHeader isAuthed={!!user} theme="dark" />
       <main>
         {/* ===== HERO ===== */}
         <section className="relative overflow-hidden border-b border-slate-200 bg-slate-950 text-white">
