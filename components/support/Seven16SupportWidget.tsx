@@ -95,9 +95,10 @@ export function Seven16SupportWidget({
           aria-label="Open support chat"
           aria-expanded={false}
           aria-controls="seven16-support-panel"
-          className="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+          className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
         >
-          <MessageCircle className="h-6 w-6" aria-hidden="true" />
+          <MessageCircle className="h-5 w-5" aria-hidden="true" />
+          <span>Chat with us</span>
         </button>
       ) : null}
 
