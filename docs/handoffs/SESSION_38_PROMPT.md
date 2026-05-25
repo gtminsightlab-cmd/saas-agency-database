@@ -2,23 +2,31 @@
 
 Read in this order:
 1. [`docs/BACKLOG.md`](../BACKLOG.md)
-2. [`docs/handoffs/SESSION_37_HANDOFF.md`](SESSION_37_HANDOFF.md) (most recent)
+2. [`docs/handoffs/SESSION_37_HANDOFF.md`](SESSION_37_HANDOFF.md) + [`SESSION_37_ADDENDUM_widget_fixes.md`](SESSION_37_ADDENDUM_widget_fixes.md) (most recent)
 3. [`docs/handoffs/SESSION_36_HANDOFF.md`](SESSION_36_HANDOFF.md) (domain cutover choreography lives here)
 4. [`docs/WORKING_AGREEMENT.md`](../WORKING_AGREEMENT.md)
 
+## State at SESSION_38 open
+
+- **PR #8 MERGED 2026-05-25** as `df4e835`. Production main is now serving design system v1 + widget Stage 2 (with the SESSION_37 addendum fixes) + compliance pages.
+- Vercel production deploy `dpl_8EPG8sdSkmrkEsZSRMUrE6aPFUiz` READY at `directory.seven16group.com`.
+- Branch `feat/design-system-v1` deleted from origin.
+
 ## Active arc
 
-**Domain cutover: `directory.seven16group.com` → `agencysignal.co`** — carried from SESSION_36 + 37. Estimated ~30-60 min focused.
+**Domain cutover: `directory.seven16group.com` → `agencysignal.co`** — unblocked now that PR #8 is merged. Estimated ~30-60 min focused.
 
-**Gate check before starting:**
+**Sanity check before starting** (paste into PowerShell from repo root):
 
-```bash
-# Is PR #8 merged?
-gh pr view 8 --json state,mergeStateStatus
+```powershell
+git fetch origin main; git log origin/main --oneline -3
 ```
 
-- If `state: MERGED` → cutover unblocks. Proceed.
-- If `state: OPEN` → Master O still reviewing the design system v1 + support widget + compliance pages preview. Either iterate per his feedback, or pivot to another queued item.
+Expected: `df4e835` (PR #8 merge) at HEAD or shortly behind. If anything looks off, stop and ask Master O before touching DNS.
+
+## Side arc to verify in passing
+
+Confirm last night's 04:00 UTC cron fired under the SESSION_37 new EF auth architecture:
 
 ## SESSION_37 cron-verification carry-forward
 
