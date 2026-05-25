@@ -82,19 +82,22 @@ export function Seven16SupportWidget({
 
   return (
     <>
-      {/* Floating chat button — always rendered, even when panel is open
-          (acts as a secondary close affordance when collapsed beneath the
-          panel header on mobile). */}
-      <button
-        type="button"
-        onClick={toggle}
-        aria-label={open ? "Close support chat" : "Open support chat"}
-        aria-expanded={open}
-        aria-controls="seven16-support-panel"
-        className="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-      >
-        {open ? <X className="h-6 w-6" aria-hidden="true" /> : <MessageCircle className="h-6 w-6" aria-hidden="true" />}
-      </button>
+      {/* Floating chat button — hidden when panel is open so the user has a
+          single, unambiguous close affordance (the panel's header X). Two
+          X buttons (header X + this button switching to X icon) confused
+          early testers. */}
+      {!open ? (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label="Open support chat"
+          aria-expanded={false}
+          aria-controls="seven16-support-panel"
+          className="fixed bottom-6 right-6 z-50 inline-flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-600/30 transition hover:bg-blue-500 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+        >
+          <MessageCircle className="h-6 w-6" aria-hidden="true" />
+        </button>
+      ) : null}
 
       {/* Expanded panel. Hidden via display when closed so the iframe can
           stay mounted across opens (chat history preserved within session). */}
@@ -137,7 +140,6 @@ export function Seven16SupportWidget({
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
                 referrerPolicy="strict-origin-when-cross-origin"
                 onError={() => setIframeError(true)}
-                loading="lazy"
               />
             )
           ) : (
