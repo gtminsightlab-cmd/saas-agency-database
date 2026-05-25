@@ -20,7 +20,7 @@ const CSP_DIRECTIVES = [
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
   "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.sentry.io https://*.ingest.sentry.io https://*.upstash.io https://api.stripe.com https://*.vercel-insights.com https://*.vercel-scripts.com",
-  "frame-src 'self' https://js.stripe.com https://challenges.cloudflare.com https://hooks.stripe.com",
+  "frame-src 'self' https://js.stripe.com https://challenges.cloudflare.com https://hooks.stripe.com https://seven16groupsupport.com",
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",

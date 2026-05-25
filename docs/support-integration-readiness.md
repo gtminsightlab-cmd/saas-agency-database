@@ -1,6 +1,6 @@
 # Agency Signal — Seven16 Group Support integration readiness
 
-**Status:** Stage-1 readiness shipped 2026-05-19 (Session C). Widget mount + signed-token signing + event posting + ticket linking all DEFERRED until `seven16groupsupport.com` actually ships.
+**Status:** **Stage 2 shipped 2026-05-24** — widget LIVE globally; `seven16groupsupport.com` confirmed built + ready by Master O; doctrine unlocked from "do not mount globally" to "mount globally with public_presales mode." Stage 1 readiness scaffolding shipped 2026-05-19 (Session C). Stage 3 (signed-token customer_support mode, per-route mode switching, real event POSTing) deferred to a follow-up session.
 
 **Source brief:** [`docs/Customer Support and Sales AI Agent.txt`](Customer%20Support%20and%20Sales%20AI%20Agent.txt) — Master O's paste-into-every-product directive (2026-05-19).
 
@@ -198,7 +198,7 @@ If `seven16groupsupport.com` is unavailable:
 | `lib/support/events.ts` (event helper) | ✅ shipped Session C |
 | 4× `app/api/internal/support/*/route.ts` (stubs) | ✅ shipped Session C |
 | CLAUDE.md awareness paragraph + cross-repo memory note | ✅ shipped Session C |
-| Widget global mount | 🟦 deferred (waits on seven16groupsupport.com) |
+| Widget global mount | ✅ **shipped 2026-05-24** — floating chat button in `app/layout.tsx`, iframe loads `https://seven16groupsupport.com/support/agencysignal` lazily on first open, public_presales mode (anonymous), CSP `frame-src` allows `seven16groupsupport.com`, graceful fallback to mailto if iframe fails |
 | Real HMAC signing of context tokens | 🟦 deferred |
 | Real event POSTing (vs `console.debug`) | 🟦 deferred |
 | Real `/context` + `/events` + `/ticket-link` implementations | 🟦 deferred |
