@@ -5,8 +5,19 @@
 **Branch:** `main` (close-out docs); `feat/design-system-v1` (open PR #8 carrying 4 distinct arcs)
 **Predecessor:** [`SESSION_35_HANDOFF.md`](SESSION_35_HANDOFF.md) (BACKLOG #2 pivot to LAUNCH_CHECKLIST)
 **HEAD at session open:** `1b57ee3` (SESSION_35 family-doc backfill)
-**HEAD at session close (main):** (this commit)
-**Open PR with code work:** [PR #8 on `feat/design-system-v1`](https://github.com/gtminsightlab-cmd/saas-agency-database/pull/8) — 8+ commits, awaiting Master O review + merge
+**HEAD at session close (main):** `6c4348f` (this docs commit). Main also picked up `59b1360` (CAPTCHA hotfix Arc 2) + `38645ec` (brand consistency + rate-limit Arc 3.1) + `6e8b308` (theme-aware MarketingHeader Arc 3.2) during the session — those 3 arcs are LIVE on production main.
+**Open PR with code work:** [PR #8 on `feat/design-system-v1`](https://github.com/gtminsightlab-cmd/saas-agency-database/pull/8) — 8+ commits carrying ONLY Arcs 4 (design system v1), 5 (support widget Stage 2), 6 (compliance pages). Awaiting Master O Vercel-preview review + merge.
+
+**State split — what's where:**
+
+| Arc | On production main? | In PR #8? |
+|---|---|---|
+| 1 — LAUNCH_CHECKLIST execution | n/a (no code; dashboard work + verification) | n/a |
+| 2 — CAPTCHA hotfix | ✅ YES (commit `59b1360`) | included in branch ancestry |
+| 3 — Brand consistency + theme-aware header | ✅ YES (commits `38645ec` + `6e8b308`) | included in branch ancestry |
+| 4 — Design system v1 (Phase A + B + C) | ❌ NO | ✅ YES |
+| 5 — Support widget Stage 2 (4 commits) | ❌ NO | ✅ YES |
+| 6 — Compliance pages (Privacy + Terms + Delete) | ❌ NO | ✅ YES |
 **Live URL:** https://directory.seven16group.com — production READY; preview deploys on PR #8 carry the new design system + support widget + compliance pages.
 
 ---
