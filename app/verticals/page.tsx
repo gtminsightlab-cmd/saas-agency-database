@@ -1,38 +1,19 @@
 import Link from "next/link";
-import {
-  Truck,
-  Stethoscope,
-  HardHat,
-  Wheat,
-  HeartHandshake,
-  TrendingUp,
-  Lock,
-  Landmark,
-  Building2,
-  UtensilsCrossed,
-  Factory,
-  Cpu,
-  Zap,
-  ShoppingBag,
-  Briefcase,
-  Target,
-  Crosshair,
-  Handshake,
-  Banknote,
-  CheckCircle2,
-  ArrowRight,
-  Search,
-  type LucideIcon,
-} from "lucide-react";
+import { Truck, Stethoscope, HardHat, Wheat, HeartHandshake, Lock, Landmark, Building2, UtensilsCrossed, Factory, Cpu, Zap, ShoppingBag, Briefcase, TrendingUp, type LucideIcon } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { Sidebar } from "@/components/app/sidebar";
+import { PageHero } from "@/components/layout/PageHero";
+import { Section } from "@/components/layout/Section";
+import { CTASection } from "@/components/layout/CTASection";
+import { DataPanel } from "@/components/marketing/DataPanel";
+import { WorkflowStrip } from "@/components/marketing/WorkflowStrip";
 import { getVerticalsSummary } from "@/lib/cache/build-list-refs";
 
 export const dynamic = "force-dynamic";
 
 const VERTICAL_FALLBACK = [
-  { slug: "transportation",            name: "Transportation",              description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.",                                                                                                                   icon_key: "Truck",       color_token: "brand",   sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 78,  agencies_growing: 6, agencies_specialist: 0, agency_count: 358,   location_count: 518,   contact_count: 4002,  contacts_with_email: 3710,  contacts_with_mobile: 1232, agencies_with_linkedin: 361,  agencies_with_web: 510,   agencies_with_email: 436  },
+  { slug: "transportation", name: "Transportation", description: "Agencies writing trucking, commercial auto, and cargo risk — identified by appointments with specialty trucking carriers.", icon_key: "Truck", color_token: "brand", sort_order: 1, mapped_carrier_count: 12, agencies_with_exposure: 78, agencies_growing: 6, agencies_specialist: 0, agency_count: 358, location_count: 518, contact_count: 4002, contacts_with_email: 3710, contacts_with_mobile: 1232, agencies_with_linkedin: 361, agencies_with_web: 510, agencies_with_email: 436 },
 ];
 
 type VerticalSummary = {
@@ -61,18 +42,9 @@ const ICONS: Record<string, LucideIcon> = {
   Landmark, Building2, UtensilsCrossed, Factory, Cpu, Zap, ShoppingBag, Briefcase,
 };
 
-const COLOR_CLASSES: Record<string, { ring: string; bg: string; text: string; border: string; dot: string }> = {
-  brand:   { ring: "ring-brand-200",   bg: "bg-brand-50",   text: "text-brand-700",   border: "border-brand-100",   dot: "bg-brand-500" },
-  success: { ring: "ring-success-200", bg: "bg-success-50", text: "text-success-700", border: "border-success-100", dot: "bg-success-500" },
-  gold:    { ring: "ring-gold-200",    bg: "bg-gold-50",    text: "text-gold-800",    border: "border-gold-100",    dot: "bg-gold-500" },
-  navy:    { ring: "ring-navy-200",    bg: "bg-navy-50",    text: "text-navy-800",    border: "border-navy-100",    dot: "bg-navy-500" },
-};
-
 export default async function VerticalsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
 
   let hasActivePlan = false;
   if (user) {
@@ -83,14 +55,9 @@ export default async function VerticalsPage() {
     hasActivePlan = !!ent && ent.status === "active";
   }
 
-  // Cached at module scope (lib/cache/build-list-refs.ts). 1-hour TTL,
-  // invalidate via revalidateTag('verticals-refs') after any
-  // REFRESH MATERIALIZED VIEW mv_vertical_summary.
   const live = (await getVerticalsSummary()) as unknown as VerticalSummary[];
   const verticals: VerticalSummary[] = live.length > 0 ? live : (VERTICAL_FALLBACK as VerticalSummary[]);
 
-  // Authenticated users see this page inside the app shell (sidebar nav);
-  // anonymous visitors see it with the marketing nav.
   let sidebarProps:
     | { email: string; fullName: string | null; isSuperAdmin: boolean }
     | null = null;
@@ -107,421 +74,180 @@ export default async function VerticalsPage() {
     };
   }
 
+  // CTA destination logic per session state — preserved from prior version.
+  const primaryCtaHref = hasActivePlan
+    ? "/build-list"
+    : user
+      ? "/#pricing"
+      : "/sign-up";
+  const primaryCtaLabel = hasActivePlan
+    ? "Build a list"
+    : user
+      ? "See pricing"
+      : "Get instant access";
+
   const body = (
-    <div className="bg-white">
-      {!user && <MarketingHeader isAuthed={false} />}
+    <div>
+      {!user && <MarketingHeader isAuthed={false} theme="dark" />}
 
-      {/* ============== HERO ============== */}
-      <section className="relative overflow-hidden border-b border-gray-100">
-        <div className="absolute inset-0 bg-gradient-to-br from-brand-50 via-white to-white" aria-hidden />
-        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-medium text-brand-700">
-              <Crosshair className="h-3.5 w-3.5" />
-              Underwriting Breadcrumbs
-            </div>
-            <h1 className="mt-6 text-4xl font-bold tracking-tight text-navy-800 sm:text-5xl">
-              Don&rsquo;t just find agents.{" "}
-              <span className="text-brand-600">Find the right agents.</span>
-            </h1>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              We map the parent-child carrier relationships that define the US insurance market &mdash;
-              turning every agent&rsquo;s appointment list into a readable inventory of their actual book of
-              business. Filter, target, and recruit by the writing-company breadcrumbs your competitors
-              leave behind.
-            </p>
-            <p className="mt-4 text-sm text-gray-500">
-              <strong className="text-navy-800">Specialization tiers:</strong>{" "}
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-200" /> Exposure (2 specialty carriers)
-              </span>
-              {" · "}
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-500" /> Growing (3+)
-              </span>
-              {" · "}
-              <span className="inline-flex items-center gap-1.5">
-                <span className="inline-block h-2 w-2 rounded-full bg-brand-700" /> Specialist (5+)
-              </span>
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHero
+        variant="dark"
+        eyebrow="Verticals"
+        title="Don't just find agents."
+        highlight="Find the right agents."
+        description="We map the parent-child carrier relationships that define the US insurance market — turning every agent's appointment list into a readable inventory of their actual book of business. Filter, target, and recruit by the writing-company breadcrumbs your competitors leave behind."
+        primaryCta={{ label: primaryCtaLabel, href: primaryCtaHref }}
+        secondaryCta={{ label: "Read the methodology", href: "/methodology" }}
+        rightRail={
+          <DataPanel
+            eyebrow="Specialization tiers"
+            title="How we score every vertical"
+            rows={[
+              { label: "Exposure", value: "2 specialty carriers" },
+              { label: "Growing", value: "3+ specialty carriers" },
+              { label: "Specialist", value: "5+ specialty carriers" },
+              { label: "Refresh cadence", value: "Every 30 days" },
+            ]}
+            badges={["Carrier-verified", "State-DOI sourced", "Parent/child mapped"]}
+            footer="Scoring tiers are computed per-vertical against a curated specialty carrier roster. The carrier list per vertical and the scoring thresholds are published in full on the methodology page."
+          />
+        }
+      />
 
-      {/* ============== VERTICAL CARDS ============== */}
-      <section className="mx-auto max-w-7xl px-4 py-16">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-navy-800">12 verticals. Carrier-verified.</h2>
-          <p className="mt-2 text-sm text-gray-600 max-w-2xl">
-            Each card below is a pre-filtered, ready-to-export targeted list. Counts are live &mdash;
-            emails, mobiles, LinkedIn URLs, and websites populate the moment our pipeline picks up a
-            new appointment.
-          </p>
-        </div>
+      <Section
+        variant="muted"
+        eyebrow="How to use this page"
+        title="Read a vertical in four steps."
+        description="Every vertical card below is a pre-filtered, ready-to-export targeted list. Same four steps for every vertical, every time."
+      >
+        <WorkflowStrip
+          steps={[
+            { label: "Pick a market", description: "Choose the vertical you write — e.g., Transportation, Healthcare, Construction." },
+            { label: "Read the carrier paper", description: "See which specialty carriers define the segment. Every appointment is verified." },
+            { label: "Filter agencies", description: "Sort by tier, agency size, geography, contact density — find your ICP fast." },
+            { label: "Export targeted contacts", description: "Pull verified emails, mobiles, LinkedIn for producers, branch managers, presidents." },
+          ]}
+        />
+      </Section>
+
+      <Section
+        variant="light"
+        eyebrow="The catalog"
+        title="12 verticals. Carrier-verified."
+        description="Counts are live — emails, mobiles, LinkedIn URLs, and websites populate the moment our pipeline picks up a new appointment."
+      >
         <div className="grid gap-6 md:grid-cols-2">
           {verticals.map((v) => {
             const Icon = ICONS[v.icon_key] ?? TrendingUp;
-            const colors = COLOR_CLASSES[v.color_token] ?? COLOR_CLASSES.brand;
+            const linkHref = hasActivePlan
+              ? `/verticals/${v.slug}/open`
+              : user
+                ? `/#pricing`
+                : `/sign-up?vertical=${v.slug}`;
+            const ctaLabel = hasActivePlan
+              ? "Open targeted list →"
+              : user
+                ? "Unlock targeted list"
+                : "Get access →";
             return (
-              <article
-                key={v.slug}
-                className={`group flex h-full flex-col rounded-lg border ${colors.border} bg-white transition hover:border-brand-300 hover:shadow-sm`}
-              >
-                {/* Header */}
-                <header className="flex items-center gap-3 border-b border-gray-100 px-5 py-4">
-                  <div className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md ${colors.bg}`}>
-                    <Icon className={`h-5 w-5 ${colors.text}`} />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="truncate text-base font-semibold leading-tight text-navy-800">{v.name}</h2>
-                    <div className="mt-0.5 text-[11px] text-gray-500">
-                      {v.mapped_carrier_count} specialty carriers mapped
+              <article key={v.slug} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-teal-200 hover:shadow-md">
+                <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-teal-50 text-teal-700">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-lg font-black text-slate-950 truncate">{v.name}</h3>
+                      <p className="mt-0.5 text-xs font-semibold uppercase tracking-wide text-teal-700">
+                        {v.mapped_carrier_count} specialty carriers mapped
+                      </p>
                     </div>
                   </div>
-                </header>
+                </div>
 
-                {/* Body */}
-                <div className="flex flex-1 flex-col px-5 py-4">
-                  <p className="line-clamp-2 min-h-[2.6rem] text-sm leading-snug text-gray-600">
-                    {v.description}
-                  </p>
+                <p className="mt-4 min-h-[72px] text-sm leading-6 text-slate-600 line-clamp-3">
+                  {v.description}
+                </p>
 
-                  {/* Tier row — 3 evenly-spaced columns sharing a single bordered box */}
-                  <div className="mt-4 grid grid-cols-3 divide-x divide-gray-100 overflow-hidden rounded-md border border-gray-100">
-                    <TierBox label="Exposure"   count={v.agencies_with_exposure}  dot="bg-brand-200" />
-                    <TierBox label="Growing"    count={v.agencies_growing}        dot="bg-brand-500" />
-                    <TierBox label="Specialist" count={v.agencies_specialist}     dot="bg-brand-700" />
-                  </div>
+                <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200">
+                  <Metric label="Exposure" value={v.agencies_with_exposure} />
+                  <Metric label="Growing" value={v.agencies_growing} />
+                  <Metric label="Specialist" value={v.agencies_specialist} />
+                </div>
 
-                  {/* 3x2 unified stats grid — gap-px + bg-gray-200 yields crisp 1px cell lines */}
-                  <div className="mt-3 grid grid-cols-3 gap-px overflow-hidden rounded-md border border-gray-200 bg-gray-200">
-                    <DataCell label="Agencies"  value={v.agency_count} />
-                    <DataCell label="Locations" value={v.location_count} />
-                    <DataCell label="Contacts"  value={v.contact_count} />
-                    <DataCell label="Emails"    value={v.contacts_with_email} />
-                    <DataCell label="LinkedIn"  value={v.agencies_with_linkedin} />
-                    <DataCell label="Mobiles"   value={v.contacts_with_mobile} />
-                  </div>
+                <div className="mt-4 grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200">
+                  <Metric label="Agencies" value={v.agency_count} />
+                  <Metric label="Locations" value={v.location_count} />
+                  <Metric label="Contacts" value={v.contact_count} />
+                  <Metric label="Emails" value={v.contacts_with_email} />
+                  <Metric label="LinkedIn" value={v.agencies_with_linkedin} />
+                  <Metric label="Mobiles" value={v.contacts_with_mobile} />
+                </div>
 
-                  {/* CTA pinned to card bottom */}
-                  <div className="mt-auto pt-4">
-                    {hasActivePlan ? (
-                      <Link
-                        href={`/verticals/${v.slug}/open`}
-                        className="block w-full rounded-md bg-brand-600 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-brand-700"
-                      >
-                        Open targeted list
-                      </Link>
-                    ) : user ? (
-                      <Link
-                        href={`/#pricing`}
-                        className="inline-flex w-full items-center justify-center gap-1 rounded-md bg-navy-800 px-3 py-2 text-sm font-semibold text-white hover:bg-navy-900"
-                      >
-                        <Lock className="h-3.5 w-3.5" />
-                        Unlock targeted list
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/sign-up?vertical=${v.slug}`}
-                        className="inline-flex w-full items-center justify-center gap-1 rounded-md bg-brand-600 px-3 py-2 text-sm font-semibold text-white hover:bg-brand-700"
-                      >
-                        Get access
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    )}
-                    <Link
-                      href={`/verticals/${v.slug}`}
-                      className="mt-2 block w-full text-center text-xs font-medium text-brand-700 hover:text-brand-800"
-                    >
-                      View carriers &amp; segments &rarr;
-                    </Link>
-                  </div>
+                <div className="mt-5 flex items-center justify-between gap-3">
+                  <Link
+                    href={linkHref}
+                    className="inline-flex flex-1 items-center justify-center gap-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-bold text-white hover:bg-blue-500"
+                  >
+                    {!hasActivePlan && user ? <Lock className="h-3.5 w-3.5" /> : null}
+                    {ctaLabel}
+                  </Link>
+                  <Link
+                    href={`/verticals/${v.slug}`}
+                    className="text-xs font-bold text-teal-700 hover:text-teal-800 whitespace-nowrap"
+                  >
+                    Carriers &amp; segments →
+                  </Link>
                 </div>
               </article>
             );
           })}
         </div>
-      </section>
+      </Section>
 
-      {/* ============== TIER-A CALLOUT ============== */}
-      <section className="relative border-y border-brand-100 bg-brand-50/40">
-        <div className="mx-auto max-w-7xl px-4 py-12">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-3 py-1 text-xs font-medium text-brand-700">
-              <Crosshair className="h-3.5 w-3.5" />
-              For distribution leaders running an attainment problem
-            </div>
-            <h2 className="mt-5 text-2xl sm:text-3xl font-bold tracking-tight text-navy-800">
-              If you&rsquo;re missing your AOR number, you don&rsquo;t have a lead problem. You have a paper problem.
-            </h2>
-            <p className="mt-4 text-base leading-7 text-gray-700">
-              The agencies you need are already in our database. They already hold the carriers you compete
-              with. The question isn&rsquo;t whether they exist &mdash; it&rsquo;s whether your team is calling the right
-              600 of them, or the wrong 6,000. Every vertical card above is the right 600, scored by
-              observable appointment behavior, refreshed every 30 days.
+      <Section
+        variant="muted"
+        eyebrow="How we know"
+        title="No black box. No proprietary score we won't explain."
+        description="Every vertical is mapped to a curated list of specialty carriers — the writing companies that only agencies with a real book of business in that niche would hold. The IP is the assembly of the data, not a secret algorithm."
+      >
+        <div className="grid gap-6 md:grid-cols-2">
+          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-black text-slate-950">Where the mapping comes from</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Built and maintained by a former specialty wholesaler underwriter and a former carrier program manager,
+              with reference checks from at least one practicing wholesaler in each vertical. Carrier rosters re-checked
+              against state DOI filings and carrier-published agency lists every 30 days.
             </p>
-          </div>
+          </article>
+          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 className="text-lg font-black text-slate-950">What we publish openly</h3>
+            <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-600">
+              <li className="flex gap-2"><span className="text-teal-700">✓</span><span>The carrier list per vertical</span></li>
+              <li className="flex gap-2"><span className="text-teal-700">✓</span><span>The appointment thresholds for each tier</span></li>
+              <li className="flex gap-2"><span className="text-teal-700">✓</span><span>A public changelog of every mapping change</span></li>
+              <li className="flex gap-2"><span className="text-teal-700">✓</span><span>Anti-claims: what this signal does NOT promise</span></li>
+            </ul>
+            <Link href="/methodology" className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-teal-700 hover:text-teal-800">
+              Read the full methodology →
+            </Link>
+          </article>
         </div>
-      </section>
+      </Section>
 
-            {/* ============== THE EDGE — FOUR PILLARS ============== */}
-      <section className="relative border-t border-gray-100 bg-gradient-to-b from-gray-50 to-white">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:py-20">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-navy-200 bg-navy-50 px-3 py-1 text-xs font-medium text-navy-700">
-              <Target className="h-3.5 w-3.5" />
-              The Edge
-            </div>
-            <h2 className="mt-6 text-3xl font-bold tracking-tight text-navy-800 sm:text-4xl">
-              The map to your competitor&rsquo;s gold mines.
-            </h2>
-            <p className="mt-4 text-lg leading-8 text-gray-600">
-              Four reasons MGUs, wholesalers, and carrier distribution teams use this data to win
-              appointments.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-2">
-            <Pillar
-              num="01"
-              icon={Search}
-              title="The Smoking Gun"
-              subtitle="Reverse-engineered intelligence from the writing-company paper trail."
-              body="The Paper is the truth. When an agent writes on E&amp;S specialty paper, syndicate paper, or high-hazard property carriers, you&rsquo;ve found a high-hazard expert managing high-premium accounts. When they write on regional standard-market workers&rsquo; comp paper, they own a regional restaurant or hospitality book. We map thousands of child writing companies back to their parent groups so the appointment list reads like a book-of-business inventory &mdash; not a guess."
-              proof={[
-                { label: "Specialty Carrier 01", group: "Parent Group A" },
-                { label: "Specialty Carrier 02", group: "Parent Group A" },
-                { label: "Excess &amp; Surplus Carrier", group: "Parent Group B" },
-                { label: "Regional Standard Carrier", group: "Parent Group C" },
-              ]}
-            />
-            <Pillar
-              num="02"
-              icon={Crosshair}
-              title="Precision Over Spray"
-              subtitle="Target by appetite, not by industry."
-              body="If you write specialized trucking, you don&rsquo;t want every commercial agent. You want the agents holding the specialty trucking writing companies your program competes with. Filter by writing company &mdash; not a self-reported tag. Every appointment is verified against the underlying carrier roster, which means your outreach lands on agencies with proven authority to bind your line of business today."
-            />
-            <Pillar
-              num="03"
-              icon={Handshake}
-              title="Strategic Reciprocity"
-              subtitle="Know what they&rsquo;re stuck with before the first call."
-              body="When an agent&rsquo;s current carrier restricts appetite or raises rates on a specific writing company, you have the opening: &ldquo;I see you&rsquo;re on a writing company that restricts the risk you write &mdash; our program writes that risk with broader coverage and better commission.&rdquo; Win appointments by walking into the conversation already knowing the problem you&rsquo;re solving. The competitive intelligence is in the appointment list."
-            />
-            <Pillar
-              num="04"
-              icon={Banknote}
-              title="Enterprise Intelligence, Continuous Verification"
-              subtitle="Automated multi-layer verification, refreshed continuously."
-              body="Our Dual-Agent Verification Pipeline maps parent-child relationships across 400+ writing companies, refreshed continuously against state filings and carrier roster changes. The kind of distribution intelligence that historically took a research team a year to assemble &mdash; now updated every month,."
-            />
-          </div>
-
-          {/* Parent-child tree mini-diagram */}
-          <div className="mt-16 rounded-2xl border border-navy-100 bg-white p-8 shadow-sm">
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-navy-800">
-                What &ldquo;parent-child mapping&rdquo; looks like in practice.
-              </h3>
-              <p className="mt-1 text-sm text-gray-600">
-                One example. Real-time verification across 400+ writing companies, every month.
-              </p>
-            </div>
-            <div className="grid gap-6 md:grid-cols-3">
-              <ParentTree
-                parent="Parent Group A — Diversified WC + E&S"
-                children={[
-                  "Specialty Carrier 01",
-                  "Specialty Carrier 02",
-                  "Specialty Carrier 03",
-                  "Specialty Carrier 04",
-                  "Specialty Carrier 05",
-                  "Specialty Carrier 06",
-                ]}
-                tag="15 writing companies"
-              />
-              <ParentTree
-                parent="Parent Group B — Standard Market + Specialty"
-                children={[
-                  "Standard Market Carrier 01",
-                  "Standard Market Carrier 02",
-                  "Specialty Casualty Carrier",
-                  "Niche Vertical Carrier",
-                  "Senior Care Specialty Carrier",
-                  "Auto Specialty Carrier",
-                ]}
-                tag="14 writing companies"
-              />
-              <ParentTree
-                parent="Parent Group C — Excess + Surplus"
-                children={[
-                  "E&S Specialty Carrier 01",
-                  "E&S Specialty Carrier 02",
-                  "Excess Liability Carrier",
-                  "Home Office Assurance Co.",
-                  "Regional Specialty Carrier",
-                  "Specialty Wholesale Carrier",
-                ]}
-                tag="9 writing companies"
-              />
-            </div>
-            <p className="mt-6 text-xs text-gray-500 italic">
-              When you see one of these child carriers on an agent&rsquo;s appointment list, you know
-              the parent program they have access to &mdash; and the type of risk they&rsquo;re binding.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ============== WHAT YOU CAN'T GET ANYWHERE ELSE ============== */}
-      <section className="border-t border-gray-100 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-16">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-navy-200 bg-navy-50 px-3 py-1 text-xs font-medium text-navy-700">
-              <Target className="h-3.5 w-3.5" />
-              Why generic data tools fall short
-            </div>
-            <h2 className="mt-5 text-3xl font-bold tracking-tight text-navy-800 sm:text-4xl">
-              What you can&rsquo;t get anywhere else.
-            </h2>
-            <p className="mt-4 text-base leading-7 text-gray-600">
-              Three categories of data tools live in this space &mdash; none of them answer the question that
-              actually drives appointment wins.
-            </p>
-          </div>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
-            <CompareCard
-              vsLabel="vs. B2B contact-data category"
-              title="They sell company contact data."
-              body="Names, emails, titles, employee counts. They don&rsquo;t tell you which agencies hold which carriers. You can find an agent at a large national broker &mdash; you can&rsquo;t find the dozen agents at that broker who specifically have a target carrier&rsquo;s specialty paper. Agency Signal is purpose-built for that question."
-            />
-            <CompareCard
-              vsLabel="vs. carrier financial-data category"
-              title="They sell carrier financial data."
-              body="Carrier ratings, surplus, premium volume, loss ratios. They don&rsquo;t tell you which agents bind which carriers. You can look up a carrier&rsquo;s financial position &mdash; you can&rsquo;t look up the 1,200 agents in Iowa who hold that carrier&rsquo;s appointments. Agency Signal is the missing distribution layer."
-            />
-            <CompareCard
-              vsLabel="vs. building it in-house"
-              title="A 6-person full-time job."
-              body="Every carrier publishes its appointment list separately &mdash; some on the carrier site, some on state DOI portals, some only in PDFs. Reconciling 400+ writing companies to 60 parent groups, deduplicating 36,000 agencies, and refreshing it monthly is roughly a 6-person team&rsquo;s full-time job. Most distribution organizations don&rsquo;t have that team. We do."
-            />
-          </div>
-        </div>
-      </section>
-
-            {/* ============== HOW IT WORKS ============== */}
-      <section className="border-t border-gray-100">
-        <div className="mx-auto max-w-7xl px-4 py-16">
-          <div className="rounded-2xl border border-gray-200 bg-gray-50 p-8">
-            <h3 className="text-lg font-semibold text-navy-800">How we know what we say we know.</h3>
-            <div className="mt-3 space-y-3 text-sm leading-6 text-gray-600 max-w-3xl">
-              <p>
-                Every vertical is mapped to a curated list of specialty carriers &mdash; the writing
-                companies that only agencies with a real book of business in that niche would hold.
-                The mapping was built and is maintained by a former specialty wholesaler underwriter
-                and a former carrier program manager, with reference checks from at least one
-                practicing wholesaler in each vertical.
-              </p>
-              <p>
-                We re-check the carrier roster for every vertical against state DOI filings and
-                carrier-published agency lists every 30 days. We log every change to the mapping in
-                our public changelog so buyers can see what moved and when. The vertical scoring
-                model (Exposure / Growing / Specialist) is published on our docs page, including the
-                carrier list per vertical and the appointment thresholds.
-              </p>
-              <p className="text-navy-800 font-medium">
-                No black box. No proprietary score we won&rsquo;t explain. The IP is the assembly of
-                the data, not a secret algorithm.
-              </p>
-              <p className="pt-2">
-                <Link
-                  href="/methodology"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 hover:text-brand-800"
-                >
-                  Read the full methodology
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ============== CTA ============== */}
-      <section className="relative overflow-hidden border-t border-gray-100 bg-gradient-to-br from-navy-800 via-navy-700 to-brand-700">
-        <div className="relative mx-auto max-w-5xl px-4 py-20 text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Ready to map your competitive landscape?
-          </h2>
-          <p className="mt-4 text-lg text-brand-100 max-w-2xl mx-auto">
-            Pull a verified list in under a minute. Filter by writing company, appointment count,
-            geography, employee size, premium volume &mdash; export with emails and mobiles for the
-            agencies that match your appetite.
-          </p>
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            {hasActivePlan ? (
-              <>
-                <Link
-                  href="/build-list"
-                  className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-navy-800 hover:bg-brand-50 inline-flex items-center gap-2 shadow-sm"
-                >
-                  Build a list
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/ai-support"
-                  className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 inline-flex items-center gap-2"
-                >
-                  Try AI search
-                </Link>
-              </>
-            ) : user ? (
-              <>
-                <Link
-                  href="/#pricing"
-                  className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-navy-800 hover:bg-brand-50 inline-flex items-center gap-2 shadow-sm"
-                >
-                  See pricing
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <a
-                  href="mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Agency%20Signal"
-                  className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 inline-flex items-center gap-2"
-                >
-                  Talk to sales
-                </a>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/sign-up"
-                  className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-navy-800 hover:bg-brand-50 inline-flex items-center gap-2 shadow-sm"
-                >
-                  Get instant access
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-                <a
-                  href="mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Agency%20Signal"
-                  className="rounded-md border border-white/30 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 inline-flex items-center gap-2"
-                >
-                  Talk to sales
-                </a>
-              </>
-            )}
-          </div>
-          <p className="mt-8 text-xs text-brand-200">
-            No long-term contract. Built for in-house distribution and growth teams.
-          </p>
-        </div>
-      </section>
+      <CTASection
+        eyebrow="Ready when you are"
+        title="Build a verified vertical list in under a minute."
+        description="Filter by writing company, appointment count, geography, employee size, premium volume. Export with emails and mobiles for the agencies that match your appetite. Pay only when you export."
+        primaryCta={{ label: primaryCtaLabel, href: primaryCtaHref }}
+        secondaryCta={{ label: "Talk to sales", href: "mailto:hello@seven16group.com?subject=Verticals%20demo%20%E2%80%94%20Agency%20Signal" }}
+      />
     </div>
   );
 
   if (sidebarProps) {
     return (
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-white">
         <Sidebar {...sidebarProps} />
         <div className="flex-1 min-w-0 overflow-x-hidden">{body}</div>
       </div>
@@ -531,122 +257,11 @@ export default async function VerticalsPage() {
   return body;
 }
 
-// ============================================================================
-// Card components
-// ============================================================================
-
-function TierBox({ label, count, dot }: { label: string; count: number; dot: string }) {
+function Metric({ label, value }: { label: string; value: number }) {
   return (
-    <div className="px-2 py-2 text-center">
-      <div className="flex items-center justify-center gap-1.5 text-[10px] uppercase tracking-wider text-gray-500 font-medium">
-        <span className={`inline-block h-1.5 w-1.5 rounded-full ${dot}`} />
-        {label}
-      </div>
-      <div className="mt-0.5 text-base font-semibold tabular-nums text-navy-800">
-        {count.toLocaleString()}
-      </div>
-    </div>
-  );
-}
-
-// New unified data cell used in the 3x2 stats grid. Each cell sits on a
-// gray-200 background that bleeds through 1px gaps, producing crisp Excel-
-// style cell borders without per-cell border math.
-function DataCell({ label, value }: { label: string; value: number }) {
-  return (
-    <div className="bg-white px-3 py-2.5">
-      <div className="text-[10px] uppercase tracking-wider text-gray-500 font-medium">
-        {label}
-      </div>
-      <div className="mt-0.5 text-sm font-semibold tabular-nums text-navy-800">
-        {value.toLocaleString()}
-      </div>
-    </div>
-  );
-}
-
-function Pillar({
-  num, icon: Icon, title, subtitle, body, proof,
-}: {
-  num: string;
-  icon: LucideIcon;
-  title: string;
-  subtitle: string;
-  body: string;
-  proof?: { label: string; group: string }[];
-}) {
-  return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-7 shadow-sm">
-      <div className="flex items-start justify-between">
-        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
-          <Icon className="h-5 w-5" />
-        </span>
-        <span className="text-xs font-mono font-semibold text-gray-300">{num}</span>
-      </div>
-      <h3 className="mt-5 text-lg font-semibold text-navy-800">{title}</h3>
-      <p className="mt-1 text-sm font-medium text-brand-700">{subtitle}</p>
-      <p className="mt-3 text-sm leading-6 text-gray-600">{body}</p>
-      {proof && (
-        <div className="mt-5 rounded-lg border border-success-100 bg-success-50/50 p-4">
-          <div className="text-[11px] uppercase tracking-wider text-success-700 font-semibold mb-2">
-            Verified writing companies
-          </div>
-          <ul className="space-y-1.5">
-            {proof.map((p) => (
-              <li key={p.label} className="flex items-baseline gap-2 text-xs">
-                <CheckCircle2 className="h-3.5 w-3.5 text-success-600 shrink-0 self-center" />
-                <span className="text-navy-800 font-medium">{p.label}</span>
-                <span className="text-gray-500">— {p.group}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CompareCard({
-  vsLabel, title, body,
-}: {
-  vsLabel: string;
-  title: string;
-  body: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <div className="text-[11px] uppercase tracking-wider text-brand-700 font-semibold">{vsLabel}</div>
-      <h3 className="mt-2 text-lg font-semibold text-navy-800">{title}</h3>
-      <p className="mt-3 text-sm leading-6 text-gray-600" dangerouslySetInnerHTML={{ __html: body }} />
-    </div>
-  );
-}
-
-function ParentTree({
-  parent, children, tag,
-}: {
-  parent: string;
-  children: string[];
-  tag: string;
-}) {
-  return (
-    <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-5">
-      <div className="flex items-baseline justify-between gap-2 mb-1">
-        <div className="text-xs font-mono uppercase tracking-wider text-navy-700 font-semibold">
-          Parent
-        </div>
-        <span className="text-[10px] text-gray-500 italic">{tag}</span>
-      </div>
-      <div className="text-sm font-semibold text-navy-800">{parent}</div>
-      <div className="mt-4 border-l-2 border-success-300 pl-3 space-y-1.5">
-        {children.map((c) => (
-          <div key={c} className="flex items-center gap-2 text-xs">
-            <CheckCircle2 className="h-3 w-3 text-success-600 shrink-0" />
-            <span className="text-gray-700">{c}</span>
-          </div>
-        ))}
-        <div className="text-[10px] text-gray-400 italic pt-1">+ several more children</div>
-      </div>
+    <div className="border-b border-r border-slate-200 p-3 last:border-r-0">
+      <div className="text-[10px] font-black uppercase tracking-wide text-slate-400">{label}</div>
+      <div className="mt-1 text-sm font-black tabular-nums text-slate-950">{value.toLocaleString()}</div>
     </div>
   );
 }

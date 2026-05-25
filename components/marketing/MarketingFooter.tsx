@@ -27,6 +27,7 @@ const FOOTER_LINKS: Array<{ heading: string; links: Array<{ label: string; href:
       { label: "Contact", href: "/contact" },
       { label: "Privacy", href: "/privacy" },
       { label: "Terms", href: "/terms" },
+      { label: "Delete my data", href: "/account/delete" },
     ],
   },
 ];
