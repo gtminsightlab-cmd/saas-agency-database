@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
-import { HeroSection } from "@/components/marketing/HeroSection";
 import { AppointmentSearchMockup } from "@/components/marketing/AppointmentSearchMockup";
 import { ProblemSection } from "@/components/marketing/ProblemSection";
 import { ComparisonSection } from "@/components/marketing/ComparisonSection";
@@ -10,9 +9,12 @@ import { RecruitPlaysSection } from "@/components/marketing/RecruitPlaysSection"
 import { MethodologySection } from "@/components/marketing/MethodologySection";
 import { ManifestoSection } from "@/components/marketing/ManifestoSection";
 import { DataTrustSection } from "@/components/marketing/DataTrustSection";
-import { PricingPreview } from "@/components/marketing/PricingPreview";
-import { FinalCTA } from "@/components/marketing/FinalCTA";
 import { MarketingFooter } from "@/components/marketing/MarketingFooter";
+import { PageHero } from "@/components/layout/PageHero";
+import { Section } from "@/components/layout/Section";
+import { CTASection } from "@/components/layout/CTASection";
+import { StatStrip } from "@/components/marketing/StatStrip";
+import { PricingCard } from "@/components/marketing/PricingCard";
 
 export const dynamic = "force-dynamic";
 
@@ -54,25 +56,34 @@ export default async function MarketingHome() {
   const carriersCount     = carriersRes.count     ?? STAT_FALLBACK.carriers;
   const appointmentsCount = appointmentsRes.count ?? STAT_FALLBACK.appointments;
 
-  const stats = [
+  const statItems = [
     { value: formatBucket(agenciesCount),     label: "Verified agencies" },
     { value: formatBucket(contactsCount),     label: "Contacts indexed" },
     { value: formatBucket(carriersCount),     label: "Writing companies" },
     { value: formatBucket(appointmentsCount), label: "Verified appointments" },
-    { value: "All 50 states + DC",            label: "Geographic coverage" },
   ];
 
   const verticals = (verticalsRes.data ?? []) as VerticalCard[];
 
   return (
-    <div className="bg-white">
+    <div>
       <MarketingHeader isAuthed={!!user} theme="dark" />
       <main>
-        <HeroSection
-          isAuthed={!!user}
-          stats={stats}
-          mockupSlot={<AppointmentSearchMockup />}
+        <PageHero
+          variant="dark"
+          eyebrow="Commercial insurance distribution intelligence"
+          title="Stop buying agency lists."
+          highlight="Start reading the paper trail."
+          description="Most prospecting starts with a name, a title, and a guess. That's not how commercial-insurance distribution works. Agency Signal maps the writing-company paper trail behind every U.S. commercial-insurance agency — refreshed monthly against state filings — so carriers, MGAs, wholesalers, and program teams can find the agencies already appointed with the markets they compete with."
+          primaryCta={{ label: user ? "Open your dashboard" : "Browse verified agencies free", href: user ? "/build-list" : "/sign-up" }}
+          secondaryCta={{ label: "View transportation list", href: "/verticals/transportation" }}
+          rightRail={<AppointmentSearchMockup />}
         />
+
+        <Section variant="muted" eyebrow="The directory at a glance" title="What's in the data today." description="Live counts pulled from production. All 50 states + DC + 3 territorial add-ons. Refreshed monthly against state DOI filings.">
+          <StatStrip variant="light" items={statItems} />
+        </Section>
+
         <ProblemSection />
         <ComparisonSection />
         <HowItWorksSection />
@@ -81,8 +92,67 @@ export default async function MarketingHome() {
         <MethodologySection />
         <ManifestoSection />
         <DataTrustSection />
-        <PricingPreview />
-        <FinalCTA isAuthed={!!user} />
+
+        <Section
+          variant="light"
+          eyebrow="Pricing"
+          title="Browse free. Export when the list is worth it."
+          description="Three starting points. Current rates surface at sign-up. Charter Member pricing locks in permanently per D-014 — see the Charter page for early-customer terms."
+        >
+          <div id="pricing" className="grid gap-6 md:grid-cols-3">
+            <PricingCard
+              name="Free Browse"
+              audience="Unlimited search. No exports."
+              price="Free"
+              features={[
+                "Unlimited search across 41,700+ agencies",
+                "Filter by carrier, vertical, state",
+                "1 seat",
+                "Best for market mapping",
+              ]}
+              cta="Browse free"
+              href={user ? "/build-list" : "/sign-up"}
+            />
+            <PricingCard
+              name="Growth Member"
+              audience="Active distribution teams."
+              price="see at sign-up"
+              features={[
+                "Monthly export credits",
+                "Multi-seat access",
+                "Saved-list refresh",
+                "Email + onboarding call",
+              ]}
+              cta="Start Growth Member"
+              href="/sign-up"
+              highlighted
+            />
+            <PricingCard
+              name="Snapshot"
+              audience="Market entry & diligence."
+              price="see at sign-up"
+              features={[
+                "One-time export credit pack",
+                "Single export window",
+                "Best for M&A diligence",
+                "Best for special projects",
+              ]}
+              cta="Buy Snapshot"
+              href="/sign-up"
+            />
+          </div>
+          <p className="mt-8 text-sm text-slate-600 max-w-3xl">
+            See the <a href="/#pricing-detail" className="font-bold text-teal-700 hover:text-teal-800">full pricing page</a> for credit top-up math, volume bonus bands, and Charter Member pricing.
+          </p>
+        </Section>
+
+        <CTASection
+          eyebrow="Distribution is not a spreadsheet problem"
+          title="It's a judgment problem."
+          description="Agency Signal gives your team a defensible recruit list — scored by observable appointment behavior, refreshed monthly, and built for the play you're running this quarter. Browse free, pay only when you export."
+          primaryCta={{ label: user ? "Open your dashboard" : "Browse verified agencies free", href: user ? "/build-list" : "/sign-up" }}
+          secondaryCta={{ label: "Talk to sales", href: "mailto:hello@seven16group.com?subject=Agency%20Signal%20demo" }}
+        />
       </main>
       <MarketingFooter />
     </div>
