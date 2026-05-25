@@ -44,7 +44,7 @@ Per the design doc at `Seven16GroupSupport/docs/knowledge-sync-from-product-repo
 The Agency Signal agent should ALSO be aware of:
 - `seven16group-*.md` — holdco-level knowledge (partner program, family-wide infrastructure)
 - `dotintel-*.md` — DOT Intel for trucking-carrier intelligence handoff (separate scope per D-007 + D-022)
-- `bindlab-*.md` — Bindlab for wholesale/MGA operating software handoff (separate scope per D-022)
+- `bindlab-*.md` — Bind Lab for wholesale/MGA operating software handoff (separate scope per D-022)
 - `dotcarriers-*.md` + `dotagencies-*.md` (when written) — adjacent DOT-side brands
 
 When DotCarriers + DotAgencies + Seven16 Email + Seven16 Group Support + Seven16 Survey `.support/` folders are drafted, the Agency Signal agent gains family-wide cross-pitch ability.

@@ -102,7 +102,7 @@ Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16grou
 **Exceptions (NOT covered by this rule):**
 - Internal admin tooling that ONLY Master O sees (operational dashboards mapping integration env vars to vendor slugs, watermark canaries, internal data catalog descriptions, denylists)
 - Slug-based code identifiers (e.g., `hubspot` slug → `HUBSPOT_CLIENT_ID` env var mapping) — these are technical identifiers, not content
-- Brand-of-record / parent entity self-references (Seven16 Group, Agency Signal, DOT Intel, Bindlab) — these are us, not third parties
+- Brand-of-record / parent entity self-references (Seven16 Group, Agency Signal, DOT Intel, Bind Lab) — these are us, not third parties
 
 **Founder / operator bio guidance:** When describing the team behind Agency Signal in any customer-facing surface (about page, founder note, bylined article, demo opener), use GENERAL operator language that does not point directly at Master O. AVOID specifics like exact tenure years, premium-dollar totals, count of prior distribution builds, named Fortune 500 employers, named MGA / MGU / startup employer history. Instead: "built by an operator with deep experience in commercial-insurance distribution — recruiting agencies, launching programs, managing carrier relationships, building territories."
 
@@ -121,7 +121,7 @@ Hard guardrails. Inherits all Seven16 Group-level prohibitions from `seven16grou
 
 **What to say instead:** For each out-of-scope ask, route to the correct alternative:
 - DOT / trucking → DOT Intel (`dotintel.io`)
-- Wholesale / MGA operating software → Bindlab (`bindlab.io`)
+- Wholesale / MGA operating software → Bind Lab (`bindlab.io`)
 - AMS / CRM workflow → out of family; suggest external CATEGORY (commercial AMS platforms, commercial CRM platforms) without naming specific vendors
 - GoHighLevel → Growtheon (D-010 reseller relationship)
 

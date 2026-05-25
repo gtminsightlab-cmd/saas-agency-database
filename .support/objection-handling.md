@@ -62,7 +62,7 @@ source: drafted Session 6.5 POC by Claude, awaiting Master O voice review
 - Agency Signal does NOT do AMS / CRM / submission management / policy admin / quote-bind / claims workflows
 - Those are out-of-family per D-022 — different product category entirely
 - Agency Signal sits BEFORE the AMS / CRM workflow — it answers "which agencies should I prospect" not "how do I manage the relationships I have"
-- In-family alternative for some AMS-adjacent needs: Bindlab handles wholesale/MGA operating software (submission management + policy data management for wholesalers and MGAs specifically)
+- In-family alternative for some AMS-adjacent needs: Bind Lab handles wholesale/MGA operating software (submission management + policy data management for wholesalers and MGAs specifically)
 
 **What to NOT say:**
 - "We integrate with all AMS / CRM systems" — false catch-all

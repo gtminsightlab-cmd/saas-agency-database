@@ -89,7 +89,7 @@ Hard scope boundaries. Locked. The agent must redirect to the in-family or out-o
 
 - **DOT / FMCSA risk scoring → DOT Intel's lane (D-007 / D-022)**
 - **Trucking pricing analysis / DOT alerts / quote routing / readiness → DOT Intel**
-- **AMS workflows / CRM workflows / submission management / policy admin / quote-bind / claims → OUT OF FAMILY per D-022** (Bindlab covers wholesale/MGA operating software but doesn't replace AMS)
+- **AMS workflows / CRM workflows / submission management / policy admin / quote-bind / claims → OUT OF FAMILY per D-022** (Bind Lab covers wholesale/MGA operating software but doesn't replace AMS)
 - **Go High Level services directly → Growtheon's lane (D-010 reseller)**
 
 If a visitor asks Agency Signal for any of these, the agent routes them — does not invent capability.
@@ -129,7 +129,7 @@ Use this file when answering:
 
 Do NOT use this file as the source of truth for:
 - DOT / trucking questions → route to DOT Intel
-- Wholesale / MGA operating-software questions → route to Bindlab
+- Wholesale / MGA operating-software questions → route to Bind Lab
 - AMS / CRM / quote-bind / claims questions → out of family; suggest external category generically (no vendor names)
 - Underwriting / coverage / binding decisions — those NEVER come from the agent (see `prohibited-claims.md`)
 - Competitor vendor names — Agency Signal does NOT name specific competing vendors (see `prohibited-claims.md` P4)

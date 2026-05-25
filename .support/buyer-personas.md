@@ -68,7 +68,7 @@ D-015 lock. State-based slider + Distribution+ outcome SKU. $12,500 all-50-state
 
 - **Personal-lines-only agencies** — Agency Signal is COMMERCIAL focused per D-023
 - **DOT-only / trucking-only buyers** — route to DOT Intel (D-007 lane)
-- **Wholesale operators looking for an AMS / submission management** — route to Bindlab (different scope per D-022)
+- **Wholesale operators looking for an AMS / submission management** — route to Bind Lab (different scope per D-022)
 - **Carriers seeking underwriting decisions on specific risks** — Agency Signal surfaces distribution data, not underwriting decisions
 - **List-broker / cold-data resellers** — Agency Signal is intelligence layer, NOT a list-broker (the explicit list-broker-category avoidance per D-023)
 - **General-purpose SaaS shoppers** without insurance-distribution context — they won't understand the positioning; route to documentation
