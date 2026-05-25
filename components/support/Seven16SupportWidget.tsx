@@ -121,15 +121,23 @@ export function Seven16SupportWidget({
         <span>{open ? "Close chat" : "Chat with us"}</span>
       </button>
 
-      {/* Expanded panel. Hidden via display when closed so the iframe can
-          stay mounted across opens (chat history preserved within session). */}
+      {/* Expanded panel. Display toggled via conditional className so the
+          iframe stays mounted across opens (chat history preserved within
+          session). SESSION_37 (2026-05-25): previously used the HTML `hidden`
+          attribute + the Tailwind `flex` class — but `display:flex` from the
+          author stylesheet wins over the user-agent `[hidden]{display:none}`
+          rule, so the panel was always visible regardless of `open`. The
+          conditional `flex`/`hidden` Tailwind class fixes it because both
+          rules live in the same author stylesheet and the LATER one in the
+          className wins; here Tailwind's `hidden` (display:none) is the
+          single source of truth when open=false. */}
       <div
         id="seven16-support-panel"
         role="dialog"
         aria-modal="false"
         aria-labelledby="seven16-support-title"
-        hidden={!open}
-        className="fixed bottom-24 right-6 z-50 flex h-[600px] max-h-[calc(100vh-7rem)] w-[380px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl"
+        aria-hidden={!open}
+        className={`fixed bottom-24 right-6 z-50 h-[600px] max-h-[calc(100vh-7rem)] w-[380px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl ${open ? "flex" : "hidden"}`}
       >
         <header className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
           <div className="flex items-center gap-2">
