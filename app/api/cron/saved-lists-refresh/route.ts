@@ -2,7 +2,13 @@
 //
 // Triggered daily 04:00 UTC by vercel.json cron entry. Validates the
 // CRON_SECRET, then invokes the recompute-saved-lists Edge Function
-// in the AS Supabase satellite with service-role auth.
+// in the AS Supabase satellite using EDGE_FN_AUTH_SECRET.
+//
+// Auth model (SESSION_37 Path F, 2026-05-25):
+//   The EF is deployed verify_jwt: false and validates Authorization in-function
+//   against EDGE_FN_AUTH_SECRET (set in BOTH Vercel and Supabase EF secrets).
+//   Decouples cron auth from Supabase service-role JWT — survives the 2026
+//   sb_secret_* key-format rotation that broke verify_jwt:true gateway auth.
 //
 // Family pattern (D-013): cron route is a thin proxy; all logic lives
 // in the Edge Function (direct postgres.js connection, bypasses PostgREST
@@ -37,11 +43,11 @@ async function handle(req: Request) {
   }
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !serviceRoleKey) {
+  const edgeFnAuthSecret = process.env.EDGE_FN_AUTH_SECRET;
+  if (!supabaseUrl || !edgeFnAuthSecret) {
     return NextResponse.json(
       {
-        error: "Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY",
+        error: "Missing NEXT_PUBLIC_SUPABASE_URL or EDGE_FN_AUTH_SECRET",
       },
       { status: 500 },
     );
@@ -54,7 +60,7 @@ async function handle(req: Request) {
     edgeResponse = await fetch(functionUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${serviceRoleKey}`,
+        Authorization: `Bearer ${edgeFnAuthSecret}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ triggered_by: "vercel-cron" }),

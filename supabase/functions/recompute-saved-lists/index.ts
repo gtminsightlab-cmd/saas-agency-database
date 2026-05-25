@@ -4,6 +4,12 @@
 // direct postgres.js connection. Bypasses PostgREST schema cache issues
 // per memory `feedback_postgrest_schema_cache_stuck.md`.
 //
+// Auth model (SESSION_37 Path F, 2026-05-25):
+//   Deployed with verify_jwt: false. Authorization is validated in-function
+//   against EDGE_FN_AUTH_SECRET (shared secret with Vercel cron route).
+//   Decoupled from Supabase service-role JWT — survives the 2026 sb_secret_*
+//   key-format rotation that broke verify_jwt:true gateway auth for opaque keys.
+//
 // For each saved_list:
 //   1. Parse filter_json.querystring → filter params (mirrors save-button.tsx)
 //   2. Call get_saved_list_entity_ids RPC → current agency_ids[] + contact_ids[]
@@ -43,6 +49,23 @@ Deno.serve(async (req: Request) => {
       status: 405,
       headers: { "Content-Type": "application/json" },
     });
+  }
+
+  // SESSION_37 Path F — internal auth against shared secret. Function is
+  // deployed verify_jwt: false; we own the auth check here.
+  const authSecret = Deno.env.get("EDGE_FN_AUTH_SECRET");
+  if (!authSecret) {
+    return new Response(
+      JSON.stringify({ error: "EDGE_FN_AUTH_SECRET not configured" }),
+      { status: 500, headers: { "Content-Type": "application/json" } },
+    );
+  }
+  const authHeader = req.headers.get("authorization") ?? "";
+  if (authHeader !== `Bearer ${authSecret}`) {
+    return new Response(
+      JSON.stringify({ error: "unauthorized" }),
+      { status: 401, headers: { "Content-Type": "application/json" } },
+    );
   }
 
   const dbUrl = Deno.env.get("SUPABASE_DB_URL");
