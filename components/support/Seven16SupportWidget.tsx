@@ -70,11 +70,13 @@ export function Seven16SupportWidget({
   }, [open]);
 
   const toggle = useCallback(() => {
-    setOpen((v) => {
-      const next = !v;
-      if (next) setHasBeenOpened(true);
-      return next;
-    });
+    // Two independent setState calls — React batches them into one render.
+    // setHasBeenOpened(true) is idempotent; safe to call on every toggle.
+    // Previous pattern (calling setHasBeenOpened inside the setOpen updater
+    // function) didn't reliably commit hasBeenOpened — symptom was the
+    // "Loading…" placeholder persisting after the user clicked to open.
+    setOpen((v) => !v);
+    setHasBeenOpened(true);
   }, []);
   const close = useCallback(() => setOpen(false), []);
 
