@@ -23,7 +23,7 @@ Mapped to the 9 product pillars locked per D-023. Each pillar has explicit statu
 
 Comprehensive commercial-insurance agency directory. Production today.
 
-**Surface:** `directory.seven16group.com` — searchable agency directory with state / vertical / size filters
+**Surface:** `agencysignal.co` — searchable agency directory with state / vertical / size filters
 **Schema:** `agencies` table (16,785+ new TX agencies added Session B 2026-05-19; ongoing expansion)
 **Outcomes delivered:** Find an agency by name / location / vertical. Cross-reference appointments + producers.
 
@@ -73,7 +73,7 @@ Industry-vertical and class-of-business intelligence at the agency level.
 
 Filter + segment + export the agency universe into actionable prospect lists.
 
-**Surface:** Build-list UI at `directory.seven16group.com`
+**Surface:** Build-list UI at `agencysignal.co`
 **Filters:** state, vertical, appointment status, carrier, agency size, confidence
 
 **Outcomes delivered:**

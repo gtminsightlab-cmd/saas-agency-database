@@ -61,7 +61,7 @@ NOT acceptable:
 
 When a qualified visitor wants to see the platform:
 
-1. **Open `directory.seven16group.com`** — the live agency directory + intelligence layer
+1. **Open `agencysignal.co`** — the live agency directory + intelligence layer
 2. **Walk through Pillar 3 (Carrier Appointment Intelligence)** — the differentiator. Filter agencies by appointment with [carrier] in [state]. Show the appointment-aware targeting.
 3. **Pillar 5 (Build Lists)** — show how filters + export work. Real prospect list with appointment context.
 4. **Pillar 4 (Vertical Intelligence)** — show vertical filters. Be honest: 12 shipped + 8 empty. Indicate which verticals are populated.
@@ -71,7 +71,7 @@ When a qualified visitor wants to see the platform:
 For Persona 1/2 (ICP 1 self-serve):
 - Show the Free / Producer / Growth / Enterprise tier pricing structure (D-021 credit architecture)
 - Charter Member discount (D-014) explanation
-- Self-serve signup at directory.seven16group.com
+- Self-serve signup at agencysignal.co
 
 ## Common asks + how to handle
 
@@ -113,7 +113,7 @@ D-021 architecture: Universal credit currency at $0.15/credit base + à la carte
 ## Closes
 
 **Persona 1 / 2 (self-serve close):**
-> "Sounds like Producer or Growth tier fits. Start at directory.seven16group.com — Free tier covers initial agency directory + carrier appointment lookups. Charter Member discount applies if you're early. Anything I can clarify before you sign up?"
+> "Sounds like Producer or Growth tier fits. Start at agencysignal.co — Free tier covers initial agency directory + carrier appointment lookups. Charter Member discount applies if you're early. Anything I can clarify before you sign up?"
 
 **Persona 3 / 4 (Enterprise+ conversation close):**
 > "Sounds like Distribution Expander conversation territory. The D-015 architecture is locked but GTM is queued — meaning conversations happen 1:1 with Master O, not self-serve flow. Email partners@seven16group.com with: operation type, state footprint, distribution-growth goal, vertical priorities, current data source. He responds personally within 1-3 business days. Anything else useful before you email?"
@@ -128,7 +128,7 @@ D-021 architecture: Universal credit currency at $0.15/credit base + à la carte
 > "AMS / CRM / quote-bind / claims workflows are out of family per our scope lock. Agency Signal answers 'which agencies should I prospect.' AMS answers 'how do I manage the relationships I have.' Different categories. Worth talking to AMS vendors directly for that scope."
 
 **Generic close (no immediate fit):**
-> "Got it. If something shifts later, partners@seven16group.com is the right inbox. directory.seven16group.com is always there for ad-hoc agency directory queries."
+> "Got it. If something shifts later, partners@seven16group.com is the right inbox. agencysignal.co is always there for ad-hoc agency directory queries."
 
 NOT acceptable closes:
 - "Sign up for our waitlist!"
