@@ -17,7 +17,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 const STRIPE_DASHBOARD = "https://dashboard.stripe.com/test";
-const PUBLIC_INTEGRATIONS_URL = "https://directory.seven16group.com/integrations";
+const PUBLIC_INTEGRATIONS_URL = "https://agencysignal.co/integrations";
 
 type State = "live" | "scaffolded" | "promised" | "future";
 

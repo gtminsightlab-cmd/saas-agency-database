@@ -34,6 +34,21 @@ const CSP_DIRECTIVES = [
 const nextConfig = {
   reactStrictMode: true,
   typedRoutes: false,
+  async redirects() {
+    // Host-matched 301 from the legacy directory.seven16group.com hostname
+    // to agencysignal.co. Both hosts resolve to this same Vercel project;
+    // matching on the inbound Host header keeps requests on agencysignal.co
+    // canonical without breaking inbound traffic that still uses the old
+    // domain (link rot mitigation). SESSION_38 domain cutover.
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "directory.seven16group.com" }],
+        destination: "https://agencysignal.co/:path*",
+        permanent: true
+      }
+    ];
+  },
   async headers() {
     return [
       {

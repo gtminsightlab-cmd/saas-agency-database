@@ -5,9 +5,9 @@
  * Designed for pre-charter-launch gating + future cron health checks.
  *
  * Run:
- *   SMOKE_TARGET=https://directory.seven16group.com npm run smoke
+ *   SMOKE_TARGET=https://agencysignal.co npm run smoke
  *
- * (Defaults to https://directory.seven16group.com when SMOKE_TARGET unset.)
+ * (Defaults to https://agencysignal.co when SMOKE_TARGET unset.)
  *
  * What it checks (all unauthenticated — safe to run against production):
  * 1. Public marketing pages return 200 (/, /about, /faq, /use-cases, etc.)
@@ -23,7 +23,7 @@
  * - Sentry / Better Stack alert routing (manual test required)
  */
 
-const TARGET = (process.env.SMOKE_TARGET ?? "https://directory.seven16group.com").replace(/\/$/, "");
+const TARGET = (process.env.SMOKE_TARGET ?? "https://agencysignal.co").replace(/\/$/, "");
 
 type CheckResult = { name: string; ok: boolean; detail: string };
 

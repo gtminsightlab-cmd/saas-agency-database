@@ -11,4 +11,4 @@ export function getStripe(): Stripe {
 }
 
 export const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ?? "https://directory.seven16group.com";
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://agencysignal.co";
