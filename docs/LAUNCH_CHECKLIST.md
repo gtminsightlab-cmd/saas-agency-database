@@ -1,6 +1,8 @@
 # Charter Member launch checklist — Agency Signal
 
-**Status:** Session F 2026-05-23. This is the **single source of truth** for everything that must be true before Master O opens charter outreach. Consolidates every dashboard action from Sessions D + E + the pre-existing pending items.
+**Status:** Session F 2026-05-23 (initial scaffold) → **SESSION_36 LAUNCH-READY 2026-05-24** (12 dashboard actions complete, manual smoke walked through, matrix 9/9 GREEN) → **2026-05-25 smoke verification GREEN** (19/19 checks pass via `npm run smoke` against production). This is the **single source of truth** for everything that must be true before Master O opens charter outreach. Consolidates every dashboard action from Sessions D + E + the pre-existing pending items.
+
+**🟢 LAUNCH-READY STATUS:** All 12 dashboard actions DONE per SESSION_36 (2026-05-24). Production smoke verified GREEN 2026-05-25 (19 of 19 checks pass: 10 public pages 200 / 6 security headers present incl CSP-Report-Only / CSP report endpoint accepts violations / API auth gates reject unauth / Stripe webhook rejects unsigned). **Charter outreach is infrastructure-unblocked.** Remaining work is outreach prep (deck slides 9/10/18 rebuild + email templates + /charter page final review + post-signup operational workflow) — not infrastructure.
 
 **The discipline:** every box checked + green smoke + go/no-go matrix says GO → charter outreach is live. Any unchecked critical box → charter outreach is on hold.
 
@@ -11,30 +13,30 @@
 ### A1. Vercel env vars (pre-existing pending)
 | # | Action | Where | Status |
 |---|---|---|---|
-| 1 | Set `CRON_SECRET` in Vercel Production env | Vercel project → Settings → Environment Variables | ☐ |
-| 2 | Register Stripe webhook endpoint at `<prod>/api/stripe/webhook`, copy signing secret | Stripe dashboard → Developers → Webhooks | ☐ |
-| 3 | Add `STRIPE_WEBHOOK_SECRET` to Vercel Production env (from #2) | Vercel project → Settings → Environment Variables | ☐ |
-| 4 | Rotate `SENTRY_AUTH_TOKEN` if compromised; confirm current is valid for source-map uploads | Sentry → Settings → Auth Tokens | ☐ |
+| 1 | Set `CRON_SECRET` in Vercel Production env | Vercel project → Settings → Environment Variables | ✅ DONE SESSION_33 (2026-05-23, via browser DevTools console fallback per memory) |
+| 2 | Register Stripe webhook endpoint at `<prod>/api/stripe/webhook`, copy signing secret | Stripe dashboard → Developers → Webhooks | ✅ DONE SESSION_33 (2026-05-23, discovered already wired pre-flight) |
+| 3 | Add `STRIPE_WEBHOOK_SECRET` to Vercel Production env (from #2) | Vercel project → Settings → Environment Variables | ✅ DONE SESSION_33 (2026-05-23) |
+| 4 | Rotate `SENTRY_AUTH_TOKEN` if compromised; confirm current is valid for source-map uploads | Sentry → Settings → Auth Tokens | ✅ DONE SESSION_34 (2026-05-23, source-map upload verified WORKING in production via Vercel MCP build-log fetch) |
 
 ### A2. Security gates (Session D — `docs/SECURITY.md`)
 | # | Action | Where | Status |
 |---|---|---|---|
-| 5 | Create Upstash Redis DB, copy REST URL + token | https://upstash.com → Console → Create database | ☐ |
-| 6 | Add `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` to Vercel Production + Preview env | Vercel project → Settings → Environment Variables | ☐ |
-| 7 | Create Cloudflare Turnstile site, copy Site Key + Secret Key | https://dash.cloudflare.com → Turnstile | ☐ |
-| 8 | Add `NEXT_PUBLIC_TURNSTILE_SITE_KEY` to Vercel Production + Preview env | Vercel project → Settings → Environment Variables | ☐ |
-| 9 | Enable CAPTCHA in Supabase Auth, paste Turnstile Secret Key | Supabase dashboard → Authentication → Settings → Captcha | ☐ |
+| 5 | Create Upstash Redis DB, copy REST URL + token | https://upstash.com → Console → Create database | ✅ DONE SESSION_36 (2026-05-24, Master O Upstash signup) |
+| 6 | Add `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` to Vercel Production + Preview env | Vercel project → Settings → Environment Variables | ✅ DONE SESSION_36 (Claude via CLI for Production; Master O dashboard for Preview) |
+| 7 | Create Cloudflare Turnstile site, copy Site Key + Secret Key | https://dash.cloudflare.com → Turnstile | ✅ DONE SESSION_36 (hostnames `agencysignal.co` + `seven16group.com`) |
+| 8 | Add `NEXT_PUBLIC_TURNSTILE_SITE_KEY` to Vercel Production + Preview env | Vercel project → Settings → Environment Variables | ✅ DONE SESSION_36 (via Vercel CLI) |
+| 9 | Enable CAPTCHA in Supabase Auth, paste Turnstile Secret Key | Supabase dashboard → Authentication → Settings → Captcha | ✅ DONE SESSION_36 (Master O dashboard; widget renders on /sign-up + /sign-in + /auth/forgot-password per SESSION_36 hotfix commit `59b1360`) |
 
 ### A3. Data safety (Session E — `docs/DATA_SAFETY.md`)
 | # | Action | Where | Status |
 |---|---|---|---|
-| 10 | Confirm Supabase plan = Pro (required for PITR) | Supabase → Project → Settings → Billing | ☐ |
-| 11 | Enable Point-in-Time Recovery, default 7-day retention | Supabase → Project → Settings → Database → Backups → PITR | ☐ |
+| 10 | Confirm Supabase plan = Pro (required for PITR) | Supabase → Project → Settings → Billing | ✅ DONE SESSION_36 (confirmed Pro tier via dotintel org; covers `sdlsdovuljuymgymarou` per `reference_supabase_project_tiers.md`) |
+| 11 | Enable Point-in-Time Recovery, default 7-day retention | Supabase → Project → Settings → Database → Backups → PITR | ✅ DONE SESSION_36 |
 
 ### A4. Trigger redeploy after env-var changes
 | # | Action | Where | Status |
 |---|---|---|---|
-| 12 | Trigger Vercel rebuild so new env vars pick up | Vercel → Deployments → Redeploy latest | ☐ |
+| 12 | Trigger Vercel rebuild so new env vars pick up | Vercel → Deployments → Redeploy latest | ✅ DONE SESSION_36 (production auto-deployed on next push; verified `dpl_8EPG8sdSkmrkEsZSRMUrE6aPFUiz` READY in 47s post-PR-#8-merge) |
 
 ---
 
@@ -56,7 +58,7 @@ Checks performed:
 
 | # | Item | Status |
 |---|---|---|
-| 13 | `npm run smoke` against production exits 0 | ☐ |
+| 13 | `npm run smoke` against production exits 0 | ✅ DONE 2026-05-25 (19 of 19 checks pass: 10 public pages 200 / 6 security headers / CSP Report-Only + endpoint / API auth gates / Stripe webhook signature gate) |
 
 ---
 
