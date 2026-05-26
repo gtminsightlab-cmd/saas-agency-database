@@ -73,6 +73,17 @@ Install `swr` (~5KB), wrap data loaders in `useSWR`, verify revalidation on focu
 
 ## Queued (priority order — pick the top one when active arc closes)
 
+0. **[FAMILY · PRE-LAUNCH SECURITY] Cross-product Supabase security baseline audit + lockdown.** **NEW 2026-05-26 (Master O directive: "fix this now + update the family of products + clean up security across all websites and products + create a plan to create permissions based on user ID + make sure Supabase is not readable to the public").** DOT Intel ran the audit + Tier 1 + Tier 2 (DB-side) end-to-end 2026-05-26 — reference implementation at [`dotintel2/supabase/migrations/20260603_pre_launch_security_tier1.sql`](../../dotintel2/supabase/migrations/20260603_pre_launch_security_tier1.sql) + `_tier2.sql`. Family doctrine + 5-phase audit recipe + 4-tier RLS access model now locked in [`reference_family_supabase_security_baseline.md`](C:/Users/GTMin/.claude/projects/C--Users-GTMin-Projects-saas-agency-database/memory/reference_family_supabase_security_baseline.md). Postgres PUBLIC-inheritance gotcha codified in [`feedback_supabase_anon_security_definer_default_revoke.md`](C:/Users/GTMin/.claude/projects/C--Users-GTMin-Projects-saas-agency-database/memory/feedback_supabase_anon_security_definer_default_revoke.md). **Per-product sessions to run (priority order based on customer-data sensitivity):**
+   1. **Agency Signal** (`sdlsdovuljuymgymarou`) — highest priority. Owns the master agency/contact/saved_list data + producer contact PII + carrier appointment data. ~1 session.
+   2. **seven16-group-site** (Hub + Partners, `soqqmkfasufusoxxoqzx`) — partner program admin_users + referral attribution. ~0.5 session.
+   3. **Seven16 Command Center** — greenfield Phase 1 build; bake the 4-tier pattern in from v1 (no legacy migration needed). Surface during Phase 1 scoping session.
+   4. **Bind Lab** — once parent rebrand + decouple sessions land. ~1 session.
+   5. **Threshold IQ** (`yyuchyzmzzwbfoovsskz`) — spun out per D-022 but still live. Baseline before any "tell my network" push on TIQ. ~0.5 session.
+
+   Each session runs the same 5-phase recipe (audit → classify → migration → verify → Tier 2 follow-ups). DOT Intel reference migration is the template. Master O carry-forward for the family Tier 2c: provision Cloudflare Turnstile + Upstash Redis env vars in EACH product's Vercel project once the lead-form / signup-form / partner-form endpoints exist.
+
+   *Source:* Master O directive 2026-05-26 during DOT Intel pre-launch security audit. Same audit cycle that found 1 ERROR + 86 WARN advisor findings in DOT Intel and reduced to 0 ERROR + 47 WARN (intentional anon-readable public surfaces only).
+
 0a. **[FAMILY] Bindlab → Bind Lab brand-rename arc — `.support/` markdown DONE; bindlab CODE files PENDING.** Parent product brand is **"Bind Lab" (two words)**, not "Bindlab" (one word). Sister product Bind Lab Academy (already two-word). Technical identifiers UNCHANGED — folder/repo/domain/Stripe slug/env-var prefix stay as `bindlab` / `bindlab.io` / `bindlab` / `BINDLAB_*`.
 
    **✅ DONE 2026-05-25** (commits `be18855` AS / `65f6a48` bindlab / `e40aab3` seven16-group-site / `406da21` dotintel2): sed sweep of `Bindlab`/`BindLab` → `Bind Lab` across all 36 `.support/*.md` files in 4 repos + family memory + global CLAUDE.md. Zero residual `Bindlab`/`BindLab` in markdown.
