@@ -186,3 +186,68 @@ If you're a fresh Claude session opening this repo:
 ---
 
 *Session opened on what looked like a small audit. Closed with two production deploys, an EF version bump, and an architectural fix that survives the next round of Supabase key rotation. BACKLOG #3 moves from "Queued — verify before picking up" to "Done — verified + modernized." Tonight's 04:00 UTC fire is the production proof.*
+
+---
+
+## FINAL CLOSE-OUT — PR #8 merged + cleanup pass complete (2026-05-25, post-main-handoff)
+
+This section appended after the main handoff was committed. The session continued past the BACKLOG #3 close-out into a widget-fix arc + PR #8 merge + family-API connectivity verification + Google SSO playbook capture. Full audit trail:
+
+### What landed after commit `29bdfd2` (main SESSION_37 close-out)
+
+| Commit | Branch | Content |
+|---|---|---|
+| `11f3ce4` | `feat/design-system-v1` | Widget defensive fix v1 — useEffect force closed-on-mount + sync hasBeenOpened + always-render pill. Did NOT solve the panel-auto-visible behavior. |
+| `8f8c977` | `feat/design-system-v1` | **Widget root-cause fix v2** — `<div hidden={!open} className="... flex ...">` had CSS specificity conflict (Tailwind `.flex` in author CSS beats user-agent `[hidden]{display:none}`). Swapped HTML hidden attribute for conditional `${open ? "flex" : "hidden"}` Tailwind class. Captured as new family memory `feedback_hidden_attr_vs_display_class_conflict.md`. |
+| `0aeb0d9` | `main` | Addendum doc + BACKLOG `0b` (design system v1.1 rightRail product-mockup harmonization — Path A ~60-90 min queued for pre-charter-outreach polish). |
+| `2e9d44e` | `main` | FAMILY_HEALTH addendum catch-up. |
+| `df4e835` | `main` (MERGE COMMIT) | **PR #8 merged.** All 9 commits from `feat/design-system-v1` flow onto main. Production picks up design system v1 + widget Stage 2 (with v2 CSS fix) + compliance pages + theme-aware header. |
+| `aab900a` | `main` | Final close-out: BACKLOG PR #8 entry flipped to CLOSED, active arc rewritten as domain-cutover-unblocked, FAMILY_HEALTH refreshed, SESSION_38_PROMPT.md state-at-open updated. |
+| `e83e816` | `main` | BACKLOG `0c` — Google SSO on `/sign-in` + `/sign-up` queued, references the cross-repo playbook published by seven16-survey session at their `b8a2bf4`. |
+
+### Vercel auto-deploy verification
+
+Production deploy `dpl_8EPG8sdSkmrkEsZSRMUrE6aPFUiz` READY in 47s after merge. Confirmed via `mcp__da129817-...__get_deployment` on `directory.seven16group.com`:
+
+- State: READY
+- Commit: `df4e835` (verified GitHub signature)
+- Aliases include `directory.seven16group.com` ✓
+- Error rate (last 6h): 0%
+- Edge requests + function invocations flowing normally
+
+### Seven16Survey API connectivity verified
+
+Per Master O directive "make sure your able to connect with Seven16Survey.com", confirmed Claude can reach `seven16survey.com/api/*` from this session:
+
+- `GET https://seven16survey.com/api/health` → 200 with `{"ok": true, "service": "seven16-survey", "env": "production", "commit": "347fcde…"}`
+- DNS resolves to Vercel (76.76.21.21)
+- No `api.seven16survey.com` subdomain yet (Practice 5 of `reference_family_api_integration_mesh.md` calls for `api.*` separation when ready)
+- Sibling-bolt-on endpoints (`/api/v1/leads` etc.) NOT yet built per their session's accounting. AS will NEVER consume them directly anyway per the locked hub-and-spoke doctrine (AS reads from Seven16Command CRM, not Survey directly).
+
+Cross-session reply sent via Working Agreement Rule 2(b) chat-text artifact (no file writes to other repo).
+
+### New family memory captured this session
+
+| File | What it documents |
+|---|---|
+| `feedback_edge_function_verify_jwt_vs_sb_secret.md` | Supabase EF gateway with `verify_jwt:true` only accepts JWT-based tokens (legacy anon/service_role `eyJ…`). Opaque `sb_secret_*` keys → 401 at gateway. Required pattern when project rotates to 2026 key format. Codified during Path F. |
+| `feedback_hidden_attr_vs_display_class_conflict.md` | HTML `hidden` attribute (user-agent CSS `[hidden]{display:none}`) is overridden by author-stylesheet display classes like Tailwind's `.flex`. Use conditional className instead. Codified during widget fix v2. |
+
+### Standing-rule callouts (extension to original section above)
+
+- **Honest-pivot principle held** — Widget fix v1 didn't solve the bug. Rather than ship a "defensive layered fix" claim, surfaced "v1 didn't work, here's the real root cause" pivot to Master O. Diagnosis-then-fix discipline beats burying a partial fix under a misleading commit message.
+- **Rule 2(b) cross-repo prep artifact used correctly** — Sent reply to seven16-survey session as chat-text only. Zero file writes to other repo, zero commits, zero migrations on their satellite. The artifact lived in chat output exactly as Rule 2(b) permits.
+- **Audit-first generalizes** — Hero "disarray" complaint led to reading 8 page.tsx files + 3 panel components on PR #8 branch. Diagnosed it as a SPEC-level density gap (homepage rich `AppointmentSearchMockup` vs other 6 pages flat `DataPanel`) rather than implementation drift. Queued as v1.1 polish (BACKLOG `0b`) instead of blocking merge.
+
+### Session arc closing state
+
+**Code shipped today:** 7 commits on main + 2 commits on PR #8 branch (squashed into main via merge). Production live with everything from PR #8 plus the SESSION_37 addendum fixes.
+
+**Architecture decisions reflected:**
+- Path F (EF auth decoupled from Supabase service-role JWT) — survives the 2026 key rotation
+- CSS specificity fix on widget — survives any future Tailwind / next.js / React version bumps that might change `hidden` attribute behavior
+- BACKLOG entries `0b` (rightRail polish) and `0c` (Google SSO) added with full pickup-cold context
+
+**Charter outreach launch-readiness:** All gates from this side cleared. The remaining gates (LLC formation + FEIN + bank account + Stripe live-mode cutover) are Master O paperwork, not Claude work.
+
+**Next session:** SESSION_38 = domain cutover. Paste-ready opener at [`SESSION_38_PROMPT.md`](SESSION_38_PROMPT.md).
