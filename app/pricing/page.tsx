@@ -4,26 +4,22 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
-import { PricingCard } from "@/components/marketing/PricingCard";
-import { DataPanel } from "@/components/marketing/DataPanel";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Pricing — Agency Signal",
   description:
-    "Browse free. Pay only when you need exports. Three starting points: Free Browse, Growth Member, Snapshot. Full credit math, volume bonus bands, and Charter Member pricing.",
+    "Commercial-insurance agent data, without the legacy pricing. Sample, monthly, custom, or national license — transparent pricing, no quote-driven gating.",
 };
 
 /**
- * /pricing — placeholder per Master O directive at design system v1 ship.
+ * /pricing — Agency Signal four-tier transparent buying model per D-034
+ * (locked 2026-05-26 — supersedes D-014/D-015/D-018/D-021 family pricing).
  *
- * Full pricing detail (credit top-up math, volume bonus bands, Charter Member
- * permanent-tier mechanics per D-014/D-021, Enterprise+ per-state pricing per
- * D-015) is the scope of a dedicated pricing session. This page is the
- * skeleton with the right chrome so the new system is consistent across all
- * marketing routes; Master O reactivates with full content in the pricing
- * session.
+ * This page is the lean overview. Full polished implementation (slider
+ * calculator + comparison table + FAQ + sample-offer banner) lands in the
+ * dedicated pricing-build session per BACKLOG entry queued at SESSION_38_5.
  */
 export default async function PricingPage() {
   const supabase = await createClient();
@@ -36,112 +32,110 @@ export default async function PricingPage() {
       <PageHero
         variant="dark"
         eyebrow="Pricing"
-        title="Browse free."
-        highlight="Pay only when you need exports."
-        description="Three starting points. Current rates surface at sign-up so you always see what you'll actually be charged. Charter Member pricing locks in permanently per D-014 — see the Charter page for early-customer terms."
+        title="Commercial-insurance agent data,"
+        highlight="without the legacy pricing."
+        description="Search and buy commercial-insurance agency and producer data your way — monthly access, bulk exports, or a full U.S. license. Built for MGAs, wholesalers, carriers, recruiters, and insurance vendors who want quality data without a five-figure commitment upfront."
         primaryCta={{ label: user ? "Open your dashboard" : "Browse the directory free", href: user ? "/build-list" : "/sign-up" }}
-        secondaryCta={{ label: "Charter Member pricing", href: "/charter" }}
-        rightRail={
-          <DataPanel
-            eyebrow="Usage model"
-            title="What the credit system rewards"
-            rows={[
-              { label: "Browse", value: "Always free, unlimited" },
-              { label: "Filter", value: "Free, unlimited refinement" },
-              { label: "Save lists", value: "Included in Growth Member" },
-              { label: "Export contacts", value: "1 credit per record" },
-              { label: "Top-up", value: "$5–$1,000 slider, bonus bands" },
-              { label: "Charter override", value: "+40% bonus permanent" },
-            ]}
-            badges={["No long-term contract", "No surprise overages", "P-card friendly"]}
-            footer="Detailed credit math, volume bonus thresholds, and the Charter Member permanent-tier mechanics are walked through during sign-up. Enterprise+ per-state pricing is its own conversation — see /enterprise."
-          />
-        }
+        secondaryCta={{ label: "Try 50 contacts for $75", href: "/sign-up" }}
       />
 
       <Section
         variant="light"
-        eyebrow="Three starting points"
-        title="Pick the shape that matches how you operate."
-        description="All three include unlimited browsing. The difference is how exports work — recurring credit pool, one-time pack, or pay-per-export."
+        eyebrow="Choose how to buy"
+        title="Four ways to start. The more you buy, the better your effective price."
       >
-        <div className="grid gap-6 md:grid-cols-3">
-          <PricingCard
-            name="Free Browse"
-            audience="Market mapping. Unlimited search. No exports."
-            price="Free"
-            features={[
-              "Unlimited search across 41,700+ agencies",
-              "Filter by carrier, vertical, state",
-              "1 seat",
-              "Best for market mapping and prospect research",
-            ]}
-            cta="Browse free"
-            href={user ? "/build-list" : "/sign-up"}
-          />
-          <PricingCard
-            name="Growth Member"
-            audience="Active distribution teams pulling lists every week."
-            price="see at sign-up"
-            features={[
-              "Monthly export credits",
-              "Multi-seat access",
-              "Saved-list refresh",
-              "Email + onboarding call",
-              "Top-up slider for heavier months",
-            ]}
-            cta="Start Growth Member"
-            href="/sign-up"
-            highlighted
-          />
-          <PricingCard
-            name="Snapshot"
-            audience="Market entry, M&A diligence, special projects."
-            price="see at sign-up"
-            features={[
-              "One-time export credit pack",
-              "Single export window",
-              "Best for M&A diligence",
-              "Best for special-project list pulls",
-            ]}
-            cta="Buy Snapshot"
-            href="/sign-up"
-          />
+        <div className="grid gap-6 md:grid-cols-2 max-w-5xl">
+          <article className="rounded-lg border border-slate-200 bg-white p-6">
+            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-700">Starter Sample</p>
+            <h3 className="mt-2 text-xl font-black text-slate-950">$75 one-time</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              Test the data quality before committing. 50 filtered commercial-insurance contacts, full
+              records, one CSV export.
+            </p>
+            <ul className="mt-4 space-y-1 text-sm leading-6 text-slate-700">
+              <li>· 50 filtered contacts</li>
+              <li>· Full record export</li>
+              <li>· Choose your states and filters</li>
+              <li>· One-time CSV download</li>
+            </ul>
+          </article>
+
+          <article className="rounded-lg border border-slate-200 bg-white p-6">
+            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-700">Monthly Access</p>
+            <h3 className="mt-2 text-xl font-black text-slate-950">From $299/mo</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              Ongoing access for teams that want monthly prospecting and the flexibility to search, save,
+              and export over time.
+            </p>
+            <ul className="mt-4 space-y-2 text-sm leading-6 text-slate-700">
+              <li><strong className="text-slate-950">Starter — $299/mo</strong>: 250 exports, 1 seat, core filters</li>
+              <li><strong className="text-slate-950">Growth — $599/mo</strong>: 1,000 exports, 3 seats, saved lists</li>
+              <li><strong className="text-slate-950">Pro — $999/mo</strong>: 3,000 exports, 5 seats, priority support</li>
+            </ul>
+            <p className="mt-3 text-xs text-slate-500">Annual prepay: $249 / $499 / $849 effective.</p>
+          </article>
+
+          <article className="rounded-lg border border-slate-200 bg-white p-6">
+            <p className="text-xs font-semibold uppercase tracking-wider text-cyan-700">Build Your File</p>
+            <h3 className="mt-2 text-xl font-black text-slate-950">Starts at $500</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              Custom slice of the market by state, role, and filter. Per-record pricing slides automatically
+              as the order grows.
+            </p>
+            <ul className="mt-4 space-y-1 text-sm leading-6 text-slate-700">
+              <li>· 100–499 records: $1.20 each</li>
+              <li>· 500–1,999: $0.90 each</li>
+              <li>· 2,000–4,999: $0.70 each</li>
+              <li>· 5,000–14,999: $0.50 each</li>
+              <li>· 15,000+: $0.40 each or talk to sales</li>
+            </ul>
+            <p className="mt-3 text-xs text-slate-500">Most single-state orders land between $500 and $1,500.</p>
+          </article>
+
+          <article className="rounded-lg border-2 border-teal-700 bg-white p-6">
+            <p className="text-xs font-semibold uppercase tracking-wider text-teal-700">National Founder License</p>
+            <h3 className="mt-2 text-xl font-black text-slate-950">$12,500/year</h3>
+            <p className="mt-3 text-sm leading-6 text-slate-700">
+              Full U.S. commercial-insurance database at founder pricing. Built for carriers, MGAs,
+              wholesalers, and vendors with nationwide distribution programs.
+            </p>
+            <ul className="mt-4 space-y-1 text-sm leading-6 text-slate-700">
+              <li>· Full U.S. access</li>
+              <li>· Best effective value</li>
+              <li>· Annual license</li>
+              <li>· Founder-rate positioning</li>
+            </ul>
+            <p className="mt-3 text-xs text-slate-500">Designed as a lower-friction alternative to legacy quote-driven vendors.</p>
+          </article>
         </div>
       </Section>
 
       <Section
         variant="muted"
-        eyebrow="Coming to this page"
-        title="Full pricing detail lands in a dedicated session."
-        description="This page is the entry point. The full credit top-up math, volume bonus bands, Charter Member permanent-tier mechanics, and the comparison vs. generic list purchases all land in the next pricing-specific session per Master O's plan. In the meantime, current rates surface at sign-up — no published list to memorize, no surprise overages."
+        eyebrow="Why Agency Signal"
+        title="A simpler way to buy commercial-insurance data."
       >
-        <div className="grid gap-5 md:grid-cols-2">
-          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-black text-slate-950">Credit top-up math</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Top-ups happen on a $5–$1,000+ slider with bonus bands that increase the effective credit-per-dollar
-              rate as the top-up size grows. Charter Members hold the top bonus band permanently. Full bonus
-              thresholds + per-credit pricing arrive in the dedicated pricing session.
-            </p>
-          </article>
-          <article className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h3 className="text-lg font-black text-slate-950">Generic list purchase vs. Agency Signal export</h3>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
-              Buying a 6,000-record list from a generic data tool costs more than pulling a 200-record verified
-              recruit list from Agency Signal — and the 200 records have proven appointment behavior. Comparison
-              table with the per-record math lands in the dedicated pricing session.
-            </p>
-          </article>
+        <div className="max-w-3xl space-y-4 text-base leading-7 text-slate-700">
+          <p>
+            Most insurance data providers require a sales call before you can even estimate cost. Agency
+            Signal gives you a lower-friction way to evaluate and buy — whether you need one state, five
+            states, 500 records across regions, or the full U.S. database.
+          </p>
+          <ul className="list-disc pl-6 space-y-1">
+            <li>Buy a small sample before making a bigger commitment.</li>
+            <li>Start on a monthly plan if you need ongoing prospecting.</li>
+            <li>Build a custom file by state, region, role, or record count.</li>
+            <li>Upgrade to a national license when you&apos;re ready to scale.</li>
+          </ul>
         </div>
       </Section>
 
       <CTASection
-        eyebrow="Three paths into the directory"
-        title="Browse free. Lock the Charter rate. Or talk Enterprise+."
-        description="Self-serve sign-up unlocks Free Browse instantly. Charter Member pricing is open during the 60–90 day enrollment window — direct to Master O. Enterprise+ is demo-led with per-state pricing."
-        primaryCta={{ label: user ? "Open your dashboard" : "Browse the directory free", href: user ? "/build-list" : "/sign-up" }}
-        secondaryCta={{ label: "Request a Charter conversation", href: "/charter" }}
+        eyebrow="Start small or go national"
+        title="Try a $75 sample or talk to us about the founder license."
+        description="Self-serve sign-up unlocks Free Browse instantly. Sample purchases let you validate data quality before scaling. National Founder License is annual — a quick email starts the conversation."
+        primaryCta={{ label: user ? "Open your dashboard" : "Browse free", href: user ? "/build-list" : "/sign-up" }}
+        secondaryCta={{ label: "Email about National License", href: "mailto:hello@seven16group.com?subject=National%20Founder%20License" }}
       />
 
       <MarketingFooter />

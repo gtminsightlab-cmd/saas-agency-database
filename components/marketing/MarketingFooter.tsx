@@ -14,9 +14,8 @@ const FOOTER_LINKS: Array<{ heading: string; links: Array<{ label: string; href:
   {
     heading: "Plans",
     links: [
-      { label: "Pricing", href: "/#pricing" },
+      { label: "Pricing", href: "/pricing" },
       { label: "Enterprise", href: "/enterprise" },
-      { label: "Charter Member", href: "/charter" },
     ],
   },
   {

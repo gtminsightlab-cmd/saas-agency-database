@@ -96,53 +96,66 @@ export default async function MarketingHome() {
         <Section
           variant="light"
           eyebrow="Pricing"
-          title="Browse free. Export when the list is worth it."
-          description="Three starting points. Current rates surface at sign-up. Charter Member pricing locks in permanently per D-014 — see the Charter page for early-customer terms."
+          title="Sample, monthly, custom, or national."
+          description="Four transparent ways to buy commercial-insurance data. Start with a $75 sample, sign up for monthly access, build a custom file by state, or buy a full U.S. license."
         >
-          <div id="pricing" className="grid gap-6 md:grid-cols-3">
+          <div id="pricing" className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             <PricingCard
-              name="Free Browse"
-              audience="Unlimited search. No exports."
-              price="Free"
+              name="Starter Sample"
+              audience="Test quality before committing."
+              price="$75 one-time"
               features={[
-                "Unlimited search across 41,700+ agencies",
-                "Filter by carrier, vertical, state",
-                "1 seat",
-                "Best for market mapping",
+                "50 filtered contacts",
+                "Full record export",
+                "Choose your states + filters",
+                "One CSV download",
               ]}
-              cta="Browse free"
-              href={user ? "/build-list" : "/sign-up"}
+              cta="Try the sample"
+              href="/sign-up"
             />
             <PricingCard
-              name="Growth Member"
-              audience="Active distribution teams."
-              price="see at sign-up"
+              name="Monthly Access"
+              audience="Ongoing prospecting teams."
+              price="from $299/mo"
               features={[
-                "Monthly export credits",
-                "Multi-seat access",
-                "Saved-list refresh",
-                "Email + onboarding call",
+                "250 to 3,000 exports / month",
+                "1 to 5 seats by tier",
+                "Saved lists + filters",
+                "Annual prepay discount",
               ]}
-              cta="Start Growth Member"
-              href="/sign-up"
+              cta="Start monthly"
+              href="/pricing"
               highlighted
             />
             <PricingCard
-              name="Snapshot"
-              audience="Market entry & diligence."
-              price="see at sign-up"
+              name="Build Your File"
+              audience="Custom slice of the market."
+              price="from $500"
               features={[
-                "One-time export credit pack",
-                "Single export window",
-                "Best for M&A diligence",
-                "Best for special projects",
+                "$1.20 → $0.40 per record",
+                "Volume discount slides up",
+                "Choose states + roles + filters",
+                "One-time CSV delivery",
               ]}
-              cta="Buy Snapshot"
-              href="/sign-up"
+              cta="Build a file"
+              href="/pricing"
+            />
+            <PricingCard
+              name="National License"
+              audience="Full U.S. database."
+              price="$12,500/yr"
+              features={[
+                "Full U.S. access",
+                "Annual license",
+                "Founder-rate positioning",
+                "Best effective value",
+              ]}
+              cta="Talk to us"
+              href="mailto:hello@seven16group.com?subject=National%20Founder%20License"
             />
           </div>
           <p className="mt-8 text-sm text-slate-600 max-w-3xl">
-            See the <a href="/#pricing-detail" className="font-bold text-teal-700 hover:text-teal-800">full pricing page</a> for credit top-up math, volume bonus bands, and Charter Member pricing.
+            See the <a href="/pricing" className="font-bold text-teal-700 hover:text-teal-800">full pricing page</a> for tier details, custom-file volume math, and the National Founder License.
           </p>
         </Section>
 

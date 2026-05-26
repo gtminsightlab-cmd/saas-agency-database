@@ -124,12 +124,6 @@ export function MarketingHeader({ isAuthed, theme = "light" }: MarketingHeaderPr
               </Link>
             </li>
           ))}
-          <li>
-            <Link href="/charter" className={charterChipClass}>
-              Charter
-              <span className={charterChipPillClass}>50–75 seats</span>
-            </Link>
-          </li>
         </ul>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -174,15 +168,6 @@ export function MarketingHeader({ isAuthed, theme = "light" }: MarketingHeaderPr
               </Link>
             </li>
           ))}
-          <li>
-            <Link
-              href="/charter"
-              onClick={() => setMobileOpen(false)}
-              className={mobileCharterLinkClass}
-            >
-              Charter (50–75 seats)
-            </Link>
-          </li>
           <li className="pt-2">
             {isAuthed ? (
               <Link
