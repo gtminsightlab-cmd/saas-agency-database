@@ -2,6 +2,7 @@ import Link from "next/link";
 import { MarketingHeader } from "@/components/marketing/MarketingHeader";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -12,10 +13,13 @@ export const metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function CharterPage() {
+export default async function CharterPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <main className="min-h-screen bg-white">
-      <MarketingHeader />
+      <MarketingHeader isAuthed={!!user} />
 
       <PageHero
         eyebrow="Program ended"
