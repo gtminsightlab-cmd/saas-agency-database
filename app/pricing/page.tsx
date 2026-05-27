@@ -4,6 +4,10 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
+import { SliderCalculator } from "@/components/marketing/SliderCalculator";
+import { ComparisonTable } from "@/components/marketing/ComparisonTable";
+import { PricingFAQ } from "@/components/marketing/PricingFAQ";
+import { SampleOfferBanner } from "@/components/marketing/SampleOfferBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -17,9 +21,9 @@ export const metadata = {
  * /pricing — Agency Signal four-tier transparent buying model per D-034
  * (locked 2026-05-26 — supersedes D-014/D-015/D-018/D-021 family pricing).
  *
- * This page is the lean overview. Full polished implementation (slider
- * calculator + comparison table + FAQ + sample-offer banner) lands in the
- * dedicated pricing-build session per BACKLOG entry queued at SESSION_38_5.
+ * Full polished implementation per BACKLOG `0e` (SESSION_38.5): hero +
+ * 4-tier grid + slider calculator + "Why Agency Signal" + comparison
+ * table + FAQ + sample-offer banner.
  */
 export default async function PricingPage() {
   const supabase = await createClient();
@@ -43,6 +47,7 @@ export default async function PricingPage() {
         variant="light"
         eyebrow="Choose how to buy"
         title="Four ways to start. The more you buy, the better your effective price."
+        description="Start small, scale up, or buy everything. Sample, monthly subscription, custom file, or full U.S. license — pick the shape that fits your budget."
       >
         <div className="grid gap-6 md:grid-cols-2 max-w-5xl">
           <article className="rounded-lg border border-slate-200 bg-white p-6">
@@ -112,6 +117,15 @@ export default async function PricingPage() {
 
       <Section
         variant="muted"
+        eyebrow="Custom-file calculator"
+        title="See your price as you build your list."
+        description="Slide right to estimate any custom-file order. As your record count grows, your effective per-record price drops automatically."
+      >
+        <SliderCalculator />
+      </Section>
+
+      <Section
+        variant="light"
         eyebrow="Why Agency Signal"
         title="A simpler way to buy commercial-insurance data."
       >
@@ -121,6 +135,11 @@ export default async function PricingPage() {
             Signal gives you a lower-friction way to evaluate and buy — whether you need one state, five
             states, 500 records across regions, or the full U.S. database.
           </p>
+          <p>
+            Our database is built for insurance-specific targeting, with records filtered around the people
+            and firms that matter most to distribution, recruiting, and marketing teams. Use it to find
+            agencies, producers, and decision-makers by geography, niche, and business profile.
+          </p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Buy a small sample before making a bigger commitment.</li>
             <li>Start on a monthly plan if you need ongoing prospecting.</li>
@@ -128,6 +147,27 @@ export default async function PricingPage() {
             <li>Upgrade to a national license when you&apos;re ready to scale.</li>
           </ul>
         </div>
+      </Section>
+
+      <Section
+        variant="muted"
+        eyebrow="Why buyers choose Agency Signal"
+        title="Transparent buying vs. legacy quote-driven vendors."
+        description="The market is used to opaque pricing, sales-led trials, and enterprise-first packaging. We built the opposite."
+      >
+        <ComparisonTable />
+      </Section>
+
+      <Section
+        variant="light"
+        eyebrow="FAQ"
+        title="Common questions."
+      >
+        <PricingFAQ />
+      </Section>
+
+      <Section variant="muted">
+        <SampleOfferBanner />
       </Section>
 
       <CTASection
