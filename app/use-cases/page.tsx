@@ -4,7 +4,7 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
-import { DataPanel } from "@/components/marketing/DataPanel";
+import { WorkflowStepMockup } from "@/components/marketing/WorkflowStepMockup";
 import { UseCasePlay } from "@/components/marketing/UseCasePlay";
 
 export const dynamic = "force-dynamic";
@@ -89,22 +89,7 @@ export default async function UseCasesPage() {
         description="A good distribution team doesn't prospect the same way every quarter. Sometimes you're launching a program, sometimes defending shelf space, sometimes trying to displace a competitor, sometimes mapping where the market is already built before territory goals are assigned. Agency Signal gives your team a cleaner map for each play."
         primaryCta={{ label: user ? "Open your dashboard" : "Browse agencies free", href: user ? "/build-list" : "/sign-up" }}
         secondaryCta={{ label: "Enterprise+ distribution", href: "/enterprise" }}
-        rightRail={
-          <DataPanel
-            eyebrow="Signal ingredients"
-            title="What every play is built from"
-            rows={[
-              { label: "Carrier appointments", value: "260K+ verified, monthly refresh" },
-              { label: "Specialization tier", value: "Exposure / Growing / Specialist" },
-              { label: "Diversity index", value: "Per-agency carrier breadth" },
-              { label: "Verified contacts", value: "135K+ producers + leaders" },
-              { label: "State filters", value: "All 50 + DC" },
-              { label: "Vertical filters", value: "12 carrier-mapped verticals" },
-            ]}
-            badges={["Parent/child mapped", "State-DOI sourced", "No bot scrape"]}
-            footer="Every play below pulls from this same signal layer. Different filters, different ranking — same trusted data underneath."
-          />
-        }
+        rightRail={<WorkflowStepMockup />}
       />
 
       <Section

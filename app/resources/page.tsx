@@ -4,7 +4,7 @@ import { Sidebar } from "@/components/app/sidebar";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
-import { DataPanel } from "@/components/marketing/DataPanel";
+import { EditorialRowMockup } from "@/components/marketing/EditorialRowMockup";
 import { EditorialCard } from "@/components/marketing/EditorialCard";
 
 export const dynamic = "force-dynamic";
@@ -78,21 +78,7 @@ export default async function ResourcesPage() {
         description="Field-tested methodology, recruit plays, and side-by-side comparisons for teams who are tired of paying for general-purpose contact databases that don't answer the question that actually drives appointment wins: which agencies hold which carriers, and which of those agencies have room for one more."
         primaryCta={{ label: "Read the methodology", href: "/methodology" }}
         secondaryCta={{ label: "See it applied to 12 verticals", href: "/verticals" }}
-        rightRail={
-          <DataPanel
-            eyebrow="Resource index"
-            title="What's published, what's queued"
-            rows={[
-              { label: "Methodology", value: "Live · 9 min" },
-              { label: "Recruit plays", value: "Live · 7 min" },
-              { label: "Comparisons", value: "Coming soon" },
-              { label: "Glossary", value: "Coming soon" },
-              { label: "Changelog", value: "Coming soon" },
-            ]}
-            badges={["Updated monthly", "Operator-direct", "No black box"]}
-            footer="New pieces ship as the team writes them. Subscribe to the changelog at the bottom of the page to get the next one in your inbox."
-          />
-        }
+        rightRail={<EditorialRowMockup />}
       />
 
       <Section

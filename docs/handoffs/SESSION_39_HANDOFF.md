@@ -174,9 +174,73 @@ Family-wide carry-forward unchanged from FAMILY_HEALTH.md "Items requiring atten
 | 1 | `docs/context/FAMILY_HEALTH.md` — Last refresh updated + AS row refreshed + Items entries added | ✅ |
 | 2 | `docs/handoffs/SESSION_39_HANDOFF.md` (this file) | ✅ |
 | 3 | `docs/BACKLOG.md` — Last reviewed line refreshed; S39 close prepended | ✅ |
-| 4 | `docs/handoffs/SESSION_40_PROMPT.md` — next-up = seven16-group-site Tier 1 OR /pricing page build | ✅ |
-| 5 | `git push origin main` directly | ⏳ pending close commit |
+| 4 | `docs/handoffs/SESSION_40_PROMPT.md` — refreshed at S39 close to reflect post-D-035 + D-036 priorities | ✅ |
+| 5 | `git push origin main` directly | ✅ commit `75f0ace` (security) + `410b012` (cross-repo prep) + `861d1b9` (1000-cap addendum) + close-out commit (TBD) |
 | 6 | Vercel auto-deploy reaches READY (docs-only commit; no code change but Vercel rebuilds) | ⏳ on push |
+
+---
+
+## Post-close addendum (mid-session-close findings — landed before commit)
+
+Three substantive findings landed AFTER the original S39 handoff was authored but BEFORE the close commit, all stemming from Master O directives during the session-close conversation. Codified at session close + locked as **DECISION_LOG D-035 + D-036**.
+
+### Finding 1 — Corpus reality (50,298 IS sample data)
+
+Master O caught the gap that I'd been pushing back on: the 50,298-row `public.carriers` count IS a sample. SQL verification confirmed:
+- `count(*)` on `public.carriers` = **50,298**
+- `max(source_last_refreshed)` = **2026-04-13** (frozen at original seed, 6 weeks stale at S39 close)
+- `count(*) WHERE authority_granted_date IS NOT NULL` = **0 of 50,298** (critical underwriting field empty everywhere)
+- Daily SODA cron processes deltas post-watermark only; **has never run a historical-universe pull**
+- Full SODA `6eyk-hxee` queryable: ~1.86M rows
+- Full FMCSA Census register: ~2.6M entities
+
+I owe Master O the correction — earlier framing of "those aren't sample numbers" was technically right (the rows are real) but misleading (the corpus IS the original sample seed, never expanded).
+
+**Sprint 0 plan locked** in family memory `project_dotintel_corpus_backfill_plan.md`. Two sessions:
+- **Sprint 0a:** Path B filtered universe pull from SODA `6eyk-hxee` → ~250-300k motor-carrier + active-common-authority rows
+- **Sprint 0b:** MCS-150 detail backfill from SODA `kjg3-diqy` → fills `authority_granted_date`, officer/principal names (unblocks Module 6 Chameleon Detection), operating radius + cargo detail (unblocks Module 7 Litigation Exposure)
+
+### Finding 2 — Territory Intelligence 1000-per-state UI cap bug
+
+Master O screenshot confirmed: `/dashboard/territory-intelligence` Top-States table shows EXACTLY 1,000 carriers in every row (HI/AK/CO/MN/NM/GA/OK/NY/FL/KY all showing 1000). That's a SQL or RPC `LIMIT 1000` per state — not real data. Corrupts the "Addressable" and "Penetration %" math underneath (numerator capped while displayed as full population).
+
+Fix folded into Sprint 0 alongside corpus backfill (~0.5 session). Logged at cross-repo addendum entry **0-uicap**.
+
+### Finding 3 — 8-module risk intelligence framework locked
+
+Master O ChatGPT-CTO review surfaced 8 modules that translate raw FMCSA data into insurance-grade carrier intelligence. The trust-layer 6-score architecture from `project_dotintel_trust_layer_architecture.md` covers 6 of them; **Chameleon Detection (Module 6)** + **Litigation Exposure (Module 7)** are net-new and become the family's competitive moat (no competitor — CHIP / eCarrierCheck / DOT Analysis / InsuranceApps — has both).
+
+Per-module **defensibility framework** locked: every module card answers 8 questions (signal / math / visualization / user takeaway / defense / reason codes + bindingUse / maturity + evidence requirements / for ❌: gap detail + path to ✅). The 8 questions become the sales-defense scaffold underwriters can be walked through.
+
+Sprint sequencing: **Sprint 0 (corpus + UI cap) → Sprint A (Violation Intensity + Trend Forecast) → Sprint B (Chameleon Detection) → Sprint C (Litigation Exposure) → Sprint D (Market Fit).** ~10-14 dotintel2 sessions to ship all 8 at ✅ Preview maturity.
+
+### Durable artifacts written + committed
+
+**Family memory (canonical, accessible from any session):**
+- NEW `project_dotintel_8_module_risk_spec.md` (canonical 8-module framework)
+- NEW `project_dotintel_corpus_backfill_plan.md` (Sprint 0 detail with 2 paths + risk mitigations)
+- NEW `project_dotintel_pricing_strategy_v1.md` (per-lookup credits + light subs)
+- NEW `feedback_supabase_definer_direct_anon_grant_pattern.md` (Pattern A vs B doctrine)
+- `MEMORY.md` index updated with all new pointers
+
+**Cross-repo prep artifacts (saas-agency-database/docs/cross-repo/, committed + pushed):**
+- `dotintel-risk-module-defense-matrix.md` — 8-module index doc + per-module summaries + UI viz framework
+- `dotintel2-backlog-addendum-trust-layer-sprint-abcd.md` — 4 BACKLOG entries (0-corpus + 0-uicap + 0-modules + 0-defense) for next dotintel2 session to paste-apply
+
+**DECISION_LOG (formal D-numbers — sessions cite by ID, don't relitigate):**
+- D-035 — DOT Intel 8-module risk intelligence framework + Sprint 0 corpus backfill commitment
+- D-036 — DOT Intel pricing strategy v1 (usage-based credits + light subscriptions)
+
+### Carry-forward Master O actions (updated)
+
+| Priority | Action | Where |
+|---|---|---|
+| 🔴 Pre-decision | Sprint 0 scope — Path A unfiltered (1.86M) vs Path B filtered to motor-carrier-active (~250-300k, recommended) | At next dotintel2 session open |
+| 🔴 Pre-check | Confirm Supabase Pro disk allocation for ~250k new rows + ~1M new `carriers_history` audit rows | Supabase dashboard |
+| 🟠 Pre-decision | Sprint C state-litigation data source — ATRI Tort Cost Index (recommended) vs ATA vs US Chamber vs public-verdict compile | At Sprint C session open (not blocking until then) |
+| 🟡 Open from earlier sessions | Flip `NEXT_PUBLIC_APP_URL` in Vercel Preview env (dashboard only) | Quick fix, low priority |
+| 🟡 Open from earlier sessions | Verify first real Stripe event hits 200 in Vercel logs | Passive observation |
+| 🔵 dotintel2-side | Merge PR #32 (S55 customer_signup + paid_conversion wires); provision 9 Vercel env vars; run 5 post-deploy smoke tests | Different repo — open dotintel2 session |
 
 ---
 

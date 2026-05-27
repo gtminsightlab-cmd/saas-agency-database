@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/app/sidebar";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
-import { DataPanel } from "@/components/marketing/DataPanel";
+import { VerticalTierMockup } from "@/components/marketing/VerticalTierMockup";
 import { WorkflowStrip } from "@/components/marketing/WorkflowStrip";
 import { getVerticalsSummary } from "@/lib/cache/build-list-refs";
 
@@ -98,20 +98,7 @@ export default async function VerticalsPage() {
         description="We map the parent-child carrier relationships that define the US insurance market — turning every agent's appointment list into a readable inventory of their actual book of business. Filter, target, and recruit by the writing-company breadcrumbs your competitors leave behind."
         primaryCta={{ label: primaryCtaLabel, href: primaryCtaHref }}
         secondaryCta={{ label: "Read the methodology", href: "/methodology" }}
-        rightRail={
-          <DataPanel
-            eyebrow="Specialization tiers"
-            title="How we score every vertical"
-            rows={[
-              { label: "Exposure", value: "2 specialty carriers" },
-              { label: "Growing", value: "3+ specialty carriers" },
-              { label: "Specialist", value: "5+ specialty carriers" },
-              { label: "Refresh cadence", value: "Every 30 days" },
-            ]}
-            badges={["Carrier-verified", "State-DOI sourced", "Parent/child mapped"]}
-            footer="Scoring tiers are computed per-vertical against a curated specialty carrier roster. The carrier list per vertical and the scoring thresholds are published in full on the methodology page."
-          />
-        }
+        rightRail={<VerticalTierMockup />}
       />
 
       <Section

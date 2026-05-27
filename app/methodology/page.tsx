@@ -5,7 +5,7 @@ import { Sidebar } from "@/components/app/sidebar";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
-import { DataPanel } from "@/components/marketing/DataPanel";
+import { ThreeSignalsMockup } from "@/components/marketing/ThreeSignalsMockup";
 
 export const dynamic = "force-dynamic";
 
@@ -118,22 +118,7 @@ export default async function MethodologyPage() {
         description="Every agency in the directory is scored on three independent signals — Volume, Specialization Tier, and Carrier Diversity — so you can stop guessing which agencies will actually move when you call. The carrier list per vertical, the scoring thresholds, and the verification cadence are all published here. The IP is the assembly of the data, not a secret algorithm."
         primaryCta={{ label: "See it applied to 12 verticals", href: "/verticals" }}
         secondaryCta={{ label: user ? "Open the app" : "Browse the directory free", href: user ? "/build-list" : "/sign-up" }}
-        rightRail={
-          <DataPanel
-            eyebrow="Three signals"
-            title="What every score is built from"
-            rows={[
-              { label: "Volume", value: "Raw appointment + policy capacity" },
-              { label: "Specialization Tier", value: "Vertical depth (Exposure / Growing / Specialist)" },
-              { label: "Carrier Diversity", value: "Independence vs captive shop" },
-              { label: "Refresh cadence", value: "Monthly against state filings" },
-              { label: "Sources required", value: "≥2 independent per verified record" },
-              { label: "Coverage", value: "All 50 + DC + 3 territorial" },
-            ]}
-            badges={["Open methodology", "Public changelog", "No black box"]}
-            footer="The scoring model evolves; every change ships to a public changelog so buyers can see what moved and when."
-          />
-        }
+        rightRail={<ThreeSignalsMockup />}
       />
 
       <Section

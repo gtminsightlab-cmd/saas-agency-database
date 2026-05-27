@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { CTASection } from "@/components/layout/CTASection";
-import { DataPanel } from "@/components/marketing/DataPanel";
+import { EnterpriseCapabilitiesMockup } from "@/components/marketing/EnterpriseCapabilitiesMockup";
 
 export const dynamic = "force-dynamic";
 
@@ -63,22 +63,7 @@ export default async function EnterprisePage() {
         description="The Producer and Growth tiers are how individual agents bind more accounts — sub-$500 P-card self-serve. Enterprise+ is a different category entirely — the annual contract that gives a VP of Distribution, an MGA, a wholesaler, or a carrier the full agency footprint of every state they operate in, with the team governance and controls to deploy it at scale."
         primaryCta={{ label: "Talk enterprise fit", href: "mailto:hello@seven16group.com?subject=Enterprise%2B%20demo%20request" }}
         secondaryCta={{ label: "Read the methodology", href: "/methodology" }}
-        rightRail={
-          <DataPanel
-            eyebrow="Enterprise+ terms"
-            title="What the annual contract looks like"
-            rows={[
-              { label: "Contract", value: "Annual, demo-led" },
-              { label: "Per-state pricing", value: "$1,000–$2,000/state" },
-              { label: "All-50 ceiling", value: "$12,500/year (D-015 anchor)" },
-              { label: "Seat model", value: "Org-wide, included" },
-              { label: "Outcome layer", value: "Distribution+ optional" },
-              { label: "Eval window", value: "30–90 day pilot" },
-            ]}
-            badges={["SOC 2 path", "SSO included", "RLS-isolated"]}
-            footer="Full per-state pricing detail, bundle ladder, and Distribution+ outcome SKU mechanics are walked through in the demo. Buyer = VP of Distribution / Director of Producer Development at MGAs, wholesalers, carriers, aggregators, and insurtechs."
-          />
-        }
+        rightRail={<EnterpriseCapabilitiesMockup />}
       />
 
       <Section
