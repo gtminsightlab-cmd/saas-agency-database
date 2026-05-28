@@ -25,17 +25,20 @@
  *
  * Pushed events:
  *   - `customer_signup` — first paid touch (subscription OR snapshot)
- *   - `charter_member_enrolled` — Charter Member status granted at checkout
  *   - `subscription_started` — Growth subscription completed (paid recurring)
  *   - `subscription_changed` — recurring plan changed (downgrade/upgrade/swap)
  *   - `subscription_cancelled` — recurring plan cancelled
  *   - `snapshot_purchased` — one-time Snapshot purchase completed
+ *
+ * The `charter_member_enrolled` event was removed 2026-05-27 per D-039
+ * (executes D-034 family-wide Charter Member kill).
  */
 
 /** Canonical event keys Command's /api/ingest understands from agencysignal. */
 export type CommandEventType =
+  // `charter_member_enrolled` REMOVED 2026-05-27 per D-039 (executes
+  // D-034 family-wide Charter Member kill).
   | "customer_signup"
-  | "charter_member_enrolled"
   | "subscription_started"
   | "subscription_changed"
   | "subscription_cancelled"
@@ -64,7 +67,6 @@ export type PushEventPayload = {
    * Stable idempotency key per D-027 Practice 7. Pattern:
    * `<source_product>:<event_type>:<stable-id>`. Examples:
    *   - `agencysignal:customer_signup:<app_user_id>`
-   *   - `agencysignal:charter_member_enrolled:<stripe_customer_id>`
    *   - `agencysignal:subscription_started:<stripe_subscription_id>`
    *   - `agencysignal:snapshot_purchased:<stripe_session_id>`
    */

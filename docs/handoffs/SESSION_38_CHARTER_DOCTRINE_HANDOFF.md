@@ -1,5 +1,29 @@
 # SESSION_38 — Charter Member doctrine end-to-end wiring (2026-05-25)
 
+> # ⚠️ SUPERSEDED 2026-05-27 by D-034 (Charter Member program KILLED) + D-039 (Charter rollback executed)
+>
+> **Status:** Historical record only. The Charter Member program was killed family-wide on **2026-05-26 per D-034** ("we are not doing charter member program anymore or family pricing. Its too confusing.") and the code wired in this handoff was rolled back on **2026-05-27 per D-039**.
+>
+> **What survives** from this work (still in `main`):
+> - The welcome-email scaffolding (`lib/family-integrations/email.ts` + `sendWelcomeForSession` helper) — Charter branch removed; `growth_member_welcome` + `snapshot_purchase_welcome` templates retained.
+> - The Command CRM push scaffolding (`lib/family-integrations/command.ts` + `pushCommandFromSession` + `pushCommandFromSubscription`) — `charter_member_enrolled` event removed; `customer_signup` / `subscription_started` / `subscription_changed` / `subscription_cancelled` / `snapshot_purchased` events retained.
+>
+> **What was removed** by D-039 rollback:
+> - `charter=1` query param + Charter Member metadata tagging in `app/api/stripe/checkout/route.ts`
+> - Charter Coupon auto-attach (`STRIPE_CHARTER_COUPON_ID` env var) at Checkout
+> - `ensureCharterCouponAttached` helper + every callsite in `app/api/stripe/webhook/route.ts`
+> - `charter_member_welcome` template key
+> - `charter_member_enrolled` Command event
+> - `charter_member` flag in event_data payloads
+>
+> **Replacement pricing** for Agency Signal: 4-tier transparent model per D-034, captured at `~/.claude/.../memory/project_agencysignal_pricing_v2_neilson_alternative.md`. The pricing-page rebuild is queued for a dedicated session.
+>
+> **Stripe dashboard cleanup pending** (Master O action per D-034): deactivate Coupon `L1Ngigfc` and archive any test Charter SKUs.
+>
+> The body below is preserved as a historical record of what was built between 2026-05-25 and the 2026-05-26 kill decision. Do not act on its claims; consult D-034, D-038, and D-039 + the rollback commit for current state.
+
+---
+
 **Date:** 2026-05-25
 **Branch:** `main`
 **Commit landed:** `1099317` (see "Attribution quirk" below — Charter files are in a commit titled `docs(session-37-final): ...` because a parallel session swept the staged files into its own commit before this session's `git commit` ran)

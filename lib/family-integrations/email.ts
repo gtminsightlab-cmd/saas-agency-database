@@ -26,7 +26,8 @@
 
 /** Canonical template keys the Email platform understands. */
 export type EmailTemplateKey =
-  | "charter_member_welcome"
+  // `charter_member_welcome` REMOVED 2026-05-27 per D-039 (executes
+  // D-034 family-wide Charter Member kill).
   | "growth_member_welcome"
   | "snapshot_purchase_welcome";
 
