@@ -1,4 +1,4 @@
-# Charter Member launch checklist — Agency Signal
+﻿# Charter Member launch checklist — Agency Signal
 
 **Status:** Session F 2026-05-23 (initial scaffold) → **SESSION_36 LAUNCH-READY 2026-05-24** (12 dashboard actions complete, manual smoke walked through, matrix 9/9 GREEN) → **2026-05-25 smoke verification GREEN** (19/19 checks pass via `npm run smoke` against production). This is the **single source of truth** for everything that must be true before Master O opens charter outreach. Consolidates every dashboard action from Sessions D + E + the pre-existing pending items.
 
@@ -23,7 +23,7 @@
 |---|---|---|---|
 | 5 | Create Upstash Redis DB, copy REST URL + token | https://upstash.com → Console → Create database | ✅ DONE SESSION_36 (2026-05-24, Master O Upstash signup) |
 | 6 | Add `UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN` to Vercel Production + Preview env | Vercel project → Settings → Environment Variables | ✅ DONE SESSION_36 (Claude via CLI for Production; Master O dashboard for Preview) |
-| 7 | Create Cloudflare Turnstile site, copy Site Key + Secret Key | https://dash.cloudflare.com → Turnstile | ✅ DONE SESSION_36 (hostnames `agencysignal.co` + `seven16group.com`) |
+| 7 | Create Cloudflare Turnstile site, copy Site Key + Secret Key | https://dash.cloudflare.com → Turnstile | ✅ DONE SESSION_36 (hostnames `agencysignal.io` + `seven16group.com`) |
 | 8 | Add `NEXT_PUBLIC_TURNSTILE_SITE_KEY` to Vercel Production + Preview env | Vercel project → Settings → Environment Variables | ✅ DONE SESSION_36 (via Vercel CLI) |
 | 9 | Enable CAPTCHA in Supabase Auth, paste Turnstile Secret Key | Supabase dashboard → Authentication → Settings → Captcha | ✅ DONE SESSION_36 (Master O dashboard; widget renders on /sign-up + /sign-in + /auth/forgot-password per SESSION_36 hotfix commit `59b1360`) |
 

@@ -47,7 +47,7 @@ export default async function PrivacyPage() {
             Agency Signal is operated by Seven16 Group. We process data described below as the &ldquo;controller&rdquo; under GDPR terminology — i.e., we decide what data is collected and what it&rsquo;s used for. Where you contact us about your data, you&rsquo;ll be talking to a human at <a href="mailto:hello@seven16group.com" className="font-bold text-teal-700 hover:text-teal-800">hello@seven16group.com</a>.
           </p>
           <p>
-            This policy covers the Agency Signal product at <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">agencysignal.co</code> (legacy traffic on <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">directory.seven16group.com</code> 301-redirects here). It does not cover other Seven16 Group products (DOT Intel, DOTCarriers, DOTAgencies, Bind Lab) which publish their own policies on their own domains.
+            This policy covers the Agency Signal product at <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">agencysignal.io</code> (legacy traffic on <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">agencysignal.co</code> and <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">directory.seven16group.com</code> 301-redirects here). It does not cover other Seven16 Group products (DOT Intel, DOTCarriers, DOTAgencies, Bind Lab) which publish their own policies on their own domains.
           </p>
         </div>
       </Section>

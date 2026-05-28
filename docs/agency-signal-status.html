@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -136,7 +136,7 @@
       <p style="font-size:14.5px; line-height:1.55;"><strong>The distribution intelligence layer for commercial insurance.</strong> Helps producers, agencies, MGAs, wholesalers, carriers, and program administrators find, segment, and prioritize agencies + producers by geography, carrier appointment, vertical, contact quality, and distribution fit.</p>
       <p class="muted small" style="margin-top:8px;">Rejected language: "lead-gen tool" · "prospecting platform" · "ZoomInfo for insurance" · "Neilson-replacement at consumer tier" · "agency database." Agency Signal is an <em>intelligence layer</em>, not a list. The moat is appointment-aware targeting + vertical specialization + saved-list refresh + data hygiene + Enterprise+ distribution recommendations — not raw row count.</p>
       <p class="small" style="margin-top:10px; color: var(--text);"><strong>ICP entry → growth path:</strong> $19 Producer wedge (working producers + 1–10-producer retail agencies + small wholesalers, $0–50M premium) → $99 Growth → $399+ Enterprise. Distribution Expander VPs at MGAs/wholesalers/carriers buy in via the D-015 second-ICP layer separately.</p>
-      <p class="muted small" style="margin-top:8px;">Live at <span class="mono">directory.seven16group.com</span>; future apex <span class="mono">agencysignal.co</span> reserved but unscheduled (per D-004).</p>
+      <p class="muted small" style="margin-top:8px;">Live at <span class="mono">directory.seven16group.com</span>; future apex <span class="mono">agencysignal.io</span> reserved but unscheduled (per D-004).</p>
     </div>
     <div class="card">
       <h3>What it is NOT <span class="pill pill-rejected">D-023</span></h3>
@@ -256,7 +256,7 @@
         <li>Trust copy + Hygiene Credit live-ship <span class="pill pill-deferred">Data inventory catch-up</span></li>
         <li>Phase 3 CMO rewrite (testimonials/logos) <span class="pill pill-deferred">2–3 paying customers</span></li>
         <li>A/B test sweep (3 tests) <span class="pill pill-deferred">500+ visitors/wk</span></li>
-        <li>Domain cutover to agencysignal.co <span class="pill pill-deferred">Quiet DNS week</span></li>
+        <li>Domain cutover to agencysignal.io <span class="pill pill-deferred">Quiet DNS week</span></li>
         <li>Sprint 1C (shared JWT/Doppler/Sentry) <span class="pill pill-deferred">Platform runbook lands</span></li>
         <li>8 empty verticals (mig 0051) <span class="pill pill-deferred">Carrier mapping defined</span></li>
         <li>Pre-launch security gates (Upstash, PITR, CSP) <span class="pill pill-deferred">Pre-launch</span></li>
@@ -507,7 +507,7 @@
       <tr><td class="num">7</td><td>DOT Intel sync script (<span class="mono">sync_to_agency_signal.py</span>) lives OUTSIDE this repo at <span class="mono">scrapers/seven16-scraper/seven16-scraper/scripts/</span> — coordination risk</td><td><span class="pill pill-deferred">Medium · operational hygiene</span></td></tr>
       <tr><td class="num">8</td><td>Hygiene Credit promised in trust copy + locked since session 9-10; Stripe wiring (Subscription Schedule vs. programmatic coupon) not chosen</td><td><span class="pill pill-deferred">Trigger: paying-customer cutover</span></td></tr>
       <tr><td class="num">9</td><td>Trust copy ("Two of the top 10," "Dual-Agent Verification Pipeline," Hygiene Credit framing) locked but never shipped to live site</td><td><span class="pill pill-deferred">Trigger: data inventory catch-up</span></td></tr>
-      <tr><td class="num">10</td><td>agencysignal.co domain reserved but DNS not wired</td><td><span class="pill pill-deferred">Trigger: quiet DNS week</span></td></tr>
+      <tr><td class="num">10</td><td>agencysignal.io domain reserved but DNS not wired</td><td><span class="pill pill-deferred">Trigger: quiet DNS week</span></td></tr>
       <tr><td class="num">11</td><td><span class="mono">_trucking_load_log</span> RLS disabled (advisory flagged session 21)</td><td><span class="pill pill-queued">Low · quick win</span></td></tr>
       <tr><td class="num">12</td><td>8 of 12 verticals empty (migration 0051 created shells; no carrier mapping)</td><td><span class="pill pill-deferred">Trigger: carrier mapping per vertical defined</span></td></tr>
       <tr><td class="num">13</td><td>Carrier-table dedupe (4× Cincinnati, 3× Selective, 3× Nationwide collapsing to same normCarrier key) — first-match-wins works today, future migration would tidy</td><td><span class="pill pill-queued">Low</span></td></tr>
@@ -538,7 +538,7 @@
     <li><strong>🔴 Register Stripe webhook endpoint</strong> at <span class="mono">https://directory.seven16group.com/api/stripe/webhook</span>. 6 events: <span class="mono">checkout.session.completed</span> · <span class="mono">customer.subscription.created/updated/deleted</span> · <span class="mono">invoice.paid</span> · <span class="mono">invoice.payment_failed</span>. Dashboard-only per <span class="mono">feedback_stripe_mcp_webhook_dashboard_only.md</span>.</li>
     <li><strong>🟡 Rotate Sentry org token</strong> — every deploy logs "Invalid org token (401)" on @sentry/nextjs After Production Compile. Non-fatal but log spam. Sentry dashboard → rotate org token → set <span class="mono">SENTRY_AUTH_TOKEN</span> in Vercel (Sensitive · Production).</li>
     <li><strong>Supabase Auth dashboard</strong> — leaked-password protection (HaveIBeenPwned check). 1-click if not yet enabled.</li>
-    <li><strong>Domain cutover decision</strong> — agencysignal.co reserved; trigger is a quiet DNS week.</li>
+    <li><strong>Domain cutover decision</strong> — agencysignal.io reserved; trigger is a quiet DNS week.</li>
     <li><strong>Hygiene Credit mechanism</strong> — pick Stripe Subscription Schedule (phased) vs. programmatic coupon at month 6+12.</li>
     <li><strong>Trust copy live-ship decision</strong> — when does data inventory catch up to "100k producers" and "70% email density"?</li>
     <li><strong>5–8 Distribution Expander demos</strong> — pressure-test the $12,500 ceiling and the MI-Tier-1 / TX-Tier-2 / NH-Tier-3 surprises with live VP-of-Distribution reactions before broad publication.</li>

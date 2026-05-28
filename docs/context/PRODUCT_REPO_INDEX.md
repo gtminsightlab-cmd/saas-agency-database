@@ -1,4 +1,4 @@
-# Seven16 Product → Repo → Project Index
+﻿# Seven16 Product → Repo → Project Index
 
 **Last updated:** 2026-05-15 (SESSION_24 tail — Threshold IQ removed per D-022)
 **Purpose:** Canonical lookup for "which repo, Vercel project, Supabase satellite, and live URL does each Seven16 product live at?" Read this on session open if you're unsure which product you're working on, or paste the per-product session-opener snippets into a new Claude session to orient it instantly.
@@ -116,7 +116,7 @@ TIQ spun out of Seven16 family. No new TIQ family-track sessions. If you need to
 | `dotintel-intelligence` | Parked | Legacy "Agency Intelligence" Next 14 build. Subdomain `intelligence.dotintel.io` resolves to a dead build. Decommission queued in dotintel2 BACKLOG #8 (redirect to `directory.seven16group.com/verticals`). Own-session work in the parked repo when picked up. |
 | `Killing Commercial` | Separate project, not a Seven16 product | At `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Killing Commercial\`. Scraping + synthesis project. Dropped planning docs into dotintel2 on 2026-05-13 (`docs/KILLING_COMMERCIAL_TRAINING_HUB.md`, `docs/TRAINING_HUB_SESSION_HANDOFF.md`). Separate Claude track. |
 | **`seven16group.com` apex** | Planned, not built | Holding-company + marketing-agency front door. Separate future repo. Brand-systems designer engagement is the trigger. See family memory `reference_seven16group_apex_plan.md`. |
-| **`agencysignal.co`** | Domain reserved, not wired | Future Agency Signal home when cutover from `directory.seven16group.com` happens. Trigger: comfort with DNS choreography + a quiet week. |
+| **`agencysignal.io`** | Domain reserved, not wired | Future Agency Signal home when cutover from `directory.seven16group.com` happens. Trigger: comfort with DNS choreography + a quiet week. |
 | **BindLab** | Retired | Per DECISION_LOG §4. Will reprise later as sales-dev + coaching brand. No active repo. |
 | **Agency Vantage** | Retired | Per DECISION_LOG §4. Will reprise later. No active repo. |
 | **Seven16Recruit** | Stealth, attorney-gated | Per DECISION_LOG D-010. Own Supabase satellite planned per D-008, no code work yet. Any public-facing Recruit work requires checking on attorney engagement status (DECISION_LOG §9 open question #3). |
@@ -182,7 +182,7 @@ Update when:
 - A repo is retired or merged
 - A Supabase satellite or Vercel project ID changes (rare — usually means a manual migration)
 - A brand domain is added or retired
-- A live URL changes (e.g., agencysignal.co cutover from directory.seven16group.com)
+- A live URL changes (e.g., agencysignal.io cutover from directory.seven16group.com)
 
 The launcher `.bat` files at `C:\Users\GTMin\OneDrive\Desktop\` should also be updated when canonical paths change.
 

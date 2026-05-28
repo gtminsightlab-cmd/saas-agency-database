@@ -2,18 +2,20 @@
  * Seven16 Email API client — family-wide transactional + marketing email.
  *
  * Per family doctrine (D-026 + D-027 + `reference_seven16_email_platform.md`):
- *   - All Seven16 products call `api.seven16email.com` for ANY email send
+ *   - All Seven16 products call `seven16email.com` for ANY email send
  *     (transactional + marketing). Never wire per-product SMTP / Resend /
  *     SendGrid clients in satellite repos. Single shared service = single
  *     deliverability surface + suppression list + compliance posture.
+ *     (URL updated 2026-05-27 — was `api.seven16email.com` in the earlier
+ *     locked plan; root-domain `seven16email.com` per the canonical catalog.)
  *   - Sender topology is enforced server-side: transactional goes from
  *     `notify.seven16email.com`, marketing from `mail.seven16email.com`,
  *     NEVER from agencysignal.io / dotintel.io / bindlab.io / etc.
  *   - Suppression checks, unsubscribe handling, idempotency, retry-with-
  *     backoff all live in the Email platform. Satellites just call.
  *
- * Status (2026-05-25): the Email platform itself is scaffolded but the
- * Next.js routes aren't deployed to api.seven16email.com yet. This client
+ * Status (2026-05-27): the Email platform itself is scaffolded but the
+ * Next.js routes aren't deployed to seven16email.com yet. This client
  * is forward-compatible — when env vars `SEVEN16EMAIL_API_URL` +
  * `SEVEN16EMAIL_API_KEY` land, sends activate. Until then, every call
  * is a logged null-render so satellite signup flows don't break.

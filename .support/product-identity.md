@@ -18,7 +18,7 @@ Agency Signal is **distribution intelligence for commercial insurance**. The com
 
 **Not:** a generic lead list. An intelligence layer. The moat is appointment-aware targeting + vertical specialization + saved-list refresh + data hygiene + Enterprise+ distribution recommendations — NOT raw row count.
 
-Live at `agencysignal.co` (canonical URL post-cutover SESSION_38, 2026-05-26; D-016 three-domain split). Legacy hostname `directory.seven16group.com` 301-redirects here. Part of the Seven16 Group operating system (see `seven16group-product-identity.md` for the holdco frame).
+Live at `agencysignal.io` (canonical URL since the 2026-05-27 cutover; D-016 three-domain split). Both legacy hostnames `agencysignal.co` (the SESSION_38 interim canonical) and `directory.seven16group.com` (the original) 301-redirect here. Part of the Seven16 Group operating system (see `seven16group-product-identity.md` for the holdco frame).
 
 ## The 9 product pillars (D-023 lock)
 

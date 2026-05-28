@@ -1,4 +1,4 @@
-# Master Context — Seven16 Group
+﻿# Master Context — Seven16 Group
 
 **Last updated:** 2026-05-12 (D-014 + D-015 fully locked + Agency Signal data snapshot refreshed 20,739 → 41,705 agencies)
 **Purpose:** Single source of truth that any new Claude session (or human collaborator) reads first to get oriented. Everything else points back to this hub.
@@ -17,7 +17,7 @@
 
 | Product | Domain | State | One-liner |
 |---|---|---|---|
-| **Agency Signal** | agencysignal.co (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: **41,705 agencies, 263,657 carrier appointments, 1,085 carriers with active appointments** (1,369 in directory total), 135,453 contacts (85.6% with verified email). Data snapshot 2026-05-12. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". *Marketing copy on the live site remains conservative per DECISION_LOG §2 "pricing copy is placeholder until data inventory catches up."* |
+| **Agency Signal** | agencysignal.io (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: **41,705 agencies, 263,657 carrier appointments, 1,085 carriers with active appointments** (1,369 in directory total), 135,453 contacts (85.6% with verified email). Data snapshot 2026-05-12. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". *Marketing copy on the live site remains conservative per DECISION_LOG §2 "pricing copy is placeholder until data inventory catches up."* |
 | **DOT Intel** | dotintel.io | **Live demo build at dotintel.io.** v1 risk scoring with public methodology page + Ineligible band + historical-insurance factors shipped 2026-05-10 (sessions 21-24). **Directory build kickoff session 25 (2026-05-10):** five new schemas (agent / wholesaler / carrier_market / content / marketplace) hosted in this satellite per D-012 — spec + status at `dotintel2/docs/specs/dotintel-directory-build-{spec,status}.md`. Phase 1 Task 1.B (content schema) live. | Trucking / commercial-insurance intelligence platform, FMCSA-data-backed, plus the new claim-side directory layer. |
 | **Threshold IQ** | thresholdiq.io (Cloudflare zone secured 2026-05-02) | **Build in progress** in a separate Claude Code session at `CRM for MGU and Recruiting/seven16-distribution/` (working name `seven16-distribution`). | Multi-tenant operating CRM for emerging MGUs, wholesalers, and program administrators. Producer lifecycle, contracting, licensing, E&O tracking, appointments, exception-based compliance. Tenant zero = Seven16 Group (internal dogfood). Brand framing: "doorway / underwriting threshold / growth threshold" — see D-009 brand brief. Pricing locked in the build session, family integration pending. |
 
@@ -154,7 +154,7 @@ These rules survive across sessions. Ignore at your peril.
 | Agency Signal repo | `https://github.com/gtminsightlab-cmd/saas-agency-database` |
 | Agency Signal Supabase | project `sdlsdovuljuymgymarou` (name: `seven16group`, region us-east-1) |
 | Agency Signal Vercel | project `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` on team `team_RCXpUhGENcLjR2loNIRyEmT3` |
-| Agency Signal live URL | https://directory.seven16group.com (will move to agencysignal.co) |
+| Agency Signal live URL | https://directory.seven16group.com (will move to agencysignal.io) |
 | DOT Intel old project | Supabase `vbhlacdrcqdqnvftqtin` — reference only, NOT migrating code |
 | DOT Intel rebuild bootstrap | `docs/spinoffs/dot-carrier-intel/BOOTSTRAP.md` in Agency Signal repo |
 | Session handoffs | `docs/handoffs/SESSION_*.md` in Agency Signal repo |

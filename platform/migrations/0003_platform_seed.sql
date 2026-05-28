@@ -4,7 +4,7 @@
 
 -- Products
 insert into public.products (id, name, domain, is_active) values
-  ('agency_signal', 'Agency Signal', 'agencysignal.co', true),
+  ('agency_signal', 'Agency Signal', 'agencysignal.io', true),
   ('dot_intel',     'DOT Intel',     'dotintel.io',     true)
 on conflict (id) do update set
   name      = excluded.name,

@@ -1,4 +1,4 @@
-# Agency Signal — Seven16 Group Support integration readiness
+﻿# Agency Signal — Seven16 Group Support integration readiness
 
 **Status:** **Stage 2 shipped 2026-05-24** — widget LIVE globally; `seven16groupsupport.com` confirmed built + ready by Master O; doctrine unlocked from "do not mount globally" to "mount globally with public_presales mode." Stage 1 readiness scaffolding shipped 2026-05-19 (Session C). Stage 3 (signed-token customer_support mode, per-route mode switching, real event POSTing) deferred to a follow-up session.
 
@@ -25,7 +25,7 @@ Concretely:
 | Field | Value |
 |---|---|
 | Product slug | `agencysignal` |
-| Live URL | `https://directory.seven16group.com` (planned cutover to `agencysignal.co`) |
+| Live URL | `https://directory.seven16group.com` (planned cutover to `agencysignal.io`) |
 | Repo | `saas-agency-database` |
 | Supabase satellite | `sdlsdovuljuymgymarou` |
 | Stripe account | `acct_1TLUF6HmqSDkUoqw` (sandbox) |

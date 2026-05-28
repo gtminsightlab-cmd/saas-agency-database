@@ -1,4 +1,4 @@
-# DOT Intel demo walkthrough — mid-May 2026 working group
+﻿# DOT Intel demo walkthrough — mid-May 2026 working group
 
 **Audience:** insurance agents and underwriters in the working group.
 **Demo URL:** [www.dotintel.io](https://www.dotintel.io)
@@ -109,7 +109,7 @@ Don't let the audience find these — flag them yourself first. Builds credibili
 - **No password reset flow.** Demo accounts are static. If a persona's password gets changed accidentally, ping the build session and we'll reset.
 - **Search is title-only and DOT#-only.** No fuzzy matching for similar carrier names (Phase 2).
 - **No CSV export from the Browse table.** Phase 2 build. If audience asks, "Yes, export is on the roadmap — Q3."
-- **No agency-side data wired here.** This is the trucking-carrier story. For agency intelligence, that's [agencysignal.co](https://agencysignal.co), the sister product (different demo).
+- **No agency-side data wired here.** This is the trucking-carrier story. For agency intelligence, that's [agencysignal.io](https://agencysignal.io), the sister product (different demo).
 
 ---
 

@@ -1,8 +1,8 @@
-# Lead Downloads & DOT Lookups — Pricing Spec
+﻿# Lead Downloads & DOT Lookups — Pricing Spec
 
 **Locked:** 2026-05-15
 **Parent decision:** D-021 (Seven16 Credits & Usage Pricing Architecture) §2 + §3 + §4
-**Surfaces:** DOT Intel (`dotintel.io/dashboard`) + Agency Signal (`directory.seven16group.com` → eventually `agencysignal.co`)
+**Surfaces:** DOT Intel (`dotintel.io/dashboard`) + Agency Signal (`directory.seven16group.com` → eventually `agencysignal.io`)
 **Buyers:** retail producers, agencies, wholesalers, MGAs, MGUs, carriers, distribution teams
 
 ---

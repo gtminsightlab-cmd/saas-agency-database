@@ -1,6 +1,6 @@
-# Seven16 Group — Agency Signal (and family hub)
+﻿# Seven16 Group — Agency Signal (and family hub)
 
-This repo is **Agency Signal** — a multi-tenant B2B commercial insurance agency directory live in production at https://directory.seven16group.com (planned cutover to agencysignal.co). It is **also the family hub** for Seven16 Group: every other product references `docs/context/` here as the single source of truth.
+This repo is **Agency Signal** — a multi-tenant B2B commercial insurance agency directory live in production at https://directory.seven16group.com (planned cutover to agencysignal.io). It is **also the family hub** for Seven16 Group: every other product references `docs/context/` here as the single source of truth.
 
 **Three live or staging products in the Seven16 family:**
 
@@ -87,7 +87,7 @@ Default tenant: `ce52fe1e-aac7-4eee-8712-77e71e2837ce` (slug `seven16`).
 1. First paying customer surfaces → Stripe sandbox → production cutover.
 2. Sprint 1C (shared JWT/Doppler/Sentry) ships across all three satellites → this satellite joins the runbook.
 3. Family pricing collaborative session → Producer ($19) + Growth ($99) confirmation, possibly Hygiene Credit refresh.
-4. Domain cutover → directory.seven16group.com → agencysignal.co.
+4. Domain cutover → directory.seven16group.com → agencysignal.io.
 
 Sprint 1B (D-008 control plane) closed in session 14 — `seven16-platform` is created, schema applied, 5 products + 9 plans seeded. Sprint 1C remains the next family-level architectural move.
 

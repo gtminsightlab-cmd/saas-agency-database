@@ -1,4 +1,4 @@
-# Agency Signal — STATE.md (inside view)
+﻿# Agency Signal — STATE.md (inside view)
 
 **Last updated:** 2026-05-18 (D-023 architect-review refresh: positioning sharpened to "Distribution intelligence for commercial insurance"; 7-pillar product taxonomy locked; Neilson + ProgramBusiness as adjacent competitive references; row counts refreshed from live DB; admin module count corrected 13 → 17; verified/claimed profile flow queued Tier 1.x. See `docs/agency-signal-status.html` for the single-pane-of-glass view and [`docs/context/DECISION_LOG.md`](context/DECISION_LOG.md) D-023.) Prior 2026-05-12 (Session 3: Next 14 → 16 / React 18 → 19 upgrade closing 24 CVEs + first real caching layer on /build-list + /verticals. UX-parity-with-Neilson polish on /build-list + /saved-lists. See [`docs/handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md`](handoffs/AGENCY_SIGNAL_SESSION_3_HANDOFF.md).)
 **Companion to:** [`docs/context/SESSION_STATE.md`](context/SESSION_STATE.md) Part 1.
@@ -75,7 +75,7 @@ Agency Signal is not a generic lead list. The moat is appointment-aware targetin
 | Check | Value | Status |
 |---|---|---|
 | Live URL | https://directory.seven16group.com | ✅ HTTP 200 (verified 2026-05-07) |
-| Future URL (cutover planned) | agencysignal.co | 🟡 Not yet wired — cutover unscheduled |
+| Future URL (cutover planned) | agencysignal.io | 🟡 Not yet wired — cutover unscheduled |
 | Vercel project | `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` (project name `saas-agency-database`) on team `team_RCXpUhGENcLjR2loNIRyEmT3` | Auto-deploys on push to `main` |
 | Repo | `gtminsightlab-cmd/saas-agency-database` (**public**) | — |
 | Canonical clone | `C:\Users\GTMin\Projects\saas-agency-database\` | Native git, GCM auth, outside OneDrive (per Sprint 0, session 14) |
@@ -233,7 +233,7 @@ For an enrichment workflow that joins Agency Signal contacts to DOT Intel carrie
 2. **Sprint 1C (JWT/Doppler/Sentry):** when ready, this satellite joins the shared-auth runbook alongside DOT Intel and Threshold IQ.
 3. **Stripe production cutover:** first paying customer triggers the sandbox → live transition.
 4. **Trust copy + Hygiene Credit rollout:** when data inventory supports the claims.
-5. **Domain cutover:** `agencysignal.co` is reserved but not wired. Schedule when comfortable with DNS choreography.
+5. **Domain cutover:** `agencysignal.io` is reserved but not wired. Schedule when comfortable with DNS choreography.
 
 ---
 

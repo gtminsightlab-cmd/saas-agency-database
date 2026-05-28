@@ -35,16 +35,26 @@ const nextConfig = {
   reactStrictMode: true,
   typedRoutes: false,
   async redirects() {
-    // Host-matched 301 from the legacy directory.seven16group.com hostname
-    // to agencysignal.co. Both hosts resolve to this same Vercel project;
-    // matching on the inbound Host header keeps requests on agencysignal.co
-    // canonical without breaking inbound traffic that still uses the old
-    // domain (link rot mitigation). SESSION_38 domain cutover.
+    // Host-matched 301s to the canonical hostname agencysignal.io. The
+    // canonical domain has rotated twice: directory.seven16group.com →
+    // agencysignal.co (SESSION_38 cutover) → agencysignal.io (2026-05-27
+    // cutover). Both legacy hosts resolve to this same Vercel project, so
+    // matching on the inbound Host header keeps everything on .io without
+    // breaking link-rot from the older domains. Skipping the .co middle
+    // hop on directory.seven16group.com inbound is intentional — one
+    // redirect, not two, so old inbound traffic doesn't hit a redirect
+    // chain.
     return [
       {
         source: "/:path*",
         has: [{ type: "host", value: "directory.seven16group.com" }],
-        destination: "https://agencysignal.co/:path*",
+        destination: "https://agencysignal.io/:path*",
+        permanent: true
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "agencysignal.co" }],
+        destination: "https://agencysignal.io/:path*",
         permanent: true
       }
     ];

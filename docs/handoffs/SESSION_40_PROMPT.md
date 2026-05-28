@@ -14,7 +14,7 @@ Read in this order:
 ### saas-agency-database side
 - **Agency Signal Tier 1 security LIVE** (SESSION_39 close 2026-05-26). Migrations `0096` + `0097` applied. Advisor: 0 ERROR / 32 WARN / 3 INFO (down from 0/90/1).
 - **New family-memory doctrine**: [[feedback_supabase_definer_direct_anon_grant_pattern]] — SECURITY DEFINER anon-lockdown has TWO patterns; use combined belt-and-suspenders REVOKE for all remaining family satellite audits.
-- Domain cutover stable (SESSION_38). Production at `agencysignal.co`.
+- Domain cutover stable. Production at `agencysignal.io` (2026-05-27 cutover from SESSION_38's interim `agencysignal.co`; per D-037).
 - D-034 pricing pivot doctrine intact from SESSION_38.5.
 - **D-035 + D-036 locked at S39 close** in `docs/context/DECISION_LOG.md`:
   - D-035 = DOT Intel 8-module risk intelligence framework + Sprint 0 corpus backfill commitment

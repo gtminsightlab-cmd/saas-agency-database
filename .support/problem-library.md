@@ -22,7 +22,7 @@ Distribution-intelligence-specific pains. Holdco-level pains live in `seven16gro
 - Pillar 5 (Build Lists) — SHIPPED. Filter by state / vertical / appointment-status / class to produce a targeted prospect list with appointment context built in.
 
 **Verifiable evidence:**
-- Production at agencysignal.co
+- Production at agencysignal.io
 - Schema includes `agencies`, `agency_carriers` (appointment data), `agency_carriers.appointment_active_date` (per D-025 Texas DOI ingest)
 - Live appointment data ingested from state DOI sources (Texas DOI: 367k appointment rows + 16,785 new TX agencies + 638 new carriers, loaded Session B 2026-05-19)
 

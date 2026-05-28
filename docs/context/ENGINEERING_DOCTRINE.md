@@ -1,4 +1,4 @@
-# Seven16 Engineering Doctrine
+﻿# Seven16 Engineering Doctrine
 
 **Scope:** All Seven16 Group product repositories — `dotintel2`, `saas-agency-database` / Agency Signal, `seven16-distribution` / Threshold IQ, and any future product.
 **Status:** Active. Updated as decisions land.
@@ -18,7 +18,7 @@ For the *why* (product strategy, business context, locked architectural decision
 - **Owner:** Seven16 Group (Ronnie O'Dell). Confidential. **Zero relationship to BSB**, Master O's W-2 employer. Never co-mingle data, brand, or distribution.
 - **Product line:**
   - **dotintel.io** — operator-facing fleet management + underwriting visibility
-  - **directory.seven16group.com / agencysignal.co** — B2B agency directory + distribution intelligence
+  - **directory.seven16group.com / agencysignal.io** — B2B agency directory + distribution intelligence
   - **thresholdiq.io** — wholesaler / capacity-side market intelligence
   - More products as the strategic plan progresses — see `MASTER_CONTEXT.md`
 - **Stack:** Supabase (Postgres) + Vercel (Next.js) + Cloudflare. Stripe via Growtheon for billing.
