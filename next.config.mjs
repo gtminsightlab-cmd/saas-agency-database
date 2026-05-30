@@ -35,28 +35,36 @@ const nextConfig = {
   reactStrictMode: true,
   typedRoutes: false,
   async redirects() {
-    // Host-matched 301s to the canonical hostname agencysignal.io. The
-    // canonical domain has rotated twice: directory.seven16group.com →
-    // agencysignal.co (SESSION_38 cutover) → agencysignal.io (2026-05-27
-    // cutover). Both legacy hosts resolve to this same Vercel project, so
-    // matching on the inbound Host header keeps everything on .io without
-    // breaking link-rot from the older domains. Skipping the .co middle
-    // hop on directory.seven16group.com inbound is intentional — one
-    // redirect, not two, so old inbound traffic doesn't hit a redirect
-    // chain.
+    // Canonical hostname cutover in PROGRESS.
+    //
+    // Intended final state: agencysignal.io is canonical; both
+    // directory.seven16group.com and agencysignal.co 308-redirect to it.
+    //
+    // Current state (TEMPORARY 2026-05-27): agencysignal.io is added to
+    // this Vercel project but its DNS still points at IONOS nameservers
+    // with default landing pages — so the 308 redirect would send users
+    // off-project to a 404. The .co → .io redirect is DISABLED below
+    // until Master O updates the IONOS DNS to point at Vercel
+    // (`A agencysignal.io 76.76.21.21`). At that point the cert will
+    // provision automatically and the .co redirect line below should be
+    // un-commented.
+    //
+    // The directory.seven16group.com redirect is preserved targeting .io
+    // because that domain doesn't currently route to this project anyway
+    // (it was cut over in SESSION_38) — the rule is forward-compatible.
     return [
       {
         source: "/:path*",
         has: [{ type: "host", value: "directory.seven16group.com" }],
         destination: "https://agencysignal.io/:path*",
         permanent: true
-      },
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "agencysignal.co" }],
-        destination: "https://agencysignal.io/:path*",
-        permanent: true
       }
+      // {
+      //   source: "/:path*",
+      //   has: [{ type: "host", value: "agencysignal.co" }],
+      //   destination: "https://agencysignal.io/:path*",
+      //   permanent: true
+      // }
     ];
   },
   async headers() {
