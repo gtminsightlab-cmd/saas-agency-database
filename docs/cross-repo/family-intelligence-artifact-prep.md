@@ -6,7 +6,7 @@
 **DECISION_LOG:** D-044 in `saas-agency-database/docs/context/DECISION_LOG.md`
 **Primary consumer:** Seven16 Academy (the cert/training platform — formerly Bind Lab Academy, renamed per D-037).
 
-This is the paste-ready prep artifact each satellite reads to understand its role in the family intelligence + artifact factory architecture. **Status:** STRATEGIC INTENT, not yet doctrine — 4 conflicts with D-027 / D-034 / D-040 / D-042 are flagged for Master O resolution before sessions build against this.
+This is the paste-ready prep artifact each satellite reads to understand its role in the family intelligence + artifact factory architecture. **Status:** ✅ AUTHORITATIVE DOCTRINE 2026-05-30 (Master O resolved all 4 conflicts; satellites may build against this without further gates).
 
 ---
 
@@ -28,16 +28,14 @@ Each product contributes a stage. The artifact factory is the connective tissue.
 
 ---
 
-## ⚠️ 4 conflicts blocking authoritative implementation (Master O resolves first)
+## ✅ 4 conflicts RESOLVED 2026-05-30 (Master O confirmed all Recommended resolutions)
 
-Before any satellite session implements against this spec, these need explicit lock:
+1. **Credits model:** ✅ **Per-product credits only.** Each product defines its own credit model (Academy Coach Credits internal; DOT Intel per D-036; etc.). NO cross-product currency. Group Hub mirrors balances for ops dashboards. D-034 reinforced.
+2. **"Parent command layer" naming:** ✅ **= Group Hub per D-042.** Shared artifact factory + knowledge registry + AI gateway live at Group Hub (seven16group.com). Seven16 Command (the CRM at seven16command.com) is a satellite consuming Group Hub.
+3. **`cross_product_tenants` + `cross_product_users` home:** ✅ **Authoritative in Seven16 Command per D-027 SoR.** Group Hub mirrors read-only. Stripe webhook stays in saas-agency-database short-term per D-040 phased path, then migrates to Command.
+4. **Worker runtime:** ✅ **Both Edge Functions + pg_cron (in-product) + Inngest (outbound webhook fanout).** D-040 + D-027 Practice 4 both preserved. No new paid infra.
 
-1. **"Coach Credits / product credits"** — proposed resolution: per-product credits only, no cross-product currency (consistent with D-034 kill).
-2. **"Parent command layer" naming** — proposed resolution: = Group Hub per D-042, NOT Seven16 Command (the CRM).
-3. **`cross_product_tenants` table home** — proposed resolution: Command per D-027 SoR; Group Hub mirrors.
-4. **Worker runtime** — proposed resolution: Edge Functions + pg_cron for in-product jobs; Inngest for outbound webhook fanout per D-027 Practice 4.
-
-If Master O confirms all 4 resolutions → status flips D-044 from STRATEGIC INTENT → AUTHORITATIVE DOCTRINE. Until then: each satellite can READ this for direction but should NOT commit code that assumes a specific resolution.
+Satellites may now build against D-044 without gate.
 
 ---
 
