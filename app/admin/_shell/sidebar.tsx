@@ -21,6 +21,7 @@ import {
   ChevronsRight,
   ShieldCheck,
   Copy,
+  Compass,
 } from "lucide-react";
 
 type NavItem = {
@@ -47,7 +48,8 @@ const NAV: NavItem[] = [
 ];
 
 const FOOTER_NAV: NavItem[] = [
-  { href: "/admin/settings",         label: "Admin Settings",   Icon: Settings,        status: "live" },
+  { href: "/admin/product-positioning", label: "Product Positioning", Icon: Compass,  status: "live" },
+  { href: "/admin/settings",            label: "Admin Settings",      Icon: Settings, status: "live" },
 ];
 
 function isActive(pathname: string, href: string) {
