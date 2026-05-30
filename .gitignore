@@ -3,6 +3,11 @@ node_modules/
 .pnp
 .pnp.js
 
+# Playwright QC outputs (regenerated each run; do not commit)
+test-results/
+playwright-report/
+tests/qc/screenshots/
+
 # Next.js build output
 .next/
 out/
@@ -43,3 +48,8 @@ tmp/
 
 # Tier-1 data-safety exports (contain customer rows; NEVER commit)
 backups/
+
+# Playwright QC
+qc-screenshots/
+qc-report/
+test-results/

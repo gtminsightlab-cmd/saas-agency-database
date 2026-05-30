@@ -7,9 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "qc": "playwright test scripts/qc/agency-signal.spec.ts --config playwright.qc.config.ts",
+    "qc:agency-signal": "playwright test scripts/qc/agency-signal.spec.ts --config playwright.qc.config.ts",
+    "qc:academy": "playwright test scripts/qc/seven16-academy.spec.ts --config playwright.qc.config.ts",
+    "qc:dotintel": "playwright test scripts/qc/dotintel.spec.ts --config playwright.qc.config.ts",
+    "qc:bindlab": "playwright test scripts/qc/bindlab.spec.ts --config playwright.qc.config.ts",
+    "qc:group-site": "playwright test scripts/qc/group-site.spec.ts --config playwright.qc.config.ts",
+    "qc:all": "playwright test --config playwright.qc.config.ts",
     "load-adlist": "tsx scripts/load-adlist.ts",
     "export-tier1": "tsx scripts/data-safety/export-tier1.ts",
-    "smoke": "tsx scripts/reliability/smoke-test.ts"
+    "smoke": "tsx scripts/reliability/smoke-test.ts",
+    "qc": "playwright test",
+    "qc:install": "playwright install",
+    "qc:report": "playwright show-report",
+    "qc:local": "QC_TARGET=http://localhost:3000 playwright test"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.2",
@@ -31,6 +42,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
+    "@playwright/test": "^1.60.0",
     "@types/node": "^22.7.5",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
