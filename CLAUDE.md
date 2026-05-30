@@ -104,3 +104,31 @@ When you change scope, deployment state, DB counts, or deferred items:
 2. Create `docs/handoffs/SESSION_<N>_HANDOFF.md` (exhaustive — see existing handoffs as templates).
 3. Commit + push. Verify the Vercel auto-deploy goes READY (not ERROR) before declaring done.
 4. If a new architectural decision lands, add it to [docs/context/DECISION_LOG.md](docs/context/DECISION_LOG.md) with date + Why line.
+
+---
+
+## QC Protocol — Cross-browser Screenshot Check
+
+**Run `npm run qc` (or `npm run qc:<product>`) after every UI change before closing.**
+
+**Commands — Hub is the QC command center for the whole family:**
+```
+npm run qc                   # Agency Signal screenshots (localhost:3000)
+npm run qc:agency-signal     # Same
+npm run qc:academy           # Seven16 Academy (start that dev server first)
+npm run qc:dotintel          # DOT Intel
+npm run qc:bindlab           # Bind Lab
+npm run qc:group-site        # Seven16 Group Site
+npm run qc:all               # All products (requires one running at a time)
+```
+
+**8 combos per run:** Chromium/Firefox/WebKit × light/dark + iPhone 14 Pro × light/dark
+**Output:** `qc-screenshots/<product>/<browser>/<page>.png` (gitignored)
+**Report:** `qc-report/index.html` — opens automatically on failure
+
+**Spec files** (add pages as routes grow): `scripts/qc/<product>.spec.ts`
+
+**First-time setup** (already done on this machine):
+```
+npx playwright install   # one-time global browser download
+```
