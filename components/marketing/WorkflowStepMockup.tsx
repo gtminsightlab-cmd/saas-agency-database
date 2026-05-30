@@ -9,7 +9,7 @@ type WorkflowStep = {
 
 const STEPS: WorkflowStep[] = [
   { num: 1, title: "Define the appointment shape",       detail: "Pick the carrier, state, vertical, and class of business that matches your distribution gap.",      meta: "~30 sec" },
-  { num: 2, title: "Filter the agency universe",         detail: "Agency Signal narrows ~42k commercial agencies to the ones appointed (or not) where you need them.", meta: "Real-time"  },
+  { num: 2, title: "Filter the agency universe",         detail: "Seven16 Intel narrows ~42k commercial agencies to the ones appointed (or not) where you need them.", meta: "Real-time"  },
   { num: 3, title: "Review verified appointment context", detail: "Each row carries the carrier match, last-verified date, contacts, and parent-group mapping.",         meta: "May 2026" },
   { num: 4, title: "Export the recruit list",            detail: "Save as a recruit list or download a CSV with the contacts your team needs to call this week.",       meta: "Export-ready" },
 ];

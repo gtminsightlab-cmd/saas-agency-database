@@ -110,7 +110,7 @@ export function MarketingHeader({ isAuthed, theme = "light" }: MarketingHeaderPr
         className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-8"
       >
         <Link href="/" className="flex items-baseline gap-2">
-          <span className={clsx("text-lg font-bold tracking-tight", brandPrimaryClass)}>Agency Signal</span>
+          <span className={clsx("text-lg font-bold tracking-tight", brandPrimaryClass)}>Seven16 Intel</span>
           <span className={clsx("hidden text-[11px] font-medium uppercase tracking-wider sm:inline", brandSecondaryClass)}>
             by Seven16 Group
           </span>

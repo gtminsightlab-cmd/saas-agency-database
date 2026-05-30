@@ -225,7 +225,7 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
             Need fleet &amp; non-fleet carrier-side data?
           </p>
           <p className="mt-1 text-sm text-gray-600">
-            DOT Intel covers the carrier side: FMCSA filings, power-units, operating authority, coverage limits, and active insurer per DOT — for fleet and non-fleet trucking. Agency Signal (here) covers the distribution side.
+            DOT Intel covers the carrier side: FMCSA filings, power-units, operating authority, coverage limits, and active insurer per DOT — for fleet and non-fleet trucking. Seven16 Intel (here) covers the distribution side.
           </p>
         </div>
       </div>
@@ -408,7 +408,7 @@ export default async function VerticalDetailPage({ params: _params }: { params: 
                   Need fleet &amp; non-fleet carrier-side data?
                 </p>
                 <p className="mt-1 text-sm text-gray-600">
-                  DOT Intel covers the carrier side: FMCSA filings, power-units, operating authority, coverage limits, and active insurer per DOT — for fleet and non-fleet trucking. Agency Signal (here) covers the distribution side.
+                  DOT Intel covers the carrier side: FMCSA filings, power-units, operating authority, coverage limits, and active insurer per DOT — for fleet and non-fleet trucking. Seven16 Intel (here) covers the distribution side.
                 </p>
               </div>
             </div>

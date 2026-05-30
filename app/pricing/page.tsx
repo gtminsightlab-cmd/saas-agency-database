@@ -12,17 +12,17 @@ import { SampleOfferBanner } from "@/components/marketing/SampleOfferBanner";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Pricing — Agency Signal",
+  title: "Pricing — Seven16 Intel",
   description:
     "Commercial-insurance agent data, without the legacy pricing. Sample, monthly, custom, or national license — transparent pricing, no quote-driven gating.",
 };
 
 /**
- * /pricing — Agency Signal four-tier transparent buying model per D-034
+ * /pricing — Seven16 Intel four-tier transparent buying model per D-034
  * (locked 2026-05-26 — supersedes D-014/D-015/D-018/D-021 family pricing).
  *
  * Full polished implementation per BACKLOG `0e` (SESSION_38.5): hero +
- * 4-tier grid + slider calculator + "Why Agency Signal" + comparison
+ * 4-tier grid + slider calculator + "Why Seven16 Intel" + comparison
  * table + FAQ + sample-offer banner.
  */
 export default async function PricingPage() {
@@ -126,7 +126,7 @@ export default async function PricingPage() {
 
       <Section
         variant="light"
-        eyebrow="Why Agency Signal"
+        eyebrow="Why Seven16 Intel"
         title="A simpler way to buy commercial-insurance data."
       >
         <div className="max-w-3xl space-y-4 text-base leading-7 text-slate-700">
@@ -151,7 +151,7 @@ export default async function PricingPage() {
 
       <Section
         variant="muted"
-        eyebrow="Why buyers choose Agency Signal"
+        eyebrow="Why buyers choose Seven16 Intel"
         title="Transparent buying vs. legacy quote-driven vendors."
         description="The market is used to opaque pricing, sales-led trials, and enterprise-first packaging. We built the opposite."
       >

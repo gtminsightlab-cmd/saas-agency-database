@@ -38,7 +38,7 @@ export function AppointmentSearchMockup() {
   return (
     <figure
       role="img"
-      aria-label="Example Agency Signal search: 3 commercial agencies appointed with a specialty trucking carrier in TX, OK, AR — refreshed May 2026"
+      aria-label="Example Seven16 Intel search: 3 commercial agencies appointed with a specialty trucking carrier in TX, OK, AR — refreshed May 2026"
       className="relative rounded-2xl border border-slate-700/70 bg-slate-900/80 p-1 shadow-2xl shadow-blue-900/20 backdrop-blur"
     >
       <div className="rounded-[14px] bg-slate-900 ring-1 ring-inset ring-slate-700/50">

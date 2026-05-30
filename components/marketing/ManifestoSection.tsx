@@ -47,7 +47,7 @@ export function ManifestoSection() {
           </p>
 
           <p className="font-semibold text-navy-900">
-            Agency Signal gives the market a better map.
+            Seven16 Intel gives the market a better map.
           </p>
 
           <p>

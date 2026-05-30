@@ -34,7 +34,7 @@ export const metadata = {
 };
 
 /**
- * /admin/product-positioning — internal doctrine page for Agency Signal.
+ * /admin/product-positioning — internal doctrine page for Seven16 Intel.
  *
  * All copy lives in `lib/admin/product-positioning.ts`. Edit content there.
  * The layout below renders the config — do NOT inline new strings here.
@@ -153,7 +153,7 @@ export default function ProductPositioningPage() {
               <div className="text-[11px] uppercase tracking-wider text-admin-text-dim mb-1">Problem</div>
               <p className="text-sm leading-6 text-admin-text-mute">{p.problem}</p>
               <div className="mt-3 text-[11px] uppercase tracking-wider text-admin-accent mb-1">
-                Agency Signal answer
+                Seven16 Intel answer
               </div>
               <p className="text-sm leading-6 text-admin-text">{p.agencySignalAnswer}</p>
             </Card>
@@ -210,7 +210,7 @@ export default function ProductPositioningPage() {
       <Section
         index="06"
         title="Seven16 Group Family Fit"
-        subtitle="Where Agency Signal sits inside the broader family."
+        subtitle="Where Seven16 Intel sits inside the broader family."
         icon={Network}
       >
         <div className="space-y-4">
@@ -266,7 +266,7 @@ export default function ProductPositioningPage() {
       <Section
         index="07"
         title="Leveling the Playing Field"
-        subtitle="How Agency Signal serves newer agents, niche builders, and under-resourced producers."
+        subtitle="How Seven16 Intel serves newer agents, niche builders, and under-resourced producers."
         icon={Crown}
       >
         <div className="space-y-4">
@@ -287,7 +287,7 @@ export default function ProductPositioningPage() {
       <Section
         index="08"
         title="Combined Family-of-Products Narrative"
-        subtitle="What the operator gets when they run Agency Signal alongside the rest of the family."
+        subtitle="What the operator gets when they run Seven16 Intel alongside the rest of the family."
         icon={Sparkles}
       >
         <Card>

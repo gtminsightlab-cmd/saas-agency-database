@@ -1,6 +1,8 @@
-# Agency Signal — Positioning
+# Seven16 Intel — Positioning
 
-**Locked:** 2026-05-18 (ADR-023 / family D-023)
+> **⚠️ BRAND RENAME 2026-05-30 (Master O directive):** Product renamed from "Agency Signal" to "Seven16 Intel". Domain: `agencysignal.co` → `seven16intel.com`. Internal DB id (`agency_signal`) and Stripe slug (`agencysignal`) unchanged pending separate coordinated migration. D-023 positioning ("Distribution intelligence for commercial insurance") remains fully valid. Update the admin product-positioning page at `/admin/product-positioning` (canonical source) first; this strategy doc is secondary.
+
+**Locked:** 2026-05-18 (ADR-023 / family D-023) — rebrand note 2026-05-30
 **Source:** Architect strategy review, consolidated Product Definition
 **Canonical decision:** [`docs/context/DECISION_LOG.md`](../context/DECISION_LOG.md) D-023 + [`docs/decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md`](../decisions/adr-023-neilson-programbusiness-agency-signal-boundary.md)
 

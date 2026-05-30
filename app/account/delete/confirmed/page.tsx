@@ -6,8 +6,8 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Account deletion received — Agency Signal",
-  description: "Your Agency Signal account deletion request has been received and processed.",
+  title: "Account deletion received — Seven16 Intel",
+  description: "Your Seven16 Intel account deletion request has been received and processed.",
 };
 
 /**

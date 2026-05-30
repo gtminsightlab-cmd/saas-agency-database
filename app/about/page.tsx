@@ -7,9 +7,9 @@ import { MarketingFooter } from "@/components/marketing/MarketingFooter";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "About — Agency Signal",
+  title: "About — Seven16 Intel",
   description:
-    "Agency Signal is built from the distribution desk. Operator-led, category-positioned, open-methodology. Why appointment intelligence is the right starting point for commercial-insurance distribution.",
+    "Seven16 Intel is built from the distribution desk. Operator-led, category-positioned, open-methodology. Why appointment intelligence is the right starting point for commercial-insurance distribution.",
 };
 
 export default async function AboutPage() {
@@ -28,13 +28,13 @@ export default async function AboutPage() {
           />
           <div className="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
             <div className="font-mono text-xs font-semibold uppercase tracking-widest text-blue-200">
-              About Agency Signal
+              About Seven16 Intel
             </div>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl lg:text-[3rem] lg:leading-[1.1]">
               Built from the distribution desk.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-              Agency Signal was not built in a conference room by people guessing how
+              Seven16 Intel was not built in a conference room by people guessing how
               commercial-insurance distribution works. It was built downstream of two decades of
               operator work &mdash; recruiting agencies, launching programs, managing carrier
               relationships, rebuilding territories, standing up producer scorecards, and
@@ -59,7 +59,7 @@ export default async function AboutPage() {
                 of business before your team spends another quarter chasing names.
               </p>
               <p>
-                That is why Agency Signal starts with the appointment. Because in commercial
+                That is why Seven16 Intel starts with the appointment. Because in commercial
                 insurance, the carrier paper an agency holds tells you more than a job title
                 ever will.
               </p>
@@ -84,7 +84,7 @@ export default async function AboutPage() {
                 flow.
               </p>
               <p className="mt-5 text-base leading-7 text-slate-700 sm:text-lg sm:leading-8">
-                Agency Signal was built for that world. Not the slide-deck version of
+                Seven16 Intel was built for that world. Not the slide-deck version of
                 distribution. The real one.
               </p>
             </div>
@@ -111,7 +111,7 @@ export default async function AboutPage() {
               <Anti
                 icon={ShieldCheck}
                 title="No underwriting decisions."
-                body="Agency Signal surfaces the data &mdash; appointments, vertical signal, carrier diversity, freshness. Whether to bind a risk, what terms, what coverage stays with the carrier and the licensed agent. The line is hard."
+                body="Seven16 Intel surfaces the data &mdash; appointments, vertical signal, carrier diversity, freshness. Whether to bind a risk, what terms, what coverage stays with the carrier and the licensed agent. The line is hard."
               />
               <Anti
                 icon={GitMerge}
@@ -136,14 +136,14 @@ export default async function AboutPage() {
         <section className="border-b border-slate-200 bg-slate-50 py-20 sm:py-24">
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             <div className="font-mono text-[11px] font-semibold uppercase tracking-widest text-slate-500">
-              Agency Signal in context
+              Seven16 Intel in context
             </div>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
               One expression of an operator-led system.
             </h2>
             <div className="mt-8 space-y-5 text-base leading-7 text-slate-700 sm:text-lg sm:leading-8">
               <p>
-                Agency Signal is part of the Seven16 Group operating system. The family also
+                Seven16 Intel is part of the Seven16 Group operating system. The family also
                 covers <span className="font-semibold text-navy-900">DOT Intel</span> (commercial
                 trucking carrier intelligence, FMCSA / CSA risk data),{" "}
                 <span className="font-semibold text-navy-900">DotCarriers</span> and{" "}

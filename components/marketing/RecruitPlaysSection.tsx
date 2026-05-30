@@ -42,7 +42,7 @@ export function RecruitPlaysSection() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <h2 id="plays-heading" className="text-3xl font-bold tracking-tight text-navy-900 sm:text-4xl">
-            Five ways distribution teams use Agency Signal.
+            Five ways distribution teams use Seven16 Intel.
           </h2>
           <p className="mt-4 text-base leading-7 text-slate-600">
             The same dataset, scored five different ways. Pick the play that matches your quarter.

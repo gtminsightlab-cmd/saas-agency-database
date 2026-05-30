@@ -6,9 +6,9 @@ import { Seven16SupportWidget } from "@/components/support/Seven16SupportWidget"
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Agency Signal — distribution intelligence for commercial insurance",
+  title: "Seven16 Intel — distribution intelligence for commercial insurance",
   description:
-    "Agency Signal maps the writing-company appointment trail behind every U.S. commercial insurance agency so distribution teams can target by verified carrier appointment, not job title. Refreshed monthly against state filings."
+    "Seven16 Intel maps the writing-company appointment trail behind every U.S. commercial insurance agency so distribution teams can target by verified carrier appointment, not job title. Refreshed monthly against state filings."
 };
 
 export default function RootLayout({

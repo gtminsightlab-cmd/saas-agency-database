@@ -70,7 +70,7 @@ export function Sidebar({
       <div className="px-5 pt-5 pb-4 border-b border-gray-100">
         <Link href="/home" className="block">
           <div className="text-lg font-bold tracking-tight text-gray-900">
-            Agency Signal
+            Seven16 Intel
           </div>
           <div className="text-xs text-gray-500 tracking-widest uppercase">
             Distribution Intelligence

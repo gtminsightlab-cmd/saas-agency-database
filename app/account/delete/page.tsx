@@ -11,8 +11,8 @@ import { DeleteAccountForm } from "./form";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Delete my account — Agency Signal",
-  description: "Permanently delete your Agency Signal account and associated data.",
+  title: "Delete my account — Seven16 Intel",
+  description: "Permanently delete your Seven16 Intel account and associated data.",
 };
 
 export default async function DeleteAccountPage() {
@@ -46,7 +46,7 @@ export default async function DeleteAccountPage() {
           />
           <PageHeader
             title="Delete my account"
-            subtitle="Permanently remove your Agency Signal account and associated personal data. This action cannot be undone."
+            subtitle="Permanently remove your Seven16 Intel account and associated personal data. This action cannot be undone."
           />
 
           <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-6 space-y-8">

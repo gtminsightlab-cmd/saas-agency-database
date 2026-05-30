@@ -1,5 +1,5 @@
 /**
- * Agency Signal — product positioning content
+ * Seven16 Intel — product positioning content
  * ============================================
  *
  * Single source of truth for the /admin/product-positioning page.
@@ -10,8 +10,10 @@
  * they should NOT need to touch the page component to update wording.
  *
  * Doctrine anchors (do not relitigate without superseding decision):
- *   - D-004  Agency Signal is the customer-facing brand (two words).
- *   - D-023  "Distribution intelligence for commercial insurance" positioning.
+ *   - D-004  Brand renamed: "Agency Signal" → "Seven16 Intel" (2026-05-30, Master O directive).
+ *             Domain: agencysignal.co → seven16intel.com. Internal DB id + Stripe slug
+ *             unchanged (high blast-radius identifiers, separate coordinated migration pending).
+ *   - D-023  "Distribution intelligence for commercial insurance" positioning — STILL VALID.
  *   - D-034  4-tier transparent buying model; family pricing + Charter killed.
  *
  * To add a section: extend the matching shape below + render it in the page.
@@ -66,18 +68,18 @@ export type AdminUsefulnessBlock = {
 // language is intentional — it captures the working definition the product
 // holds today, not aspirational marketing.
 export const PRODUCT_OVERVIEW = {
-  productName: "Agency Signal",
+  productName: "Seven16 Intel",
   oneLiner: "Distribution intelligence for commercial insurance.",
-  domain: "agencysignal.co",
+  domain: "seven16intel.com",
   elevator: [
-    "Agency Signal is the commercial-insurance distribution intelligence layer for operators who don't have a six-figure data budget.",
+    "Seven16 Intel is the commercial-insurance distribution intelligence layer for operators who don't have a six-figure data budget.",
     "We map carrier appointments, producer networks, and agency identity across the full U.S. so a producer, a recruiter, an MGA, or a wholesaler can see where the right agencies already do business — and where they don't.",
     "Built for the operator who needs to find, target, and recruit the right agencies this week, not next quarter.",
   ],
   whatItBelievesItIs:
     "A practical, operator-grade map of the U.S. commercial-insurance distribution landscape — not a list broker, not a CRM, not a generic data warehouse.",
   whatItIsNot: [
-    "Not a CRM (Agency Signal feeds CRMs; it doesn't replace one).",
+    "Not a CRM (Seven16 Intel feeds CRMs; it doesn't replace one).",
     "Not an AMS (no policy admin, no submissions, no quote-bind).",
     "Not a generic B2B contact database (we are insurance-specific).",
     "Not a Neilson-replacement at consumer tier (only the National Founder License competes on national scope).",
@@ -264,22 +266,22 @@ export const COMPETITIVE_ADVANTAGES: Array<{ heading: string; detail: string }> 
 // Update when family roster changes (new product lands, retired product spun out).
 // Statuses tracked in family memory `reference_family_product_catalog.md` per D-033.
 export const FAMILY_PRODUCTS: FamilyProduct[] = [
-  { name: "Agency Signal",     url: "agencysignal.co",         role: "Distribution intelligence — agencies, producers, carrier appointments, verticals.", status: "live" },
+  { name: "Seven16 Intel",     url: "seven16intel.com",         role: "Distribution intelligence — agencies, producers, carrier appointments, verticals.", status: "live" },
   { name: "DOT Intel",         url: "dotintel.io",             role: "Trucking carrier intelligence — DOT lookups, safety scoring, alerts, PDF exports.", status: "live" },
   { name: "DotCarriers",       url: "dotcarriers.io",          role: "Carrier-facing directory — public unclaimed listings, claim flow, profile detail.", status: "in-build" },
   { name: "DotAgencies",       url: "dotagencies.io",          role: "Agent + wholesaler directory — searchable surface for transportation distribution.", status: "in-build" },
   { name: "Bind Lab",          url: "bindlab.io",              role: "Wholesale + MGA operating system — submission intake, UW workflow, commission lifecycle.", status: "in-build" },
-  { name: "Bind Lab Academy",  url: "bindlab.app",             role: "Commercial-insurance training + cert programs (mobile-first PWA).", status: "scaffolded" },
+  { name: "Seven16 Academy",   url: "seven16academy.com",      role: "Commercial-insurance training + cert programs — producer credentialing (mobile-first PWA).", status: "scaffolded" },
   { name: "Seven16 Command",   url: "seven16command.com",      role: "Family-wide CRM + customer-intelligence OS (system of record for cross-product state).", status: "in-build" },
-  { name: "Seven16 Email",     url: "api.seven16email.com",    role: "Family-wide transactional + marketing email API (Resend underneath).", status: "in-build" },
+  { name: "Seven16 Email",     url: "seven16email.com",        role: "Family-wide transactional + marketing email API (Resend underneath).", status: "in-build" },
   { name: "Seven16 Survey",    url: "seven16survey.com",       role: "Vertical assessments, prospect surveys, lead intelligence, consent + compliance.", status: "scaffolded" },
   { name: "Seven16 Group Support", url: "seven16groupsupport.com", role: "Centralized AI sales/support/onboarding/account-management.", status: "live" },
 ];
 
 export const FAMILY_FIT_NARRATIVE = [
   "Seven16 Group is building a family of affordable commercial-insurance workflow tools — data, intelligence, CRM, email, survey, training, and support — for the operators who don't have access to the enterprise stack.",
-  "Agency Signal is the distribution-intelligence layer of that family. It answers 'which agencies write what, where' for any producer, recruiter, MGA, wholesaler, or carrier that needs the answer this week.",
-  "Each product in the family is independently useful. The compounding value shows up when an operator runs Agency Signal alongside DOT Intel for trucking carrier risk, Bind Lab Academy for niche training, Seven16 Command for cross-product CRM, and Seven16 Email for outreach automation. The same operator gets a coherent operating system instead of a stack of disconnected vendor logins.",
+  "Seven16 Intel is the distribution-intelligence layer of that family. It answers 'which agencies write what, where' for any producer, recruiter, MGA, wholesaler, or carrier that needs the answer this week.",
+  "Each product in the family is independently useful. The compounding value shows up when an operator runs Seven16 Intel alongside DOT Intel for trucking carrier risk, Bind Lab Academy for niche training, Seven16 Command for cross-product CRM, and Seven16 Email for outreach automation. The same operator gets a coherent operating system instead of a stack of disconnected vendor logins.",
 ];
 
 // ---------------------------------------------------------------------------
@@ -291,7 +293,7 @@ export const LEVELING_THE_FIELD = {
   proofPoints: [
     {
       title: "Below the P-card threshold at consumer tier",
-      body: "Every Agency Signal consumer-tier price (Sample, Starter, Growth) sits below the $500 single-purchase threshold so a producer can expense without manager sign-off. Pricing locked there per D-002 family doctrine.",
+      body: "Every Seven16 Intel consumer-tier price (Sample, Starter, Growth) sits below the $500 single-purchase threshold so a producer can expense without manager sign-off. Pricing locked there per D-002 family doctrine.",
     },
     {
       title: "Paid sample replaces gated free trials",
@@ -320,11 +322,11 @@ export const LEVELING_THE_FIELD = {
 export const COMBINED_FAMILY_NARRATIVE: Array<{ outcome: string; familyStack: string }> = [
   {
     outcome: "Find opportunities",
-    familyStack: "Agency Signal (carrier-appointment + vertical intelligence) + DOT Intel (trucking risk) + Seven16 Survey (vertical assessments) surface the agencies, carriers, and verticals worth pursuing this quarter.",
+    familyStack: "Seven16 Intel (carrier-appointment + vertical intelligence) + DOT Intel (trucking risk) + Seven16 Survey (vertical assessments) surface the agencies, carriers, and verticals worth pursuing this quarter.",
   },
   {
     outcome: "Understand prospects",
-    familyStack: "Agency Signal (producer + agency identity) + DOT Intel (DOT-side risk) + Bind Lab Academy (niche curriculum) give the producer enough context to land in a real conversation, not a cold pitch.",
+    familyStack: "Seven16 Intel (producer + agency identity) + DOT Intel (DOT-side risk) + Bind Lab Academy (niche curriculum) give the producer enough context to land in a real conversation, not a cold pitch.",
   },
   {
     outcome: "Communicate better",
@@ -336,7 +338,7 @@ export const COMBINED_FAMILY_NARRATIVE: Array<{ outcome: string; familyStack: st
   },
   {
     outcome: "Build lists",
-    familyStack: "Agency Signal builds the universe; Seven16 Command stores the named relationships; Seven16 Email runs the cadences against them.",
+    familyStack: "Seven16 Intel builds the universe; Seven16 Command stores the named relationships; Seven16 Email runs the cadences against them.",
   },
   {
     outcome: "Manage contacts",
@@ -352,11 +354,11 @@ export const COMBINED_FAMILY_NARRATIVE: Array<{ outcome: string; familyStack: st
   },
   {
     outcome: "Improve producer execution",
-    familyStack: "Agency Signal (right targets) + Bind Lab Academy (right knowledge) + Seven16 Email (right cadence) + Seven16 Command (right context) close the producer-effectiveness loop.",
+    familyStack: "Seven16 Intel (right targets) + Bind Lab Academy (right knowledge) + Seven16 Email (right cadence) + Seven16 Command (right context) close the producer-effectiveness loop.",
   },
   {
     outcome: "Track activity",
-    familyStack: "Seven16 Command ingests events from every satellite (Agency Signal saved-list changes, DOT Intel lookups, Bind Lab submissions, Seven16 Email opens) into one customer-state view.",
+    familyStack: "Seven16 Command ingests events from every satellite (Seven16 Intel saved-list changes, DOT Intel lookups, Bind Lab submissions, Seven16 Email opens) into one customer-state view.",
   },
   {
     outcome: "Compete with larger agencies and platforms",
@@ -369,11 +371,11 @@ export const COMBINED_FAMILY_NARRATIVE: Array<{ outcome: string; familyStack: st
 // ---------------------------------------------------------------------------
 export const SALES_NARRATIVE: SalesNarrative = {
   positioningStatement:
-    "Agency Signal is the commercial-insurance distribution intelligence layer for operators who don't have a six-figure data budget.",
+    "Seven16 Intel is the commercial-insurance distribution intelligence layer for operators who don't have a six-figure data budget.",
   elevator30:
-    "Agency Signal maps every commercial-insurance agency, producer, and carrier appointment in the U.S. so a producer or distribution team can see which agencies write what, where — without paying Neilson money for the answer. Sample is $75. Monthly access starts at $299. Full national license is $12,500 a year.",
+    "Seven16 Intel maps every commercial-insurance agency, producer, and carrier appointment in the U.S. so a producer or distribution team can see which agencies write what, where — without paying Neilson money for the answer. Sample is $75. Monthly access starts at $299. Full national license is $12,500 a year.",
   elevator90:
-    "Most commercial-insurance distribution tooling is priced for the enterprise buyer — quote-driven, five-figure contracts, sales calls before you can even see the data. Agency Signal flips that. We publish prices on the page. We sell a $75 paid sample so a producer can validate quality before committing. We map carrier appointments, producer networks, vertical specialization, and agency identity across the full U.S. — sourced from state-DOI filings, not vendor lookalikes. The buyer can pick the slice that fits this week: one state, a custom file, monthly subscription access, or the National Founder License for the whole country at a fraction of what the legacy enterprise vendors charge. Agency Signal sits inside the Seven16 Group family — a growing set of affordable commercial-insurance tools (CRM, email, training, support, survey, trucking intel) that gives smaller operators a real operating system instead of a stack of disconnected vendor logins.",
+    "Most commercial-insurance distribution tooling is priced for the enterprise buyer — quote-driven, five-figure contracts, sales calls before you can even see the data. Seven16 Intel flips that. We publish prices on the page. We sell a $75 paid sample so a producer can validate quality before committing. We map carrier appointments, producer networks, vertical specialization, and agency identity across the full U.S. — sourced from state-DOI filings, not vendor lookalikes. The buyer can pick the slice that fits this week: one state, a custom file, monthly subscription access, or the National Founder License for the whole country at a fraction of what the legacy enterprise vendors charge. Seven16 Intel sits inside the Seven16 Group family — a growing set of affordable commercial-insurance tools (CRM, email, training, support, survey, trucking intel) that gives smaller operators a real operating system instead of a stack of disconnected vendor logins.",
   heroHeadline: "Commercial-insurance agent data, without the legacy pricing.",
   heroSubheadline:
     "Search and buy commercial-insurance agency and producer data your way — monthly access, bulk exports, or a full U.S. license. Built for MGAs, wholesalers, carriers, recruiters, and insurance vendors who want quality data without a five-figure commitment upfront.",
@@ -383,11 +385,11 @@ export const SALES_NARRATIVE: SalesNarrative = {
     "Methodology is public. Send the /methodology link to anyone who challenges data provenance.",
     "Sources are state-DOI filings. NOT vendor-licensed list, NOT web scrape, NOT lookalike modeled.",
     "If the buyer mentions Neilson by name: do NOT name competitors back (P12 family prohibited claim). Pivot to transparent pricing + paid sample + modular buying as the contrast.",
-    "Multi-product fit: Agency Signal often pairs with DOT Intel (trucking) and the Seven16 Email API (outreach). Mention only when the buyer surfaces a need — don't pitch the family upfront.",
+    "Multi-product fit: Seven16 Intel often pairs with DOT Intel (trucking) and the Seven16 Email API (outreach). Mention only when the buyer surfaces a need — don't pitch the family upfront.",
     "Family pricing is dead (D-034). Each product prices independently. There is NO Charter Member program anymore.",
   ],
   customerFacingExplanation:
-    "Agency Signal is a search-and-buy product for commercial-insurance distribution data. You can browse the directory free, pull a $75 sample to test quality, subscribe monthly for ongoing access, build a custom file by state or filter, or buy a full U.S. license. We map carrier appointments, producer networks, and agency identity from state-DOI filings — so the data is regulator-grade, not vendor-scraped. Built for producers, agencies, MGAs, wholesalers, and carriers who need to know which agencies write what, where, this quarter.",
+    "Seven16 Intel is a search-and-buy product for commercial-insurance distribution data. You can browse the directory free, pull a $75 sample to test quality, subscribe monthly for ongoing access, build a custom file by state or filter, or buy a full U.S. license. We map carrier appointments, producer networks, and agency identity from state-DOI filings — so the data is regulator-grade, not vendor-scraped. Built for producers, agencies, MGAs, wholesalers, and carriers who need to know which agencies write what, where, this quarter.",
 };
 
 // ---------------------------------------------------------------------------
@@ -430,7 +432,7 @@ export const ADMIN_USEFULNESS: AdminUsefulnessBlock[] = [
     whatThisGivesThem:
       "Structured ground truth the Seven16 Group Support AI agent can be prompted against. Keeps the agent's voice + claims + ICP framing aligned with the product team's actual positioning.",
     howToUse:
-      "Export the JSON shape of this page (PRODUCT_OVERVIEW + FAB_MATRIX + ICP + COMPETITIVE_ADVANTAGES) into the support-agent prompt as canonical context. Re-export whenever this file changes. AI-agent answers about Agency Signal should never contradict this file.",
+      "Export the JSON shape of this page (PRODUCT_OVERVIEW + FAB_MATRIX + ICP + COMPETITIVE_ADVANTAGES) into the support-agent prompt as canonical context. Re-export whenever this file changes. AI-agent answers about Seven16 Intel should never contradict this file.",
   },
   {
     audience: "Website copy reuse",

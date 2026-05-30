@@ -7,9 +7,9 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Charter Member program ended | Agency Signal",
+  title: "Charter Member program ended | Seven16 Intel",
   description:
-    "The Charter Member program has ended. Agency Signal now offers transparent, modular buying — sample, monthly, custom, or national license.",
+    "The Charter Member program has ended. Seven16 Intel now offers transparent, modular buying — sample, monthly, custom, or national license.",
   robots: { index: false, follow: true },
 };
 
@@ -24,7 +24,7 @@ export default async function CharterPage() {
       <PageHero
         eyebrow="Program ended"
         title="The Charter Member program has ended."
-        description="Thanks to everyone who watched the early phase of Agency Signal. The Charter Member offer was retired on 2026-05-26 in favor of a simpler, more transparent way to buy commercial-insurance data."
+        description="Thanks to everyone who watched the early phase of Seven16 Intel. The Charter Member offer was retired on 2026-05-26 in favor of a simpler, more transparent way to buy commercial-insurance data."
         primaryCta={{ label: "See current pricing", href: "/pricing" }}
         secondaryCta={{ label: "Talk to us", href: "mailto:hello@seven16group.com" }}
       />
@@ -32,7 +32,7 @@ export default async function CharterPage() {
       <Section variant="light" eyebrow="What changed" title="Transparent buying replaced the founding-member offer.">
         <div className="max-w-3xl space-y-5 text-base leading-7 text-slate-700">
           <p>
-            Agency Signal is moving to a buying model that doesn&apos;t require a sales call to see prices.
+            Seven16 Intel is moving to a buying model that doesn&apos;t require a sales call to see prices.
             You can start with a paid sample, sign up for monthly access, build a custom file by state or
             filter, or buy a full U.S. license at founder pricing. The page is short on purpose.
           </p>

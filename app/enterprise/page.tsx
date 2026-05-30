@@ -42,7 +42,7 @@ const CAPABILITIES = [
 ];
 
 const EXPECT = [
-  { icon: Users, n: "01", title: "30-minute scoped demo", body: "We walk your team through Agency Signal with real data scoped to the states you're evaluating. No script — bring the carrier names you care about; we'll show you who holds the paper." },
+  { icon: Users, n: "01", title: "30-minute scoped demo", body: "We walk your team through Seven16 Intel with real data scoped to the states you're evaluating. No script — bring the carrier names you care about; we'll show you who holds the paper." },
   { icon: Building2, n: "02", title: "Pilot evaluation", body: "Two- to four-week sandboxed pilot with a short list of seats. You operate against real data; we instrument what you actually use. Determines the right state mix and seat count." },
   { icon: Mail, n: "03", title: "Contract + onboarding", body: "Annual contract with state mix locked for the term, mid-term changes available at a $500 admin fee, renewal mechanics built around your appointment cadence. Onboarding inside two business weeks." },
 ];
@@ -148,7 +148,7 @@ export default async function EnterprisePage() {
           <Map className="h-5 w-5 text-teal-700 mt-0.5 shrink-0" />
           <div className="text-sm text-teal-900">
             <span className="font-black">Bundle ladder:</span> 1–4 states at full tier price · 5–9 states at 15% off · 10–24 states at 30% off · 25–49 states flat at $9,500/yr · all-50 + territorial add-ons flat at $12,500/yr.
-            <span className="block mt-1 text-xs text-teal-700">Full ladder + overflow-protection math walked through in the demo. You never pay more than $12,500 for Agency Signal Enterprise+.</span>
+            <span className="block mt-1 text-xs text-teal-700">Full ladder + overflow-protection math walked through in the demo. You never pay more than $12,500 for Seven16 Intel Enterprise+.</span>
           </div>
         </div>
       </Section>

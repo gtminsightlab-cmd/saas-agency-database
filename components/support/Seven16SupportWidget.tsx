@@ -6,7 +6,7 @@
 // platform (seven16groupsupport.com) is built + ready, and the family
 // "support-INTEGRATABLE not support-DEPENDENT" rule is unlocked for active
 // integration. This component now renders a real floating chat bubble that
-// expands into an iframe loading the platform's Agency Signal support page.
+// expands into an iframe loading the platform's Seven16 Intel support page.
 //
 // Stage 2 scope (this commit):
 //   - Floating chat button (fixed bottom-right, z-50)
@@ -21,7 +21,7 @@
 //   - postMessage protocol for cross-frame communication
 //
 // Architecture rule (still in force):
-//   Agency Signal must NEVER break if seven16groupsupport.com is offline.
+//   Seven16 Intel must NEVER break if seven16groupsupport.com is offline.
 //   The iframe loads lazily; failure is silent; floating button still renders
 //   even if the platform is unreachable (the user just sees the iframe's own
 //   error page when they click).
@@ -145,7 +145,7 @@ export function Seven16SupportWidget({
               <MessageCircle className="h-4 w-4" aria-hidden="true" />
             </div>
             <h2 id="seven16-support-title" className="text-sm font-bold text-slate-950">
-              Agency Signal Support
+              Seven16 Intel Support
             </h2>
           </div>
           <button
@@ -165,7 +165,7 @@ export function Seven16SupportWidget({
             ) : (
               <iframe
                 src={iframeSrc}
-                title="Agency Signal support chat"
+                title="Seven16 Intel support chat"
                 className="h-full w-full border-0"
                 sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
                 referrerPolicy="strict-origin-when-cross-origin"
@@ -188,7 +188,7 @@ export function Seven16SupportWidget({
 
 /**
  * Graceful fallback shown if the iframe fails to load (platform offline,
- * DNS issue, or CSP rejection). Honors the doctrine — Agency Signal must
+ * DNS issue, or CSP rejection). Honors the doctrine — Seven16 Intel must
  * not break when the platform is unreachable; the user just sees a
  * mailto fallback instead of a broken iframe.
  */

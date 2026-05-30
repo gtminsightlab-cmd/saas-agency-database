@@ -10,7 +10,7 @@
  *     locked plan; root-domain `seven16email.com` per the canonical catalog.)
  *   - Sender topology is enforced server-side: transactional goes from
  *     `notify.seven16email.com`, marketing from `mail.seven16email.com`,
- *     NEVER from agencysignal.io / dotintel.io / bindlab.io / etc.
+ *     NEVER from seven16intel.com / dotintel.io / bindlab.io / etc.
  *   - Suppression checks, unsubscribe handling, idempotency, retry-with-
  *     backoff all live in the Email platform. Satellites just call.
  *

@@ -7,9 +7,9 @@ import { Section } from "@/components/layout/Section";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Privacy Policy — Agency Signal",
+  title: "Privacy Policy — Seven16 Intel",
   description:
-    "How Agency Signal collects, uses, and protects your data. What we share with third parties. How to request access, correction, deletion, or export of your data.",
+    "How Seven16 Intel collects, uses, and protects your data. What we share with third parties. How to request access, correction, deletion, or export of your data.",
 };
 
 const LAST_UPDATED = "2026-05-24";
@@ -40,14 +40,14 @@ export default async function PrivacyPage() {
       <Section
         variant="light"
         eyebrow="1. Who we are"
-        title="Agency Signal, a Seven16 Group product."
+        title="Seven16 Intel, a Seven16 Group product."
       >
         <div className="max-w-3xl space-y-4 text-base leading-7 text-slate-700">
           <p>
-            Agency Signal is operated by Seven16 Group. We process data described below as the &ldquo;controller&rdquo; under GDPR terminology — i.e., we decide what data is collected and what it&rsquo;s used for. Where you contact us about your data, you&rsquo;ll be talking to a human at <a href="mailto:hello@seven16group.com" className="font-bold text-teal-700 hover:text-teal-800">hello@seven16group.com</a>.
+            Seven16 Intel is operated by Seven16 Group. We process data described below as the &ldquo;controller&rdquo; under GDPR terminology — i.e., we decide what data is collected and what it&rsquo;s used for. Where you contact us about your data, you&rsquo;ll be talking to a human at <a href="mailto:hello@seven16group.com" className="font-bold text-teal-700 hover:text-teal-800">hello@seven16group.com</a>.
           </p>
           <p>
-            This policy covers the Agency Signal product at <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">agencysignal.io</code> (legacy traffic on <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">agencysignal.co</code> and <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">directory.seven16group.com</code> 301-redirects here). It does not cover other Seven16 Group products (DOT Intel, DOTCarriers, DOTAgencies, Bind Lab) which publish their own policies on their own domains.
+            This policy covers the Seven16 Intel product at <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">seven16intel.com</code> (legacy traffic on <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">agencysignal.co</code> and <code className="rounded bg-slate-100 px-1.5 py-0.5 text-sm">directory.seven16group.com</code> 308-redirects here). It does not cover other Seven16 Group products (DOT Intel, DOTCarriers, DOTAgencies, Bind Lab) which publish their own policies on their own domains.
           </p>
         </div>
       </Section>
@@ -111,7 +111,7 @@ export default async function PrivacyPage() {
             <li>· <strong className="font-black text-slate-950">Sentry</strong> — error tracking. Stack traces + page URL + user ID; we redact form values.</li>
             <li>· <strong className="font-black text-slate-950">Cloudflare Turnstile</strong> — bot-check on signup/signin/forgot-password.</li>
             <li>· <strong className="font-black text-slate-950">Upstash</strong> — rate-limit cache. Sees IP + user ID; 1-hour rolling window.</li>
-            <li>· <strong className="font-black text-slate-950">Seven16 Group Support</strong> — the chat widget at the bottom of every page. Conversations stored on <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">seven16groupsupport.com</code>; not in the Agency Signal database.</li>
+            <li>· <strong className="font-black text-slate-950">Seven16 Group Support</strong> — the chat widget at the bottom of every page. Conversations stored on <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">seven16groupsupport.com</code>; not in the Seven16 Intel database.</li>
             <li>· <strong className="font-black text-slate-950">Better Stack</strong> — uptime monitoring. Sees public-page status; not your account data.</li>
           </ul>
         </div>

@@ -27,7 +27,7 @@ export function ComparisonSection() {
         <div className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="grid grid-cols-2 border-b border-slate-200 bg-slate-100/80 text-xs font-semibold uppercase tracking-wider text-slate-600">
             <div className="px-6 py-3">Generic contact database</div>
-            <div className="border-l border-slate-200 bg-blue-50 px-6 py-3 text-blue-900">Agency Signal</div>
+            <div className="border-l border-slate-200 bg-blue-50 px-6 py-3 text-blue-900">Seven16 Intel</div>
           </div>
           <ul className="divide-y divide-slate-200">
             {ROWS.map((row) => (

@@ -9,7 +9,7 @@
 // See `docs/support-integration-readiness.md` §6 for the event catalog.
 
 /**
- * Catalog of every support event Agency Signal may emit. Add new events here
+ * Catalog of every support event Seven16 Intel may emit. Add new events here
  * (not as freeform strings) so the support platform has a stable contract.
  */
 export type SupportEventName =
@@ -29,7 +29,7 @@ export type SupportEventName =
   | "billing_question_started"
   | "partner_program_clicked"
   | "usage_limit_reached"
-  // Agency Signal–specific
+  // Seven16 Intel–specific
   | "email_verification_started"
   | "email_verification_failed"
   | "lead_list_created"

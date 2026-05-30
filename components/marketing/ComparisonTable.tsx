@@ -19,7 +19,7 @@ export function ComparisonTable() {
     <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
       <table className="w-full text-left text-sm">
         <caption className="sr-only">
-          Feature comparison between Agency Signal and legacy quote-driven commercial-insurance data vendors.
+          Feature comparison between Seven16 Intel and legacy quote-driven commercial-insurance data vendors.
         </caption>
         <thead className="bg-slate-50">
           <tr>
@@ -27,7 +27,7 @@ export function ComparisonTable() {
               Feature
             </th>
             <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-teal-700">
-              Agency Signal
+              Seven16 Intel
             </th>
             <th scope="col" className="px-4 py-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
               Legacy quote-driven vendors

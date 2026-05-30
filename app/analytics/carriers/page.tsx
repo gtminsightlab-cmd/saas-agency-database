@@ -12,7 +12,7 @@ import { CarriersGrid } from "./grid";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Carrier appointments analytics | Agency Signal",
+  title: "Carrier appointments analytics | Seven16 Intel",
   description:
     "Find agencies appointed with any of 1,300+ carriers. All carriers with 150+ appointed agencies, multi-select for batch list-building.",
 };

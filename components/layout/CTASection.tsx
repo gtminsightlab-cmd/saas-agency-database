@@ -21,7 +21,7 @@ type CTASectionProps = {
 
 /**
  * Closing CTA band — dark by default, single strong thought + one primary action.
- * Step 6 of the Agency Signal page schematic.
+ * Step 6 of the Seven16 Intel page schematic.
  */
 export function CTASection({
   eyebrow,

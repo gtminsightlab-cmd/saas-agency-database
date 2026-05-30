@@ -1,13 +1,13 @@
 /**
- * Synthetic smoke test — Agency Signal public-surface health check.
+ * Synthetic smoke test — Seven16 Intel public-surface health check.
  *
  * Exits 0 if every check passes, 1 on first failure (with details printed).
  * Designed for pre-charter-launch gating + future cron health checks.
  *
  * Run:
- *   SMOKE_TARGET=https://agencysignal.io npm run smoke
+ *   SMOKE_TARGET=https://seven16intel.com npm run smoke
  *
- * (Defaults to https://agencysignal.io when SMOKE_TARGET unset.)
+ * (Defaults to https://seven16intel.com when SMOKE_TARGET unset.)
  *
  * What it checks (all unauthenticated — safe to run against production):
  * 1. Public marketing pages return 200 (/, /about, /faq, /use-cases, etc.)
@@ -23,7 +23,7 @@
  * - Sentry / Better Stack alert routing (manual test required)
  */
 
-const TARGET = (process.env.SMOKE_TARGET ?? "https://agencysignal.io").replace(/\/$/, "");
+const TARGET = (process.env.SMOKE_TARGET ?? "https://seven16intel.com").replace(/\/$/, "");
 
 type CheckResult = { name: string; ok: boolean; detail: string };
 
@@ -180,7 +180,7 @@ async function checkStripeWebhook() {
 async function main() {
   const startedAt = Date.now();
   console.log("\n========================================");
-  console.log("Agency Signal smoke test");
+  console.log("Seven16 Intel smoke test");
   console.log(`Target: ${TARGET}`);
   console.log(`Started: ${new Date().toISOString()}`);
   console.log("========================================");

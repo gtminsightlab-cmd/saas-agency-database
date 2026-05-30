@@ -10,7 +10,7 @@ import { EditorialCard } from "@/components/marketing/EditorialCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Resources — Methodology, recruit plays, and the case for targeted data | Agency Signal",
+  title: "Resources — Methodology, recruit plays, and the case for targeted data | Seven16 Intel",
   description:
     "Field-tested methodology and recruit plays for using carrier-appointment intelligence to build a defensible recruit list. Updated as new pieces ship.",
 };

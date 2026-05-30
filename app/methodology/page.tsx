@@ -10,7 +10,7 @@ import { ThreeSignalsMockup } from "@/components/marketing/ThreeSignalsMockup";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "How we score agencies — Methodology | Agency Signal",
+  title: "How we score agencies — Methodology | Seven16 Intel",
   description:
     "Three independent signals — Volume, Specialization Tier, and Carrier Diversity — turn a 36,000-name agency list into a defensible recruit list. Read the full methodology, ingredients, scoring definitions, and anti-claims.",
 };
@@ -82,7 +82,7 @@ const ANTI_CLAIMS = [
   {
     icon: XCircle,
     title: "Not a substitute for producer judgment",
-    body: "The methodology produces a recruit list, not a close. Your producers still need to read the agency, run the conversation, and earn the appointment. Agency Signal is a better starting list — not an autopilot.",
+    body: "The methodology produces a recruit list, not a close. Your producers still need to read the agency, run the conversation, and earn the appointment. Seven16 Intel is a better starting list — not an autopilot.",
   },
 ];
 

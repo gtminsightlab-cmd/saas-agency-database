@@ -74,7 +74,7 @@ export default async function MarketingHome() {
           eyebrow="Commercial insurance distribution intelligence"
           title="Stop buying agency lists."
           highlight="Start reading the paper trail."
-          description="Most prospecting starts with a name, a title, and a guess. That's not how commercial-insurance distribution works. Agency Signal maps the writing-company paper trail behind every U.S. commercial-insurance agency — refreshed monthly against state filings — so carriers, MGAs, wholesalers, and program teams can find the agencies already appointed with the markets they compete with."
+          description="Most prospecting starts with a name, a title, and a guess. That's not how commercial-insurance distribution works. Seven16 Intel maps the writing-company paper trail behind every U.S. commercial-insurance agency — refreshed monthly against state filings — so carriers, MGAs, wholesalers, and program teams can find the agencies already appointed with the markets they compete with."
           primaryCta={{ label: user ? "Open your dashboard" : "Browse verified agencies free", href: user ? "/build-list" : "/sign-up" }}
           secondaryCta={{ label: "View transportation list", href: "/verticals/transportation" }}
           rightRail={<AppointmentSearchMockup />}
@@ -162,7 +162,7 @@ export default async function MarketingHome() {
         <CTASection
           eyebrow="Distribution is not a spreadsheet problem"
           title="It's a judgment problem."
-          description="Agency Signal gives your team a defensible recruit list — scored by observable appointment behavior, refreshed monthly, and built for the play you're running this quarter. Browse free, pay only when you export."
+          description="Seven16 Intel gives your team a defensible recruit list — scored by observable appointment behavior, refreshed monthly, and built for the play you're running this quarter. Browse free, pay only when you export."
           primaryCta={{ label: user ? "Open your dashboard" : "Browse verified agencies free", href: user ? "/build-list" : "/sign-up" }}
           secondaryCta={{ label: "Talk to sales", href: "mailto:hello@seven16group.com?subject=Agency%20Signal%20demo" }}
         />

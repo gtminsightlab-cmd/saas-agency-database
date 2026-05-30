@@ -52,7 +52,7 @@ export function HowItWorksSection() {
 
         <ol
           className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-          aria-label="The four-step Agency Signal pipeline"
+          aria-label="The four-step Seven16 Intel pipeline"
         >
           {STEPS.map(({ num, icon: Icon, heading, body }) => (
             <li

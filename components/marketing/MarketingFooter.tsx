@@ -38,7 +38,7 @@ export function MarketingFooter() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-4">
           <div className="lg:col-span-1">
-            <div className="text-xl font-bold tracking-tight text-white">Agency Signal</div>
+            <div className="text-xl font-bold tracking-tight text-white">Seven16 Intel</div>
             <p className="mt-2 text-xs uppercase tracking-wider text-slate-500">by Seven16 Group</p>
             <p className="mt-4 text-sm leading-6 text-slate-400">
               Distribution intelligence for commercial insurance. The appointment trail behind every U.S.

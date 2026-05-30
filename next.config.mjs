@@ -35,22 +35,27 @@ const nextConfig = {
   reactStrictMode: true,
   typedRoutes: false,
   async redirects() {
-    // Canonical hostname = agencysignal.co (PERMANENT, locked 2026-05-30).
+    // Canonical hostname = seven16intel.com (LOCKED 2026-05-30 — Seven16 Intel rebrand).
     //
-    // Earlier doctrine attempted to migrate to agencysignal.io but Master O's
-    // Cloudflare registrar confirmed he does NOT own agencysignal.io — that
-    // domain is held by a third party operating a separate "AgencySignal"
-    // marketing-agency directory product. The .io migration is therefore
-    // permanently dead; we cannot redirect to a domain we don't control.
+    // Product was originally "Agency Signal" at agencysignal.co. Rebranded
+    // to "Seven16 Intel" at seven16intel.com to avoid brand collision with
+    // a separate "AgencySignal" company operating a marketing-agency
+    // directory product at agencysignal.io (third-party owned).
     //
-    // Single redirect rule: the legacy directory.seven16group.com hostname
-    // (the SESSION_38 predecessor) 308-redirects to agencysignal.co for
-    // link-rot mitigation. Everything else stays on .co.
+    // Both legacy hostnames 308-redirect to the new canonical:
+    //   - directory.seven16group.com → seven16intel.com (pre-SESSION_38 legacy)
+    //   - agencysignal.co            → seven16intel.com (SESSION_38 → SESSION_40 legacy)
     return [
       {
         source: "/:path*",
         has: [{ type: "host", value: "directory.seven16group.com" }],
-        destination: "https://agencysignal.co/:path*",
+        destination: "https://seven16intel.com/:path*",
+        permanent: true
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "agencysignal.co" }],
+        destination: "https://seven16intel.com/:path*",
         permanent: true
       }
     ];

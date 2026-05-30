@@ -27,7 +27,7 @@ export const dynamic = "force-dynamic";
  * The earlier `?charter=1` query param + customer-metadata tagging + Stripe
  * Coupon attachment have all been stripped. Stripe Coupon `L1Ngigfc` to be
  * deactivated in dashboard per D-034's deferred-cleanup list. Future-arc
- * pricing follows Agency Signal v2 4-tier transparent model per D-034 +
+ * pricing follows Seven16 Intel v2 4-tier transparent model per D-034 +
  * `project_agencysignal_pricing_v2_neilson_alternative.md` (Starter Sample
  * $75 / Monthly $299-$999 / Bulk per-record / National Founder $12,500).
  */

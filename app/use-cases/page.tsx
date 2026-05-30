@@ -10,7 +10,7 @@ import { UseCasePlay } from "@/components/marketing/UseCasePlay";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Use cases — Agency Signal",
+  title: "Use cases — Seven16 Intel",
   description:
     "Five distribution plays for commercial-insurance carriers, MGAs, wholesalers, and program teams. Displace competitor paper, launch new programs, map white space, identify specialists, reduce wasted outreach.",
 };
@@ -86,7 +86,7 @@ export default async function UseCasesPage() {
         eyebrow="Five plays for distribution teams"
         title="Use the same signal"
         highlight="five different ways."
-        description="A good distribution team doesn't prospect the same way every quarter. Sometimes you're launching a program, sometimes defending shelf space, sometimes trying to displace a competitor, sometimes mapping where the market is already built before territory goals are assigned. Agency Signal gives your team a cleaner map for each play."
+        description="A good distribution team doesn't prospect the same way every quarter. Sometimes you're launching a program, sometimes defending shelf space, sometimes trying to displace a competitor, sometimes mapping where the market is already built before territory goals are assigned. Seven16 Intel gives your team a cleaner map for each play."
         primaryCta={{ label: user ? "Open your dashboard" : "Browse agencies free", href: user ? "/build-list" : "/sign-up" }}
         secondaryCta={{ label: "Enterprise+ distribution", href: "/enterprise" }}
         rightRail={<WorkflowStepMockup />}

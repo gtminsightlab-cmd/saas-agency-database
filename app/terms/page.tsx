@@ -7,9 +7,9 @@ import { Section } from "@/components/layout/Section";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Terms of Service — Agency Signal",
+  title: "Terms of Service — Seven16 Intel",
   description:
-    "Terms of Service for Agency Signal. Service description, acceptable use, account responsibility, billing, data ownership, termination, governing law.",
+    "Terms of Service for Seven16 Intel. Service description, acceptable use, account responsibility, billing, data ownership, termination, governing law.",
 };
 
 const LAST_UPDATED = "2026-05-24";
@@ -26,7 +26,7 @@ export default async function TermsPage() {
         variant="dark"
         eyebrow={`Last updated ${LAST_UPDATED} · DRAFT`}
         title="Terms of Service."
-        description="The contract between you and Seven16 Group when you use Agency Signal. Plain English where possible; the legalese only shows up where we can't avoid it."
+        description="The contract between you and Seven16 Group when you use Seven16 Intel. Plain English where possible; the legalese only shows up where we can't avoid it."
         primaryCta={{ label: "Read the Privacy Policy", href: "/privacy" }}
         secondaryCta={{ label: "Email questions", href: "mailto:hello@seven16group.com?subject=Terms%20question" }}
       />
@@ -43,7 +43,7 @@ export default async function TermsPage() {
         title="What you're paying for."
       >
         <div className="max-w-3xl space-y-4 text-base leading-7 text-slate-700">
-          <p>Agency Signal is a commercial-insurance-distribution intelligence platform: a searchable directory of U.S. commercial insurance agencies, scored by carrier-appointment behavior, refreshed monthly against state filings. Free tier is browse-only. Paid tiers add exports (verified contact records). Enterprise+ is annual-contract distribution intelligence at state-by-state pricing.</p>
+          <p>Seven16 Intel is a commercial-insurance-distribution intelligence platform: a searchable directory of U.S. commercial insurance agencies, scored by carrier-appointment behavior, refreshed monthly against state filings. Free tier is browse-only. Paid tiers add exports (verified contact records). Enterprise+ is annual-contract distribution intelligence at state-by-state pricing.</p>
           <p>Service description is illustrative — features ship over time and we&rsquo;ll update this page when material additions land. We do not commit to keeping any specific feature in perpetuity.</p>
         </div>
       </Section>
@@ -70,7 +70,7 @@ export default async function TermsPage() {
         title="What you can and can't do with the data."
       >
         <div className="max-w-3xl space-y-4 text-base leading-7 text-slate-700">
-          <p>You may use Agency Signal data to: research the U.S. commercial-insurance distribution market; identify agencies that match your distribution criteria; recruit agency relationships for your carrier, MGA, wholesaler, or program; train your producer team on the methodology.</p>
+          <p>You may use Seven16 Intel data to: research the U.S. commercial-insurance distribution market; identify agencies that match your distribution criteria; recruit agency relationships for your carrier, MGA, wholesaler, or program; train your producer team on the methodology.</p>
           <p>You may <strong className="font-black text-slate-950">not</strong>:</p>
           <ul className="space-y-2 text-sm leading-6">
             <li>· Resell, sublicense, or redistribute exported data to third parties not on your contract.</li>
@@ -78,7 +78,7 @@ export default async function TermsPage() {
             <li>· Use the data for purposes unrelated to commercial-insurance distribution (e.g., consumer marketing, political campaigns, debt collection).</li>
             <li>· Reverse-engineer the methodology to build a competing product.</li>
             <li>· Use the data in ways that violate applicable law (TCPA spam, GDPR consent violations, etc.). The compliance burden for your outreach is yours.</li>
-            <li>· Pretend Agency Signal data implies any carrier appointment, underwriting approval, or contractual relationship that doesn&rsquo;t exist. Agency Signal data reflects observable appointment behavior, nothing more.</li>
+            <li>· Pretend Seven16 Intel data implies any carrier appointment, underwriting approval, or contractual relationship that doesn&rsquo;t exist. Seven16 Intel data reflects observable appointment behavior, nothing more.</li>
           </ul>
         </div>
       </Section>
@@ -134,7 +134,7 @@ export default async function TermsPage() {
           <p>To the extent permitted by law:</p>
           <ul className="space-y-2 text-sm leading-6">
             <li>· The service is provided <strong className="font-black text-slate-950">&ldquo;as is&rdquo;</strong> without warranties of merchantability, fitness for a particular purpose, or non-infringement beyond what your local law requires.</li>
-            <li>· Agency Signal data is not a guarantee of carrier appointment, agency willingness to write your business, or any contractual relationship between you and the agencies in the directory.</li>
+            <li>· Seven16 Intel data is not a guarantee of carrier appointment, agency willingness to write your business, or any contractual relationship between you and the agencies in the directory.</li>
             <li>· Our liability for any single incident is capped at the amount you paid us in the trailing 12 months, with reasonable exceptions for fraud and gross negligence as your local law requires.</li>
             <li>· We&rsquo;re not liable for indirect, incidental, consequential, or punitive damages arising from your use of the service.</li>
           </ul>

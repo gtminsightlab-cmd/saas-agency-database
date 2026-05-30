@@ -56,7 +56,7 @@ export function ProblemSection() {
         </ul>
 
         <p className="mx-auto mt-10 max-w-2xl text-center text-sm font-medium text-slate-700">
-          Agency Signal targets by the appointment relationships that actually matter.
+          Seven16 Intel targets by the appointment relationships that actually matter.
         </p>
       </div>
     </section>
