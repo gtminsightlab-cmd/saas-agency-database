@@ -3,7 +3,7 @@
 **Last updated:** 2026-05-15 (SESSION_24 tail — Threshold IQ removed per D-022)
 **Purpose:** Canonical lookup for "which repo, Vercel project, Supabase satellite, and live URL does each Seven16 product live at?" Read this on session open if you're unsure which product you're working on, or paste the per-product session-opener snippets into a new Claude session to orient it instantly.
 
-> **Why this exists:** with 2 family-active code repos (Agency Signal + DOT Intel cluster) plus the seven16-platform control plane Supabase satellite, "which path do I open?" is a frequent friction point. This index resolves it in one screen.
+> **Why this exists:** with 2 family-active code repos (Seven16 Intel + DOT Intel cluster) plus the seven16-platform control plane Supabase satellite, "which path do I open?" is a frequent friction point. This index resolves it in one screen.
 >
 > **2026-05-15 SESSION_24:** Threshold IQ (seven16-distribution) spun out of the Seven16 family per D-022. Removed from main lookup; preserved in "Paths that look like products but aren't" register for historical reference. Wind-down (Vercel/GitHub/Supabase/Cloudflare cleanup) deferred to a follow-up session.
 
@@ -13,11 +13,11 @@
 
 | Product (market name) | Local repo path | GitHub | Vercel project | Supabase project | Live URL(s) |
 |---|---|---|---|---|---|
-| **Agency Signal** + family hub | `C:\Users\GTMin\Projects\saas-agency-database\` | [`gtminsightlab-cmd/saas-agency-database`](https://github.com/gtminsightlab-cmd/saas-agency-database) | `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` | `sdlsdovuljuymgymarou` (project name `seven16group`, us-east-1, Pro plan) | [directory.seven16group.com](https://directory.seven16group.com) · [/charter](https://directory.seven16group.com/charter) · [/enterprise](https://directory.seven16group.com/enterprise) |
+| **Seven16 Intel** + family hub | `C:\Users\GTMin\Projects\saas-agency-database\` | [`gtminsightlab-cmd/saas-agency-database`](https://github.com/gtminsightlab-cmd/saas-agency-database) | `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` | `sdlsdovuljuymgymarou` (project name `seven16group`, us-east-1, Pro plan) | [directory.seven16group.com](https://directory.seven16group.com) · [/charter](https://directory.seven16group.com/charter) · [/enterprise](https://directory.seven16group.com/enterprise) |
 | **DOT Intel + DOTCarriers + DOTAgencies + Learning Center** (one codebase, 3 brand domains routed via host-header middleware per D-016) | `C:\Users\GTMin\Projects\dotintel2\` | [`gtminsightlab-cmd/dotintel2`](https://github.com/gtminsightlab-cmd/dotintel2) | `prj_4tnPATJjP4Bahg2RFw4DwlTuNa8S` | `vbhlacdrcqdqnvftqtin` (DOT Intel satellite, Pro plan, same org) | [dotcarriers.io](https://dotcarriers.io) (operator directory) · [dotagencies.io](https://dotagencies.io) (agent + wholesaler directory + cert) · [www.dotintel.io](https://www.dotintel.io) (intelligence dashboard + bundle hub) |
 | **seven16-platform** (shared control plane — auth + tenants + entitlements + master control center, per D-008) | _no code repo yet_ | _no GitHub repo yet_ | _no Vercel project yet_ | `soqqmkfasufusoxxoqzx` (Supabase only) | n/a |
 
-**Org-level note:** family-active satellites live in the `dotintel` Supabase org — Pro plan ($25/mo) covers them all + daily backups. After TIQ wind-down (per D-022), 3 family-active satellites remain: `sdlsdovuljuymgymarou` (Agency Signal), `vbhlacdrcqdqnvftqtin` (DOT Intel), `soqqmkfasufusoxxoqzx` (seven16-platform). PITR ($100/mo per project) is the only per-project paid add-on and is not yet enabled — flagged as a pre-launch security gate per `project_pre_launch_security_gates.md`.
+**Org-level note:** family-active satellites live in the `dotintel` Supabase org — Pro plan ($25/mo) covers them all + daily backups. After TIQ wind-down (per D-022), 3 family-active satellites remain: `sdlsdovuljuymgymarou` (Seven16 Intel), `vbhlacdrcqdqnvftqtin` (DOT Intel), `soqqmkfasufusoxxoqzx` (seven16-platform). PITR ($100/mo per project) is the only per-project paid add-on and is not yet enabled — flagged as a pre-launch security gate per `project_pre_launch_security_gates.md`.
 
 ---
 
@@ -27,7 +27,7 @@ Two pre-configured `.bat` shortcuts on the Desktop. Double-click each → `cd` i
 
 | File | Lands you in |
 |---|---|
-| `Open Claude — Agency Signal.bat` | `C:\Users\GTMin\Projects\saas-agency-database\` |
+| `Open Claude — Seven16 Intel.bat` | `C:\Users\GTMin\Projects\saas-agency-database\` |
 | `Open Claude — DOT Intel.bat` | `C:\Users\GTMin\Projects\dotintel2\` |
 
 **Removed 2026-05-15 per D-022:** `Open Claude — Threshold IQ.bat` (TIQ spun out of family). Scheduled for deletion in TIQ wind-down session.
@@ -40,7 +40,7 @@ Always make the first message to a new Claude session start with this, regardles
 
 ```
 Run pwd. Confirm output is one of these canonical paths:
-  - C:\Users\GTMin\Projects\saas-agency-database    (Agency Signal + family hub)
+  - C:\Users\GTMin\Projects\saas-agency-database    (Seven16 Intel + family hub)
   - C:\Users\GTMin\Projects\dotintel2                (DOT Intel cluster: dotintel.io + dotcarriers.io + dotagencies.io + Learning Center)
 
 If pwd shows ANY path under \OneDrive\, STOP. The OneDrive .git is
@@ -58,8 +58,8 @@ sessions should open against it.
 
 ## Per-product session-opener snippets
 
-### Agency Signal / family-hub work
-*(pricing decisions, FAMILY_HEALTH refresh, cross-product cascade coordination, Agency Signal product work)*
+### Seven16 Intel / family-hub work
+*(pricing decisions, FAMILY_HEALTH refresh, cross-product cascade coordination, Seven16 Intel product work)*
 
 ```
 You are continuing the Seven16 family-hub track at saas-agency-database.
@@ -71,8 +71,8 @@ Read in order (per Working Agreement Rule 6):
   4. docs/context/DECISION_LOG.md (D-001 through D-021 + §6 standing rules)
   5. docs/context/ANTI_DECAY_PROTOCOL.md
 
-For Agency Signal product work specifically, also read:
-  6. docs/STATE.md (Agency Signal inside view)
+For Seven16 Intel product work specifically, also read:
+  6. docs/STATE.md (Seven16 Intel inside view)
   7. docs/handoffs/AGENCY_SIGNAL_SESSION_<latest>_HANDOFF.md
 
 Then propose plan (5–10 bullets), await thumbs-up.
@@ -116,7 +116,7 @@ TIQ spun out of Seven16 family. No new TIQ family-track sessions. If you need to
 | `dotintel-intelligence` | Parked | Legacy "Agency Intelligence" Next 14 build. Subdomain `intelligence.dotintel.io` resolves to a dead build. Decommission queued in dotintel2 BACKLOG #8 (redirect to `directory.seven16group.com/verticals`). Own-session work in the parked repo when picked up. |
 | `Killing Commercial` | Separate project, not a Seven16 product | At `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Killing Commercial\`. Scraping + synthesis project. Dropped planning docs into dotintel2 on 2026-05-13 (`docs/KILLING_COMMERCIAL_TRAINING_HUB.md`, `docs/TRAINING_HUB_SESSION_HANDOFF.md`). Separate Claude track. |
 | **`seven16group.com` apex** | Planned, not built | Holding-company + marketing-agency front door. Separate future repo. Brand-systems designer engagement is the trigger. See family memory `reference_seven16group_apex_plan.md`. |
-| **`agencysignal.io`** | Domain reserved, not wired | Future Agency Signal home when cutover from `directory.seven16group.com` happens. Trigger: comfort with DNS choreography + a quiet week. |
+| **`seven16intel.com`** | Domain reserved, not wired | Future Seven16 Intel home when cutover from `directory.seven16group.com` happens. Trigger: comfort with DNS choreography + a quiet week. |
 | **BindLab** | Retired | Per DECISION_LOG §4. Will reprise later as sales-dev + coaching brand. No active repo. |
 | **Agency Vantage** | Retired | Per DECISION_LOG §4. Will reprise later. No active repo. |
 | **Seven16Recruit** | Stealth, attorney-gated | Per DECISION_LOG D-010. Own Supabase satellite planned per D-008, no code work yet. Any public-facing Recruit work requires checking on attorney engagement status (DECISION_LOG §9 open question #3). |
@@ -125,9 +125,9 @@ TIQ spun out of Seven16 family. No new TIQ family-track sessions. If you need to
 
 ## Stripe accounts
 
-- **DOT Intel + family Stripe sandbox:** `acct_1TLUF6HmqSDkUoqw` ("Seven16 / DOT Intel" in workspace switcher). Currently used by both DOT Intel and Agency Signal sandbox surfaces.
+- **DOT Intel + family Stripe sandbox:** `acct_1TLUF6HmqSDkUoqw` ("Seven16 / DOT Intel" in workspace switcher). Currently used by both DOT Intel and Seven16 Intel sandbox surfaces.
 - **NOT FMCSADOT** (`acct_1TQDsRLtKFcJVUP2`) — different unrelated account; ignore unless explicitly told it's needed.
-- Live cutover trigger: first paying customer ready to convert (per Agency Signal STATE.md §5).
+- Live cutover trigger: first paying customer ready to convert (per Seven16 Intel STATE.md §5).
 - Stripe catalog migration around D-021 architecture is queued for next family-hub session (SESSION_25 Path A) — builds the actual Stripe products + prices + entitlements for all 7 D-021 pricing surfaces.
 
 ---
@@ -144,7 +144,7 @@ Returns one of:
 
 | URL | Product |
 |---|---|
-| `https://github.com/gtminsightlab-cmd/saas-agency-database.git` | Agency Signal / family hub |
+| `https://github.com/gtminsightlab-cmd/saas-agency-database.git` | Seven16 Intel / family hub |
 | `https://github.com/gtminsightlab-cmd/dotintel2.git` | DOT Intel cluster (3 brand domains, one codebase) |
 | ~~`https://github.com/gtminsightlab-cmd/seven16-distribution.git`~~ | ⚫ Threshold IQ — spun out per D-022, wind-down pending |
 
@@ -158,7 +158,7 @@ You CAN work across products in a normal day — just sequentially, not in paral
 
 **Pattern for cross-cutting decisions** (e.g., pricing locks, family-wide doctrine changes):
 
-1. Open the **family hub** (`Open Claude — Agency Signal.bat`).
+1. Open the **family hub** (`Open Claude — Seven16 Intel.bat`).
 2. Make the decision in `docs/context/DECISION_LOG.md` + relevant `PRICING_*.md` spec.
 3. Under Rule 2(b), draft paste-ready cascade artifacts for the affected spoke repos. Store them in `docs/cross-repo/<target-repo>_<purpose>.md`.
 4. Close the family-hub session.
@@ -182,7 +182,7 @@ Update when:
 - A repo is retired or merged
 - A Supabase satellite or Vercel project ID changes (rare — usually means a manual migration)
 - A brand domain is added or retired
-- A live URL changes (e.g., agencysignal.io cutover from directory.seven16group.com)
+- A live URL changes (e.g., seven16intel.com cutover from directory.seven16group.com)
 
 The launcher `.bat` files at `C:\Users\GTMin\OneDrive\Desktop\` should also be updated when canonical paths change.
 

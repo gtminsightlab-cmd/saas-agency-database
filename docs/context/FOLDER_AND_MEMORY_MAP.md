@@ -7,7 +7,7 @@
 
 ---
 
-## 1. Workspace — Agency Signal repo on disk
+## 1. Workspace — Seven16 Intel repo on disk
 
 **Root:** `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Saas Agency Database\`
 *(Linux sandbox path: `/sessions/<id>/mnt/Saas Agency Database/`)*
@@ -136,7 +136,7 @@
 | File | Contents |
 |---|---|
 | `reference_git_repo_state.md` | OneDrive `.git` is permanently broken. No alt clone. Stop hunting. |
-| `reference_supabase_seven16group.md` | Supabase project IDs: `sdlsdovuljuymgymarou` (Agency Signal) vs `vbhlacdrcqdqnvftqtin` (DOT Intel old). |
+| `reference_supabase_seven16group.md` | Supabase project IDs: `sdlsdovuljuymgymarou` (Seven16 Intel) vs `vbhlacdrcqdqnvftqtin` (DOT Intel old). |
 | `reference_github_vercel_accounts.md` | GitHub username `gtminsightlab-cmd`, Vercel team + project IDs. |
 | `reference_stripe_sandbox.md` | Stripe sandbox account / product / price IDs + env-var checklist. |
 | `reference_berkley_carrier_ids.md` | Berkley operating-unit carrier_ids + 13 wholesalers + power-unit bands. |
@@ -150,7 +150,7 @@
 | `project_seven16_master_plan.md` | ⚠️ **AUTHORITATIVE 2026-04-30.** Wins over older handoff decisions. |
 | `project_open_questions_to_surface.md` | Parked questions to raise contextually, not all at once. |
 | `project_bindlab_agencyvantage_revival.md` | Retired now, reprise later (BindLab = sales dev + coaching). |
-| `project_saas_agency_db.md` | Older name for Agency Signal — still useful for Phase 0 / 1 context. |
+| `project_saas_agency_db.md` | Older name for Seven16 Intel — still useful for Phase 0 / 1 context. |
 | `project_dot_carrier_intel_bootstrap.md` | DOT Intel old-project bootstrap; superseded by master plan rebuild decision (D-007). |
 | `project_trust_copy_and_hygiene_credit.md` | Locked copy + Hygiene Credit mechanics; held for rollout. |
 | `project_admin_control_center_spec.md` | 13-module admin sidebar spec — adapted from generic wireframe research. |
@@ -177,7 +177,7 @@
 | Field | Value |
 |---|---|
 | Username | `gtminsightlab-cmd` |
-| Agency Signal repo | `https://github.com/gtminsightlab-cmd/saas-agency-database` (public, created 2026-04-24) |
+| Seven16 Intel repo | `https://github.com/gtminsightlab-cmd/saas-agency-database` (public, created 2026-04-24) |
 | Repo ID | `1220314444` |
 | DOT Intel repo | not yet created (deferred to rebuild kickoff) |
 | Auth pattern | fine-grained PAT with `Contents: write` scope, custom expiration set to next-day, revoked after use. **Never persisted in memory.** |
@@ -189,7 +189,7 @@
 | Team name | `gtminsightlab-7170's projects` |
 | Team slug | `gtminsightlab-7170s-projects` |
 | Team ID | `team_RCXpUhGENcLjR2loNIRyEmT3` |
-| Agency Signal project ID | `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` |
+| Seven16 Intel project ID | `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` |
 | Production URL | https://directory.seven16group.com |
 | Branch alias | `saas-agency-database-git-main-gtminsightlab-7170s-projects.vercel.app` |
 | Auto-deploy | on push to `main` |
@@ -199,8 +199,8 @@
 
 | Field | Value |
 |---|---|
-| **Agency Signal project ID** | `sdlsdovuljuymgymarou` |
-| Agency Signal name | `seven16group` |
+| **Seven16 Intel project ID** | `sdlsdovuljuymgymarou` |
+| Seven16 Intel name | `seven16group` |
 | Region | us-east-1 |
 | Postgres version | 17.6.1 |
 | DB host | `db.sdlsdovuljuymgymarou.supabase.co` |

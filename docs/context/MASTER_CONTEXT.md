@@ -1,6 +1,6 @@
 ﻿# Master Context — Seven16 Group
 
-**Last updated:** 2026-05-12 (D-014 + D-015 fully locked + Agency Signal data snapshot refreshed 20,739 → 41,705 agencies)
+**Last updated:** 2026-05-12 (D-014 + D-015 fully locked + Seven16 Intel data snapshot refreshed 20,739 → 41,705 agencies)
 **Purpose:** Single source of truth that any new Claude session (or human collaborator) reads first to get oriented. Everything else points back to this hub.
 
 > **If you are a Claude session reading this for the first time:** read this hub end-to-end, then open the three spokes linked at the bottom (Decision Log, Session State, Folder & Memory Map). Then ask Master O what's next. Do not start substantive work without doing this pass first.
@@ -17,7 +17,7 @@
 
 | Product | Domain | State | One-liner |
 |---|---|---|---|
-| **Agency Signal** | agencysignal.io (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: **41,705 agencies, 263,657 carrier appointments, 1,085 carriers with active appointments** (1,369 in directory total), 135,453 contacts (85.6% with verified email). Data snapshot 2026-05-12. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". *Marketing copy on the live site remains conservative per DECISION_LOG §2 "pricing copy is placeholder until data inventory catches up."* |
+| **Seven16 Intel** | seven16intel.com (alias of `directory.seven16group.com` until cutover) | **Live in production.** | Multi-tenant retail-agent directory + analytics: **41,705 agencies, 263,657 carrier appointments, 1,085 carriers with active appointments** (1,369 in directory total), 135,453 contacts (85.6% with verified email). Data snapshot 2026-05-12. Mission helps recruit agents; offers niche analytics stronger than recruiting alone. Previously called "SaaS Agency Database" / "Agency Data Seven16". *Marketing copy on the live site remains conservative per DECISION_LOG §2 "pricing copy is placeholder until data inventory catches up."* |
 | **DOT Intel** | dotintel.io | **Live demo build at dotintel.io.** v1 risk scoring with public methodology page + Ineligible band + historical-insurance factors shipped 2026-05-10 (sessions 21-24). **Directory build kickoff session 25 (2026-05-10):** five new schemas (agent / wholesaler / carrier_market / content / marketplace) hosted in this satellite per D-012 — spec + status at `dotintel2/docs/specs/dotintel-directory-build-{spec,status}.md`. Phase 1 Task 1.B (content schema) live. | Trucking / commercial-insurance intelligence platform, FMCSA-data-backed, plus the new claim-side directory layer. |
 | **Threshold IQ** | thresholdiq.io (Cloudflare zone secured 2026-05-02) | **Build in progress** in a separate Claude Code session at `CRM for MGU and Recruiting/seven16-distribution/` (working name `seven16-distribution`). | Multi-tenant operating CRM for emerging MGUs, wholesalers, and program administrators. Producer lifecycle, contracting, licensing, E&O tracking, appointments, exception-based compliance. Tenant zero = Seven16 Group (internal dogfood). Brand framing: "doorway / underwriting threshold / growth threshold" — see D-009 brand brief. Pricing locked in the build session, family integration pending. |
 
@@ -49,11 +49,11 @@ Strategy: **emerging / startup small firms first** (D-011). Every consumer tier 
 
 | Product | Free | Mission tier | Mid | Enterprise |
 |---|---|---|---|---|
-| **Agency Signal** | Free | **$19 Producer** *(THE mission tier)* | $99 Growth | $399+ Enterprise |
+| **Seven16 Intel** | Free | **$19 Producer** *(THE mission tier)* | $99 Growth | $399+ Enterprise |
 | **DOT Intel** | Free | $29 Pro | $149 Business | $499+ Enterprise |
-| **2027 Bundle** | — | — | $179/mo Seven16 Intelligence (DOT Intel Business + Agency Signal Growth) | — |
+| **2027 Bundle** | — | — | $179/mo Seven16 Intelligence (DOT Intel Business + Seven16 Intel Growth) | — |
 
-The Agency Signal $19 Producer tier is the lead-with-the-little-guy bet. Every other locked tier follows from it.
+The Seven16 Intel $19 Producer tier is the lead-with-the-little-guy bet. Every other locked tier follows from it.
 
 **Pricing pending integration with family strategy:**
 
@@ -65,7 +65,7 @@ The Agency Signal $19 Producer tier is the lead-with-the-little-guy bet. Every o
 
 **Consumption engine (D-014, 2026-05-12):** Locked tiers above are the *membership floor*. Each paid tier also ships with a monthly credit allotment, and users top up via a $5-increment slider with stepped bonus credits (+0% → +45% cap at $1,000+). Subscription credits expire monthly with rollover cap; top-up credits never expire. Variable consumption for PDF/image uploads (5 credits base + per-MB surcharge). Full spec: [PRICING_CREDITS_AND_TOPUPS.md](PRICING_CREDITS_AND_TOPUPS.md).
 
-**Enterprise+ layer (D-015, 2026-05-12, FULLY LOCKED):** Second-ICP packaging (Distribution Expanders — VPs of Distribution at MGAs/wholesalers/carriers, explicitly outside D-011's small-firm design target). Agency Signal state-based slider with three locked tiers anchored on **verified email contacts** (not agency count): **Tier 1 $2,000** (CA, MI, NY, OH, PA — ≥5,000 emails) / **Tier 2 $1,500** (CO, FL, GA, IA, IL, IN, KY, LA, MA, MN, MO, NC, NJ, TX, WI — 2,000–4,999 emails) / **Tier 3 $1,000** (28 states <2,000 emails) / **$0 territorial add-ons** (AK, DC, HI). All-50 ceiling $12,500 (50% undercut of Neilson's $25k; 81% discount vs. à la carte $64,500). Bundle ladder with overflow protection (`final_price = min(computed_bundle, $12,500)`). DOT Intel volume packs at $499/$1,499/quote. Distribution+ outcome SKU at $300–$500 per qualified appointment. Distribution Suite bundle at $22,500/yr. Sits inside the existing $399+ / $499+ Enterprise bands — published packaging, not new tiers. Full spec: [PRICING_ENTERPRISE_LAYER.md](PRICING_ENTERPRISE_LAYER.md).
+**Enterprise+ layer (D-015, 2026-05-12, FULLY LOCKED):** Second-ICP packaging (Distribution Expanders — VPs of Distribution at MGAs/wholesalers/carriers, explicitly outside D-011's small-firm design target). Seven16 Intel state-based slider with three locked tiers anchored on **verified email contacts** (not agency count): **Tier 1 $2,000** (CA, MI, NY, OH, PA — ≥5,000 emails) / **Tier 2 $1,500** (CO, FL, GA, IA, IL, IN, KY, LA, MA, MN, MO, NC, NJ, TX, WI — 2,000–4,999 emails) / **Tier 3 $1,000** (28 states <2,000 emails) / **$0 territorial add-ons** (AK, DC, HI). All-50 ceiling $12,500 (50% undercut of Neilson's $25k; 81% discount vs. à la carte $64,500). Bundle ladder with overflow protection (`final_price = min(computed_bundle, $12,500)`). DOT Intel volume packs at $499/$1,499/quote. Distribution+ outcome SKU at $300–$500 per qualified appointment. Distribution Suite bundle at $22,500/yr. Sits inside the existing $399+ / $499+ Enterprise bands — published packaging, not new tiers. Full spec: [PRICING_ENTERPRISE_LAYER.md](PRICING_ENTERPRISE_LAYER.md).
 
 ---
 
@@ -94,8 +94,8 @@ Live infrastructure IDs and project mappings are in the [Folder & Memory Map](FO
 |---|---|---|
 | **0 — Validate** | done | Prompts 6/7/8, brand + pricing locked. ✅ |
 | **1 — Infrastructure** | in progress | Handles + content done. Open: Supabase master arch, Doppler/Sentry/1Password, **DOT Intel rebuild**, Stripe live cutover. |
-| **2 — Build** | May–Jul 2026 | DOT Intel features, Agency Signal continued build, BDM pre-call brief (DOT Intel adoption driver). |
-| **3 — Launch** | Sep–Oct 2026 | DOT Intel + Agency Signal public, Reuters Insurance Panel, niche directories live. |
+| **2 — Build** | May–Jul 2026 | DOT Intel features, Seven16 Intel continued build, BDM pre-call brief (DOT Intel adoption driver). |
+| **3 — Launch** | Sep–Oct 2026 | DOT Intel + Seven16 Intel public, Reuters Insurance Panel, niche directories live. |
 | **4 — Scale** | Q1–Q2 2027 | W-2 ends April 2027, Seven16 consulting practice opens selectively. |
 
 **Hard dates that drive everything else:**
@@ -111,7 +111,7 @@ Live infrastructure IDs and project mappings are in the [Folder & Memory Map](FO
 These rules survive across sessions. Ignore at your peril.
 
 **Plugins available — try these BEFORE asking Master O for anything:**
-- **Supabase MCP** — full DB access (apply_migration, execute_sql, get_advisors, etc.). Two projects: `sdlsdovuljuymgymarou` (seven16group / Agency Signal) and `vbhlacdrcqdqnvftqtin` (dotintel — old project, reference only).
+- **Supabase MCP** — full DB access (apply_migration, execute_sql, get_advisors, etc.). Two projects: `sdlsdovuljuymgymarou` (seven16group / Seven16 Intel) and `vbhlacdrcqdqnvftqtin` (dotintel — old project, reference only).
 - **Vercel MCP** — deploy_to_vercel, list_deployments, get_deployment_build_logs, etc.
 - **Stripe MCP** — sandbox today, full API access.
 - **Cloudflare** — no MCP. Use WebFetch on `developers.cloudflare.com` + walk Master O through dashboard clicks.
@@ -150,14 +150,14 @@ These rules survive across sessions. Ignore at your peril.
 
 | What | Where |
 |---|---|
-| Agency Signal source code | `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Saas Agency Database\` |
-| Agency Signal repo | `https://github.com/gtminsightlab-cmd/saas-agency-database` |
-| Agency Signal Supabase | project `sdlsdovuljuymgymarou` (name: `seven16group`, region us-east-1) |
-| Agency Signal Vercel | project `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` on team `team_RCXpUhGENcLjR2loNIRyEmT3` |
-| Agency Signal live URL | https://directory.seven16group.com (will move to agencysignal.io) |
+| Seven16 Intel source code | `C:\Users\GTMin\OneDrive\Documents\Claude\Projects\Saas Agency Database\` |
+| Seven16 Intel repo | `https://github.com/gtminsightlab-cmd/saas-agency-database` |
+| Seven16 Intel Supabase | project `sdlsdovuljuymgymarou` (name: `seven16group`, region us-east-1) |
+| Seven16 Intel Vercel | project `prj_w1SpwUzybi4hdbgHJNmMYjRLGHKV` on team `team_RCXpUhGENcLjR2loNIRyEmT3` |
+| Seven16 Intel live URL | https://directory.seven16group.com (will move to seven16intel.com) |
 | DOT Intel old project | Supabase `vbhlacdrcqdqnvftqtin` — reference only, NOT migrating code |
-| DOT Intel rebuild bootstrap | `docs/spinoffs/dot-carrier-intel/BOOTSTRAP.md` in Agency Signal repo |
-| Session handoffs | `docs/handoffs/SESSION_*.md` in Agency Signal repo |
+| DOT Intel rebuild bootstrap | `docs/spinoffs/dot-carrier-intel/BOOTSTRAP.md` in Seven16 Intel repo |
+| Session handoffs | `docs/handoffs/SESSION_*.md` in Seven16 Intel repo |
 | Standing memory | `<memory dir>/MEMORY.md` (auto-loaded into every Claude session) |
 
 ---
@@ -178,7 +178,7 @@ These are unresolved decisions Master O wants raised when the relevant work star
 This hub stays short on purpose. Detail lives in the spokes:
 
 - **[DECISION_LOG.md](DECISION_LOG.md)** — every locked decision: brand arch, pricing, trust copy, Hygiene Credit, retired brands, cancelled scopes. Categorical + chronological.
-- **[SESSION_STATE.md](SESSION_STATE.md)** — current "as of today" state: Agency Signal session 12 numbers, deferred items, DB vs repo migration drift, DOT Intel rebuild status, what each session 4-12 produced.
+- **[SESSION_STATE.md](SESSION_STATE.md)** — current "as of today" state: Seven16 Intel session 12 numbers, deferred items, DB vs repo migration drift, DOT Intel rebuild status, what each session 4-12 produced.
 - **[FOLDER_AND_MEMORY_MAP.md](FOLDER_AND_MEMORY_MAP.md)** — workspace folder layout, every memory file with a one-line description, all infrastructure IDs (Supabase / Vercel / Stripe / GitHub), MCP plugin UUIDs, env vars.
 
 ---
