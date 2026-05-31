@@ -12,10 +12,32 @@ export function ResetPasswordForm() {
   const [loading, setLoading] = useState(false);
   const [ready, setReady] = useState(false);
 
-  // The email link contains a recovery code in the URL fragment that the
-  // Supabase client picks up automatically and turns into a session.
+  // Supabase password-reset email link arrives in one of two shapes:
+  //   1. PKCE flow (current default): `?code=...` in the query string.
+  //      We must call exchangeCodeForSession(code) to mint the session.
+  //   2. Implicit flow (legacy): `#access_token=...&type=recovery` in the
+  //      URL fragment. The Supabase JS client auto-detects + sets session.
+  //
+  // The original form only handled case 2 (just called getSession). When
+  // Supabase migrated emails to PKCE the page stopped resolving the link
+  // and got stuck on "Verifying your reset link…" — SESSION_42 fix.
   useEffect(() => {
     const supabase = createClient();
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
+        if (data?.session) {
+          setReady(true);
+        } else if (error) {
+          setError(error.message || "Reset link could not be verified.");
+        }
+      });
+      return;
+    }
+
+    // Implicit-flow fallback: the JS client picks up the hash on load.
     supabase.auth.getSession().then(({ data }) => setReady(!!data.session));
   }, []);
 
